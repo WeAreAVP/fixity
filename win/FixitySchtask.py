@@ -6,6 +6,7 @@
 
 import subprocess
 from os import getcwd, remove
+import sys
 
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
@@ -58,4 +59,16 @@ def schedule(interval, dow, dom, time, project):
         x.close()
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        subprocess.call("schtasks /Create /F /TN \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + time + " /TR \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\"", startupinfo=startupinfo)
+        path = "'\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\"'"    
+        subprocess.call("schtasks /Create /F /TN \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + time + " /TR " +path, startupinfo=startupinfo)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
