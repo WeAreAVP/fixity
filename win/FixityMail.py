@@ -13,21 +13,21 @@ from os import path
 # note that ADDRESS and PASSWORD should be set before use
 def send(recipients, text, attachment):
 	
-	addr = 'ADDRESS'
+	addr = 'fixity@avpreserve.com'
 
 	msg = email.MIMEMultipart.MIMEMultipart()
-	msg["From"] = addr
+	msg["From"] = 'fixity@avpreserve.com'
 	msg["To"] = recipients
 	msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0]
 
 	msg.attach(email.MIMEText.MIMEText(text,'plain'))
 	part = email.mime.base.MIMEBase('application', "octet-stream")
 	part.set_payload(open(attachment, 'rb').read())
-	email.encoders.encode_base64(part)
+	email.Encoders.encode_base64(part)
 	part.add_header('Content-Disposition', 'attachment; filename="%s"' % path.basename(attachment))
 	msg.attach(part)
 
-	server = SMTP('smtp.gmail.com:587')
+	server = SMTP('smtp.gmail.com',587)
 	server.starttls()
 	server.login(addr, 'PASSWORD')
 	server.sendmail(addr, recipients, msg.as_string())

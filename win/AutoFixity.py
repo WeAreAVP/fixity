@@ -6,19 +6,19 @@
 
 import FixityCore
 import FixityMail
+from PySide.QtGui import QMessageBox ,QApplication
 import sys
 import os
 
 project = sys.argv[1]
-
 f = open('projects\\' + project + ".fxy", 'rb')
 f.readline()
 email = f.readline().rstrip("\r\n").split(';')
-
 if '' in email:
 	email.remove('')
 
 results = FixityCore.run("projects\\" + project + ".fxy")
+print(project)
 
 msg = "FIXITY REPORT:\n* " + str(results[0]) + " files verified\n* " + str(results[1]) + " files renamed/moved\n* " + str(results[2]) + " files created\n* " + str(results[3]) + " files corrupted\n* " + str(results[4]) + " files missing"
 
