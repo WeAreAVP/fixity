@@ -13,12 +13,14 @@ import shutil
 import FixityCore
 import FixitySchtask
 import sys
-
+from os import getcwd
 
 class ProjectWin(QMainWindow):
         def __init__(self):
                 QMainWindow.__init__(self)
+              
                 #self.setWindowIcon(QIcon(path.join(sys._MEIPASS, 'images\\logo_sign_small.png')))
+                self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
 
                 self.unsaved = False
                 menubar = self.menuBar()
