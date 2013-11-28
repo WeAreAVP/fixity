@@ -14,6 +14,7 @@ import FixityCore
 import FixitySchtask
 import sys
 from os import getcwd
+import pprint
 
 class ProjectWin(QMainWindow):
         def __init__(self):
@@ -59,14 +60,21 @@ class ProjectWin(QMainWindow):
                 self.monthly = QRadioButton("Monthly")
                 self.weekly = QRadioButton("Weekly")
                 self.daily = QRadioButton("Daily")
+                self.runOnlyOnACPower =QCheckBox("Run Only On AC Power")
+                self.StartWhenAvailable  =QCheckBox("Start When Available ")
+                
                 self.monthly.clicked.connect(self.monthclick)
                 self.weekly.clicked.connect(self.weekclick)
                 self.daily.clicked.connect(self.dayclick)
+                #self.runOnlyOnACPower.clicked.connect(self.runOnlyOnACPowerclick)
                 
                 slay = QVBoxLayout()
                 slay.addWidget(self.monthly)
                 slay.addWidget(self.weekly)
                 slay.addWidget(self.daily)
+                slay.addWidget(self.runOnlyOnACPower)
+                slay.addWidget(self.StartWhenAvailable)
+                
                 
                 self.timer = QTimeEdit(QTime())
                 self.timer.setDisplayFormat("HH:mm")
@@ -253,8 +261,9 @@ class ProjectWin(QMainWindow):
                 projfile.write("\n")
                 projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
                 projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+            
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text())
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),self.runOnlyOnACPower.isChecked() , self.StartWhenAvailable.isChecked())
                 
                 for dx in self.dtx:
                         src = dx.text()
@@ -297,6 +306,11 @@ class ProjectWin(QMainWindow):
                 self.spacer.changeSize(0,0)
                 self.dow.hide()
                 self.dom.show()
+                
+#         def runOnlyOnACPowerclick(self):
+#                 self.spacer.changeSize(0,0)
+#                 self.dow.hide()
+#                 self.dom.show()
                 
         def pickdir(self):
                 n = self.but.index(self.sender())
@@ -409,7 +423,7 @@ class ProjectWin(QMainWindow):
                 old.close()
                 shutil.copy('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'projects\\' + self.projects.currentItem().text() + '.fxy')
                 remove('projects\\' + self.projects.currentItem().text() + '.tmp.fxy')
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text())
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , self.runOnlyOnACPower.isChecked(), self.StartWhenAvailable.isChecked())
                 self.unsaved = False
                 
         def closeEvent(self, event):

@@ -24,19 +24,16 @@ def deltask(project):
                 pass
                 
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files
-def schedule(interval, dow, dom, timeSch, project):
+def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvailable):
+       
         VERSION = 0.2
+        USERNAME = environ.get( "USERNAME" )
         prj = project.replace(' ', '_')
         deltask(prj)
         
         spec = ""
         
-        if interval == 1:
-                mo = "MONTHLY"
-        if interval == 2:
-                mo = "WEEKLY"
-        if interval == 3:
-                mo = "DAILY"
+     
         
         if dow != 99:
                 days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
@@ -63,55 +60,90 @@ def schedule(interval, dow, dom, timeSch, project):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         path = "'\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\"'"
+       
+        
+        ############################################################################################################################
+
+        #TODO Time Zone Handling
+        #TASK SCHEDULER OPTION and ATTRIBUTES
         RegistrationInfo ={}  
         Triggers  ={}
         Principals  ={} 
         Settings  ={} 
         Actions= {}
-        
-        #TODO Time Zone Handling
+         
         RegistrationInfo['Date'] = time.strftime("%Y-%m-%dT%X") #2005-10-11T13:21:17-08:00
-        RegistrationInfo['Author'] = environ.get( "USERNAME" )
+        RegistrationInfo['Author'] = USERNAME
         RegistrationInfo['Version'] = VERSION
         RegistrationInfo['Description'] ='Fixity Task Scheduler to Monitor A Folder Activity!'
-            
-            
+
+        
         CurrentDate  = time.strftime("%Y-%m-%d")
-        EndBoundary  = '2015-12-12'
-                        
+        EndBoundary  = '2015-12-12'                        
         Triggers['CalendarTrigger'] ={}
         Triggers['CalendarTrigger']['StartBoundary'] = CurrentDate+'T'+timeSch
         Triggers['CalendarTrigger']['EndBoundary'] =EndBoundary+'T'+timeSch
         Triggers['CalendarTrigger']['Repetition'] = {}
         Triggers['CalendarTrigger']['ScheduleByDay'] = {}
+        
+        Triggers['CalendarTrigger']['ScheduleByMonth'] = {}    
+        Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']  = {}
         Triggers['CalendarTrigger']['Repetition']['Interval'] =''
         Triggers['CalendarTrigger']['Repetition']['Duration'] =''
-        Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'] ='1'
         
         
-         
-        Principals['Principal'] ={}
-        Principals['Principal']['UserId'] ='Administrator'
+        if interval == 1:
+            Triggers['CalendarTrigger']['ScheduleByMonth'] = {}    
+            Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth'] = dom
+        if interval == 2:
+            daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+            Triggers['CalendarTrigger']['ScheduleByWeek'] = {}
+            Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = {}
+            Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval'] = '1'
+            Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = daysOfWeek[dow]
+        if interval == 3:
+            Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'] ='1'
+        
+        
+        Principals['Principal'] = {}
+        Principals['Principal']['UserId'] = 'Administrator'
         Principals['Principal']['LogonType'] = 'InteractiveToken'
         
-         
-        Settings['Enabled'] ='true'
-        Settings['AllowStartOnDemand'] ='true'
-        Settings['AllowHardTerminate'] = 'true'
-        Settings['DisallowStartIfOnBatteries'] = 'false'
         
+        Settings['Enabled'] ='true'
+        Settings['AllowStartOnDemand'] = 'true'
+        Settings['AllowHardTerminate'] = 'true'
+        Settings['WakeToRun'] = 'true'
+        
+        if StartWhenAvailable == True or StartWhenAvailable == 'True':
+            Settings['StartWhenAvailable'] = 'true'
+        else:
+            Settings['StartWhenAvailable'] = 'false'
+            
+        if ACPowerCheck == True or ACPowerCheck == 'True':
+            Settings['DisallowStartIfOnBatteries'] = 'true'
+        else:    
+            Settings['DisallowStartIfOnBatteries'] = 'false'
+
+
+
         Actions['Exec'] ={}
         Actions['Exec']['Command'] =path
         
         
-        XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions)
-        XMLFilePath ="'\""+ getcwd() + "\\" + XMLFileNameWithDirName + "\"'"
+        ############################################################################################################################
+        
+        XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
+        XMLFilePath ="\""+ getcwd() + "\\" + XMLFileNameWithDirName + "\""
         
         Command ="schtasks /Create /TN \"Fixity-" + prj + "\"  /xml "+XMLFilePath
-        print(Command)
-        subprocess.call("schtasks /Create /F /TN \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /TR " +path, startupinfo=startupinfo)
+        subprocess.call(Command, startupinfo=startupinfo)
         
-def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions):
+        
+        
+        
+def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval):
+        Months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
         xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
         xmlsch.write("<?xml version=\"1.0\" ?>\n")
         xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
@@ -124,17 +156,38 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         xmlsch.write("    <Triggers>\n")
         xmlsch.write("        <CalendarTrigger>\n")
         xmlsch.write("            <StartBoundary>"+Triggers['CalendarTrigger']['StartBoundary']+"</StartBoundary>\n")
-        xmlsch.write("            <EndBoundary>"+Triggers['CalendarTrigger']['EndBoundary']+"</EndBoundary>\n")
-#         xmlsch.write("            <Repetition>\n")
-#         xmlsch.write("                <Interval>"+Triggers['CalendarTrigger']['Repetition']['Interval']+"</Interval>\n")
-#         xmlsch.write("                <Duration>"+Triggers['CalendarTrigger']['Repetition']['Duration']+"</Duration>\n")
-#         xmlsch.write("            </Repetition>\n")
-        xmlsch.write("            <ScheduleByDay>\n")
-        xmlsch.write("                <DaysInterval>"+Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']+"</DaysInterval>\n")
-        xmlsch.write("            </ScheduleByDay>\n")
+        
+#             xmlsch.write("            <EndBoundary>"+Triggers['CalendarTrigger']['EndBoundary']+"</EndBoundary>\n")
+#             xmlsch.write("            <Repetition>\n")
+#             xmlsch.write("                <Interval>"+Triggers['CalendarTrigger']['Repetition']['Interval']+"</Interval>\n")
+#             xmlsch.write("                <Duration>"+Triggers['CalendarTrigger']['Repetition']['Duration']+"</Duration>\n")
+#             xmlsch.write("            </Repetition>\n")
+        if interval == 1:
+            xmlsch.write("            <ScheduleByMonth>\n")
+            xmlsch.write("                <DaysOfMonth>\n")
+            xmlsch.write("                    <Day>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</Day>\n")
+            xmlsch.write("                </DaysOfMonth >\n")
+            xmlsch.write("                <Months>\n")
+            for Month in Months:
+                xmlsch.write("                <" + Month + "/>\n")
+
+            xmlsch.write("                </Months>\n")
+            xmlsch.write("            </ScheduleByMonth>\n")
+        if interval == 2:
+            xmlsch.write("            <ScheduleByWeek>\n")
+            xmlsch.write("                <WeeksInterval >" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
+            xmlsch.write("                <DaysOfWeek>\n")
+            xmlsch.write("                    <" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n");
+            xmlsch.write("                </DaysOfWeek >\n")
+            xmlsch.write("            </ScheduleByWeek>\n")
+        if interval == 3:
+            xmlsch.write("            <ScheduleByDay>\n")
+            xmlsch.write("                <DaysInterval>"+str(Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'])+"</DaysInterval>\n")
+            xmlsch.write("            </ScheduleByDay>\n") 
+        
         xmlsch.write("        </CalendarTrigger>\n")
         xmlsch.write("    </Triggers>\n")
-#         xmlsch.write("    <Principals>\n")
+#         xmlsch.write("    <Principals>\n") 
 #         xmlsch.write("        <Principal>\n")
 #         xmlsch.write("            <UserId>"+ Principals['Principal']['UserId'] +"</UserId>\n")
 #         xmlsch.write("            <LogonType>"+ Principals['Principal']['UserId'] +"</LogonType>\n")
@@ -145,6 +198,9 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         xmlsch.write("        <AllowStartOnDemand>"+ Settings['AllowStartOnDemand'] +"</AllowStartOnDemand>\n")
         xmlsch.write("        <AllowHardTerminate>"+ Settings['AllowHardTerminate'] +"</AllowHardTerminate>\n")
         xmlsch.write("        <DisallowStartIfOnBatteries>"+ Settings['DisallowStartIfOnBatteries'] +"</DisallowStartIfOnBatteries>\n")
+        xmlsch.write("        <StartWhenAvailable>"+ Settings['StartWhenAvailable'] +"</StartWhenAvailable>\n")
+        xmlsch.write("        <WakeToRun>"+ Settings['WakeToRun'] +"</WakeToRun>\n")
+         
         xmlsch.write("    </Settings>\n")
         xmlsch.write("    <Actions>\n")
         xmlsch.write("        <Exec>\n")
@@ -153,6 +209,7 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         xmlsch.write("      </Actions>\n")
         xmlsch.write("</Task>\n")
         xmlsch.close()
+        
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
         
         
