@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<Task xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+    <RegistrationInfo>
+        <Date>2013-11-28T16:11:32</Date>
+        <Author>Furqan</Author>
+        <Version>Fixity Task Scheduler to Monitor A Folder Activity!</Version>
+        <Description>Fixity Task Scheduler to Monitor A Folder Activity!</Description>
+    </RegistrationInfo>
+    <Triggers>
+        <CalendarTrigger>
+            <StartBoundary>2013-11-28T13:13:00</StartBoundary>
+            <EndBoundary>2015-12-12T13:13:00</EndBoundary>
+            <Repetition>
+                <Interval>PT1M</Interval>
+                <Duration>PT4M</Duration>
+            </Repetition>
+            <ScheduleByDay>
+                <DaysInterval>1</DaysInterval>
+            </ScheduleByDay>
+        </CalendarTrigger>
+    </Triggers>
+    <Principals>
+        <Principal>
+            <UserId>Administrator</UserId>
+            <LogonType>Administrator</LogonType>
+        </Principal>
+    </Principals>
+    <Settings>
+        <Enabled>true</Enabled>
+        <AllowStartOnDemand>true</AllowStartOnDemand>
+        <AllowHardTerminate>true</AllowHardTerminate>
+        <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+    </Settings>
+    <Actions>
+        <Exec>
+            <Command>'"D:\python\fixity\win\schedules\fixity-furqan.vbs"'</Command>
+        </Exec>
+      </Actions>
+</Task>
