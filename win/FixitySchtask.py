@@ -33,8 +33,6 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         
         spec = ""
         
-     
-        
         if dow != 99:
                 days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
                 spec = " /D " + days[dow] + " "
@@ -131,11 +129,10 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         Actions['Exec']['Command'] =path
         
         
+        XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         ############################################################################################################################
         
-        XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         XMLFilePath ="\""+ getcwd() + "\\" + XMLFileNameWithDirName + "\""
-        
         Command ="schtasks /Create /TN \"Fixity-" + prj + "\"  /xml "+XMLFilePath
         subprocess.call(Command, startupinfo=startupinfo)
         
@@ -157,11 +154,6 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         xmlsch.write("        <CalendarTrigger>\n")
         xmlsch.write("            <StartBoundary>"+Triggers['CalendarTrigger']['StartBoundary']+"</StartBoundary>\n")
         
-#             xmlsch.write("            <EndBoundary>"+Triggers['CalendarTrigger']['EndBoundary']+"</EndBoundary>\n")
-#             xmlsch.write("            <Repetition>\n")
-#             xmlsch.write("                <Interval>"+Triggers['CalendarTrigger']['Repetition']['Interval']+"</Interval>\n")
-#             xmlsch.write("                <Duration>"+Triggers['CalendarTrigger']['Repetition']['Duration']+"</Duration>\n")
-#             xmlsch.write("            </Repetition>\n")
         if interval == 1:
             xmlsch.write("            <ScheduleByMonth>\n")
             xmlsch.write("                <DaysOfMonth>\n")
@@ -187,12 +179,6 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         
         xmlsch.write("        </CalendarTrigger>\n")
         xmlsch.write("    </Triggers>\n")
-#         xmlsch.write("    <Principals>\n") 
-#         xmlsch.write("        <Principal>\n")
-#         xmlsch.write("            <UserId>"+ Principals['Principal']['UserId'] +"</UserId>\n")
-#         xmlsch.write("            <LogonType>"+ Principals['Principal']['UserId'] +"</LogonType>\n")
-#         xmlsch.write("        </Principal>\n")
-#         xmlsch.write("    </Principals>\n")
         xmlsch.write("    <Settings>\n")
         xmlsch.write("        <Enabled>"+ Settings['Enabled'] +"</Enabled>\n")
         xmlsch.write("        <AllowStartOnDemand>"+ Settings['AllowStartOnDemand'] +"</AllowStartOnDemand>\n")

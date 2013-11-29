@@ -31,14 +31,18 @@ class ProjectWin(QMainWindow):
                 usch = QAction('&Save Email/Time', self)
                 dlte = QAction('&Delete Project', self)
                 quit = QAction('&Quit Fixity', self)
+                configemail = QAction('&Configure Email', self)
+                
                 self.f.addAction(newp)
                 self.f.addAction(save)
                 self.f.addAction(usch)
                 self.f.addAction(dlte)
                 self.f.addAction(quit)
+                self.f.addAction(configemail)
                 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
+                configemail.triggered.connect(self.ConfigEmailView)
                 save.triggered.connect(self.run)
                 usch.triggered.connect(self.updateschedule)
                 quit.triggered.connect(self.close)
@@ -60,9 +64,10 @@ class ProjectWin(QMainWindow):
                 self.monthly = QRadioButton("Monthly")
                 self.weekly = QRadioButton("Weekly")
                 self.daily = QRadioButton("Daily")
-                self.runOnlyOnACPower =QCheckBox("Run Only On AC Power")
+                self.runOnlyOnACPower =QCheckBox("Run Even on Battery")
                 self.StartWhenAvailable  =QCheckBox("Start When Available ")
-                
+                self.runOnlyOnACPower.setChecked(True)
+                self.StartWhenAvailable.setChecked(True)
                 self.monthly.clicked.connect(self.monthclick)
                 self.weekly.clicked.connect(self.weekclick)
                 self.daily.clicked.connect(self.dayclick)
@@ -99,7 +104,7 @@ class ProjectWin(QMainWindow):
                 self.lastrun = QLabel("Last checked: ")
                 slay.addWidget(self.lastrun)
                 self.sch.setLayout(slay)
-                self.sch.setFixedSize(125, 225)
+                self.sch.setFixedSize(170, 225)
                 
                 self.mlay = QVBoxLayout()
                 self.mlay.setSpacing(0)
@@ -135,7 +140,7 @@ class ProjectWin(QMainWindow):
                 self.main.addWidget(self.pgroup)
                 self.main.addWidget(self.sch)
                 self.main.addWidget(self.dirs)
-                self.main.addWidget(self.mail)
+                self.main.addWidget(self.mail) 
                 self.widget.setLayout(self.main)
                 self.setCentralWidget(self.widget)
                 self.projects.itemClicked.connect(self.update)
@@ -150,6 +155,28 @@ class ProjectWin(QMainWindow):
                 self.toggler((self.projects.count() == 0))
                 self.show()
 
+
+                            
+        # Configure Email Address for the Tools
+        def ConfigEmailView(self):
+            w1 = QLabel("Window 1")
+            w2 = QLabel("Window 2")
+            w1.show()
+            w2.show()
+#             self.myOtherWindow = OtherWindow()
+#             self.myOtherWindow.show()
+#             
+#             if __name__ == "__main__":
+#             
+#             app = QApplication(sys.argv)
+#             mainWindow = MainWindow() 
+#             mainWindow.setGeometry(100, 100, 200, 200)
+#             mainWindow.show()
+#             sys.exit(app.exec_())
+        def newWindow(self):
+            self = ProjectWin()
+            self.show()
+            sys.exit(app.exec_())
         # updates fields when project is selected in list
         @Slot(str)
         def update(self, new):
@@ -231,7 +258,7 @@ class ProjectWin(QMainWindow):
                         self.mtx[x].setText("")
                 self.old = newitem
                 self.toggler(False)
-                
+
         # creates and saves projects
         def process(self):
                 if all(d.text() == "" for d in self.dtx):
@@ -306,12 +333,7 @@ class ProjectWin(QMainWindow):
                 self.spacer.changeSize(0,0)
                 self.dow.hide()
                 self.dom.show()
-                
-#         def runOnlyOnACPowerclick(self):
-#                 self.spacer.changeSize(0,0)
-#                 self.dow.hide()
-#                 self.dom.show()
-                
+
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
