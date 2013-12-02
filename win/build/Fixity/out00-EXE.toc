@@ -1,9 +1,9 @@
 ('d:\\python\\Fixity\\win\\dist\\Fixity.exe',
- True,
  False,
- None,
+ False,
+ 'images\\logo_sign_small.ico',
  None,
  [],
  None,
  False,
- 1385993313L)
+ 1386009674L)

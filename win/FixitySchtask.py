@@ -26,7 +26,7 @@ def deltask(project):
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files
 def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged):
        
-        VERSION = 0.2
+        VERSION = 0.3
         USERNAME = environ.get( "USERNAME" )
         prj = project.replace(' ', '_')
         deltask(prj)
