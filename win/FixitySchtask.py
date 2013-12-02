@@ -8,7 +8,7 @@ import subprocess
 from os import getcwd, remove , environ
 import sys
 import time
-
+from EmailPref import EmailPref
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
         startupinfo = subprocess.STARTUPINFO()
@@ -24,7 +24,7 @@ def deltask(project):
                 pass
                 
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files
-def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvailable):
+def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged):
        
         VERSION = 0.2
         USERNAME = environ.get( "USERNAME" )
@@ -57,7 +57,7 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         x.close()
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        path = "'\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\"'"
+        path = "\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\""
        
         
         ############################################################################################################################
@@ -102,7 +102,6 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         if interval == 3:
             Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'] ='1'
         
-        
         Principals['Principal'] = {}
         Principals['Principal']['UserId'] = 'Administrator'
         Principals['Principal']['LogonType'] = 'InteractiveToken'
@@ -119,16 +118,35 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
             Settings['StartWhenAvailable'] = 'false'
             
         if ACPowerCheck == True or ACPowerCheck == 'True':
-            Settings['DisallowStartIfOnBatteries'] = 'true'
-        else:    
             Settings['DisallowStartIfOnBatteries'] = 'false'
-
-
+        else:    
+            Settings['DisallowStartIfOnBatteries'] = 'true'
 
         Actions['Exec'] ={}
         Actions['Exec']['Command'] =path
+        list = {}
+        alltext = ''
+        i = 0
+        with open(getcwd()+'\\bin\conf.txt', 'rb') as fconfigread:
+            alltext =  fconfigread.read()
+        fconfigread.closed
         
-        
+        text = ''
+        if EmailOnlyWhenSomethingChanged == True or EmailOnlyWhenSomethingChanged == 'True':
+            text = 'EOWSC|F'
+        else:
+            text = 'EOWSC|T'
+            
+        EP =  EmailPref()
+        E_text = EP.EncodeInfo(text)
+        list = alltext.split('\n')
+        list = filter(None, list)
+        list.append(E_text)
+        fconfig = open(getcwd()+'\\bin\conf.txt', 'wb')
+        for singleValue in list:
+            fconfig.write(singleValue +"\n")
+            
+        fconfig.close()            
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         ############################################################################################################################
         

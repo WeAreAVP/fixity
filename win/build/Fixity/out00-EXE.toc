@@ -1,0 +1,9 @@
+('d:\\python\\Fixity\\win\\dist\\Fixity.exe',
+ True,
+ False,
+ None,
+ None,
+ [],
+ None,
+ False,
+ 1385993313L)

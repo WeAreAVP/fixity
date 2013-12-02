@@ -1,32 +1,46 @@
 <?xml version="1.0" ?>
 <Task xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
     <RegistrationInfo>
-        <Date>2013-11-28T19:38:44</Date>
+        <Date>2013-12-02T19:29:20</Date>
         <Author>Furqan</Author>
         <Version>Fixity Task Scheduler to Monitor A Folder Activity!</Version>
         <Description>Fixity Task Scheduler to Monitor A Folder Activity!</Description>
     </RegistrationInfo>
     <Triggers>
         <CalendarTrigger>
-            <StartBoundary>2013-11-28T19:13:00</StartBoundary>
-            <ScheduleByWeek>
-                <WeeksInterval >1</WeeksInterval >
-                <DaysOfWeek>
-                    <Thursday/>
-                </DaysOfWeek >
-            </ScheduleByWeek>
+            <StartBoundary>2013-12-02T19:15:00</StartBoundary>
+            <ScheduleByMonth>
+                <DaysOfMonth>
+                    <Day>8</Day>
+                </DaysOfMonth >
+                <Months>
+                <January/>
+                <February/>
+                <March/>
+                <April/>
+                <May/>
+                <June/>
+                <July/>
+                <August/>
+                <September/>
+                <October/>
+                <November/>
+                <December/>
+                </Months>
+            </ScheduleByMonth>
         </CalendarTrigger>
     </Triggers>
     <Settings>
         <Enabled>true</Enabled>
         <AllowStartOnDemand>true</AllowStartOnDemand>
         <AllowHardTerminate>true</AllowHardTerminate>
-        <DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>
+        <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
         <StartWhenAvailable>true</StartWhenAvailable>
+        <WakeToRun>true</WakeToRun>
     </Settings>
     <Actions>
         <Exec>
-            <Command>'"D:\python\fixity\win\schedules\fixity-furqan.vbs"'</Command>
+            <Command>"D:\python\fixity\win\schedules\fixity-furqan.vbs"</Command>
         </Exec>
       </Actions>
 </Task>

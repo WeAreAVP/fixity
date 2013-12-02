@@ -6,10 +6,37 @@
 
 import FixityCore
 import FixityMail
+
 from PySide.QtGui import QMessageBox ,QApplication
 import sys
-import os
+from os import getcwd  
+import base64
 
+def EncodeInfo(stringToBeEncoded):
+	return base64.b16encode(base64.b16encode(stringToBeEncoded))
+	
+def DecodeInfo(stringToBeDecoded):
+	return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
+Text = '' 
+fconf = open(getcwd()+'\\bin\conf.txt', 'rb') 
+Text = fconf.readlines()
+fconf.close()
+information = {} 
+information['email'] = ''
+information['pass'] = ''
+information['onlyonchange'] = ''
+
+
+for SingleValue in Text:
+	
+	decodedString = DecodeInfo(SingleValue)
+	if decodedString.find('e|') >= 0:
+		information['email'] = decodedString.replace('e|','').replace('\n','')
+	elif decodedString.find('p|') >= 0: 
+		information['pass'] = decodedString.replace('p|','').replace('\n','')
+	else:	
+		information['onlyonchange'] = decodedString.replace('EOWSC|','').replace('\n','')
+		
 project = sys.argv[1]
 f = open('projects\\' + project + ".fxy", 'rb')
 f.readline()
@@ -19,6 +46,7 @@ if '' in email:
 results = FixityCore.run("projects\\" + project + ".fxy")
 msg = "FIXITY REPORT:\n* " + str(results[0]) + " files verified\n* " + str(results[1]) + " files renamed/moved\n* " + str(results[2]) + " files created\n* " + str(results[3]) + " files corrupted\n* " + str(results[4]) + " files missing"
 
-if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0:
+
+if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['pass'] == 'T':
 	for e in email:
-		FixityMail.send(e, msg, results[5])
+		FixityMail.send(e, msg, results[5],information['email'] , information['pass'])

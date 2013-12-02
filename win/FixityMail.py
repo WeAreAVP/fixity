@@ -7,16 +7,17 @@
 from smtplib import SMTP
 import email
 import datetime
-from os import path
+from os import getcwd ,path
 
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
-def send(recipients, text, attachment):
-	
-	addr = 'fixity@avpreserve.com'
+def send(recipients, text, attachment,emailaddr,password):
+	#addr = 'fixity@avpreserve.com'
+	addr = str(emailaddr)
+	pas = str(password) 
 
 	msg = email.MIMEMultipart.MIMEMultipart()
-	msg["From"] = 'fixity@avpreserve.com'
+	msg["From"] = addr
 	msg["To"] = recipients
 	msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0]
 
@@ -29,6 +30,8 @@ def send(recipients, text, attachment):
 
 	server = SMTP('smtp.gmail.com',587)
 	server.starttls()
-	server.login(addr, 'PASSWORD')
+	#server.login(addr, 'PASSWORD')
+	server.login(addr, pas)
+	
 	server.sendmail(addr, recipients, msg.as_string())
 	return

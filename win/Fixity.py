@@ -12,17 +12,21 @@ import datetime
 import shutil
 import FixityCore
 import FixitySchtask
+from EmailPref import EmailPref
 import sys
 from os import getcwd
-import pprint
+
 
 class ProjectWin(QMainWindow):
-        def __init__(self):
+        def __init__(self,EmailPref):
                 QMainWindow.__init__(self)
-              
+                EP = EmailPref()
+                self.EP = EmailPref()
                 #self.setWindowIcon(QIcon(path.join(sys._MEIPASS, 'images\\logo_sign_small.png')))
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
-
+                if not path.isfile(getcwd()+'\\bin\conf.txt'):
+                    fileConf = open(getcwd()+'\\bin\conf.txt', 'w+')
+                    fileConf.close()
                 self.unsaved = False
                 menubar = self.menuBar()
                 self.f = menubar.addMenu('&File')
@@ -30,15 +34,17 @@ class ProjectWin(QMainWindow):
                 save = QAction('&Save and Run', self)
                 usch = QAction('&Save Email/Time', self)
                 dlte = QAction('&Delete Project', self)
-                quit = QAction('&Quit Fixity', self)
                 configemail = QAction('&Configure Email', self)
+                quit = QAction('&Quit Fixity', self)
+                
                 
                 self.f.addAction(newp)
                 self.f.addAction(save)
                 self.f.addAction(usch)
                 self.f.addAction(dlte)
-                self.f.addAction(quit)
                 self.f.addAction(configemail)
+                self.f.addAction(quit)
+                 
                 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
@@ -66,11 +72,14 @@ class ProjectWin(QMainWindow):
                 self.daily = QRadioButton("Daily")
                 self.runOnlyOnACPower =QCheckBox("Run Even on Battery")
                 self.StartWhenAvailable  =QCheckBox("Start When Available ")
+                self.EmailOnlyWhenSomethingChanged  =QCheckBox("Email Only When Something Changed ")
                 self.runOnlyOnACPower.setChecked(True)
                 self.StartWhenAvailable.setChecked(True)
+                self.EmailOnlyWhenSomethingChanged.setChecked(True)
                 self.monthly.clicked.connect(self.monthclick)
                 self.weekly.clicked.connect(self.weekclick)
                 self.daily.clicked.connect(self.dayclick)
+                
                 #self.runOnlyOnACPower.clicked.connect(self.runOnlyOnACPowerclick)
                 
                 slay = QVBoxLayout()
@@ -79,6 +88,7 @@ class ProjectWin(QMainWindow):
                 slay.addWidget(self.daily)
                 slay.addWidget(self.runOnlyOnACPower)
                 slay.addWidget(self.StartWhenAvailable)
+                slay.addWidget(self.EmailOnlyWhenSomethingChanged)
                 
                 
                 self.timer = QTimeEdit(QTime())
@@ -104,7 +114,7 @@ class ProjectWin(QMainWindow):
                 self.lastrun = QLabel("Last checked: ")
                 slay.addWidget(self.lastrun)
                 self.sch.setLayout(slay)
-                self.sch.setFixedSize(170, 225)
+                self.sch.setFixedSize(220, 255)
                 
                 self.mlay = QVBoxLayout()
                 self.mlay.setSpacing(0)
@@ -159,20 +169,12 @@ class ProjectWin(QMainWindow):
                             
         # Configure Email Address for the Tools
         def ConfigEmailView(self):
-            w1 = QLabel("Window 1")
-            w2 = QLabel("Window 2")
-            w1.show()
-            w2.show()
-#             self.myOtherWindow = OtherWindow()
-#             self.myOtherWindow.show()
-#             
-#             if __name__ == "__main__":
-#             
-#             app = QApplication(sys.argv)
-#             mainWindow = MainWindow() 
-#             mainWindow.setGeometry(100, 100, 200, 200)
-#             mainWindow.show()
-#             sys.exit(app.exec_())
+            self.EP.CloseClick()
+            self.EP=None
+            self.EP = EmailPref()
+            self.EP.SetDesgin()
+            self.EP.ShowDialog()
+            
         def newWindow(self):
             self = ProjectWin()
             self.show()
@@ -290,7 +292,7 @@ class ProjectWin(QMainWindow):
                 projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
             
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),self.runOnlyOnACPower.isChecked() , self.StartWhenAvailable.isChecked())
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),self.runOnlyOnACPower.isChecked() , self.StartWhenAvailable.isChecked(),self.EmailOnlyWhenSomethingChanged.isChecked())
                 
                 for dx in self.dtx:
                         src = dx.text()
@@ -445,7 +447,8 @@ class ProjectWin(QMainWindow):
                 old.close()
                 shutil.copy('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'projects\\' + self.projects.currentItem().text() + '.fxy')
                 remove('projects\\' + self.projects.currentItem().text() + '.tmp.fxy')
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , self.runOnlyOnACPower.isChecked(), self.StartWhenAvailable.isChecked())
+                
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , self.runOnlyOnACPower.isChecked(), self.StartWhenAvailable.isChecked(),self.EmailOnlyWhenSomethingChanged.isChecked())
                 self.unsaved = False
                 
         def closeEvent(self, event):
@@ -463,6 +466,6 @@ class ProjectWin(QMainWindow):
         
 if __name__ == '__main__':
         app = QApplication(sys.argv)
-        w = ProjectWin()
+        w = ProjectWin(EmailPref)
         w.show()
         sys.exit(app.exec_())
