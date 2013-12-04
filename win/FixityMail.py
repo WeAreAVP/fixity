@@ -3,7 +3,8 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+from PySide.QtCore import *
+from PySide.QtGui import *
 from smtplib import SMTP
 import email
 import datetime
@@ -23,15 +24,21 @@ def send(recipients, text, attachment,emailaddr,password):
 
 	msg.attach(email.MIMEText.MIMEText(text,'plain'))
 	part = email.mime.base.MIMEBase('application', "octet-stream")
-	part.set_payload(open(attachment, 'rb').read())
-	email.Encoders.encode_base64(part)
-	part.add_header('Content-Disposition', 'attachment; filename="%s"' % path.basename(attachment))
-	msg.attach(part)
-
-	server = SMTP('smtp.gmail.com',587)
-	server.starttls()
-	#server.login(addr, 'PASSWORD')
-	server.login(addr, pas)
-	
-	server.sendmail(addr, recipients, msg.as_string())
-	return
+	if attachment:
+		part.set_payload(open(attachment, 'rb').read())
+		email.Encoders.encode_base64(part)
+		part.add_header('Content-Disposition', 'attachment; filename="%s"' % path.basename(attachment))
+		msg.attach(part)
+	try:	
+		server = SMTP('smtp.gmail.com',587)
+		server.starttls()
+		#server.login(addr, 'PASSWORD')
+		server.login(addr, pas)
+		
+		server.sendmail(addr, recipients, msg.as_string())
+		return True
+	except Exception:
+		msgBox =QMessageBox();
+		msgBox.setText("Some Problem occurred while sending the email, please check your Internet Connection or try different Email Credentials and try again.")
+		msgBox.exec_()
+		return False

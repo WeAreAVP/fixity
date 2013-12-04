@@ -124,13 +124,8 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
 
         Actions['Exec'] ={}
         Actions['Exec']['Command'] =path
-        list = {}
-        alltext = ''
-        i = 0
-        with open(getcwd()+'\\bin\conf.txt', 'rb') as fconfigread:
-            alltext =  fconfigread.read()
-        fconfigread.closed
-        
+
+     
         text = ''
         if EmailOnlyWhenSomethingChanged == True or EmailOnlyWhenSomethingChanged == 'True':
             text = 'EOWSC|F'
@@ -138,15 +133,11 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
             text = 'EOWSC|T'
             
         EP =  EmailPref()
-        E_text = EP.EncodeInfo(text)
-        list = alltext.split('\n')
-        list = filter(None, list)
-        list.append(E_text)
-        fconfig = open(getcwd()+'\\bin\conf.txt', 'wb')
-        for singleValue in list:
-            fconfig.write(singleValue +"\n")
+        E_text = text
+        information = EP.getConfigInfo(prj)
+        information['onlyonchange'] = E_text
+        EP.setConfigInfo(information , prj)
             
-        fconfig.close()            
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         ############################################################################################################################
         
