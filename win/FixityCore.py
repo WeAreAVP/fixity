@@ -184,7 +184,8 @@ def missing(dict):
 				msg += "MISSING FILE\t" + obj[0]
 	return msg, count
 
-def run(file):
+def run(file,filters=''):
+	FiltersArray = filters.split(',')
 	dict = defaultdict(list)
 	c, f, mv, nw, = 0, 0, 0, 0
 	rp = ""
@@ -201,24 +202,32 @@ def run(file):
 	tmp.write(second)
 	tmp.write(keeptime)
 	tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-	
+	print(FiltersArray)
 	for l in infile.readlines():
 		x = toTuple(l)
 		dict[x[0]].append([x[1], x[2], False])
 	for r in roots:
 		t = quietTable(r, 'sha256')
 		for e in t:
-			response = verify(dict, e)
-			rp += response[1] + "\n"
-			if response[1].startswith('CONFIRMED'):
-				c += 1
-			elif response[1].startswith('MOVED'):
-				mv += 1
-			elif response[1].startswith('NEW'):
-				nw += 1
-			else:
-				f += 1
-			tmp.write(str(response[0][0]) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
+			flag =True
+			
+			for Filter in FiltersArray:
+				print(str(Filter).strip())
+				if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
+					flag =False
+			
+			if flag:
+				response = verify(dict, e)
+				rp += response[1] + "\n"
+				if response[1].startswith('CONFIRMED'):
+					c += 1
+				elif response[1].startswith('MOVED'):
+					mv += 1
+				elif response[1].startswith('NEW'):
+					nw += 1
+				else:
+					f += 1
+				tmp.write(str(response[0][0]) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
 	m = missing(dict)
 	rp += m[0]
 	tmp.close()

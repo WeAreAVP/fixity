@@ -1,31 +1,32 @@
 '''
 Created on Dec 1, 2013
 
-@author: Furqan
+@author: Furqan Wasi
 '''
+# Fixity Scheduler
+# Version 0.3, Dec 1, 2013
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
+
 from PySide.QtCore import *
 from PySide.QtGui import *
 import base64
 from os import getcwd ,path
-import sys
 import FixityMail
 import re
-import time
-import subprocess
+
 
 class EmailPref(QDialog):
-    '''
-    This class i created to handle all Email configurations
-    '''
+    '''This class is created to handle all Email configurations and management'''
     # Constructor
     def __init__(self):
         QDialog.__init__(self)
-        self.FM = FixityMail
         self.EmailPrefWin = QDialog()
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
-        
+
         
     # Distructor        
     def destroyEmailPref(self):
@@ -72,8 +73,7 @@ class EmailPref(QDialog):
         
     def GetLayout(self):
         return self.EmailPrefLayout
-                
-                
+
     #All design Management Done in Here            
     def SetDesgin(self):
         self.GetLayout().addStrut(200)
@@ -103,7 +103,6 @@ class EmailPref(QDialog):
         self.GetLayout().addWidget(self.loader)
         self.GetLayout().addWidget(self.EmailAddrBar)
         self.GetLayout().addWidget(self.Password)
-        self.GetLayout().addWidget(self.Project)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.checkEmail)
         self.GetLayout().addWidget(self.reset)
@@ -114,7 +113,7 @@ class EmailPref(QDialog):
         self.setInformation.clicked.connect(self.SetInformation)
         self.cancel.clicked.connect(self.CloseClick)
         self.checkEmail.clicked.connect(self.checkIsEmailValid)
-#         self.Project.clicked.connect(self.ProjectClick)
+
         
         self.SetWindowLayout()
         
@@ -128,49 +127,70 @@ class EmailPref(QDialog):
         
         
     #Fetch information related to email configuration    
-    def getConfigInfo(self,project):
-        information = {} 
-        information['email'] = ''
-        information['pass'] = ''
-        information['onlyonchange'] = ''
-        if path.isfile(getcwd()+'\\bin\\' + project + '-conf.txt'): 
-            fCheck = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'rb') 
-            Text = fCheck.readlines()
-            fCheck.close()
-            if len(Text) >0 :
-                for SingleValue in Text:
-                    decodedString = self.DecodeInfo(SingleValue)
-                    if decodedString.find('e|') >= 0:
-                        information['email'] = decodedString
-                    elif decodedString.find('p|') >= 0: 
-                        information['pass'] = decodedString
-                    else:    
-                        information['onlyonchange'] = decodedString
-         
+    def getConfigInfo(self, project=None):
+        if project == None:
+            information = {} 
+            information['email'] = ''
+            information['pass'] = ''
+            information['onlyonchange'] = ''
+            if path.isfile(getcwd()+'\\bin\\conf.txt'): 
+                fCheck = open(getcwd()+'\\bin\\conf.txt', 'rb') 
+                Text = fCheck.readlines()
+                fCheck.close()
+                if len(Text) >0 :
+                    for SingleValue in Text:
+                        decodedString = self.DecodeInfo(SingleValue)
+                        if decodedString.find('e|') >= 0:
+                            information['email'] = decodedString
+                        elif decodedString.find('p|') >= 0: 
+                            information['pass'] = decodedString
+                        else:    
+                            information['onlyonchange'] = decodedString
+             
+            return information
+        else:    
+            information = {} 
+            information['onlyonchange'] = ''
+            information['filters'] = ''
+            if path.isfile(getcwd()+'\\bin\\' + project + '-conf.txt'): 
+                fCheck = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'rb') 
+                Text = fCheck.readlines()
+                fCheck.close()
+                if len(Text) >0 :
+                    for SingleValue in Text:
+                        decodedString = self.DecodeInfo(SingleValue)
+                        if decodedString.find('EOWSC|') >= 0:
+                            information['onlyonchange'] = decodedString
+                        elif decodedString.find('fil|') >= 0:
+                            information['filters'] = decodedString    
         return information
     
     #Update/Save Information Related To Email Configuration 
-    def setConfigInfo(self,information , project):
-        f = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'wb')
+    def setConfigInfo(self,information , project = None):
         flag = False
+        if project == None:  
+            f = open(getcwd()+'\\bin\\conf.txt', 'wb')
+        else:
+            f = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'wb')
+            
         for key ,Sngleitem in information.iteritems():
             if Sngleitem !='':
                 f.write(self.EncodeInfo(Sngleitem) +'\n')
                 flag = True
-        f.close()
+        f.close()      
         return flag   
-    
+    def ValidateEmail(self,Email):
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
+            msg ="Invalid Invalid Email Address provided, please try again! "
+            return msg
     #Validation Configuration provided
     def validateInformation(self,Email,Pass ,Project):
-        msg =''
+        msg =None
         if Pass =='':
             msg ="Invalid information provided, please try again! "
             return msg
-        if Project =='' or Project =='For the Project' or not path.isfile(getcwd()+'\\projects\\' + Project + '.fxy'):
-            msg ="Invalid Project Name provided or this project Dose not exists, please try again"
-            return msg
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg ="Invalid", "Invalid Email Address provided, please try again! "
+            msg ="Invalid Invalid Email Address provided, please try again! "
             return msg
         
         
@@ -181,8 +201,7 @@ class EmailPref(QDialog):
         Pass = self.Password.text()
         Project = self.Project.text()
         errorMsg = self.validateInformation(Email, Pass, Project)
-   
-        if str(errorMsg).strip() != None:
+        if not str(errorMsg).strip() == 'None':
             QB = QMessageBox()
             errorMsg = QB.information(self, "Error", errorMsg)
             return
@@ -190,18 +209,17 @@ class EmailPref(QDialog):
         E_unbased = "e|"+Email
         P_unbased = "p|"+Pass
         
-        information = self.getConfigInfo(Project)
+        information = self.getConfigInfo()
         
         information['email'] = E_unbased
         information['pass'] = P_unbased
         
-        self.setConfigInfo(information,Project)
+        self.setConfigInfo(information)
         QMessageBox.information(self, "Success", "Information Successfully Saved! ")
         
         self.CloseClick()
     
     #Triggers     
-
     def EncodeInfo(self,stringToBeEncoded):
         stringToBeEncoded=str(stringToBeEncoded).strip()
         return base64.b16encode(base64.b16encode(stringToBeEncoded))
@@ -213,12 +231,12 @@ class EmailPref(QDialog):
     def CloseClick(self):
         self.destroyEmailPref()
         self.EmailPrefWin.close()
-#   
+
 # app = QApplication('asdas')
 # w = EmailPref()
 # w.CreateWindow()
 # w.SetWindowLayout()
 # w.SetDesgin()
-# w.ShowDialog()     
+# w.ShowDialog()    
 # app.exec_()        
 

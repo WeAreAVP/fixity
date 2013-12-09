@@ -5,7 +5,8 @@
 # Released under the Apache license, v. 2.0
 
 import subprocess
-from os import getcwd, remove , environ
+from os import getcwd, remove , environ , path, remove
+
 import sys
 import time
 from EmailPref import EmailPref
@@ -30,7 +31,9 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         USERNAME = environ.get( "USERNAME" )
         prj = project.replace(' ', '_')
         deltask(prj)
-        
+        if not path.isfile(getcwd()+'\\bin\\' + prj + '-conf.txt'): 
+            fCheck = open(getcwd()+'\\bin\\' + prj + '-conf.txt', 'w+')
+            fCheck.close() 
         spec = ""
         
         if dow != 99:
@@ -57,7 +60,7 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         x.close()
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-        path = "\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\""
+        pathCommand = "\""+ getcwd() + "\\schedules\\fixity-" + prj + ".vbs\""
        
         
         ############################################################################################################################
@@ -123,7 +126,7 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
             Settings['DisallowStartIfOnBatteries'] = 'true'
 
         Actions['Exec'] ={}
-        Actions['Exec']['Command'] =path
+        Actions['Exec']['Command'] =pathCommand
 
      
         text = ''
@@ -134,9 +137,11 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
             
         EP =  EmailPref()
         E_text = text
+      
         information = EP.getConfigInfo(prj)
+      
         information['onlyonchange'] = E_text
-        EP.setConfigInfo(information , prj)
+#         EP.setConfigInfo(information , prj)
             
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         ############################################################################################################################
