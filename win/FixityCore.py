@@ -202,7 +202,7 @@ def run(file,filters=''):
 	tmp.write(second)
 	tmp.write(keeptime)
 	tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-	print(FiltersArray)
+	
 	for l in infile.readlines():
 		x = toTuple(l)
 		dict[x[0]].append([x[1], x[2], False])
@@ -210,9 +210,7 @@ def run(file,filters=''):
 		t = quietTable(r, 'sha256')
 		for e in t:
 			flag =True
-			
 			for Filter in FiltersArray:
-				print(str(Filter).strip())
 				if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
 					flag =False
 			

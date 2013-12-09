@@ -24,7 +24,7 @@ fconf = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'rb')
 Text = fconf.readlines()
 fconf.close()
 
-TextEmail=''
+TextEmail = ''
 fconfEmail = open(getcwd()+'\\bin\\conf.txt', 'rb')
 TextEmail = fconfEmail.readlines()
 fconfEmail.close()

@@ -26,7 +26,7 @@ class EmailPref(QDialog):
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
-
+        self.FM =FixityMail
         
     # Distructor        
     def destroyEmailPref(self):

@@ -383,12 +383,16 @@ class ProjectWin(QMainWindow):
                         l = self.buildTable(src, 'sha256')
                         for n in xrange(len(l)):
                             for FA in FiltersArray :
-                                if l[n][1].find(FA) < 0:
+                                if FA =='' or l[n][1].find(FA) < 0:
                                     projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                     total += 1
                 projfile.close()
+#                 if shouldRun:
                 QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
+#                 else:
+#                     QMessageBox.information(self, "Fixity"," Tasks for "+self.projects.currentItem().text()+" Scheduled Successfully")    
                 self.unsaved = False
+                return
 
 
         # toggles fields on/off
@@ -433,7 +437,7 @@ class ProjectWin(QMainWindow):
         # saves and runs 
         def run(self):
                 try:
-                    if path.getsize("projects\\" + self.projects.currentItem().text() + ".fxy") < 101024:
+                    if path.getsize("projects\\" + self.projects.currentItem().text() + ".fxy") < 10024:
                             self.process()
                             self.unsaved = False
                             return
@@ -445,7 +449,7 @@ class ProjectWin(QMainWindow):
                 results = FixityCore.run("projects\\" + self.projects.currentItem().text() + ".fxy")
                 QMessageBox.information(self, "Fixity Results", self.projects.currentItem().text() + " scanned\n* " + str(results[0]) + " files passed\n* " + str(results[1]) + " files moved\n* " + str(results[2]) + " new files\n* " + str(results[4]) + " files missing\n* " + str(results[3]) + " files damaged")
 
-
+        #DELETE Given PROJECT 
         def deleteproject(self):
                 sbox = QMessageBox()
                 try:
@@ -481,7 +485,7 @@ class ProjectWin(QMainWindow):
                 self.unsaved = False
 
 
-        #Fetch All Directory with in this directory 
+        # Fetch All Directory with in this directory 
         def buildTable(self, r, a):
                 list = []
                 fls = []
@@ -507,8 +511,9 @@ class ProjectWin(QMainWindow):
                 progress.close()
                 return list
         
-        #update Schedule information 
+        # Update Schedule information 
         def updateschedule(self):
+                print(1)
                 flagInitialScanUponSaving = self.RunInitialScanUponSaving.isChecked()
                 self.process(flagInitialScanUponSaving)
                 dmonth, dweek = 99, 99
