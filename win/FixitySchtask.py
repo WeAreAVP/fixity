@@ -24,8 +24,8 @@ def deltask(project):
         except:
                 pass
                 
-# Writes a task to SCHTASKS and creates necessary VBS/BAT files
-def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged):
+# Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
+def schedule(interval, dow, dom, timeSch, project, Configurations):
        
         VERSION = 0.3
         USERNAME = environ.get( "USERNAME" )
@@ -115,22 +115,33 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         Settings['AllowHardTerminate'] = 'true'
         Settings['WakeToRun'] = 'true'
         
-        if StartWhenAvailable == True or StartWhenAvailable == 'True':
+        if Configurations['IfMissedRunUponAvailable'] == True or Configurations['IfMissedRunUponAvailable'] == 'True':
+            IfMissedRunUponAvailable = 'IMRUA|T'
             Settings['StartWhenAvailable'] = 'true'
         else:
+            IfMissedRunUponAvailable = 'IMRUA|F'
             Settings['StartWhenAvailable'] = 'false'
             
-        if ACPowerCheck == True or ACPowerCheck == 'True':
+        if Configurations['RunWhenOnBatteryPower'] == True or Configurations['RunWhenOnBatteryPower'] == 'True':
+            RunWhenOnBatteryPower = 'RWOBP|T'
+        else:    
+            RunWhenOnBatteryPower = 'RWOBP|F'
+
+
+        if Configurations['RunInitialScan'] == True or Configurations['RunInitialScan'] == 'True':
             Settings['DisallowStartIfOnBatteries'] = 'false'
+            RunInitialScan ='RIS|T'
         else:    
             Settings['DisallowStartIfOnBatteries'] = 'true'
-
+            RunInitialScan ='RIS|F'
+            
+            
         Actions['Exec'] ={}
         Actions['Exec']['Command'] =pathCommand
 
-     
+
         text = ''
-        if EmailOnlyWhenSomethingChanged == True or EmailOnlyWhenSomethingChanged == 'True':
+        if Configurations['onlyonchange'] == True or Configurations['onlyonchange'] == 'True':
             text = 'EOWSC|F'
         else:
             text = 'EOWSC|T'
@@ -141,7 +152,11 @@ def schedule(interval, dow, dom, timeSch, project, ACPowerCheck, StartWhenAvaila
         information = EP.getConfigInfo(prj)
       
         information['onlyonchange'] = E_text
-#         EP.setConfigInfo(information , prj)
+        information['IfMissedRunUponAvailable'] = IfMissedRunUponAvailable
+        information['RunWhenOnBatteryPower'] = RunWhenOnBatteryPower
+        information['RunInitialScan'] = RunInitialScan
+        
+        EP.setConfigInfo(information , prj)
             
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions,interval)
         ############################################################################################################################

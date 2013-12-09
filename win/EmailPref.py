@@ -100,6 +100,8 @@ class EmailPref(QDialog):
         self.checkEmail.setMaximumSize(200,100)
         self.Project.setMaximumSize(200,100)
         
+        information = self.getConfigInfo()
+        
         self.GetLayout().addWidget(self.loader)
         self.GetLayout().addWidget(self.EmailAddrBar)
         self.GetLayout().addWidget(self.Password)
@@ -116,6 +118,10 @@ class EmailPref(QDialog):
 
         
         self.SetWindowLayout()
+        EmailAddr = str(information['email']).replace('e|', '').replace('\n', '')
+        Pass = str(information['pass']).replace('p|', '').replace('\n', '')
+        self.EmailAddrBar.setText(EmailAddr)
+        self.Password.setText(Pass)
         
         
         
@@ -152,17 +158,30 @@ class EmailPref(QDialog):
             information = {} 
             information['onlyonchange'] = ''
             information['filters'] = ''
+            information['RunWhenOnBatteryPower'] = ''
+            information['IfMissedRunUponAvailable'] = ''
+            information['RunInitialScan'] = ''
+            information['filters'] = ''
             if path.isfile(getcwd()+'\\bin\\' + project + '-conf.txt'): 
                 fCheck = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'rb') 
                 Text = fCheck.readlines()
                 fCheck.close()
+                
                 if len(Text) >0 :
                     for SingleValue in Text:
                         decodedString = self.DecodeInfo(SingleValue)
                         if decodedString.find('EOWSC|') >= 0:
                             information['onlyonchange'] = decodedString
                         elif decodedString.find('fil|') >= 0:
-                            information['filters'] = decodedString    
+                            information['filters'] = decodedString
+                        elif decodedString.find('RWOBP|') >= 0:
+                            information['RunWhenOnBatteryPower'] = decodedString  
+                        elif decodedString.find('IMRUA|') >= 0:
+                            information['IfMissedRunUponAvailable'] = decodedString
+                        elif decodedString.find('RIS|') >= 0:
+                            information['RunInitialScan'] = decodedString
+                        
+                                              
         return information
     
     #Update/Save Information Related To Email Configuration 

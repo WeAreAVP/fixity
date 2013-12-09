@@ -70,8 +70,8 @@ class ProjectWin(QMainWindow):
                 self.projects.setFixedSize(115,190)
 
                 for p in listdir('projects\\'):
-                        if not '.tmp.' in p:
-                                QListWidgetItem(p.replace('.fxy', ''), self.projects)
+                    if not '.tmp.' in p:
+                        QListWidgetItem(p.replace('.fxy', ''), self.projects)
                                 
                 self.play.addWidget(self.projects)
                 self.pgroup.setLayout(self.play)
@@ -230,6 +230,9 @@ class ProjectWin(QMainWindow):
                 information = {} 
                 onlyonchange = self.EP.getConfigInfo(projectName)
                 information['onlyonchange'] = onlyonchange['onlyonchange'].replace('EOWSC|','').replace('\n','')
+                information['RunWhenOnBatteryPower'] = onlyonchange['RunWhenOnBatteryPower'].replace('RWOBP|','').replace('\n','')
+                information['IfMissedRunUponAvailable'] = onlyonchange['IfMissedRunUponAvailable'].replace('IMRUA|','').replace('\n','')
+                information['RunInitialScan'] = onlyonchange['RunInitialScan'].replace('RIS|','').replace('\n','')
                 
                 dlabel = f.readline()
                 elabel = f.readline()
@@ -248,15 +251,29 @@ class ProjectWin(QMainWindow):
                                 self.mtx[n].setText(ms[n].strip())
                         except:
                                 self.mtx[n].setText("")
-                                
-                sc = slabel.rstrip().split(' ')
-                
                 if information['onlyonchange'] == 'T':
                     self.EmailOnlyWhenSomethingChanged.setChecked(False)
-                    
                 elif information['onlyonchange'] == 'F':
                     self.EmailOnlyWhenSomethingChanged.setChecked(True)
+#       
+                if information['RunWhenOnBatteryPower'] == 'T':
+                    self.runOnlyOnACPower.setChecked(True)
+                elif information['RunWhenOnBatteryPower'] == 'F':
+                    self.runOnlyOnACPower.setChecked(False)
+                 
+                if information['IfMissedRunUponAvailable'] == 'T':
+                    self.StartWhenAvailable.setChecked(True)
+                elif information['IfMissedRunUponAvailable'] == 'F':
+                    self.StartWhenAvailable.setChecked(False)
+                
+                if information['RunInitialScan'] == 'T':
+                    self.RunInitialScanUponSaving.setChecked(True)
+                elif information['RunInitialScan'] == 'F':
+                    self.RunInitialScanUponSaving.setChecked(False)    
                     
+                    
+                           
+                sc = slabel.rstrip().split(' ')
                 if sc[0] == '1':
                         self.monthly.setChecked(True)
                         self.monthclick()
@@ -346,7 +363,15 @@ class ProjectWin(QMainWindow):
                 projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
                 
                 currentProject = self.projects.currentItem().text()
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),self.runOnlyOnACPower.isChecked() , self.StartWhenAvailable.isChecked(),self.EmailOnlyWhenSomethingChanged.isChecked())
+                
+                Configurations = {}
+                
+                Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
+                Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
+                Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
+                Configurations['RunInitialScan'] = self.RunInitialScanUponSaving.isChecked()
+                
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),Configurations)
                 if shouldRun:
                     ConfigurationInfo = self.EP.getConfigInfo(currentProject)
                     Allfilters = ConfigurationInfo['filters']
@@ -361,10 +386,6 @@ class ProjectWin(QMainWindow):
                                 if l[n][1].find(FA) < 0:
                                     projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                     total += 1
-                                else:
-                                    print('skiped'+l[n][1])    
-                                
-                            
                 projfile.close()
                 QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
                 self.unsaved = False
@@ -535,7 +556,14 @@ class ProjectWin(QMainWindow):
                 shutil.copy('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'projects\\' + self.projects.currentItem().text() + '.fxy')
                 remove('projects\\' + self.projects.currentItem().text() + '.tmp.fxy')
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , self.runOnlyOnACPower.isChecked(), self.StartWhenAvailable.isChecked(),self.EmailOnlyWhenSomethingChanged.isChecked())
+                Configurations = {}
+                
+                Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
+                Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
+                Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
+                Configurations['RunInitialScan'] = self.RunInitialScanUponSaving.isChecked()
+                
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations)
                 self.unsaved = False
                 
         #window close Event        
