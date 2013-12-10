@@ -163,8 +163,9 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out):
 	report += "Files corrupted\t" + str(fail) + "\n"
 	report += "Files missing\t" + str(dels) + "\n"
 	report += out
-	
-	rn = path.abspath('reports\\report_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.csv')
+	AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
+	rn = AutiFixPath+'\\reports\\report_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.csv'
+		
 	r = open(rn, 'w+')
 	r.write(report)
 	r.close()

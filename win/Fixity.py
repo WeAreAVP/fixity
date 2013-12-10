@@ -18,12 +18,12 @@ import sys
 
 
 class ProjectWin(QMainWindow):
-        def __init__(self,EmailPref , FilterFiles):
+        def __init__(self, EmailPref , FilterFiles):
                 QMainWindow.__init__(self)
                 self.EP = EmailPref()
                 self.FilterFiles = FilterFiles()
-                if not path.isfile(getcwd()+'\\bin\\conf.txt'):
-                    fileConf = open(getcwd()+'\\bin\\conf.txt', 'w+')
+                if not path.isfile(getcwd() + '\\bin\\conf.txt'):
+                    fileConf = open(getcwd() + '\\bin\\conf.txt', 'w+')
                     fileConf.close()
                     
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
@@ -47,10 +47,10 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(usch)
                 self.f.addAction(save)
                 self.f.addAction(dlte)
-                self.f.addAction(configemail)
                 self.f.addAction(quit)
                 
                 self.Preferences.addAction(FilterFilesMane)
+                self.Preferences.addAction(configemail)
                 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
@@ -67,7 +67,7 @@ class ProjectWin(QMainWindow):
                 self.play = QVBoxLayout()
                 self.projects = QListWidget(self)
                 
-                self.projects.setFixedSize(115,190)
+                self.projects.setFixedSize(115, 190)
 
                 for p in listdir('projects\\'):
                     if not '.tmp.' in p:
@@ -81,10 +81,9 @@ class ProjectWin(QMainWindow):
                 self.weekly = QRadioButton("Weekly")
                 self.daily = QRadioButton("Daily")
                 self.runOnlyOnACPower = QCheckBox("Run when on battery power")
-                self.StartWhenAvailable  = QCheckBox("If missed, run upon restart")
+                self.StartWhenAvailable = QCheckBox("If missed, run upon restart")
                 self.EmailOnlyWhenSomethingChanged = QCheckBox("Email only upon warning or failure")
-                self.RunInitialScanUponSaving = QCheckBox("Run Initial Scan Upon Saving")
-                
+
                 self.runOnlyOnACPower.setChecked(True)
                 self.StartWhenAvailable.setChecked(True)
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)
@@ -116,13 +115,13 @@ class ProjectWin(QMainWindow):
                 slay.addWidget(self.dom)
                 self.dom.hide()
                 
-                self.spacer = QSpacerItem(125,30)
+                self.spacer = QSpacerItem(125, 30)
                 slay.addItem(self.spacer)
                 
                 slay.addWidget(self.runOnlyOnACPower)
                 slay.addWidget(self.StartWhenAvailable)
                 slay.addWidget(self.EmailOnlyWhenSomethingChanged)
-                slay.addWidget(self.RunInitialScanUponSaving)
+
                 
                 self.lastrun = QLabel("Last checked: ")
                 slay.addWidget(self.lastrun)
@@ -143,7 +142,7 @@ class ProjectWin(QMainWindow):
                 
                 for n in xrange(0, 7):
                         hbox = QHBoxLayout()
-                        hbox.setContentsMargins(0,0,0,0)
+                        hbox.setContentsMargins(0, 0, 0, 0)
                         hbox.setSpacing(0)
                         self.dtx.append(QLineEdit())
                         self.but.append(QPushButton('...'))
@@ -171,7 +170,7 @@ class ProjectWin(QMainWindow):
                 self.projects.itemClicked.connect(self.update)
 
                 try:
-                        self.old = self.projects.itemAt(0,0)
+                        self.old = self.projects.itemAt(0, 0)
                         self.update(self.old)
                         self.old.setSelected(True)
                 except:
@@ -183,14 +182,14 @@ class ProjectWin(QMainWindow):
         # Configure Email Address for the Tools
         def ConfigEmailView(self):
             self.EP.CloseClick()
-            self.EP=None
+            self.EP = None
             self.EP = EmailPref()
             self.EP.SetDesgin()
             self.EP.ShowDialog()
             
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
-            self.FilterFiles=None
+            self.FilterFiles = None
             self.FilterFiles = FilterFiles()
             self.FilterFiles.SetDesgin()
             self.FilterFiles.ShowDialog()   
@@ -213,18 +212,19 @@ class ProjectWin(QMainWindow):
                         if sval == QMessageBox.Ok:
                                 self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                                 return
+                            
                 projectName = self.old.text()           
                 if not path.isfile('projects\\' + self.old.text() + '.fxy'):
-                        projectName =self.old.text()
+                        projectName = self.old.text()
                         self.projects.takeItem(self.projects.row(self.old))
                 try:
                         f = open('projects\\' + new.text() + '.fxy', 'rb')
                         projectName = new.text()
                 except:
-                        for n in xrange(0,7):
+                        for n in xrange(0, 7):
                                 self.dtx[n].setText("")
                                 self.mtx[n].setText("")
-                        self.timer.setTime(QTime(0,0))
+                        self.timer.setTime(QTime(0, 0))
                         self.monthclick()
                         self.monthly.setChecked(True)
                         self.dom.setValue(1)
@@ -232,10 +232,10 @@ class ProjectWin(QMainWindow):
  
                 information = {} 
                 onlyonchange = self.EP.getConfigInfo(projectName)
-                information['onlyonchange'] = onlyonchange['onlyonchange'].replace('EOWSC|','').replace('\n','')
-                information['RunWhenOnBatteryPower'] = onlyonchange['RunWhenOnBatteryPower'].replace('RWOBP|','').replace('\n','')
-                information['IfMissedRunUponAvailable'] = onlyonchange['IfMissedRunUponAvailable'].replace('IMRUA|','').replace('\n','')
-                information['RunInitialScan'] = onlyonchange['RunInitialScan'].replace('RIS|','').replace('\n','')
+                information['onlyonchange'] = onlyonchange['onlyonchange'].replace('EOWSC|', '').replace('\n', '')
+                information['RunWhenOnBatteryPower'] = onlyonchange['RunWhenOnBatteryPower'].replace('RWOBP|', '').replace('\n', '')
+                information['IfMissedRunUponAvailable'] = onlyonchange['IfMissedRunUponAvailable'].replace('IMRUA|', '').replace('\n', '')
+                information['RunInitialScan'] = onlyonchange['RunInitialScan'].replace('RIS|', '').replace('\n', '')
                 
                 dlabel = f.readline()
                 elabel = f.readline()
@@ -245,7 +245,7 @@ class ProjectWin(QMainWindow):
                 ds = dlabel.split(';')
                 ms = elabel.split(';')
                 n, p = 0, 0
-                for n in xrange(0,7):
+                for n in xrange(0, 7):
                         try:
                                 self.dtx[n].setText(ds[n].strip())
                         except:
@@ -268,14 +268,7 @@ class ProjectWin(QMainWindow):
                     self.StartWhenAvailable.setChecked(True)
                 elif information['IfMissedRunUponAvailable'] == 'F':
                     self.StartWhenAvailable.setChecked(False)
-                
-                if information['RunInitialScan'] == 'T':
-                    self.RunInitialScanUponSaving.setChecked(True)
-                elif information['RunInitialScan'] == 'F':
-                    self.RunInitialScanUponSaving.setChecked(False)    
-                    
-                    
-                           
+
                 sc = slabel.rstrip().split(' ')
                 if sc[0] == '1':
                         self.monthly.setChecked(True)
@@ -291,8 +284,8 @@ class ProjectWin(QMainWindow):
                 try:
                         t = sc[1].split(':')
                 except:
-                        t = ['00','00']
-                self.timer.setTime(QTime(int(t[0]),int(t[1])))
+                        t = ['00', '00']
+                self.timer.setTime(QTime(int(t[0]), int(t[1])))
                 self.lastrun.setText("Last checked:\n" + rlabel)
                 self.unsaved = False
                 self.old = new
@@ -305,24 +298,23 @@ class ProjectWin(QMainWindow):
                 if name[0] == "" or path.isfile("projects\\" + name[0] + ".fxy") or any(c in '\ <>:\"\/\\\|?*' for c in name[0]) or name[0][-1] == '.':
                         QMessageBox.warning(self, "Fixity", "Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces\n*Project names must be legal filenames")
                         return
-                if not path.isfile(getcwd()+'\\bin\\' + name[0] + '-conf.txt'):
-                    fileConf = open(getcwd()+'\\bin\\' + name[0] + '-conf.txt', 'w+')
+                if not path.isfile(getcwd() + '\\bin\\' + name[0] + '-conf.txt'):
+                    fileConf = open(getcwd() + '\\bin\\' + name[0] + '-conf.txt', 'w+')
                     fileConf.close()                        
                 newitem = QListWidgetItem(name[0], self.projects)
                 self.projects.setCurrentItem(newitem)
                 self.monthly.setChecked(True)
                 self.monthclick()
                 self.dom.setValue(1)
-                self.timer.setTime(QTime(0,0))
+                self.timer.setTime(QTime(0, 0))
                 for x in xrange(0, 4):
                         self.dtx[x].setText("")
                         self.mtx[x].setText("")
                 self.old = newitem
                 self.toggler(False)
 
-
         # Creates And Saves Projects
-        def process(self,shouldRun = True):
+        def process(self, shouldRun=True):
                 
                 if all(d.text() == "" for d in self.dtx):
                         QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
@@ -348,7 +340,12 @@ class ProjectWin(QMainWindow):
                                 QB = QMessageBox()
                                 errorMsg = QB.information(self, "Error", errorMsg)
                                 return
-                             
+                projfileFileText = []            
+                if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy'):            
+                    projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+                    projfileFileText = projfileFile.readlines()
+                    projfileFile.close()
+                
                 projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                 total = 0
                 
@@ -363,7 +360,16 @@ class ProjectWin(QMainWindow):
                                 projfile.write(ms.text() + ";")
                 projfile.write("\n")
                 projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
-                projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+                
+                if shouldRun:
+                    projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+                else:
+                    try:
+                        TimeLastScannarRan = None
+                        TimeLastScannarRan = projfileFileText.pop(3)
+                        projfile.write(str(TimeLastScannarRan))
+                    except:
+                        projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")        
                 
                 currentProject = self.projects.currentItem().text()
                 
@@ -372,9 +378,10 @@ class ProjectWin(QMainWindow):
                 Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
                 Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
-                Configurations['RunInitialScan'] = self.RunInitialScanUponSaving.isChecked()
+                Configurations['RunInitialScan'] = False
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(),Configurations)
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations)
+                
                 if shouldRun:
                     ConfigurationInfo = self.EP.getConfigInfo(currentProject)
                     Allfilters = ConfigurationInfo['filters']
@@ -386,17 +393,18 @@ class ProjectWin(QMainWindow):
                         l = self.buildTable(src, 'sha256')
                         for n in xrange(len(l)):
                             for FA in FiltersArray :
-                                if FA =='' or l[n][1].find(FA) < 0:
+                                if FA == '' or l[n][1].find(FA) < 0:
                                     projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                     total += 1
+                
                 projfile.close()
+                
                 if shouldRun:
                     QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
                 else:
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())    
                 self.unsaved = False
                 return
-
 
         # toggles fields on/off
         def toggler(self, switch):
@@ -418,15 +426,15 @@ class ProjectWin(QMainWindow):
         def dayclick(self):
                 self.dom.hide()
                 self.dow.hide()
-                self.spacer.changeSize(30,25)
+                self.spacer.changeSize(30, 25)
                         
         def weekclick(self):
-                self.spacer.changeSize(0,0)
+                self.spacer.changeSize(0, 0)
                 self.dom.hide()
                 self.dow.show()
                 
         def monthclick(self):
-                self.spacer.changeSize(0,0)
+                self.spacer.changeSize(0, 0)
                 self.dow.hide()
                 self.dom.show()
 
@@ -434,8 +442,6 @@ class ProjectWin(QMainWindow):
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
-                
-                
 
         # saves and runs 
         def run(self):
@@ -444,7 +450,7 @@ class ProjectWin(QMainWindow):
                             self.process()
                             self.unsaved = False
                             return
-                except:
+                except: 
                     self.process()
                     self.unsaved = False
                     return
@@ -452,7 +458,7 @@ class ProjectWin(QMainWindow):
                 results = FixityCore.run("projects\\" + self.projects.currentItem().text() + ".fxy")
                 QMessageBox.information(self, "Fixity Results", self.projects.currentItem().text() + " scanned\n* " + str(results[0]) + " files passed\n* " + str(results[1]) + " files moved\n* " + str(results[2]) + " new files\n* " + str(results[4]) + " files missing\n* " + str(results[3]) + " files damaged")
 
-        #DELETE Given PROJECT 
+        # DELETE Given PROJECT 
         def deleteproject(self):
                 sbox = QMessageBox()
                 try:
@@ -467,8 +473,8 @@ class ProjectWin(QMainWindow):
                     return
                 try:
                         remove("projects\\" + self.projects.currentItem().text() + ".fxy")
-                        remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ','_') + ".bat")
-                        remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ','_') + ".vbs")
+                        remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".bat")
+                        remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".vbs")
                 except:
                         pass
                 FixitySchtask.deltask(self.projects.currentItem().text())
@@ -477,16 +483,15 @@ class ProjectWin(QMainWindow):
                 try:
                         self.update(self.projects.selectedItems()[0])
                 except:
-                        for x in xrange(0,7):
+                        for x in xrange(0, 7):
                                 self.dtx[x].setText("")
                                 self.mtx[x].setText("")
                         self.monthly.setChecked(True)
                         self.monthclick()
-                        self.timer.setTime(QTime(0,0))
+                        self.timer.setTime(QTime(0, 0))
                         self.lastrun.setText("Last checked:")
                 self.toggler((self.projects.count() == 0))
                 self.unsaved = False
-
 
         # Fetch All Directory with in this directory 
         def buildTable(self, r, a):
@@ -516,8 +521,8 @@ class ProjectWin(QMainWindow):
         
         # Update Schedule information 
         def updateschedule(self):
-                print(1)
-                flagInitialScanUponSaving = self.RunInitialScanUponSaving.isChecked()
+                
+                flagInitialScanUponSaving = False
                 self.process(flagInitialScanUponSaving)
                 dmonth, dweek = 99, 99
                 if self.monthly.isChecked():
@@ -541,7 +546,7 @@ class ProjectWin(QMainWindow):
                         new = open('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'wb')
                         old = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                 except:
-                        #old = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'w+')
+                        # old = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'w+')
                         QMessageBox.information(self, "Fixity", "No project selected to reschedule!")
                         return
                         
@@ -569,12 +574,12 @@ class ProjectWin(QMainWindow):
                 Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
                 Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
-                Configurations['RunInitialScan'] = self.RunInitialScanUponSaving.isChecked()
+                Configurations['RunInitialScan'] = False
                 
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations)
                 self.unsaved = False
                 
-        #window close Event        
+        # window close Event        
         def closeEvent(self, event):
                 if self.unsaved:
                         sbox = QMessageBox()
@@ -587,7 +592,6 @@ class ProjectWin(QMainWindow):
                                 event.ignore()
                         else:
                                 event.accept()
-        
         
 if __name__ == '__main__':
         app = QApplication(sys.argv)

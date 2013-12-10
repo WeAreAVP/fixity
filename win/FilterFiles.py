@@ -10,7 +10,7 @@ Created on Dec 5, 2013
 # Released under the Apache license, v. 2.0
 from PySide.QtCore import *
 from PySide.QtGui import *
-from os import getcwd ,path, listdir, remove, walk
+from os import getcwd , path, listdir, remove, walk
 import sys
 from EmailPref import EmailPref
 class FilterFiles(QDialog):
@@ -39,7 +39,7 @@ class FilterFiles(QDialog):
         self.FilterFilesWin.exec_()
         
         
-    def SetLayout(self,layout):
+    def SetLayout(self, layout):
         self.FilterFilesLayout = layout
         
     def SetWindowLayout(self):
@@ -48,13 +48,13 @@ class FilterFiles(QDialog):
     def GetLayout(self):
         return self.FilterFilesLayout
     
-    #Reset Form information    
+    # Reset Form information    
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
         self.Project.setText('For the Project')
         
-    #Get array of all projects currently working     
+    # Get array of all projects currently working     
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
@@ -64,10 +64,10 @@ class FilterFiles(QDialog):
                                 
 
                                     
-    #All design Management Done in Here            
+    # All design Management Done in Here            
     def SetDesgin(self):
         
-        ProjectList = self.getProjects(getcwd()+'\\projects')
+        ProjectList = self.getProjects(getcwd() + '\\projects')
         
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
@@ -82,10 +82,10 @@ class FilterFiles(QDialog):
         
         self.FilterField.setPlaceholderText("Add Filter")
         
-        self.FilterField.setMaximumSize(200,100)
-        self.reset.setMaximumSize(200,100)
-        self.cancel.setMaximumSize(200,100)
-        self.setInformation.setMaximumSize(200,100)
+        self.FilterField.setMaximumSize(200, 100)
+        self.reset.setMaximumSize(200, 100)
+        self.cancel.setMaximumSize(200, 100)
+        self.setInformation.setMaximumSize(200, 100)
         
         self.GetLayout().addWidget(self.FilterField)
         self.GetLayout().addWidget(self.setInformation)
@@ -99,11 +99,11 @@ class FilterFiles(QDialog):
         self.SetWindowLayout()
         self.projectChanged()
         
-    #Update Filters information    
+    # Update Filters information    
     def SetInformation(self):
         selectedProject = self.Porjects.currentText()
         Information = self.EmailPref.getConfigInfo(selectedProject)
-        Information['filters'] = 'fil|'+self.FilterField.text()
+        Information['filters'] = 'fil|' + self.FilterField.text()
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if flag:
             QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
@@ -125,7 +125,7 @@ class FilterFiles(QDialog):
         filters = str(Information['filters']).replace('fil|', '').replace('\n', '')
         self.FilterField.setText(filters)
         return
-    #close the dailog box
+    # close the dailog box
     def Cancel(self):
         self.destroyFilterFiles()
         self.FilterFilesWin.close()

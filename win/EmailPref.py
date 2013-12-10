@@ -12,7 +12,7 @@ Created on Dec 1, 2013
 from PySide.QtCore import *
 from PySide.QtGui import *
 import base64
-from os import getcwd ,path
+from os import getcwd , path
 import FixityMail
 import re
 
@@ -26,7 +26,7 @@ class EmailPref(QDialog):
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
-        self.FM =FixityMail
+        self.FM = FixityMail
         
     # Distructor        
     def destroyEmailPref(self):
@@ -43,20 +43,20 @@ class EmailPref(QDialog):
         self.EmailPrefWin.show()
         self.EmailPrefWin.exec_()
         
-    def SetLayout(self,layout):
+    def SetLayout(self, layout):
         self.EmailPrefLayout = layout
         
     def SetWindowLayout(self):
         self.EmailPrefWin.setLayout(self.EmailPrefLayout)
         
         
-    #Check is Email address and Password is valid by sending email on its own inbox
+    # Check is Email address and Password is valid by sending email on its own inbox
     def checkIsEmailValid(self):
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
     
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msgBox =QMessageBox();
+            msgBox = QMessageBox();
             msgBox.setText("Invalid Email Address")
             msgBox.exec_()
             self.loader.hide()
@@ -64,7 +64,7 @@ class EmailPref(QDialog):
         text = 'Testing email credentials for Fixity'
         flag = self.FM.send(Email, text, None, Email, Pass)
         if flag:
-            msgBox =QMessageBox();
+            msgBox = QMessageBox();
             msgBox.setText("Please Check , if you recieve email from your email address then provided credentails are correct ")
             msgBox.exec_()
             
@@ -74,7 +74,7 @@ class EmailPref(QDialog):
     def GetLayout(self):
         return self.EmailPrefLayout
 
-    #All design Management Done in Here            
+    # All design Management Done in Here            
     def SetDesgin(self):
         self.GetLayout().addStrut(200)
         
@@ -92,13 +92,13 @@ class EmailPref(QDialog):
         self.Password.setPlaceholderText("Password")
         self.Project.setPlaceholderText("For the Project")
         
-        self.EmailAddrBar.setMaximumSize(200,100)
-        self.Password.setMaximumSize(200,100)
-        self.reset.setMaximumSize(200,100)
-        self.cancel.setMaximumSize(200,100)
-        self.setInformation.setMaximumSize(200,100)
-        self.checkEmail.setMaximumSize(200,100)
-        self.Project.setMaximumSize(200,100)
+        self.EmailAddrBar.setMaximumSize(200, 100)
+        self.Password.setMaximumSize(200, 100)
+        self.reset.setMaximumSize(200, 100)
+        self.cancel.setMaximumSize(200, 100)
+        self.setInformation.setMaximumSize(200, 100)
+        self.checkEmail.setMaximumSize(200, 100)
+        self.Project.setMaximumSize(200, 100)
         
         information = self.getConfigInfo()
         
@@ -125,25 +125,25 @@ class EmailPref(QDialog):
         
         
         
-    #Reset Form information    
+    # Reset Form information    
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
         self.Project.setText('For the Project')
         
         
-    #Fetch information related to email configuration    
+    # Fetch information related to email configuration    
     def getConfigInfo(self, project=None):
         if project == None:
             information = {} 
             information['email'] = ''
             information['pass'] = ''
             information['onlyonchange'] = ''
-            if path.isfile(getcwd()+'\\bin\\conf.txt'): 
-                fCheck = open(getcwd()+'\\bin\\conf.txt', 'rb') 
+            if path.isfile(getcwd() + '\\bin\\conf.txt'): 
+                fCheck = open(getcwd() + '\\bin\\conf.txt', 'rb') 
                 Text = fCheck.readlines()
                 fCheck.close()
-                if len(Text) >0 :
+                if len(Text) > 0 :
                     for SingleValue in Text:
                         decodedString = self.DecodeInfo(SingleValue)
                         if decodedString.find('e|') >= 0:
@@ -162,12 +162,12 @@ class EmailPref(QDialog):
             information['IfMissedRunUponAvailable'] = ''
             information['RunInitialScan'] = ''
             information['filters'] = ''
-            if path.isfile(getcwd()+'\\bin\\' + project + '-conf.txt'): 
-                fCheck = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'rb') 
+            if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
+                fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb') 
                 Text = fCheck.readlines()
                 fCheck.close()
                 
-                if len(Text) >0 :
+                if len(Text) > 0 :
                     for SingleValue in Text:
                         decodedString = self.DecodeInfo(SingleValue)
                         if decodedString.find('EOWSC|') >= 0:
@@ -184,37 +184,37 @@ class EmailPref(QDialog):
                                               
         return information
     
-    #Update/Save Information Related To Email Configuration 
-    def setConfigInfo(self,information , project = None):
+    # Update/Save Information Related To Email Configuration 
+    def setConfigInfo(self, information , project=None):
         flag = False
         if project == None:  
-            f = open(getcwd()+'\\bin\\conf.txt', 'wb')
+            f = open(getcwd() + '\\bin\\conf.txt', 'wb')
         else:
-            f = open(getcwd()+'\\bin\\' + project + '-conf.txt', 'wb')
+            f = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'wb')
             
-        for key ,Sngleitem in information.iteritems():
-            if Sngleitem !='':
-                f.write(self.EncodeInfo(Sngleitem) +'\n')
+        for key , Sngleitem in information.iteritems():
+            if Sngleitem != '':
+                f.write(self.EncodeInfo(Sngleitem) + '\n')
                 flag = True
         f.close()      
         return flag   
-    def ValidateEmail(self,Email):
+    def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg ="Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid Invalid Email Address provided, please try again! "
             return msg
-    #Validation Configuration provided
-    def validateInformation(self,Email,Pass ,Project):
-        msg =None
-        if Pass =='':
-            msg ="Invalid information provided, please try again! "
+    # Validation Configuration provided
+    def validateInformation(self, Email, Pass , Project):
+        msg = None
+        if Pass == '':
+            msg = "Invalid information provided, please try again! "
             return msg
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg ="Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid Invalid Email Address provided, please try again! "
             return msg
         
         
         
-    #Updating Configuration     
+    # Updating Configuration     
     def SetInformation(self):
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
@@ -225,8 +225,8 @@ class EmailPref(QDialog):
             errorMsg = QB.information(self, "Error", errorMsg)
             return
         
-        E_unbased = "e|"+Email
-        P_unbased = "p|"+Pass
+        E_unbased = "e|" + Email
+        P_unbased = "p|" + Pass
         
         information = self.getConfigInfo()
         
@@ -238,13 +238,13 @@ class EmailPref(QDialog):
         
         self.CloseClick()
     
-    #Triggers     
-    def EncodeInfo(self,stringToBeEncoded):
-        stringToBeEncoded=str(stringToBeEncoded).strip()
+    # Triggers     
+    def EncodeInfo(self, stringToBeEncoded):
+        stringToBeEncoded = str(stringToBeEncoded).strip()
         return base64.b16encode(base64.b16encode(stringToBeEncoded))
     
-    def DecodeInfo(self,stringToBeDecoded):
-        stringToBeDecoded=str(stringToBeDecoded).strip()
+    def DecodeInfo(self, stringToBeDecoded):
+        stringToBeDecoded = str(stringToBeDecoded).strip()
         return base64.b16decode(base64.b16decode(stringToBeDecoded))
     
     def CloseClick(self):

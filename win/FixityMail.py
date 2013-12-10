@@ -8,12 +8,11 @@ from PySide.QtGui import *
 from smtplib import SMTP
 import email
 import datetime
-from os import getcwd ,path
+from os import getcwd , path
 
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
-def send(recipients, text, attachment,emailaddr,password):
-	#addr = 'fixity@avpreserve.com'
+def send(recipients, text, attachment, emailaddr, password):
 	addr = str(emailaddr)
 	pas = str(password) 
 
@@ -21,8 +20,8 @@ def send(recipients, text, attachment,emailaddr,password):
 	msg["From"] = addr
 	msg["To"] = recipients
 	msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0]
-
-	msg.attach(email.MIMEText.MIMEText(text,'plain'))
+	
+	msg.attach(email.MIMEText.MIMEText(text, 'plain'))
 	part = email.mime.base.MIMEBase('application', "octet-stream")
 	if attachment:
 		part.set_payload(open(attachment, 'rb').read())
@@ -30,15 +29,15 @@ def send(recipients, text, attachment,emailaddr,password):
 		part.add_header('Content-Disposition', 'attachment; filename="%s"' % path.basename(attachment))
 		msg.attach(part)
 	try:	
-		server = SMTP('smtp.gmail.com',587)
-		server.starttls()
-		#server.login(addr, 'PASSWORD')
-		server.login(addr, pas)
 		
+		server = SMTP('smtp.gmail.com', 587)
+		server.starttls()
+		server.login(addr, pas)
 		server.sendmail(addr, recipients, msg.as_string())
 		return True
 	except Exception:
-		msgBox =QMessageBox();
+
+		msgBox = QMessageBox();
 		msgBox.setText("Some Problem occurred while sending the email, please check your Internet Connection or try different Email Credentials and try again.")
 		msgBox.exec_()
 		return False
