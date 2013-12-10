@@ -61,7 +61,7 @@ class EmailPref(QDialog):
             msgBox.exec_()
             self.loader.hide()
             return False
-        text = 'Testing the Email credentails validation for the Fixity Tool'
+        text = 'Testing email credentials for Fixity'
         flag = self.FM.send(Email, text, None, Email, Pass)
         if flag:
             msgBox =QMessageBox();

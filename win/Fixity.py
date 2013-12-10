@@ -88,11 +88,13 @@ class ProjectWin(QMainWindow):
                 self.runOnlyOnACPower.setChecked(True)
                 self.StartWhenAvailable.setChecked(True)
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)
+                
                 self.monthly.clicked.connect(self.monthclick)
                 self.weekly.clicked.connect(self.weekclick)
                 self.daily.clicked.connect(self.dayclick)
                 
                 slay = QVBoxLayout()
+                
                 slay.addWidget(self.monthly)
                 slay.addWidget(self.weekly)
                 slay.addWidget(self.daily)
@@ -138,6 +140,7 @@ class ProjectWin(QMainWindow):
                 self.dlay = QVBoxLayout()
                 self.dlay.setSpacing(0)
                 self.dtx, self.but = [], []
+                
                 for n in xrange(0, 7):
                         hbox = QHBoxLayout()
                         hbox.setContentsMargins(0,0,0,0)
@@ -387,10 +390,10 @@ class ProjectWin(QMainWindow):
                                     projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                     total += 1
                 projfile.close()
-#                 if shouldRun:
-                QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
-#                 else:
-#                     QMessageBox.information(self, "Fixity"," Tasks for "+self.projects.currentItem().text()+" Scheduled Successfully")    
+                if shouldRun:
+                    QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
+                else:
+                    QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())    
                 self.unsaved = False
                 return
 
