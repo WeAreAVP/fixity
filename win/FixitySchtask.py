@@ -23,13 +23,17 @@ def deltask(project):
                 remove("schedules\\fixity-" + project + ".vbs")
         except:
                 pass
-                
+#Runs Given Batch File            
+def RunThisBatchFile(Command):
+          subprocess.call(Command, shell=True)
+          
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
 def schedule(interval, dow, dom, timeSch, project, Configurations):
        
         VERSION = 0.3
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')
+        
         deltask(prj)
         if not path.isfile(getcwd() + '\\bin\\' + prj + '-conf.txt'): 
             fCheck = open(getcwd() + '\\bin\\' + prj + '-conf.txt', 'w+')
@@ -229,10 +233,7 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         
         
         
-        
-        
-        
-        
+          
         
         
         
