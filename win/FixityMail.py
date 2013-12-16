@@ -1,5 +1,5 @@
 # Fixity Mailing Module
-# Version 0.1, 2013-10-28
+# Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0

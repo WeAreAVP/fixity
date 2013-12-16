@@ -1,5 +1,5 @@
 # Fixity Scheduler
-# Version 0.1, 2013-10-28
+# Version 0.3, 2013-12-16
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -29,8 +29,8 @@ def RunThisBatchFile(Command):
           
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
 def schedule(interval, dow, dom, timeSch, project, Configurations):
-       
-        VERSION = 0.3
+        EP = EmailPref()
+        VERSION = EP.getVersion()
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')
         
@@ -150,7 +150,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations):
         else:
             text = 'EOWSC|T'
             
-        EP = EmailPref()
+        
         E_text = text
       
         information = EP.getConfigInfo(prj)

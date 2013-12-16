@@ -1,5 +1,5 @@
 # Fixity command line application
-# Version 0.1, 2013-10-28
+# Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -18,10 +18,15 @@ def DecodeInfo(stringToBeDecoded):
 	return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
 
 project = sys.argv[1]
+
 IsemailSet = None
-if sys.argv[2]:
-	IsemailSet = sys.argv[2]
-project = 'test'
+try:
+	if sys.argv[2]:
+		IsemailSet = sys.argv[2]
+except:
+	print('Not Run')
+
+	
 Text = '' 
 
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
@@ -65,14 +70,7 @@ results = []
 Fitlers = str(information['filters']).replace('fil|', '').replace('\n', '')
 results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers)
 msg = "FIXITY REPORT:\n* " + str(results[0]) + " files verified\n* " + str(results[1]) + " files renamed/moved\n* " + str(results[2]) + " files created\n* " + str(results[3]) + " files corrupted\n* " + str(results[4]) + " files missing"
-print(msg)
 
-# if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
-# 	for e in email:
-# 		resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'])
-# 		print(resposne)
-	
-	
-	
-
-		
+if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
+	for e in email:
+		resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'])

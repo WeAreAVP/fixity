@@ -1,10 +1,10 @@
 '''
 Created on Dec 5, 2013
-
+@version: 0.3
 @author: Furqan Wasi
 '''
 # Fixity Scheduler
-# Version 0.1, 2013-10-28
+# Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0

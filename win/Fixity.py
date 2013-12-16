@@ -1,5 +1,5 @@
 # Fixity GUI
-# Version 0.1, 2013-10-28
+# Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -25,6 +25,7 @@ class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
                 QMainWindow.__init__(self)
                 self.EP = EmailPref()
+                self.EP.setVersion('0.3')
                 self.FilterFiles = FilterFiles()
                 self.Threading = Threading
                 if not path.isfile(getcwd() + '\\bin\\conf.txt'):
@@ -32,8 +33,8 @@ class ProjectWin(QMainWindow):
                     fileConf.close()
                     
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
-                
-                self.setWindowTitle("Fixity 0.3");
+                versoin = self.EP.getVersion()
+                self.setWindowTitle("Fixity "+versoin);
                 self.unsaved = False
                 menubar = self.menuBar()
                 self.f = menubar.addMenu('&File')

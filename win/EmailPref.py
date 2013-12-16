@@ -1,6 +1,6 @@
 '''
 Created on Dec 1, 2013
-
+@version: 0.3
 @author: Furqan Wasi
 '''
 # Fixity Scheduler
@@ -27,12 +27,18 @@ class EmailPref(QDialog):
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         self.FM = FixityMail
+        self.version = '0.3'
         
     # Distructor        
     def destroyEmailPref(self):
-        del self    
-    
+        del self
+            
+    def getVersion(self):
+        return self.version
         
+    def setVersion(self,version):
+        return self.version
+    
     def CreateWindow(self):
         self.EmailPrefWin = QDialog()
         
