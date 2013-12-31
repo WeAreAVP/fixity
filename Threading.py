@@ -9,11 +9,18 @@ Created on Dec 11, 2013
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
+
+
+
 import threading
 import time
 import subprocess
-
+import tkMessageBox
 exitFlag = 0
+
+
+# Custom class to run the scanning process using multithreading  
+
 
 class Threading (threading.Thread):
     def __init__(self, threadID, name, counter,FileName,FilePath,params):
@@ -25,11 +32,19 @@ class Threading (threading.Thread):
         self.FilePath = FilePath
         self.params = params
         
+        
+    # Run thread to scan the given Given file path using given command    
     def run(self):
-        shell = True 
-        command = str(self.FilePath+self.FileName +" "+self.params)
-        command= command.replace('  ', ' ')
-        popen = subprocess.Popen(command, shell=shell, stdout=subprocess.PIPE)
+        
+        command = str(self.FilePath)
+        command= '"'+command+ self.FileName +'"'
+                
+        command = command +" "+self.params
+        
+
+        popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        out, err = popen.communicate()
+        errcode = popen.returncode
         print_time(self.name, self.counter, 5,self , command)
         
 
@@ -38,5 +53,5 @@ def print_time(threadName, delay, counter,thread,command):
         if exitFlag:
             thread.exit()
         time.sleep(delay)
-        print "%s: %s" % (threadName, str(command))
         counter -= 1
+        

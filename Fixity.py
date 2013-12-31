@@ -12,6 +12,7 @@ import re
 import datetime
 import shutil
 import sys
+import logging
 
 #Custom Libraries
 import FixityCore
@@ -474,8 +475,8 @@ class ProjectWin(QMainWindow):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
                 
-        def testing(self):
-            system(FilePath + FileName)
+#         def testing(self):
+#             system(FilePath+"" + FileName)
             
             
         #Saves And Runs 
@@ -483,6 +484,7 @@ class ProjectWin(QMainWindow):
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
+            
             dmonth, dweek = 99, 99
             if self.monthly.isChecked():
                 interval = 1
@@ -505,12 +507,11 @@ class ProjectWin(QMainWindow):
             FilePath = getcwd()+'\\schedules\\'
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations)
             FileName = 'AutoFixity.exe';
-            params = self.projects.currentItem().text() +' '+' Run'
+            params = self.projects.currentItem().text() +' '+'Run'
             
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
+            
             self.Threading.start()
-            print "Exiting Main Thread"
-
             QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
 
         
@@ -533,9 +534,11 @@ class ProjectWin(QMainWindow):
                     remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".vbs")
                 except:
                     pass
+                
                 FixitySchtask.deltask(self.projects.currentItem().text())
                 self.projects.takeItem(self.projects.row(self.projects.currentItem()))
                 self.unsaved = False
+                
                 try:
                         self.update(self.projects.selectedItems()[0])
                 except:
@@ -548,7 +551,7 @@ class ProjectWin(QMainWindow):
                         self.lastrun.setText("Last checked:")
                 self.toggler((self.projects.count() == 0))
                 self.unsaved = False
-
+                
         #Fetch All Directory with in this directory 
         def buildTable(self, r, a):
                 list = []
@@ -575,10 +578,27 @@ class ProjectWin(QMainWindow):
                 progress.close()
                 return list
         
+        
         #Update Schedule information 
         def updateschedule(self):
-                
                 flagInitialScanUponSaving = False
+                
+                isRcipentEmailAddressSet = False
+                for ms in self.mtx:
+                        SingleEmail = ms.text().strip()
+                        if  SingleEmail != "":
+                            isRcipentEmailAddressSet = True 
+                            errorMsg = self.EP.ValidateEmail(SingleEmail)
+                            if not str(errorMsg).strip() == 'None':
+                                QB = QMessageBox()
+                                errorMsg = QB.information(self, "Error", errorMsg)
+                                return  
+                if isRcipentEmailAddressSet:
+                    EmailInfo = self.EP.getConfigInfo()
+                    if EmailInfo['email'] == '' or EmailInfo['email'] == '':
+                        QMessageBox.information(self, "Email Validation", 'Please Configure Sender Email in Preferences Menu')
+                        return
+                                
                 self.process(flagInitialScanUponSaving)
                 dmonth, dweek = 99, 99
                 if self.monthly.isChecked():
@@ -589,15 +609,7 @@ class ProjectWin(QMainWindow):
                         dweek = int(self.dow.currentIndex())
                 elif self.daily.isChecked():
                         interval = 3
-                
-                for ms in self.mtx:
-                        SingleEmail = ms.text().strip()
-                        if  SingleEmail != "":
-                            errorMsg = self.EP.ValidateEmail(SingleEmail)
-                            if not str(errorMsg).strip() == 'None':
-                                QB = QMessageBox()
-                                errorMsg = QB.information(self, "Error", errorMsg)
-                                return        
+                          
                 try: 
                         new = open('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'wb')
                         old = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
@@ -610,6 +622,7 @@ class ProjectWin(QMainWindow):
                 for ms in self.mtx:
                         if ms.text().strip() != "":
                                 new.write(ms.text() + ";")
+                                
                 new.write("\n")
                 old.readline()
                 old.readline()
@@ -619,6 +632,7 @@ class ProjectWin(QMainWindow):
                         if not x:
                                 break
                         new.write(x)
+                        
                 new.close()
                 old.close()
                 shutil.copy('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'projects\\' + self.projects.currentItem().text() + '.fxy')
@@ -643,10 +657,11 @@ class ProjectWin(QMainWindow):
                         sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
                         sbox.setDefaultButton(QMessageBox.Ok)
                         sval = sbox.exec_()
+                        
                         if sval == QMessageBox.Ok:
-                                event.ignore()
+                            event.ignore()
                         else:
-                                event.accept()
+                            event.accept()
         
 if __name__ == '__main__':
         app = QApplication(sys.argv)

@@ -127,16 +127,18 @@ def schedule(interval, dow, dom, timeSch, project, Configurations):
             Settings['StartWhenAvailable'] = 'false'
             
         if Configurations['RunWhenOnBatteryPower'] == True or Configurations['RunWhenOnBatteryPower'] == 'True':
+            Settings['DisallowStartIfOnBatteries'] = 'false'
             RunWhenOnBatteryPower = 'RWOBP|T'
-        else:    
+        else:
+            Settings['DisallowStartIfOnBatteries'] = 'true'    
             RunWhenOnBatteryPower = 'RWOBP|F'
 
 
         if Configurations['RunInitialScan'] == True or Configurations['RunInitialScan'] == 'True':
-            Settings['DisallowStartIfOnBatteries'] = 'false'
+            
             RunInitialScan = 'RIS|T'
         else:    
-            Settings['DisallowStartIfOnBatteries'] = 'true'
+            
             RunInitialScan = 'RIS|F'
             
             
@@ -154,7 +156,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations):
         E_text = text
       
         information = EP.getConfigInfo(prj)
-      
+        
         information['onlyonchange'] = E_text
         information['IfMissedRunUponAvailable'] = IfMissedRunUponAvailable
         information['RunWhenOnBatteryPower'] = RunWhenOnBatteryPower

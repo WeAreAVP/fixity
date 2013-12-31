@@ -24,21 +24,33 @@ try:
 	if sys.argv[2]:
 		IsemailSet = sys.argv[2]
 except:
-	print('Not Run')
+	pass
 
-	
 Text = '' 
-
+projectConfNotAvailable = True
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-fconf = open(AutiFixPath+ '\\bin\\'  + project + '-conf.txt', 'rb') 
-Text = fconf.readlines()
-fconf.close()
+try:
+	if path.isfile(AutiFixPath+ '\\bin\\'  + project + '-conf.txt'):
+		
+		
+		fconf = open(AutiFixPath+ '\\bin\\'  + project + '-conf.txt', 'rb') 
+		Text = fconf.readlines()
+		fconf.close()
+	else:
+		projectConfNotAvailable = False
+except:
+	pass
 
-TextEmail = ''
-fconfEmail = open(AutiFixPath + '\\bin\\'  +'conf.txt', 'rb')
-TextEmail = fconfEmail.readlines()
-fconfEmail.close()
-
+if projectConfNotAvailable :
+	TextEmail = ''
+try:
+	
+	fconfEmail = open(AutiFixPath + '\\bin\\'  +'conf.txt', 'rb')
+	TextEmail = fconfEmail.readlines()
+	fconfEmail.close()
+except:
+	pass	
+	
 information = {} 
 information['email'] = ''
 information['pass'] = ''
@@ -58,7 +70,7 @@ for SingleValue in TextEmail:
 		information['email'] = decodedString.replace('e|', '').replace('\n', '')
 	elif decodedString.find('p|') >= 0: 
 		information['pass'] = decodedString.replace('p|', '').replace('\n', '')
-				
+			
 f = open(AutiFixPath+'\\projects\\' + project + ".fxy", 'rb')
 f.readline()
 email = f.readline().rstrip("\r\n").split(';')
@@ -69,8 +81,11 @@ results = []
 
 Fitlers = str(information['filters']).replace('fil|', '').replace('\n', '')
 results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers)
-msg = "FIXITY REPORT:\n* " + str(results[0]) + " files verified\n* " + str(results[1]) + " files renamed/moved\n* " + str(results[2]) + " files created\n* " + str(results[3]) + " files corrupted\n* " + str(results[4]) + " files missing"
+
+msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
 
 if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
-	for e in email:
-		resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'])
+	if (not information['email'] =='') and  (not information['pass'] ==''):
+		for e in email:
+			resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'])
+		

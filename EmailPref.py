@@ -256,7 +256,7 @@ class EmailPref(QDialog):
     def CloseClick(self):
         self.destroyEmailPref()
         self.EmailPrefWin.close()
-
+# Main Code
 # app = QApplication('asdas')
 # w = EmailPref()
 # w.CreateWindow()
