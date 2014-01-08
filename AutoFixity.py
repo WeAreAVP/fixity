@@ -25,7 +25,6 @@ try:
 		IsemailSet = sys.argv[2]
 except:
 	pass
-
 Text = '' 
 projectConfNotAvailable = True
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
@@ -80,12 +79,12 @@ if '' in email:
 results = []	
 
 Fitlers = str(information['filters']).replace('fil|', '').replace('\n', '')
-results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers)
+results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
 
 msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
 
 if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
 	if (not information['email'] =='') and  (not information['pass'] ==''):
 		for e in email:
-			resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'])
+			resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'],project)
 		

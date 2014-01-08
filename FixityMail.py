@@ -12,15 +12,19 @@ from os import getcwd , path
 
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
-def send(recipients, text, attachment, emailaddr, password):
+def send(recipients, text, attachment, emailaddr, password,projectName=''):
 	addr = str(emailaddr)
 	pas = str(password) 
 
 	msg = email.MIMEMultipart.MIMEMultipart()
 	msg["From"] = addr
 	msg["To"] = recipients
-	msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0]
 	
+	if projectName == '':
+		msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0]
+	else:
+		msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0] + ' - ' + projectName
+		
 	msg.attach(email.MIMEText.MIMEText(text, 'plain'))
 	part = email.mime.base.MIMEBase('application', "octet-stream")
 	if attachment:

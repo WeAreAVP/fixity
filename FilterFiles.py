@@ -59,7 +59,11 @@ class FilterFiles(QDialog):
         ProjectsList = []
         for root, subFolders, files in walk(src):
             for file in files:
-                    ProjectsList.append(str(file).replace('.fxy', ''))
+                    projectFile = open(src + "\\" + file, 'rb')
+                    projectFileLines = projectFile.readlines()
+                    projectFile.close()
+                    if (projectFileLines):
+                        ProjectsList.append(str(file).replace('.fxy', ''))
         return ProjectsList        
                                 
 
@@ -104,6 +108,9 @@ class FilterFiles(QDialog):
         selectedProject = self.Porjects.currentText()
         Information = self.EmailPref.getConfigInfo(selectedProject)
         Information['filters'] = 'fil|' + self.FilterField.text()
+        if selectedProject == '':
+            QMessageBox.information(self, "Failure", "No Project Selected")
+            return
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if flag:
             QMessageBox.information(self, "Success", "Updated the Configuration Successfully")

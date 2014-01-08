@@ -220,7 +220,6 @@ class ProjectWin(QMainWindow):
                         if sval == QMessageBox.Ok:
                                 self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                                 return
-                            
                 projectName = self.old.text()           
                 if not path.isfile('projects\\' + self.old.text() + '.fxy'):
                         projectName = self.old.text()
@@ -301,23 +300,27 @@ class ProjectWin(QMainWindow):
                 
         # New Project Creation
         def new(self):
-                
                 name = QInputDialog.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
                 if name[0] == "" or path.isfile("projects\\" + name[0] + ".fxy") or any(c in '\ <>:\"\/\\\|?*' for c in name[0]) or name[0][-1] == '.':
                         QMessageBox.warning(self, "Fixity", "Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces\n*Project names must be legal filenames")
                         return
                 if not path.isfile(getcwd() + '\\bin\\' + name[0] + '-conf.txt'):
                     fileConf = open(getcwd() + '\\bin\\' + name[0] + '-conf.txt', 'w+')
-                    fileConf.close()                        
+                    fileConf.close() 
+                if not path.isfile(getcwd() + '\\projects\\' + name[0] + '.fxy'):
+                    fileConf = open(getcwd() + '\\projects\\' + name[0] + '.fxy', 'w+')
+                    fileConf.close()         
+                                       
                 newitem = QListWidgetItem(name[0], self.projects)
                 self.projects.setCurrentItem(newitem)
                 self.monthly.setChecked(True)
                 self.monthclick()
                 self.dom.setValue(1)
                 self.timer.setTime(QTime(0, 0))
-                for x in xrange(0, 4):
+                for x in xrange(0, 7):
                         self.dtx[x].setText("")
                         self.mtx[x].setText("")
+                
                 self.old = newitem
                 self.toggler(False)
 
@@ -352,6 +355,15 @@ class ProjectWin(QMainWindow):
                 isfileExists = False    
                 if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy'):
                     isfileExists = True
+                    
+                if isfileExists:
+                    projFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+                    projFileText = projFile.readlines()
+                    projFile.close()
+                    if not projFileText :
+                        isfileExists = False
+                    
+                    
                     
                 if shouldRun or (not isfileExists):
                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
@@ -497,6 +509,18 @@ class ProjectWin(QMainWindow):
             else:
                 QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans")
                 return
+            
+            if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
+                    projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+                    binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
+                    projectFileLines = projectFile.readlines();
+                    binFileLines = binFile.readlines();
+                    projectFile.close()
+                    binFile.close()
+                    if (not binFileLines) or (not projectFileLines):
+                        QMessageBox.warning(self, "Fixity", "Please save the current Project")
+                        return
+                    
             Configurations = {}
                     
             Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
@@ -532,6 +556,8 @@ class ProjectWin(QMainWindow):
                     remove("projects\\" + self.projects.currentItem().text() + ".fxy")
                     remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".bat")
                     remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".vbs")
+                    remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + "-sch.xml")
+                    remove("bin\\" + self.projects.currentItem().text() + "-conf.txt")
                 except:
                     pass
                 
@@ -647,9 +673,38 @@ class ProjectWin(QMainWindow):
                 
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations)
                 self.unsaved = False
+        
+        #Remove the file which are not required
+        def removeNotRequiredFiles(self):
+            
+            if not str(self.projects.currentItem()) == 'None':
+                if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
+                    projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+                    binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
+                    projectFileLines = projectFile.readlines();
+                    binFileLines = binFile.readlines();
+                    projectFile.close()
+                    binFile.close()
+                    if (not binFileLines) or (not projectFileLines):
+                        remove('projects\\' + self.projects.currentItem().text() + '.fxy')
+                        remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
+                    
+            return
                 
         #Window close Event
         def closeEvent(self, event):
+            
+            if not str(self.projects.currentItem()) == 'None':
+                if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
+                    projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+                    binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
+                    projectFileLines = projectFile.readlines();
+                    binFileLines = binFile.readlines();
+                    if (not binFileLines) or (not projectFileLines):
+                        self.unsaved = True
+                    projectFile.close()
+                    binFile.close()
+            
             if self.unsaved:
                         sbox = QMessageBox()
                         sbox.setText("There are unsaved changes to this project.")
@@ -661,6 +716,7 @@ class ProjectWin(QMainWindow):
                         if sval == QMessageBox.Ok:
                             event.ignore()
                         else:
+                            self.removeNotRequiredFiles()
                             event.accept()
         
 if __name__ == '__main__':
