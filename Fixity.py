@@ -463,6 +463,9 @@ class ProjectWin(QMainWindow):
                 self.timer.setDisabled(switch)
                 self.dom.setDisabled(switch)
                 self.dow.setDisabled(switch)
+                self.runOnlyOnACPower.setDisabled(switch)
+                self.StartWhenAvailable.setDisabled(switch)
+                self.EmailOnlyWhenSomethingChanged.setDisabled(switch)
         
         def changed(self):
                 self.unsaved = True
