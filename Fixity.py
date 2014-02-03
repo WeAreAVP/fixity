@@ -522,7 +522,7 @@ class ProjectWin(QMainWindow):
                     projectFile.close()
                     binFile.close()
                     if (not binFileLines) or (not projectFileLines):
-                        QMessageBox.warning(self, "Fixity", "Please save the current Project")
+                        QMessageBox.warning(self, "Fixity", "Please save the current project before proceeding")
                         return
                     
             Configurations = {}
@@ -540,7 +540,7 @@ class ProjectWin(QMainWindow):
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
             
             self.Threading.start()
-            QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
+            QMessageBox.information(self, "Fixity", self.projects.currentItem().text() + " is in process, and will notify results via email")
 
         
         #DELETE Given PROJECT 
@@ -626,7 +626,7 @@ class ProjectWin(QMainWindow):
                 if isRcipentEmailAddressSet:
                     EmailInfo = self.EP.getConfigInfo()
                     if EmailInfo['email'] == '' or EmailInfo['email'] == '':
-                        QMessageBox.information(self, "Email Validation", 'Please Configure Sender Email in Preferences Menu')
+                        QMessageBox.information(self, "Email Validation", 'No email credentials found!\nPlease provide an origination account for Fixity reports.')
                         return
                                 
                 self.process(flagInitialScanUponSaving)
