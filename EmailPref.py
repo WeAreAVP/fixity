@@ -63,15 +63,15 @@ class EmailPref(QDialog):
     
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgBox = QMessageBox();
-            msgBox.setText("Invalid Email Address")
+            msgBox.setText("Invalid email address provided - please enter a valid address")
             msgBox.exec_()
             self.loader.hide()
             return False
-        text = 'Testing email credentials for Fixity'
+        text = 'Fixity'
         flag = self.FM.send(Email, text, None, Email, Pass)
         if flag:
             msgBox = QMessageBox();
-            msgBox.setText("Please Check , if you recieve email from your email address then provided credentails are correct ")
+            msgBox.setText("Please check the provided email account to confirm credentials")
             msgBox.exec_()
             
         self.loader.hide()
@@ -206,16 +206,16 @@ class EmailPref(QDialog):
         return flag   
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid address provided - please provide a valid address"
             return msg
     # Validation Configuration provided
     def validateInformation(self, Email, Pass , Project):
         msg = None
         if Pass == '':
-            msg = "Invalid information provided, please try again! "
+            msg = "No password provided - please provide a valid password"
             return msg
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid address provided - please provide a valid address"
             return msg
         
         
@@ -240,7 +240,7 @@ class EmailPref(QDialog):
         information['pass'] = P_unbased
         
         self.setConfigInfo(information)
-        QMessageBox.information(self, "Success", "Information Successfully Saved! ")
+        QMessageBox.information(self, "Success", "Account settings successfully saved!")
         
         self.CloseClick()
     
