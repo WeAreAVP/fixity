@@ -109,15 +109,15 @@ class FilterFiles(QDialog):
         Information = self.EmailPref.getConfigInfo(selectedProject)
         Information['filters'] = 'fil|' + self.FilterField.text()
         if selectedProject == '':
-            QMessageBox.information(self, "Failure", "No Project Selected")
+            QMessageBox.information(self, "Failure", "No project selected - please select a project")
             return
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if flag:
-            QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
+            QMessageBox.information(self, "Success", "Filter successfully saved!")
             self.Cancel()
             return
         else:
-            QMessageBox.information(self, "Failure", "Some Problem Occurred While Update the Configurations,Please Try Again")
+            QMessageBox.information(self, "Failure", "There was a problem saving the filter - please try again")
                 
         
     def Reset(self):
