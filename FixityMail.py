@@ -42,6 +42,6 @@ def send(recipients, text, attachment, emailaddr, password,projectName=''):
 	except Exception:
 
 		msgBox = QMessageBox();
-		msgBox.setText("Some Problem occurred while sending the email, please check your Internet Connection or try different Email Credentials and try again.")
+		msgBox.setText("There was a problem confirming the email account.  Please check your Internet connection or try a different account.")
 		msgBox.exec_()
 		return False
