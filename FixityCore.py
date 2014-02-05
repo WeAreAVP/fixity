@@ -626,8 +626,8 @@ def run(file,filters='',projectName = ''):
 			if flag:
 				check+= 1
 				try:
-					#response = verify_using_inode(dict,dict_Hash,dict_File, e , file)
-					response = verify(dict, e , file)
+					response = verify_using_inode(dict,dict_Hash,dict_File, e , file)
+# 					response = verify(dict, e , file)
 				except Exception as ex :
 					Debugging = Debuger()
 					Debugging.tureDebugerOn();
