@@ -5,17 +5,19 @@
 # Released under the Apache license, v. 2.0
 from PySide.QtCore import *
 from PySide.QtGui import *
-from smtplib import SMTP
+from smtplib import SMTP, SMTPException
 import email
 import datetime
 from os import getcwd , path
+
+from Debuger import Debuger
 
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
 def send(recipients, text, attachment, emailaddr, password,projectName=''):
 	addr = str(emailaddr)
 	pas = str(password) 
-
+	
 	msg = email.MIMEMultipart.MIMEMultipart()
 	msg["From"] = addr
 	msg["To"] = recipients
@@ -32,15 +34,23 @@ def send(recipients, text, attachment, emailaddr, password,projectName=''):
 		email.Encoders.encode_base64(part)
 		part.add_header('Content-Disposition', 'attachment; filename="%s"' % path.basename(attachment))
 		msg.attach(part)
-	try:	
 		
+	try:	
 		server = SMTP('smtp.gmail.com', 587)
 		server.starttls()
 		server.login(addr, pas)
 		server.sendmail(addr, recipients, msg.as_string())
 		return True
-	except Exception:
-
+	except SMTPException as e:
+		
+		D = Debuger()
+		D.tureDebugerOn();
+		try:
+			moreInformation ={'SenderEmailAddress::':addr ,'RecipientsEmailAddress':recipients , '::More Detail':'' ,'ErrorCode':str(e[0]) , 'ErrorMsg':str(e[1]) }
+		except:
+			pass
+		D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
+		
 		msgBox = QMessageBox();
 		msgBox.setText("Some Problem occurred while sending the email, please check your Internet Connection or try different Email Credentials and try again.")
 		msgBox.exec_()

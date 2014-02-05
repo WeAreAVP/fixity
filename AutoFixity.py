@@ -6,10 +6,14 @@
 
 import FixityCore
 import FixityMail
+from Debuger import Debuger
 
 import sys
+
+import datetime
 from os import getcwd ,path  
 import base64
+
 
 def EncodeInfo(stringToBeEncoded):
 	return base64.b16encode(base64.b16encode(stringToBeEncoded))
@@ -18,6 +22,7 @@ def DecodeInfo(stringToBeDecoded):
 	return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
 
 project = sys.argv[1]
+
 
 IsemailSet = None
 try:
@@ -31,24 +36,56 @@ AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 try:
 	if path.isfile(AutiFixPath+ '\\bin\\'  + project + '-conf.txt'):
 		
-		
 		fconf = open(AutiFixPath+ '\\bin\\'  + project + '-conf.txt', 'rb') 
 		Text = fconf.readlines()
 		fconf.close()
 	else:
 		projectConfNotAvailable = False
-except:
+except Exception as e:
+	Debuging = Debuger()
+	moreInformation = {"moreInfo":'null'}
+	try:
+		if not e[0] == None:
+			moreInformation['LogsMore'] =str(e[0])
+	except:
+		pass
+	try:	
+		if not e[1] == None:
+			moreInformation['LogsMore1'] =str(e[1])
+	except:
+		pass
+		
+	Debuging.tureDebugerOn()	
+	Debuging.logError('Configuartion File Dose not eixst  Line range 57 - 61 File AutoFixity ', moreInformation)
 	pass
 
 if projectConfNotAvailable :
 	TextEmail = ''
+	
 try:
 	
 	fconfEmail = open(AutiFixPath + '\\bin\\'  +'conf.txt', 'rb')
 	TextEmail = fconfEmail.readlines()
 	fconfEmail.close()
-except:
+except Exception as e:
+	Debuging = Debuger()
+	moreInformation = {"moreInfo":'null'}
+	try:
+		if not e[0] == None:
+			moreInformation['LogsMore'] =str(e[0])
+	except:
+		pass
+	try:	
+		if not e[1] == None:
+			moreInformation['LogsMore1'] =str(e[1])
+	except:
+		pass
+		
+	Debuging.tureDebugerOn()	
+	Debuging.logError('Configuration File Dose not exists  Line range 57 - 61 File AutoFixity ', moreInformation)
 	pass	
+
+
 	
 information = {} 
 information['email'] = ''

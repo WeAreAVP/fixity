@@ -16,7 +16,11 @@ import threading
 import time
 import subprocess
 import tkMessageBox
+
+
+from Debuger import Debuger
 exitFlag = 0
+
 
 
 # Custom class to run the scanning process using multithreading  
@@ -41,10 +45,28 @@ class Threading (threading.Thread):
                 
         command = command +" "+self.params
         
-
-        popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = popen.communicate()
-        errcode = popen.returncode
+        try:
+            popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            
+            out, err = popen.communicate()
+            errcode = popen.returncode
+        except Exception as e:
+            Debuging = Debuger()
+            moreInformation = {"moreInfo":'null'}
+            try:   
+                if not e[0] == None:
+                    moreInformation['LogsMore'] =str(e[0])
+            except:
+                pass
+            try:    
+                if not e[1] == None:
+                    moreInformation['LogsMore1'] =str(e[1])
+            except:
+                pass
+                
+            Debuging.tureDebugerOn()    
+            Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
+            pass
         print_time(self.name, self.counter, 5,self , command)
         
 

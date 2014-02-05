@@ -6,40 +6,81 @@
 
 import subprocess
 from os import getcwd, remove , environ , path, remove
+from Debuger import Debuger
 
 import sys
 import time
 from EmailPref import EmailPref
+
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         subprocess.call("schtasks /Delete /F /TN \"Fixity-" + project.replace(' ', '_') + "\"", startupinfo=startupinfo)
+        Debuging = Debuger()
+        
         try:
-                remove("schedules\\fixity-" + project + ".bat")
-        except:
+            remove("schedules\\fixity-" + project + ".bat")
+        except Exception as e:
+            
+            moreInformation = {"moreInfo":'null'}
+            try:   
+                if not e[0] == None:
+                    moreInformation['LogsMore'] =str(e[0])
+            except:
                 pass
+            try:    
+                if not e[1] == None:
+                    moreInformation['LogsMore1'] =str(e[1])
+            except:
+                pass
+                
+            Debuging.tureDebugerOn()    
+            Debuging.logError('Could Not Remove File Line 22 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".bat", moreInformation)
+            pass
         try:
                 remove("schedules\\fixity-" + project + ".vbs")
-        except:
+        except Exception as e:
+            
+            moreInformation = {"moreInfo":'null'}
+            try:
+                if not e[0] == None:
+                    moreInformation['LogsMore'] =str(e[0])
+            except:
                 pass
+            try:    
+                if not e[1] == None:
+                    moreInformation['LogsMore1'] =str(e[1])
+            except:
+                pass
+                
+            Debuging.tureDebugerOn()    
+            Debuging.logError('Count not Remove File ,  Line 35 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".vbs", moreInformation)
+            pass
 #Runs Given Batch File            
 def RunThisBatchFile(Command):
-          subprocess.call(Command, shell=True)
+        subprocess.call(Command, shell=True)
           
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
-def schedule(interval, dow, dom, timeSch, project, Configurations):
+def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation):
         EP = EmailPref()
         VERSION = EP.getVersion()
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')
+        
         
         deltask(prj)
         if not path.isfile(getcwd() + '\\bin\\' + prj + '-conf.txt'): 
             fCheck = open(getcwd() + '\\bin\\' + prj + '-conf.txt', 'w+')
             fCheck.close() 
         spec = ""
-        
+        if interval == 1:
+            mo = "MONTHLY"
+        if interval == 2:
+            mo = "WEEKLY"
+        if interval == 3:
+            mo = "DAILY"
+            
         if dow != 99:
                 days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
                 spec = " /D " + days[dow] + " "
@@ -168,10 +209,31 @@ def schedule(interval, dow, dom, timeSch, project, Configurations):
         ############################################################################################################################
         
         XMLFilePath = "\"" + getcwd() + "\\" + XMLFileNameWithDirName + "\""
-        Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
-        subprocess.call(Command, startupinfo=startupinfo)
         
-        
+        if(str(SystemInformation['WindowsType']) == '7'):
+            Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
+        else: 
+            Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
+            
+        try:
+            subprocess.call(Command, startupinfo=startupinfo)
+        except Exception as e:
+            Debuging = Debuger()
+            moreInformation = {"moreInfo":'null'}
+            try:
+                if not e[0] == None:
+                    moreInformation['LogsMore'] =str(e[0])
+            except:
+                pass
+            try:    
+                if not e[1] == None:
+                    moreInformation['LogsMore1'] =str(e[1])
+            except:
+                pass
+                
+            Debuging.tureDebugerOn()    
+            Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
+            pass
         
         
 def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):

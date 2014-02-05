@@ -1,0 +1,152 @@
+
+
+INFO:root:Logging for Date 2014-02-05 19:59:27
+
+INFO:root:Logging for Date 2014-02-05 19:59:27
+
+INFO:root:Logging for Date 2014-02-05 19:59:27
+
+DEBUG:root:Error Reporting Line 107-110 FixityCore While listing directory and files FixityCore
+
+DEBUG:root:LogsMore::'list' object has no attribute 'join'
+
+DEBUG:root:moreInfo::null
+
+INFO:root:Logging for Date 2014-02-05 20:00:32
+
+INFO:root:Logging for Date 2014-02-05 20:00:32
+
+INFO:root:Logging for Date 2014-02-05 20:00:32
+
+DEBUG:root:Error Reporting Line 107-110 FixityCore While listing directory and files FixityCore
+
+DEBUG:root:LogsMore::'list' object has no attribute 'join'
+
+DEBUG:root:moreInfo::null
+
+INFO:root:Logging for Date 2014-02-05 20:01:16
+
+INFO:root:Logging for Date 2014-02-05 20:01:16
+
+INFO:root:Logging for Date 2014-02-05 20:01:16
+
+DEBUG:root:Error Reporting Line 107-110 FixityCore While listing directory and files FixityCore
+
+DEBUG:root:LogsMore::'list' object has no attribute 'join'
+
+DEBUG:root:moreInfo::null
+
+INFO:root:Logging for Date 2014-02-05 20:03:41
+
+INFO:root:Logging for Date 2014-02-05 20:03:41
+
+INFO:root:Logging for Date 2014-02-05 20:03:41
+
+DEBUG:root:Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore
+
+DEBUG:root:LogsMore::'list' object has no attribute 'join'
+
+DEBUG:root:moreInfo::null
+
+INFO:root:Logging for Date 2014-02-05 20:03:55
+
+INFO:root:Logging for Date 2014-02-05 20:03:55
+
+INFO:root:Logging for Date 2014-02-05 20:03:55
+
+DEBUG:root:Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore
+
+DEBUG:root:LogsMore::'list' object has no attribute 'join'
+
+DEBUG:root:moreInfo::null
+
+INFO:root:Logging for Date 2014-02-05 20:04:08
+
+INFO:root:Logging for Date 2014-02-05 20:04:08
+
+INFO:root:Logging for Date 2014-02-05 20:04:08
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:05:09
+
+INFO:root:Logging for Date 2014-02-05 20:17:35
+
+INFO:root:Logger started!::::::::::::::::::
+
+INFO:root:System Information
+
+INFO:root:platform = Windows-7-6.1.7601-SP1
+INFO:root:major = 6
+INFO:root:minor = 1
+INFO:root:build = 7601
+INFO:root:platformType = 2
+INFO:root:isWindows = True
+INFO:root:WindowsType = 7
+INFO:root:bitType = Win64
+INFO:root:Logging for Date 2014-02-05 20:22:43
+
+DEBUG:root:Could Not Remove File Line 22 File FixtyScheduleTaskschedules\fixity-New_Project.bat
+DEBUG:root:LogsMore::2
+
+DEBUG:root:moreInfo::null
+
+DEBUG:root:LogsMore1::The system cannot find the file specified
+
+DEBUG:root:Count not Remove File ,  Line 35 File FixtyScheduleTaskschedules\fixity-New_Project.vbs
+DEBUG:root:LogsMore::2
+
+DEBUG:root:moreInfo::null
+
+DEBUG:root:LogsMore1::The system cannot find the file specified
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:23:03
+
+INFO:root:Logging for Date 2014-02-05 20:25:55
+
+INFO:root:Logger started!::::::::::::::::::
+
+INFO:root:System Information
+
+INFO:root:platform = Windows-7-6.1.7601-SP1
+INFO:root:major = 6
+INFO:root:minor = 1
+INFO:root:build = 7601
+INFO:root:platformType = 2
+INFO:root:isWindows = True
+INFO:root:WindowsType = 7
+INFO:root:bitType = Win64

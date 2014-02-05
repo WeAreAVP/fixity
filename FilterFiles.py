@@ -12,7 +12,12 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
+
+
+#Custom Classes
 from EmailPref import EmailPref
+
+
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
@@ -102,6 +107,7 @@ class FilterFiles(QDialog):
         self.Porjects.currentIndexChanged .connect(self.projectChanged)
         self.SetWindowLayout()
         self.projectChanged()
+        
         
     # Update Filters information    
     def SetInformation(self):

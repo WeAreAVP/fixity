@@ -12,10 +12,11 @@ import re
 import datetime
 import shutil
 import sys
-import logging
-
+import platform
+import os
 
 #Custom Libraries
+from Debuger import Debuger
 import FixityCore
 import FixitySchtask
 from Threading import Threading
@@ -26,6 +27,25 @@ from FilterFiles import FilterFiles
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
                 QMainWindow.__init__(self)
+                Debuggin = Debuger()
+                Debuggin.tureDebugerOn()
+                Debuggin.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
+                
+                
+                self.SystemInformation = self.getWindowsInformation()
+                if(self.SystemInformation):
+                    Debuggin.logInfo('System Information' + "\n" ,{})
+                    Debuggin.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
+                    Debuggin.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
+                    Debuggin.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
+                    Debuggin.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
+                    Debuggin.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
+                    Debuggin.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
+                    Debuggin.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
+                    Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
+                
+                
+            
                 self.EP = EmailPref()
                 self.EP.setVersion('0.3')
                 self.FilterFiles = FilterFiles()
@@ -177,12 +197,23 @@ class ProjectWin(QMainWindow):
                 self.widget.setLayout(self.main)
                 self.setCentralWidget(self.widget)
                 self.projects.itemClicked.connect(self.update)
-
+                if(self.SystemInformation and str(self.SystemInformation['WindowsType']) == '7'):
+                    self.runOnlyOnACPower.setDisabled(False)
+                    self.StartWhenAvailable.setDisabled(False)
+                    self.EmailOnlyWhenSomethingChanged.setDisabled(False)
+                    
+                else:
+                    
+                    self.runOnlyOnACPower.setDisabled(True)
+                    self.StartWhenAvailable.setDisabled(True)
+                    self.EmailOnlyWhenSomethingChanged.setDisabled(True)
+                    
                 try:
                         self.old = self.projects.itemAt(0, 0)
                         self.update(self.old)
                         self.old.setSelected(True)
                 except:
+#                         logging.debug('could Not update the Projects list like 184 - 187')
                         pass
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
@@ -207,6 +238,58 @@ class ProjectWin(QMainWindow):
             self = ProjectWin()
             self.show()
             sys.exit(app.exec_())
+        def getWindowsInformation(self):
+            WindowsInformation = {};
+            try:
+                major , minor , build , platformType , servicePack = sys.getwindowsversion()
+                
+                WindowsInformation['major'] = major
+                WindowsInformation['minor'] = minor
+                WindowsInformation['build'] = build 
+                WindowsInformation['platformType'] = platformType
+                WindowsInformation['servicePack'] = servicePack
+                windowDetailedName = platform.platform()
+                WindowsInformation['platform'] = windowDetailedName
+                windowDetailedName = str(windowDetailedName).split('-')
+                
+                
+                if(windowDetailedName[0] != None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows')):  
+                    WindowsInformation['isWindows'] =True
+                else:
+                    WindowsInformation['isWindows'] =False
+                    
+                if(windowDetailedName[1] != None and (str(windowDetailedName[1]) != '')):  
+                    WindowsInformation['WindowsType'] =str(windowDetailedName[1])
+                else:
+                    WindowsInformation['WindowsType'] =None
+                 
+                WindowsInformation['ProcessorInfo'] = platform.processor()
+                
+                try:
+                    os.environ["PROGRAMFILES(X86)"]
+                    bits = 64
+                except:
+                    bits = 32
+                    
+                WindowsInformation['bitType'] = "Win{0}".format(bits)
+            except Exception as e:
+                Debuging = Debuger()
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not e[0] == None:
+                        moreInformation['LogsMore'] =str(e[0])
+                except:
+                    pass
+                try:    
+                    if not e[1] == None:
+                        moreInformation['LogsMore1'] =str(e[1])
+                except:
+                    pass
+                    
+                Debuging.tureDebugerOn()    
+                Debuging.logError('Could Not get Windows Information Line range 220 - 240 File Fixity ', moreInformation)
+                pass
+            return WindowsInformation
             
         #Updates Fields When Project Is Selected In List
         @Slot(str)
@@ -229,6 +312,7 @@ class ProjectWin(QMainWindow):
                         f = open('projects\\' + new.text() + '.fxy', 'rb')
                         projectName = new.text()
                 except:
+#                         logging.debug('could Not find file 184' + 'projects\\' + new.text() + '.fxy' + ' 233 - 234')
                         for n in xrange(0, 7):
                                 self.dtx[n].setText("")
                                 self.mtx[n].setText("")
@@ -257,10 +341,12 @@ class ProjectWin(QMainWindow):
                         try:
                                 self.dtx[n].setText(ds[n].strip())
                         except:
+#                                 logging.warning('Warning Reported While setting directory Name' + ds[n].strip() + '.fxy' + ' at line 263')
                                 self.dtx[n].setText("")
                         try:
                                 self.mtx[n].setText(ms[n].strip())
                         except:
+#                                 logging.warning('Warning Reported While setting Email address' + ds[n].strip() + '.fxy' + ' at line 268')
                                 self.mtx[n].setText("")
                 if information['onlyonchange'] == 'T':
                     self.EmailOnlyWhenSomethingChanged.setChecked(False)
@@ -292,6 +378,7 @@ class ProjectWin(QMainWindow):
                 try:
                         t = sc[1].split(':')
                 except:
+#                         logging.warning('error ')
                         t = ['00', '00']
                 self.timer.setTime(QTime(int(t[0]), int(t[1])))
                 self.lastrun.setText("Last checked:\n" + rlabel)
@@ -393,7 +480,7 @@ class ProjectWin(QMainWindow):
                     Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                     Configurations['RunInitialScan'] = False
                     
-                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations)
+                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations,self.SystemInformation)
                     
                     ConfigurationInfo = self.EP.getConfigInfo(currentProject)
                     Allfilters = ConfigurationInfo['filters']
@@ -464,9 +551,7 @@ class ProjectWin(QMainWindow):
                 self.timer.setDisabled(switch)
                 self.dom.setDisabled(switch)
                 self.dow.setDisabled(switch)
-                self.runOnlyOnACPower.setDisabled(switch)
-                self.StartWhenAvailable.setDisabled(switch)
-                self.EmailOnlyWhenSomethingChanged.setDisabled(switch)
+                
         
         def changed(self):
                 self.unsaved = True
@@ -491,8 +576,6 @@ class ProjectWin(QMainWindow):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
                 
-#         def testing(self):
-#             system(FilePath+"" + FileName)
             
             
         #Saves And Runs 
@@ -533,7 +616,7 @@ class ProjectWin(QMainWindow):
             Configurations['RunInitialScan'] = False
                         
             FilePath = getcwd()+'\\schedules\\'
-            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations)
+            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations,self.SystemInformation)
             FileName = 'AutoFixity.exe';
             params = self.projects.currentItem().text() +' '+'Run'
             
@@ -563,6 +646,7 @@ class ProjectWin(QMainWindow):
                     remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + "-sch.xml")
                     remove("bin\\" + self.projects.currentItem().text() + "-conf.txt")
                 except:
+#                     logging.debug('could not remove all files related to given project '+self.projects)
                     pass
                 
                 FixitySchtask.deltask(self.projects.currentItem().text())
@@ -675,7 +759,7 @@ class ProjectWin(QMainWindow):
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                 Configurations['RunInitialScan'] = False
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations)
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations,self.SystemInformation)
                 self.unsaved = False
         
         #Remove the file which are not required
@@ -710,18 +794,18 @@ class ProjectWin(QMainWindow):
                     binFile.close()
             
             if self.unsaved:
-                        sbox = QMessageBox()
-                        sbox.setText("There are unsaved changes to this project.")
-                        sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
-                        sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
-                        sbox.setDefaultButton(QMessageBox.Ok)
-                        sval = sbox.exec_()
-                        
-                        if sval == QMessageBox.Ok:
-                            event.ignore()
-                        else:
-                            self.removeNotRequiredFiles()
-                            event.accept()
+                    sbox = QMessageBox()
+                    sbox.setText("There are unsaved changes to this project.")
+                    sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
+                    sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
+                    sbox.setDefaultButton(QMessageBox.Ok)
+                    sval = sbox.exec_()
+                    
+                    if sval == QMessageBox.Ok:
+                        event.ignore()
+                    else:
+                        self.removeNotRequiredFiles()
+                        event.accept()
         
 if __name__ == '__main__':
         app = QApplication(sys.argv)
