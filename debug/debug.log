@@ -1,92 +1,12 @@
-INFO:root:Logging for Date 2014-02-12 20:31:47
+INFO:root:Logging for Date 2014-02-13 13:31:38
 
-INFO:root:Logging for Date 2014-02-12 20:32:04
+INFO:root:Logging for Date 2014-02-13 13:49:42
 
-DEBUG:root:Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:sha256 File FixtyCore
+INFO:root:Logging for Date 2014-02-13 13:49:47
 
-DEBUG:root:LogsMore::2
+INFO:root:Logging for Date 2014-02-13 13:49:51
 
-DEBUG:root:moreInfo::none
+INFO:root:Logging for Date 2014-02-13 13:50:36
 
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 20:32:47
-
-INFO:root:Logging for Date 2014-02-12 20:33:05
-
-INFO:root:Logging for Date 2014-02-12 20:33:38
-
-DEBUG:root:Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:sha256 File FixtyCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::none
-
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 21:06:15
-
-INFO:root:Logging for Date 2014-02-12 21:06:21
-
-INFO:root:Logging for Date 2014-02-12 21:06:43
-
-INFO:root:Logging for Date 2014-02-12 21:07:12
-
-DEBUG:root:Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:sha256 File FixtyCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::none
-
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 21:08:11
-
-DEBUG:root:Error Reporting Line 89 - 95 While Creating INode for File :C:\Users\Furqan\Desktop\NASD2F274\Shared\AVPS\Projects\Client\Files and Deliverables\HBO\2010\hbo_2010_0830\data\delivered_2010-08-23\HBO_Metadata_Snapshot_Gathered_data\Studio_library\Media_Request\as dadd sad sadsa dsa  asdasdasdasdasdasdasdasda\11as das dasd das d sa dsad sa dasd as das ads dasd.txt File FixtyCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::none
-
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 21:09:57
-
-INFO:root:Logging for Date 2014-02-12 21:10:38
-
-DEBUG:root:Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:sha256 File FixtyCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::none
-
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 21:10:54
-
-DEBUG:root:Error Reporting Line 106 - 108 While reading file to Creating INode for File :C:\Users\Furqan\Desktop\NASD2F274\Shared\AVPS\Projects\Client\Files and Deliverables\HBO\2010\hbo_2010_0830\data\delivered_2010-08-23\HBO_Metadata_Snapshot_Gathered_data\Studio_library\Media_Request\as dadd sad sadsa dsa  asdasdasdasdasdasdasdasda\11as das dasd das d sa dsad sa dasd as das ads dasd.txt File FixtyCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::none
-
-DEBUG:root:LogsMore1::No such file or directory
-
-INFO:root:Logging for Date 2014-02-12 21:12:28
-
-DEBUG:root:Error Reporting Line 89 - 95 While Creating INode for File :C:\Users\Furqan\Desktop\NASD2F274\Shared\AVPS\Projects\Client\Files and Deliverables\HBO\2010\hbo_2010_0830\data\delivered_2010-08-23\HBO_Metadata_Snapshot_Gathered_data\Studio_library\Media_Request\as dadd sad sadsa dsa  asdasdasdasdasdasdasdasda\11as das dasd das d sa dsad sa dasd as das ads dasd.txt File FixtyCore
-
-DEBUG:root:LogsMore::local variable 'target' referenced before assignment
-
-DEBUG:root:moreInfo::none
-
-INFO:root:Logging for Date 2014-02-13 12:32:48
-
-DEBUG:root:Error Reporting Line 125-129 FixityCore While listing directory and files FixityCore
-
-DEBUG:root:LogsMore::2
-
-DEBUG:root:moreInfo::null
-
-DEBUG:root:LogsMore1::No such file or directory
+INFO:root:Logging for Date 2014-02-13 13:50:39
 
