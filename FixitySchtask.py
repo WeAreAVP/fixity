@@ -259,7 +259,6 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
             xmlsch.write("                <Months>\n")
             for Month in Months:
                 xmlsch.write("                <" + Month + "/>\n")
-
             xmlsch.write("                </Months>\n")
             xmlsch.write("            </ScheduleByMonth>\n")
         if interval == 2:

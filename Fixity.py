@@ -16,16 +16,19 @@ import platform
 import os
 
 #Custom Libraries
-from Debuger import Debuger
+
 import FixityCore
 import FixitySchtask
 from Threading import Threading
+
 from EmailPref import EmailPref
+from Debuger import Debuger
 from FilterFiles import FilterFiles
 
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
+            
                 QMainWindow.__init__(self)
                 Debuggin = Debuger()
                 Debuggin.tureDebugerOn()
@@ -71,6 +74,11 @@ class ProjectWin(QMainWindow):
                 
                 FilterFilesMane = QAction('&Filter Files', self)
                 
+                
+                self.Debuging = QAction('&Turn Debugging Off', self)
+                self.switchDebugger('start')
+             
+                    
                 self.f.addAction(newp)
                 self.f.addAction(usch)
                 self.f.addAction(save)
@@ -79,6 +87,8 @@ class ProjectWin(QMainWindow):
                 
                 self.Preferences.addAction(FilterFilesMane)
                 self.Preferences.addAction(configemail)
+                self.Preferences.addAction(self.Debuging)
+                
                 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
@@ -88,6 +98,7 @@ class ProjectWin(QMainWindow):
                 quit.triggered.connect(self.close)
                 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
+                self.Debuging.triggered.connect(self.switchDebugger)
                 
                 self.widget = QWidget(self)
                 
@@ -170,6 +181,7 @@ class ProjectWin(QMainWindow):
                 self.dtx, self.but = [], []
                 
                 for n in xrange(0, 7):
+                        
                         hbox = QHBoxLayout()
                         hbox.setContentsMargins(0, 0, 0, 0)
                         hbox.setSpacing(0)
@@ -213,7 +225,7 @@ class ProjectWin(QMainWindow):
                         self.update(self.old)
                         self.old.setSelected(True)
                 except:
-#                         logging.debug('could Not update the Projects list like 184 - 187')
+
                         pass
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
@@ -232,7 +244,30 @@ class ProjectWin(QMainWindow):
             self.FilterFiles = None
             self.FilterFiles = FilterFiles()
             self.FilterFiles.SetDesgin()
-            self.FilterFiles.ShowDialog()   
+            self.FilterFiles.ShowDialog()
+               
+        def switchDebugger(self,start= None):
+            
+            Information = self.EP.getConfigInfo()            
+            debugText = ''
+            
+            if start == None:
+                if Information['debugging'] == 'debug|off' or Information['debugging'] == '' or Information['debugging'] == None:
+                    Information['debugging'] ='debug|on'
+                else:
+                    Information['debugging'] ='debug|off'
+            
+            self.EP.setConfigInfo(Information)
+            
+            if Information['debugging'] == 'debug|off' or Information['debugging'] == '' or Information['debugging'] == None:
+                debugText = 'Turn Debugging On' 
+            else:
+                debugText = 'Turn Debugging Off'
+            
+            self.Debuging.setText(debugText)    
+            
+            
+            
             
         def newWindow(self):
             self = ProjectWin()
@@ -312,7 +347,6 @@ class ProjectWin(QMainWindow):
                         f = open('projects\\' + new.text() + '.fxy', 'rb')
                         projectName = new.text()
                 except:
-#                         logging.debug('could Not find file 184' + 'projects\\' + new.text() + '.fxy' + ' 233 - 234')
                         for n in xrange(0, 7):
                                 self.dtx[n].setText("")
                                 self.mtx[n].setText("")
@@ -322,8 +356,10 @@ class ProjectWin(QMainWindow):
                         self.dom.setValue(1)
                         return
  
-                information = {} 
+                information = {}
+                 
                 onlyonchange = self.EP.getConfigInfo(projectName)
+                
                 information['onlyonchange'] = onlyonchange['onlyonchange'].replace('EOWSC|', '').replace('\n', '')
                 information['RunWhenOnBatteryPower'] = onlyonchange['RunWhenOnBatteryPower'].replace('RWOBP|', '').replace('\n', '')
                 information['IfMissedRunUponAvailable'] = onlyonchange['IfMissedRunUponAvailable'].replace('IMRUA|', '').replace('\n', '')
@@ -333,20 +369,22 @@ class ProjectWin(QMainWindow):
                 elabel = f.readline()
                 slabel = f.readline()
                 rlabel = f.readline()
+                
                 f.close()
+                
                 ds = dlabel.split(';')
                 ms = elabel.split(';')
+                
                 n, p = 0, 0
                 for n in xrange(0, 7):
                         try:
-                                self.dtx[n].setText(ds[n].strip())
+                                usages = str(ds[n]).split('|-|-|')
+                                self.dtx[n].setText(usages[0].strip())
                         except:
-#                                 logging.warning('Warning Reported While setting directory Name' + ds[n].strip() + '.fxy' + ' at line 263')
                                 self.dtx[n].setText("")
                         try:
                                 self.mtx[n].setText(ms[n].strip())
                         except:
-#                                 logging.warning('Warning Reported While setting Email address' + ds[n].strip() + '.fxy' + ' at line 268')
                                 self.mtx[n].setText("")
                 if information['onlyonchange'] == 'T':
                     self.EmailOnlyWhenSomethingChanged.setChecked(False)
@@ -378,7 +416,6 @@ class ProjectWin(QMainWindow):
                 try:
                         t = sc[1].split(':')
                 except:
-#                         logging.warning('error ')
                         t = ['00', '00']
                 self.timer.setTime(QTime(int(t[0]), int(t[1])))
                 self.lastrun.setText("Last checked:\n" + rlabel)
@@ -459,11 +496,13 @@ class ProjectWin(QMainWindow):
                     
                     for ds in self.dtx:
                             if ds.text().strip() != "":
-                                    projfile.write(ds.text() + ";")
+                                    CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
+                                    projfile.write(str(ds.text()) + "|-|-|" + CodeOfPath + ";")
                                                                  
                     projfile.write("\n")
                     
                     for ms in self.mtx:
+                            
                             if ms.text().strip() != "":
                                     projfile.write(ms.text() + ";")
                     projfile.write("\n")
@@ -515,14 +554,16 @@ class ProjectWin(QMainWindow):
                         configurations['timingandtype'] = ''
                         
                         for ds in self.dtx:
-                            if ds.text().strip() != "":
-                                configurations['directories'] +=  str(ds.text()) + ";"
+                            if ds.text().strip() != "": 
+                                
+                                CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
+                                configurations['directories'] +=  str(ds.text()) + "|-|-|" + CodeOfPath + ";"
 
                         configurations['directories'] += "\n"
                             
                         for ms in self.mtx:
                             if ms.text().strip() != "":
-                                configurations['emails']+=str(ms.text()) + ";"
+                                configurations['emails']+=str(ms.text()) +str(ms.text()) +";"
                                              
                         configurations['emails'] += "\n"
                         configurations['timingandtype'] = (str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
@@ -646,7 +687,6 @@ class ProjectWin(QMainWindow):
                     remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + "-sch.xml")
                     remove("bin\\" + self.projects.currentItem().text() + "-conf.txt")
                 except:
-#                     logging.debug('could not remove all files related to given project '+self.projects)
                     pass
                 
                 FixitySchtask.deltask(self.projects.currentItem().text())
@@ -670,7 +710,7 @@ class ProjectWin(QMainWindow):
         def buildTable(self, r, a):
                 list = []
                 fls = []
-                cur = QLabel("")
+                
                 progress = QProgressDialog()
                 progress.setMaximum(100)
                 progress.setMinimumDuration(0)
@@ -778,7 +818,7 @@ class ProjectWin(QMainWindow):
                         remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
                     
             return
-                
+       
         #Window close Event
         def closeEvent(self, event):
             

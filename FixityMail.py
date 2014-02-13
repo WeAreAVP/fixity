@@ -5,7 +5,7 @@
 # Released under the Apache license, v. 2.0
 from PySide.QtCore import *
 from PySide.QtGui import *
-from smtplib import SMTP, SMTPException
+from smtplib import *
 import email
 import datetime
 from os import getcwd , path
@@ -41,7 +41,7 @@ def send(recipients, text, attachment, emailaddr, password,projectName=''):
 		server.login(addr, pas)
 		server.sendmail(addr, recipients, msg.as_string())
 		return True
-	except SMTPException as e:
+	except (SMTPException ,SMTPServerDisconnected , SMTPResponseException , SMTPSenderRefused , SMTPRecipientsRefused , SMTPDataError , SMTPConnectError , SMTPHeloError , SMTPAuthenticationError , Exception ) as e:
 		
 		D = Debuger()
 		D.tureDebugerOn();

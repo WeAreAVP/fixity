@@ -145,6 +145,7 @@ class EmailPref(QDialog):
             information['email'] = ''
             information['pass'] = ''
             information['onlyonchange'] = ''
+            information['debugging'] = ''
             if path.isfile(getcwd() + '\\bin\\conf.txt'): 
                 fCheck = open(getcwd() + '\\bin\\conf.txt', 'rb') 
                 Text = fCheck.readlines()
@@ -156,6 +157,8 @@ class EmailPref(QDialog):
                             information['email'] = decodedString
                         elif decodedString.find('p|') >= 0: 
                             information['pass'] = decodedString
+                        elif decodedString.find('debug|') >= 0: 
+                            information['debugging'] = decodedString
                         else:    
                             information['onlyonchange'] = decodedString
              
@@ -192,6 +195,7 @@ class EmailPref(QDialog):
     
     # Update/Save Information Related To Email Configuration 
     def setConfigInfo(self, information , project=None):
+        
         flag = False
         if project == None:  
             f = open(getcwd() + '\\bin\\conf.txt', 'wb')
