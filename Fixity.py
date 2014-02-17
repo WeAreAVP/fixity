@@ -4,7 +4,7 @@
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-#Libraries
+#Bultin Libraries
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import path, listdir, remove, walk , getcwd , P_DETACH , spawnl , system
@@ -14,16 +14,18 @@ import shutil
 import sys
 import platform
 import os
+from collections import deque
+
 
 #Custom Libraries
-
 import FixityCore
 import FixitySchtask
 from Threading import Threading
-
 from EmailPref import EmailPref
 from Debuger import Debuger
 from FilterFiles import FilterFiles
+from FileChanged import FileChanged
+from genericpath import exists
 
 
 class ProjectWin(QMainWindow):
@@ -51,6 +53,11 @@ class ProjectWin(QMainWindow):
             
                 self.EP = EmailPref()
                 self.EP.setVersion('0.3')
+                
+                self.FileChanged = FileChanged()
+                self.FileChanged.setVersion('0.3')
+                
+                
                 self.FilterFiles = FilterFiles()
                 self.Threading = Threading
                 if not path.isfile(getcwd() + '\\bin\\conf.txt'):
@@ -238,7 +245,19 @@ class ProjectWin(QMainWindow):
             self.EP = EmailPref()
             self.EP.SetDesgin()
             self.EP.ShowDialog()
+        
+        # Pop Up to Change Root Directory If any change occured
+        # orignalPathText:: Path In Manifest
+        # changePathText:: New Path Given in Fixity Tool  
+        def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
+            self.FileChanged.DestroyEveryThing()
+            self.FileChanged = None
+            self.FileChanged = FileChanged(orignalPathText,changePathText)
+            self.FileChanged.SetDesgin()
+            self.FileChanged.ShowDialog()
             
+            
+        # Pop up to set Filters        
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
             self.FilterFiles = None
@@ -493,23 +512,42 @@ class ProjectWin(QMainWindow):
                 if shouldRun or (not isfileExists):
                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                     total = 0
+                    directoryIncreament = 0
+                    
                     
                     for ds in self.dtx:
-                            if ds.text().strip() != "":
-                                    CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
-                                    projfile.write(str(ds.text()) + "|-|-|" + CodeOfPath + ";")
-                                                                 
+                        directoryIncreament = directoryIncreament + 1 
+                        if ds.text().strip() != "":
+                            self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
+                            orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                            changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                            
+                            CodeOfPath = ''
+                            if self.FileChanged.changeThePathInformation:
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                pathToSaveInManifest = str(ds.text())
+                            else:   
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
+                                
+                            if(pathToSaveInManifest ==''):
+                                pathToSaveInManifest = str(ds.text())
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                
+                            if self.FileChanged.changeThePathInformation:
+                                self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
+                            
+                            projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
+                                                             
                     projfile.write("\n")
                     
                     for ms in self.mtx:
-                            
                             if ms.text().strip() != "":
                                     projfile.write(ms.text() + ";")
                     projfile.write("\n")
                     projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
                     
                     projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-                
                     currentProject = self.projects.currentItem().text()
                     
                     Configurations = {}
@@ -553,13 +591,34 @@ class ProjectWin(QMainWindow):
                         configurations['emails'] = ''
                         configurations['timingandtype'] = ''
                         
-                        for ds in self.dtx:
-                            if ds.text().strip() != "": 
+                        directoryIncreament = 0
+                        
+                        for ds  in self.dtx:
+                            directoryIncreament = directoryIncreament + 1 
+                            if ds.text().strip() != "":
+                                self.checkForChanges(self.projects.currentItem().text(), ds.text(), directoryIncreament)
+                                orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                                changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                                CodeOfPath = ''
+
+                                if self.FileChanged.changeThePathInformation:
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    pathToSaveInManifest = str(ds.text())
+                                else:   
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
+                                    
+                                if(pathToSaveInManifest ==''):
+                                    pathToSaveInManifest = str(ds.text())
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    
+                                if self.FileChanged.changeThePathInformation:
+                                    self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
                                 
-                                CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
-                                configurations['directories'] +=  str(ds.text()) + "|-|-|" + CodeOfPath + ";"
+                                configurations['directories'] +=  (pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";")
 
                         configurations['directories'] += "\n"
+                         
                             
                         for ms in self.mtx:
                             if ms.text().strip() != "":
@@ -569,11 +628,15 @@ class ProjectWin(QMainWindow):
                         configurations['timingandtype'] = (str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
                         
                         projfileFileText[0] =  configurations['directories']
+                        
                         projfileFileText[1] =  configurations['emails']
                         projfileFileText[2] =  configurations['timingandtype']
+                        
+                        
                         projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                         projfile.writelines(projfileFileText)
 
+                        
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
                         
                 self.unsaved = False
@@ -617,6 +680,25 @@ class ProjectWin(QMainWindow):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
                 
+            
+        def replacePathInformation(self):
+            projFileChangePath = open('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'wb')    
+            currentProjFile = open('projects\\' + self.projects.currentItem().text()+ '.fxy', 'rb')
+            
+            lineNumber = 1
+            for line in currentProjFile:
+                lineToWrite = line
+                if lineNumber > 4:
+                    for SingleReplace in self.FileChanged.ReplacementArray:
+                        lineToWrite =line.replace(self.FileChanged.ReplacementArray[SingleReplace]['orignal'], self.FileChanged.ReplacementArray[SingleReplace]['new'])
+                projFileChangePath.write(lineToWrite)
+                lineNumber = lineNumber+1
+            currentProjFile.close()
+            projFileChangePath.close()
+            
+            shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
+            remove('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy')
+            
             
             
         #Saves And Runs 
@@ -736,8 +818,8 @@ class ProjectWin(QMainWindow):
         #Update Schedule information 
         def updateschedule(self):
                 flagInitialScanUponSaving = False
-                
                 isRcipentEmailAddressSet = False
+                
                 for ms in self.mtx:
                         SingleEmail = ms.text().strip()
                         if  SingleEmail != "":
@@ -747,6 +829,7 @@ class ProjectWin(QMainWindow):
                                 QB = QMessageBox()
                                 errorMsg = QB.information(self, "Error", errorMsg)
                                 return  
+                            
                 if isRcipentEmailAddressSet:
                     EmailInfo = self.EP.getConfigInfo()
                     if EmailInfo['email'] == '' or EmailInfo['email'] == '':
@@ -800,6 +883,8 @@ class ProjectWin(QMainWindow):
                 Configurations['RunInitialScan'] = False
                 
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , Configurations,self.SystemInformation)
+#                 if self.FileChanged.changeThePathInformation:
+#                     self.replacePathInformation()
                 self.unsaved = False
         
         #Remove the file which are not required
@@ -821,7 +906,6 @@ class ProjectWin(QMainWindow):
        
         #Window close Event
         def closeEvent(self, event):
-            
             if not str(self.projects.currentItem()) == 'None':
                 if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
                     projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
@@ -846,6 +930,29 @@ class ProjectWin(QMainWindow):
                     else:
                         self.removeNotRequiredFiles()
                         event.accept()
+        #Check for Difference in root directory in the fixity tool and in manifest                        
+        def checkForChanges(self,projectName , searchForPath ,code):
+                    directoryIncreament = 0
+                    DirectoryDetail = FixityCore.getDirectoryDetail(projectName)
+                    try:
+                        for ds  in self.dtx:
+                            directoryIncreament = directoryIncreament + 1 
+                            if ds.text().strip() != "":
+                                if(DirectoryDetail[directoryIncreament]  != None and DirectoryDetail[directoryIncreament]  != '' ):
+                                    if DirectoryDetail[directoryIncreament][1] != None  and DirectoryDetail[directoryIncreament][1] != '':
+                                        pathGiven = FixityCore.getCodePathMore(DirectoryDetail[directoryIncreament][1],DirectoryDetail)
+                                    else:
+                                        pathGiven = ''
+                                else:
+                                    pathGiven = ''
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                if ('Fixity-'+str(code)) == CodeOfPath and pathGiven !=searchForPath:
+                                    self.ChangeRootDirectoryInfor(pathGiven , searchForPath )
+                    except:
+                        pass
+
+                  
+            
         
 if __name__ == '__main__':
         app = QApplication(sys.argv)
