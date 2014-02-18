@@ -30,7 +30,7 @@ from genericpath import exists
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
-            
+                
                 QMainWindow.__init__(self)
                 Debuggin = Debuger()
                 Debuggin.tureDebugerOn()
@@ -49,14 +49,11 @@ class ProjectWin(QMainWindow):
                     Debuggin.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                     Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
                 
-                
-            
                 self.EP = EmailPref()
                 self.EP.setVersion('0.3')
                 
                 self.FileChanged = FileChanged()
                 self.FileChanged.setVersion('0.3')
-                
                 
                 self.FilterFiles = FilterFiles()
                 self.Threading = Threading
@@ -237,7 +234,7 @@ class ProjectWin(QMainWindow):
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
                 self.show()
-                            
+                       
         # Configure Email Address for the Tools
         def ConfigEmailView(self):
             self.EP.CloseClick()
@@ -285,9 +282,6 @@ class ProjectWin(QMainWindow):
             
             self.Debuging.setText(debugText)    
             
-            
-            
-            
         def newWindow(self):
             self = ProjectWin()
             self.show()
@@ -296,7 +290,6 @@ class ProjectWin(QMainWindow):
             WindowsInformation = {};
             try:
                 major , minor , build , platformType , servicePack = sys.getwindowsversion()
-                
                 WindowsInformation['major'] = major
                 WindowsInformation['minor'] = minor
                 WindowsInformation['build'] = build 
@@ -305,7 +298,6 @@ class ProjectWin(QMainWindow):
                 windowDetailedName = platform.platform()
                 WindowsInformation['platform'] = windowDetailedName
                 windowDetailedName = str(windowDetailedName).split('-')
-                
                 
                 if(windowDetailedName[0] != None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows')):  
                     WindowsInformation['isWindows'] =True
@@ -951,9 +943,6 @@ class ProjectWin(QMainWindow):
                     except:
                         pass
 
-                  
-            
-        
 if __name__ == '__main__':
         app = QApplication(sys.argv)
         w = ProjectWin(EmailPref , FilterFiles)

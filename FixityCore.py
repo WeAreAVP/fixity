@@ -379,7 +379,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 		pass
 
 	if path.isfile(line[1]):
-		print('==================')
+
 		if CurrentDirectory != None :
 			
 			CurrentDirectory = CurrentDirectory[0]
@@ -400,9 +400,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 			if isHashSame and (not isFilePathSame):
 				verifiedFiles.append(line[1])
 				return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
-				
-			if (not isHashSame) and isFilePathSame:
+				 
 				verifiedFiles.append(line[1])
+			if (not isHashSame) and isFilePathSame:
 				return line, "Changed File :\t" + str(line[1])
 				
 			if (not isHashSame) and (not isFilePathSame):
@@ -410,53 +410,52 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 				return line, "Changed File :\t" + str(line[1])
 				
 		else :
-			print('no inode')
-			CurrentDirectory = dictHash.get(line[0])
-			print('out')
-			print(CurrentDirectory)
-			print('out')
-			if CurrentDirectory != None:
-				CurrentDirectory = CurrentDirectory[0]
-				isFilePathSame = ''
+			print(dictHash)
+			CurrentDirectory = []
+			flagConfirmed  = False
+			flagChanged  = False
+			flagMoved  = False
+			
+			for dictionarySingle in dictHash:
+				allInforHashRelated = dictHash[dictionarySingle]
+				for singleInforHashRelated in allInforHashRelated:
+					#Y	Y	Y	N	Confirmed File	
+					if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0]:
+						verifiedFiles.append(line[1])
+						return line, "Confirmed File :\t" + str(line[1])
+					#Y	N	Y	N	Changed File
+					elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0]:
+						verifiedFiles.append(line[1])
+						return line, 'File Changed :\t' + str(line[1])
 				
-				
-				# Check For File Path Change
-				isFilePathSame = (CurrentDirectory[0] == line[1])
-				print(CurrentDirectory)
-				print(isFilePathSame)
-				print(line)
-				if isFilePathSame :
-					print(1)
-					verifiedFiles.append(line[1])
-					return line, "Confirmed File :\t" + str(line[1])
-				else :
-					print(2)
-					verifiedFiles.append(line[1])
-					return line, "Moved or Renamed :\t" + line[1] 
-				
-			else :
-				print(3)
-				CurrentDirectory = dictFile.get(line[1])
-				if CurrentDirectory != None:
-					verifiedFiles.append(line[1])
-					return line, 'File Changed :\t' + str(line[1])
-			verifiedFiles.append(line[1])
-			print('==================')
-			return line, 'New FIle :\t' + str(line[1])
+			
+			for dictionarySingle1 in dictHash:
+				allInforHashRelated1 = dictHash[dictionarySingle1]
+				for singleInforHashRelated1 in allInforHashRelated1:
+					if singleInforHashRelated1[0] == line[1] :
+						verifiedFiles.append(line[1])
+						return line, "Moved or Renamed :\t" + line[1]
+			# Y	Y	N	N	Moved or Renamed File
+			
+
+		verifiedFiles.append(line[1])
+		return line, 'New File :\t' + str(line[1])
 
 				
 # Method to verify a tuple against the dictionary
 # Input: defaultDict (from buildDict), tuple
 # Output: Message based on whether the file was good or not
 
-def verify(dicty, line, fileNamePath=''):
-
+def verify(dict, line, fileNamePath=''):
+	
 	# if the hash is a key in the dictionary, return the values
 	# returns None on a miss
 	# Current Directory Status (Information of this directory using hash from the project file by scanning the directory)
 	global verifiedFiles
-
+	
 	CurrentDirectoryStatus = dict.get(line[0])
+	
+	
 
 	copies = ""
 
@@ -526,6 +525,7 @@ def verify(dicty, line, fileNamePath=''):
 				return line, "New Files\t" + line[1] + "\tcopy of " + copies
 			else:
 				verifiedFiles.append(line[1])
+				
 				return (line[0], line[1], line[2]), "Changed Files\t" + str(line[1])
 		# if we don't have a given hash, figure out why
 		else:
@@ -712,9 +712,7 @@ def run(file,filters='',projectName = ''):
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 		
 		DirectorysInsideDetails = quietTable(SingleDirectory, 'sha256',InfReplacementArray)
-		
-		
-		
+	
 		
 		for e in DirectorysInsideDetails:
 			flag =True
@@ -736,6 +734,8 @@ def run(file,filters='',projectName = ''):
 				try:
 					
 					response = verify_using_inode(dict,dict_Hash,dict_File, e , file)
+# 					response = verify(dict_Hash, e, file)
+					
 				except Exception as ex :
 					
 					moreInformation = {"moreInfo":'null'}
@@ -826,7 +826,7 @@ def getDirectoryDetail(projectName ,fullpath = False):
 	return DirectoryDetail 		
 
 ## To test Main Functionality  
-projects_path = getcwd()+'\\projects\\'
-run(projects_path+'New_Project.fxy')
-exit()
+# projects_path = getcwd()+'\\projects\\'
+# run(projects_path+'New_Project1.fxy')
+# exit()
 

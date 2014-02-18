@@ -117,12 +117,14 @@ class FileChanged(QDialog):
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
             msgBox = QMessageBox();
-            msgBox.setText("New Directory Dose not exsit's , Are you sure you wanted to change current Directory From "+self.orignalPathText+" To " + self.changePathText+' .Press')
+            msgBox.setText("New Directory Dose not exsit's , could not change path from "+self.orignalPathText+" To " + self.changePathText+'.please give correct path and try again')
             msgBox.exec_()
-        if (self.orignalPathText != None and self.changePathText != None) and (self.orignalPathText != '' and self.changePathText != ''):
-            self.changeThePathInformation = True
-        else:
             self.changeThePathInformation = False
+        else:
+            if (self.orignalPathText != None and self.changePathText != None) and (self.orignalPathText != '' and self.changePathText != ''):
+                self.changeThePathInformation = True
+            else:
+                self.changeThePathInformation = False
         self.FileChangedWin.close()
             
 # Main Code
