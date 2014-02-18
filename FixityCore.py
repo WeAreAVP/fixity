@@ -410,7 +410,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 				return line, "Changed File :\t" + str(line[1])
 				
 		else :
-			print(dictHash)
+			
 			CurrentDirectory = []
 			flagConfirmed  = False
 			flagChanged  = False
@@ -588,7 +588,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 	report += "Removed Files\t" + str(dels) + "\n"
 	
 	report += out
-	print(report)
+	
 	AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 	rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName) + '.csv'
 	
@@ -708,7 +708,7 @@ def run(file,filters='',projectName = ''):
 		ToBeScannedDirectoriesInProjectFile.remove('\n')
 	except:
 		pass	
-	
+	flagAnyChanges = False
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 		
 		DirectorysInsideDetails = quietTable(SingleDirectory, 'sha256',InfReplacementArray)
@@ -724,7 +724,6 @@ def run(file,filters='',projectName = ''):
 			valDecoded = pathInfo
 			e[1] = (str(valDecoded)+str(filePath[1]))
 			
-			
 			for Filter in FiltersArray:
 				if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
 					flag =False
@@ -732,12 +731,8 @@ def run(file,filters='',projectName = ''):
 			if flag:
 				check+= 1
 				try:
-					
 					response = verify_using_inode(dict,dict_Hash,dict_File, e , file)
-# 					response = verify(dict_Hash, e, file)
-					
 				except Exception as ex :
-					
 					moreInformation = {"moreInfo":'null'}
 					try:
 						if not ex[0] == None:
@@ -749,21 +744,24 @@ def run(file,filters='',projectName = ''):
 							moreInformation['LogsMore1'] =str(ex[1])
 					except:
 						pass
+					
 					Debugging = Debuger()
 					Debugging.tureDebugerOn()	
 					Debugging.logError('Error Reporting Line 500 FixityCore While Verfiying file status' +str(file)+' '+'||'+str(e[0])+'||'+'||'+str(e[1])+' '+'||'+str(e[2])+'||'+"\n", moreInformation)
 					pass
-						
 				try:
 					
 					FileChangedList += response[1] + "\n"
 					if response[1].startswith('Confirmed'): 
 						confirmed += 1
 					elif response[1].startswith('Moved'):
+						flagAnyChanges = True
 						moved += 1
 					elif response[1].startswith('New'):
+						flagAnyChanges = True
 						created += 1
 					else:
+						flagAnyChanges = True
 						corruptedOrChanged += 1
 					
 					pathCode = getPathCode(str(SingleDirectory),InfReplacementArray)
@@ -778,6 +776,17 @@ def run(file,filters='',projectName = ''):
 	tmp.close()
 	infile.close()
 	
+	
+	
+	information = str(file).split('\\')
+	projectName = information[(len(information)-1)]
+	projectName = str(projectName).split('.')
+	
+	
+	if(flagAnyChanges):
+		shutil.copy(file , getcwd()+'\\history\\'+projectName[0]+'-'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf')
+	
+		
 	shutil.copy(file + ".tmp", file)
 	remove(file + ".tmp")
 	
@@ -827,6 +836,6 @@ def getDirectoryDetail(projectName ,fullpath = False):
 
 ## To test Main Functionality  
 # projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project1.fxy')
+# run(projects_path+'New_Project.fxy')
 # exit()
 

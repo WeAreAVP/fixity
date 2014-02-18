@@ -56,14 +56,13 @@ except Exception as e:
 		pass
 		
 	Debuging.tureDebugerOn()	
-	Debuging.logError('Configuartion File Dose not eixst  Line range 57 - 61 File AutoFixity ', moreInformation)
+	Debuging.logError('Configuration File Dose not exist  Line range 57 - 61 File AutoFixity ', moreInformation)
 	pass
 
 if projectConfNotAvailable :
 	TextEmail = ''
 	
 try:
-	
 	fconfEmail = open(AutiFixPath + '\\bin\\'  +'conf.txt', 'rb')
 	TextEmail = fconfEmail.readlines()
 	fconfEmail.close()

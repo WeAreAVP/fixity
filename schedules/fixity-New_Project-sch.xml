@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<Task xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
+    <RegistrationInfo>
+        <Date>2014-02-18T15:07:44</Date>
+        <Author>Furqan</Author>
+        <Version>Fixity Task Scheduler to Monitor A Folder Activity!</Version>
+        <Description>Fixity Task Scheduler to Monitor A Folder Activity!</Description>
+    </RegistrationInfo>
+    <Triggers>
+        <CalendarTrigger>
+            <StartBoundary>2014-02-18T00:00:00</StartBoundary>
+            <ScheduleByMonth>
+                <DaysOfMonth>
+                    <Day>1</Day>
+                </DaysOfMonth >
+                <Months>
+                <January/>
+                <February/>
+                <March/>
+                <April/>
+                <May/>
+                <June/>
+                <July/>
+                <August/>
+                <September/>
+                <October/>
+                <November/>
+                <December/>
+                </Months>
+            </ScheduleByMonth>
+        </CalendarTrigger>
+    </Triggers>
+    <Settings>
+        <Enabled>true</Enabled>
+        <AllowStartOnDemand>true</AllowStartOnDemand>
+        <AllowHardTerminate>true</AllowHardTerminate>
+        <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+        <StartWhenAvailable>true</StartWhenAvailable>
+        <WakeToRun>true</WakeToRun>
+    </Settings>
+    <Actions>
+        <Exec>
+            <Command>"D:\python\Fixity Project\schedules\fixity-New_Project.vbs"</Command>
+        </Exec>
+      </Actions>
+</Task>
