@@ -57,7 +57,7 @@ class FilterFiles(QDialog):
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
-        self.Project.setText('For the Project')
+        self.Project.setText('Project')
         
     # Get array of all projects currently working     
     def getProjects(self , src):
@@ -115,15 +115,15 @@ class FilterFiles(QDialog):
         Information = self.EmailPref.getConfigInfo(selectedProject)
         Information['filters'] = 'fil|' + self.FilterField.text()
         if selectedProject == '':
-            QMessageBox.information(self, "Failure", "No Project Selected")
+            QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if flag:
-            QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
+            QMessageBox.information(self, "Success", "Filter set successfully!")
             self.Cancel()
             return
         else:
-            QMessageBox.information(self, "Failure", "Some Problem Occurred While Update the Configurations,Please Try Again")
+            QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
                 
         
     def Reset(self):
