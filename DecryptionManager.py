@@ -21,9 +21,6 @@ import FixityCore
 import FixitySchtask
 from Debuger import Debuger
 
-global verifiedFiles
-verifiedFiles = []
-
 class DecryptionManager(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
@@ -117,13 +114,13 @@ class DecryptionManager(QDialog):
         
     # Update Filters information    
     def SetInformation(self):
+        
+        msgBox = QLabel('sadsadsadsad')
         response = True
         hasChanged = False
         selectedProject = self.Porjects.currentText()
         projects_path = getcwd()+'\\projects\\'
-        
         Information = self.EmailPref.getConfigInfo(selectedProject)
-        
         
         aloValueSelected = ''
         if self.methods.currentText() == None or self.methods.currentText() == '':
@@ -131,33 +128,43 @@ class DecryptionManager(QDialog):
         else:
             aloValueSelected = 'algo|' + str(self.methods.currentText())
         
-        
-        
+        sameValueFlag = False
         if aloValueSelected != Information['Algorithm']:
+            sameValueFlag =True
             response = self.slotWarning(selectedProject)
             if response:
+                msgBox.setWindowTitle("Loading ....")
+                msgBox.setText("Reading Files, please wait ...")
+                msgBox.show()
+                QCoreApplication.processEvents()
+
                 hasChanged = self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True)
-                
                 if hasChanged:
                     Information['Algorithm'] = aloValueSelected
                     response = True
             else:
                 response = False
-            
+        else:
+            sameValueFlag = False
         if selectedProject == '':
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
         
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if response:
-            if flag:
-                if FixityCore.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
+            if flag and hasChanged:
+                if not FixityCore.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
+                    try:
+                        msgBox.close()
+                    except:
+                        pass
                     QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
+                    
                     self.Cancel()
                     return
             else:
-                if not hasChanged:
-                    QMessageBox.information(self, "Failure", "Everything was not confirmed that is why algorithm change did not take place.")
+                if (not hasChanged) and (sameValueFlag):
+                    QMessageBox.information(self, "Information", "Everything was not confirmed that is why algorithm change did not take place.")
         return   
         
     # Triggers on project changed from drop down and sets related information in filters Field    
@@ -188,8 +195,10 @@ class DecryptionManager(QDialog):
             return False
     def getnumberoffiles(self,path):
         return sum([len(files) for r, d, files in walk(path)])
-    
+
+        
     def run(self,file,filters='',projectName = '',checkForChanges = False):
+        
         
         FiltersArray = filters.split(',')
         dict = defaultdict(list)
@@ -210,30 +219,24 @@ class DecryptionManager(QDialog):
         for SingleDircOption in ToBeScannedDirectoriesInProjectFileRaw:
             SingleDircOption = SingleDircOption.strip()
             SignleDirCodeAndPath = SingleDircOption.split('|-|-|')
+            print(SignleDirCodeAndPath)
             if SignleDirCodeAndPath[0].strip():
                 ToBeScannedDirectoriesInProjectFile.append(SignleDirCodeAndPath[0].strip())
                 InfReplacementArray[SignleDirCodeAndPath[0].strip()]= {'path':SignleDirCodeAndPath[0].strip(),'code':'Fixity-'+SignleDirCodeAndPath[2] ,'number': SignleDirCodeAndPath[2]}
         
-        
         mails = second.split(';')
-        
         keeptime = infile.readline()
-        
         trash = infile.readline()
         
         tmp.write(first)
-        
         tmp.write(second)
         tmp.write(keeptime)
         tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
         
         check = 0
-        print(1)
         for l in infile.readlines():
-            
             try:
                 x = FixityCore.toTuple(l)
-                
                 if x != None and x:
                     pathInformation = str(x[1]).split('||')
                     if pathInformation:
@@ -286,16 +289,14 @@ class DecryptionManager(QDialog):
         for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
             counter = self.getnumberoffiles(SingleDirectory)
 
-            print(2)        
             DirectorysInsideDetails = self.quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName,counter)
-            print(3)
+            
             for e in DirectorysInsideDetails:
-                print('.')    
+                
                 
                 flag =True
                 e = list(e)
                 filePath = str(e[1]).split('||')
-                
                 pathInfo = FixityCore.getCodePath(filePath[0], InfReplacementArray)
                 
                 valDecoded = pathInfo
@@ -343,42 +344,43 @@ class DecryptionManager(QDialog):
                         else:
                             flagAnyChanges = True
                             corruptedOrChanged += 1
-                        
-                        pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
+                            pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
                         
                         newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
                         tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
                         
                     except:
                         pass
-        print('3.5')  
-        missingFile = self.missing(dict_Hash,SingleDirectory,True)
-        print('3.6')
-        if missingFile[0] > 0:
-            flagAnyChanges = True
-        print('3.7')
-        FileChangedList += missingFile[0]
+        missingFile =[0,0,0]            
+        try:  
+            missingFile = FixityCore.missing(dict_Hash,SingleDirectory)
+            if missingFile[0] > 0:
+                flagAnyChanges = True
+        except:
+            pass
+        
+        if len(missingFile) > 0:
+            FileChangedList += str(missingFile[0])
         tmp.close()
         infile.close()
         
-        print('3.75')
+        
         
         information = str(file).split('\\')
         projectName = information[(len(information)-1)]
         projectName = str(projectName).split('.')
-        print('3.8')
+        
         
         if(flagAnyChanges):
             shutil.copy(file , getcwd()+'\\history\\'+projectName[0]+'-'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf')
         
-        print('3.9')
+            
         shutil.copy(file + ".tmp", file)
         remove(file + ".tmp")
-        print('4.0')
+        
         total = confirmed + moved + created + corruptedOrChanged + missingFile[1]
-        repath = FixityCore.writer('sha256', file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
-        print('4.1')
-        print(flagAnyChanges)
+        repath = FixityCore.writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
+        
         return flagAnyChanges
         
 # Method to create (hash, path, id) tables from file root
@@ -388,20 +390,12 @@ class DecryptionManager(QDialog):
         
         listOfValues = []
         fls = []
-        progress = QProgressDialog()
-        progress.setMaximum(100)
-        progress.setMinimumDuration(0)
-        
+
         try:
-            thisnumber= 0
             for root, subFolders, files in walk(r):
                 for Singlefile in files:
                     fls.append(path.join(root, Singlefile))
-                    progress.setLabelText(str(Singlefile))
-                    progress.setValue(100 * float(thisnumber) / counter)
-                    qApp.processEvents()
-                    thisnumber= thisnumber+1
-            progress.close()         
+                                    
         except Exception as e:
                 
                 moreInformation = {"moreInfo":'null'}
@@ -435,7 +429,7 @@ class DecryptionManager(QDialog):
                 h = FixityCore.fixity(p, a , projectName)
                 i = FixityCore.ntfsID(p)
                 listOfValues.append((h, givenPath, i))
-                
+        
                 
         except Exception as e:
                 
@@ -458,58 +452,14 @@ class DecryptionManager(QDialog):
                 pass        
             
         return listOfValues
-# Method to find which files are missing in the scanned directory
-# Input: defaultdict (from buildDict)
-# Output: warning messages about missing files (one long string and printing to stdout)
-    def missing(self,dict,file='',progressBar = False):
-        global verifiedFiles
-        msg = ""
-        count = 0
-        thisnumber = 0
         
-        if progressBar:
-            progress = QProgressDialog()
-            progress.setMaximum(100)
-            progress.setMinimumDuration(0)
-            
-        # walks through the dict and returns all False flags
-        print('3.51')
-        for keys in dict:
-            counter = len(dict)
-            print('3.52')
-            for obj in dict[keys]:
-                if not path.isfile(obj[0]):
-                    print('3.53')
-                    #check if file already exists in the manifest
-                    if not obj[0] in verifiedFiles:
-                        print('3.54')
-                        thisnumber = thisnumber + 1     
-                        print(file)
-                        if progressBar:              
-                            progress.setLabelText(str(file))
-                            
-                        response = FixityCore.GetDirectoryInformationUsingInode(file,obj[1])
-                        
-                        if progressBar:
-                            progress.setValue(100 * float(thisnumber) / counter)
-                            qApp.processEvents()
-                        print('3.55')
-                        if not response == True :                           
-                            continue
-                        count += 1
-                        print('3.56')
-                        msg += "Removed Files\t" + obj[0] +"\n"
-        if progressBar:
-            progress.close()
-        print('3.57')
-        return msg, count        
-app = QApplication('asdas')
-w = DecryptionManager()
+# app = QApplication('asdas')
+# w = DecryptionManager()
 # w.CreateWindow()
 # w.SetWindowLayout() 
 # w.SetDesgin()
 # w.ShowDialog()
 # app.exec_() 
          
-projects_path = getcwd()+'\\projects\\'
-print(w.run(projects_path+'New_Project.fxy','','New_Project'))
+# projects_path = getcwd()+'\\projects\\'
+# w.run(projects_path+'New_Project.fxy','','New_Project')

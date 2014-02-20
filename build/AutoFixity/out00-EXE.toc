@@ -1,0 +1,9 @@
+('d:\\python\\Fixity Project\\dist\\AutoFixity.exe',
+ True,
+ False,
+ None,
+ None,
+ [],
+ None,
+ False,
+ 1392898111L)
