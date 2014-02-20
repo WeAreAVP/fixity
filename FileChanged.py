@@ -23,7 +23,7 @@ class FileChanged(QDialog):
     # Constuctor
     def __init__(self , orignalPathText ='', changePathText = '' ):
         self.FileChangedWin = QDialog()
-        self.FileChangedWin.setWindowTitle('Change Directory Information')
+        self.FileChangedWin.setWindowTitle('Change Directory')
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
         self.version = '0.3'
@@ -117,7 +117,7 @@ class FileChanged(QDialog):
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
             msgBox = QMessageBox();
-            msgBox.setText("New Directory Dose not exsit's , could not change path from "+self.orignalPathText+" To " + self.changePathText+'.please give correct path and try again')
+            msgBox.setText(self.changePathText + ' does not exist.\nPlease provide a valid path and try again.')
             msgBox.exec_()
             self.changeThePathInformation = False
         else:
