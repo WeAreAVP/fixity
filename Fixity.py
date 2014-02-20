@@ -15,7 +15,7 @@ import sys
 import platform
 import os
 from collections import deque
-
+from genericpath import exists
 
 #Custom Libraries
 import FixityCore
@@ -25,7 +25,8 @@ from EmailPref import EmailPref
 from Debuger import Debuger
 from FilterFiles import FilterFiles
 from FileChanged import FileChanged
-from genericpath import exists
+from DecryptionManager import DecryptionManager
+
 
 
 class ProjectWin(QMainWindow):
@@ -51,7 +52,7 @@ class ProjectWin(QMainWindow):
                 
                 self.EP = EmailPref()
                 self.EP.setVersion('0.3')
-                
+                self.DecryptionManager = DecryptionManager()
                 self.FileChanged = FileChanged()
                 self.FileChanged.setVersion('0.3')
                 
@@ -77,7 +78,7 @@ class ProjectWin(QMainWindow):
                 quit = QAction('&Quit Fixity', self)
                 
                 FilterFilesMane = QAction('&Filter Files', self)
-                
+                DecryptionManagerMenu = QAction('&Select Encryption Method', self)
                 
                 self.Debuging = QAction('&Turn Debugging Off', self)
                 self.switchDebugger('start')
@@ -92,7 +93,7 @@ class ProjectWin(QMainWindow):
                 self.Preferences.addAction(FilterFilesMane)
                 self.Preferences.addAction(configemail)
                 self.Preferences.addAction(self.Debuging)
-                
+                self.Preferences.addAction(DecryptionManagerMenu)
                 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
@@ -102,6 +103,7 @@ class ProjectWin(QMainWindow):
                 quit.triggered.connect(self.close)
                 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
+                DecryptionManagerMenu.triggered.connect(self.DecryptionManagerBox)
                 self.Debuging.triggered.connect(self.switchDebugger)
                 
                 self.widget = QWidget(self)
@@ -253,14 +255,21 @@ class ProjectWin(QMainWindow):
             self.FileChanged.SetDesgin()
             self.FileChanged.ShowDialog()
             
-            
         # Pop up to set Filters        
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
             self.FilterFiles = None
             self.FilterFiles = FilterFiles()
             self.FilterFiles.SetDesgin()
-            self.FilterFiles.ShowDialog()
+            self.FilterFiles.ShowDialog()    
+            
+        # Pop up to set Filters        
+        def DecryptionManagerBox(self):
+            self.DecryptionManager.Cancel()
+            self.DecryptionManager = None
+            self.DecryptionManager = DecryptionManager()
+            self.DecryptionManager.SetDesgin()
+            self.DecryptionManager.ShowDialog()
                
         def switchDebugger(self,start= None):
             
@@ -500,79 +509,8 @@ class ProjectWin(QMainWindow):
                         isfileExists = False
                     
                     
-                    
-                if shouldRun or (not isfileExists):
-                    projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
-                    total = 0
-                    directoryIncreament = 0
-                    
-                    
-                    for ds in self.dtx:
-                        directoryIncreament = directoryIncreament + 1 
-                        if ds.text().strip() != "":
-                            self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
-                            orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
-                            changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
-                            
-                            CodeOfPath = ''
-                            if self.FileChanged.changeThePathInformation:
-                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                                pathToSaveInManifest = str(ds.text())
-                            else:   
-                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                                pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
-                                
-                            if(pathToSaveInManifest ==''):
-                                pathToSaveInManifest = str(ds.text())
-                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                                
-                            if self.FileChanged.changeThePathInformation:
-                                self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
-                            
-                            projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
-                                                             
-                    projfile.write("\n")
-                    
-                    for ms in self.mtx:
-                            if ms.text().strip() != "":
-                                    projfile.write(ms.text() + ";")
-                    projfile.write("\n")
-                    projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
-                    
-                    projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-                    currentProject = self.projects.currentItem().text()
-                    
-                    Configurations = {}
-                    
-                    Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
-                    Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
-                    Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
-                    Configurations['RunInitialScan'] = False
-                    
-                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations,self.SystemInformation)
-                    
-                    ConfigurationInfo = self.EP.getConfigInfo(currentProject)
-                    Allfilters = ConfigurationInfo['filters']
-                    Allfilters = str(Allfilters.replace('fil|', '').replace('\n', ''))
-                    FiltersArray = Allfilters.split(',')
-                    
-                    if shouldRun: 
-                        for dx in self.dtx:
-                            src = dx.text()
-                            l = self.buildTable(src, 'sha256')
-                            for n in xrange(len(l)):
-                                for FA in FiltersArray :
-                                    if FA == '' or l[n][1].find(FA) < 0:
-                                        projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
-                                        total += 1
-                     
-                    if shouldRun:
-                        QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
-                    else:
-                        QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())   
-                    projfile.close()                     
-                else :
-                    
+                
+                if not (shouldRun or (not isfileExists)):
                     projfileFileText = []            
                     if isfileExists:            
                         projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
@@ -782,6 +720,7 @@ class ProjectWin(QMainWindow):
                 
         #Fetch All Directory with in this directory 
         def buildTable(self, r, a):
+                print(11231231)
                 list = []
                 fls = []
                 
@@ -942,7 +881,6 @@ class ProjectWin(QMainWindow):
                                     self.ChangeRootDirectoryInfor(pathGiven , searchForPath )
                     except:
                         pass
-
 if __name__ == '__main__':
         app = QApplication(sys.argv)
         w = ProjectWin(EmailPref , FilterFiles)

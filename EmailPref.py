@@ -140,6 +140,7 @@ class EmailPref(QDialog):
         
     # Fetch information related to email configuration    
     def getConfigInfo(self, project=None):
+        
         if project == None:
             information = {} 
             information['email'] = ''
@@ -171,6 +172,8 @@ class EmailPref(QDialog):
             information['IfMissedRunUponAvailable'] = ''
             information['RunInitialScan'] = ''
             information['filters'] = ''
+            information['Algorithm'] = ''
+            
             if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
                 fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb') 
                 Text = fCheck.readlines()
@@ -189,25 +192,28 @@ class EmailPref(QDialog):
                             information['IfMissedRunUponAvailable'] = decodedString
                         elif decodedString.find('RIS|') >= 0:
                             information['RunInitialScan'] = decodedString
-                        
+                        elif decodedString.find('algo|') >= 0:
+                            information['Algorithm'] = decodedString
                                               
         return information
     
     # Update/Save Information Related To Email Configuration 
     def setConfigInfo(self, information , project=None):
-        
         flag = False
-        if project == None:  
-            f = open(getcwd() + '\\bin\\conf.txt', 'wb')
-        else:
-            f = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'wb')
-            
-        for key , Sngleitem in information.iteritems():
-            if Sngleitem != '':
-                f.write(self.EncodeInfo(Sngleitem) + '\n')
-                flag = True
-        f.close()      
-        return flag   
+        try:
+            if project == None:  
+                f = open(getcwd() + '\\bin\\conf.txt', 'wb')
+            else:
+                f = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'wb')
+                
+            for key , Sngleitem in information.iteritems():
+                if Sngleitem != '':
+                    f.write(self.EncodeInfo(Sngleitem) + '\n')
+                    flag = True
+            f.close()      
+        except:
+            pass
+        return flag
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msg = "Invalid Invalid Email Address provided, please try again! "

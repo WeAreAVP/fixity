@@ -3,7 +3,8 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+from PySide.QtCore import *
+from PySide.QtGui import *
 import hashlib
 from os import chdir, walk, path, stat, getcwd
 from sys import argv ,exit
@@ -20,9 +21,7 @@ import base64
 
 #Custom
 from Debuger import Debuger
-
-
-
+from EmailPref import EmailPref
 
 global verifiedFiles
 verifiedFiles = []
@@ -30,16 +29,17 @@ verifiedFiles = []
 # Checksum generation method
 # Input: Filepath, algorithm
 # Output: Hexadecimal value of hashed file
-def fixity(f, alg): 
-	
+def fixity(f, Algorithm , projectName= None): 
 	moreInformation= {}
+	
 	try:
-		if alg == 'md5':
+		if Algorithm == 'md5':
 			fix = hashlib.md5()
-		elif alg == 'sha1':
+		elif Algorithm == 'sha1':
 			fix = hashlib.sha1()
-		elif alg == 'sha256':
+		elif Algorithm == 'sha256':
 			fix = hashlib.sha256()
+			
 	except Exception as e:
 			
 			moreInformation = {"moreInfo":'null'}
@@ -53,9 +53,11 @@ def fixity(f, alg):
 					moreInformation['LogsMore1'] =str(e[1])
 			except:
 				pass
+			
 			Debugging = Debuger()
 			Debugging.tureDebugerOn()	
-			Debugging.logError('Error Reporting Line 36 - 40 While encrypting File into hashes using Algo:' + str(alg)  +" File FixtyCore\n", moreInformation)
+			Debugging.logError('Error Reporting Line 36 - 40 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
+			
 			pass		
 	try:	
 		with open(f, 'rb') as target:
@@ -76,9 +78,10 @@ def fixity(f, alg):
 				moreInformation['LogsMore1'] =str(e[1])
 		except:
 			pass
+		
 		Debugging = Debuger()
 		Debugging.tureDebugerOn()	
-		Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(alg)  +" File FixtyCore\n", moreInformation)
+		Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
 		pass		
 	
 	
@@ -172,20 +175,18 @@ def GetDirectoryInformationUsingInode(Path,Inode):
 # Method to create (hash, path, id) tables from file root
 # Input: root, output (boolean), hash algorithm, QApplication
 # Output: list of tuples of (hash, path, id)
-def quietTable(r, a , InfReplacementArray = {}):
+def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
+	
 	listOfValues = []
 	fls = []
-	Debugging = Debuger();
+	
+	
 	try:
-		
 		for root, subFolders, files in walk(r):
-			
 			for Singlefile in files:
-				
 				fls.append(path.join(root, Singlefile))
 				
 	except Exception as e:
-			
 			
 			moreInformation = {"moreInfo":'null'}
 			try:
@@ -198,8 +199,10 @@ def quietTable(r, a , InfReplacementArray = {}):
 					moreInformation['LogsMore1'] =str(e[1])
 			except:
 				pass	
+			Debugging = Debuger();
 			Debugging.tureDebugerOn()	
 			Debugging.logError('Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
+			
 			pass	
 		
 	try:
@@ -213,13 +216,12 @@ def quietTable(r, a , InfReplacementArray = {}):
 			
 			givenPath = str(p).replace(r, EcodedBasePath+'||')
 			
-			h = fixity(p, a)
+			h = fixity(p, a , projectName)
 			i = ntfsID(p)
 			listOfValues.append((h, givenPath, i))
 	
 			
 	except Exception as e:
-			
 			
 			moreInformation = {"moreInfo":'null'}
 			try:
@@ -233,8 +235,10 @@ def quietTable(r, a , InfReplacementArray = {}):
 			except:
 				pass
 			
+			Debugging = Debuger();
 			Debugging.tureDebugerOn()	
 			Debugging.logError('Error Reporting Line 169-183 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
+			
 			pass		
 		
 	return listOfValues
@@ -359,10 +363,8 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 	
 	try:
 		CurrentDirectory = dicty.get(line[2])
-			
 	except Exception as e:
 		Debugging = Debuger();
-
 		moreInformation = {"moreInfo":'null'}
 		try:
 			if not e[0] == None:
@@ -383,7 +385,6 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 		if CurrentDirectory != None :
 			
 			CurrentDirectory = CurrentDirectory[0]
-			
 			
 			isHashSame , isFilePathSame = '' , ''
 			
@@ -408,13 +409,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 			if (not isHashSame) and (not isFilePathSame):
 				verifiedFiles.append(line[1])
 				return line, "Changed File :\t" + str(line[1])
-				
 		else :
 			
 			CurrentDirectory = []
-			flagConfirmed  = False
-			flagChanged  = False
-			flagMoved  = False
 			
 			for dictionarySingle in dictHash:
 				allInforHashRelated = dictHash[dictionarySingle]
@@ -435,7 +432,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 					if singleInforHashRelated1[0] == line[1] :
 						verifiedFiles.append(line[1])
 						return line, "Moved or Renamed :\t" + line[1]
-			# Y	Y	N	N	Moved or Renamed File
+					
 			
 
 		verifiedFiles.append(line[1])
@@ -454,8 +451,6 @@ def verify(dict, line, fileNamePath=''):
 	global verifiedFiles
 	
 	CurrentDirectoryStatus = dict.get(line[0])
-	
-	
 
 	copies = ""
 
@@ -588,7 +583,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 	report += "Removed Files\t" + str(dels) + "\n"
 	
 	report += out
-	
+	print(report)
 	AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 	rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName) + '.csv'
 	
@@ -601,28 +596,52 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 # Method to find which files are missing in the scanned directory
 # Input: defaultdict (from buildDict)
 # Output: warning messages about missing files (one long string and printing to stdout)
-def missing(dict,file=''):
+def missing(dict,file='',progressBar = False):
 	msg = ""
 	count = 0
+	thisnumber = 0
 	global verifiedFiles
+	if progressBar:
+		progress = QProgressDialog()
+		progress.setMaximum(100)
+		progress.setMinimumDuration(0)
+		
 	# walks through the dict and returns all False flags
+	print('3.51')
 	for keys in dict:
+		counter = len(dict)
+		print('3.52')
 		for obj in dict[keys]:
 			if not path.isfile(obj[0]):
+				print('3.53')
 				#check if file already exists in the manifest
-				if not obj[0] in verifiedFiles:                   
+				if not obj[0] in verifiedFiles:
+					print('3.54')
+					thisnumber = thisnumber + 1     
+					print(file)
+					if progressBar:              
+						progress.setLabelText(str(file))
+						
 					response = GetDirectoryInformationUsingInode(file,obj[1])
+					
+					if progressBar:
+						progress.setValue(100 * float(thisnumber) / counter)
+						qApp.processEvents()
+					print('3.55')
 					if not response == True :   						
 						continue
 					count += 1
+					print('3.56')
 					msg += "Removed Files\t" + obj[0] +"\n"
-
+	if progressBar:
+		progress.close()
+	print('3.57')
 	return msg, count
 
 # Updating/Creating Manifest 
 # With on the given directory
 
-def run(file,filters='',projectName = ''):
+def run(file,filters='',projectName = '',checkForChanges = False):
 	
 	FiltersArray = filters.split(',')
 	dict = defaultdict(list)
@@ -679,10 +698,8 @@ def run(file,filters='',projectName = ''):
 					dict_File[pathInfo+pathInformation[1]].append([x[0], x[2], False])
 			else:
 				raise Exception
+		
 		except Exception as ex :
-			
-			
-			
 			moreInformation = {"moreInfo":'null'}
 			try:
 				if not ex[0] == None:
@@ -700,6 +717,7 @@ def run(file,filters='',projectName = ''):
 				moreInformation['directoryScanning'] = ''
 			for SingleVal in ToBeScannedDirectoriesInProjectFile:
 				moreInformation['directoryScanning']= str(moreInformation['directoryScanning']) + "\t \t"+str(SingleVal)
+				
 			Debugging = Debuger()
 			Debugging.tureDebugerOn()	
 			Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)	
@@ -709,12 +727,24 @@ def run(file,filters='',projectName = ''):
 	except:
 		pass	
 	flagAnyChanges = False
+	
+	information = getConfigInfo(projectName)
+	Algorithm = str(information['Algorithm']).replace('algo|', '').replace('\n', '')
+	counter = 0
+	thisnumber = 0
+	
+	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
+		DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
+		for e in DirectorysInsideDetails:
+			counter=counter+1
+			
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 		
-		DirectorysInsideDetails = quietTable(SingleDirectory, 'sha256',InfReplacementArray)
-	
+			
+		DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
 		
 		for e in DirectorysInsideDetails:
+			thisnumber=thisnumber+1
 			flag =True
 			e = list(e)
 			filePath = str(e[1]).split('||')
@@ -730,8 +760,14 @@ def run(file,filters='',projectName = ''):
 			
 			if flag:
 				check+= 1
+# 				progress = QProgressDialog()
+# 				progress.setMaximum(100)
+# 				progress.setMinimumDuration(0)
 				try:
+					
 					response = verify_using_inode(dict,dict_Hash,dict_File, e , file)
+# 					progress.setLabelText(str(e[1]))
+# 					progress.setValue(100 * float(thisnumber) / counter)
 				except Exception as ex :
 					moreInformation = {"moreInfo":'null'}
 					try:
@@ -771,7 +807,10 @@ def run(file,filters='',projectName = ''):
 					
 				except:
 					pass
-	missingFile = missing(dict_Hash,SingleDirectory) 
+	missingFile = missing(dict_Hash,SingleDirectory)
+	if missingFile[0] > 0:
+		flagAnyChanges = True
+
 	FileChangedList += missingFile[0]
 	tmp.close()
 	infile.close()
@@ -792,7 +831,10 @@ def run(file,filters='',projectName = ''):
 	
 	total = confirmed + moved + created + corruptedOrChanged + missingFile[1]
 	repath = writer('sha256', file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
-	return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
+	if checkForChanges:
+		return flagAnyChanges
+	else:
+		return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 #Path Encoding to a Code To Identify the Path of each file
 def pathCodeEncode(pathStr):
@@ -833,9 +875,74 @@ def getDirectoryDetail(projectName ,fullpath = False):
 				DirectoryDetail[indexOfDet] = detialInformation
 				
 	return DirectoryDetail 		
+# Fetch information related to email configuration    
+def getConfigInfo(project=None):
 
+    if project == None:
+        information = {} 
+        information['email'] = ''
+        information['pass'] = ''
+        information['onlyonchange'] = ''
+        information['debugging'] = ''
+        if path.isfile(getcwd() + '\\bin\\conf.txt'): 
+            fCheck = open(getcwd() + '\\bin\\conf.txt', 'rb') 
+            Text = fCheck.readlines()
+            fCheck.close()
+            if len(Text) > 0 :
+                for SingleValue in Text:
+                    decodedString = DecodeInfo(SingleValue)
+                    if decodedString.find('e|') >= 0:
+                        information['email'] = decodedString
+                    elif decodedString.find('p|') >= 0: 
+                        information['pass'] = decodedString
+                    elif decodedString.find('debug|') >= 0: 
+                        information['debugging'] = decodedString
+                    else:    
+                        information['onlyonchange'] = decodedString
+         
+        return information
+    else:    
+        information = {} 
+        information['onlyonchange'] = ''
+        information['filters'] = ''
+        information['RunWhenOnBatteryPower'] = ''
+        information['IfMissedRunUponAvailable'] = ''
+        information['RunInitialScan'] = ''
+        information['filters'] = ''
+        information['Algorithm'] = ''
+        
+        if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
+            fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb') 
+            Text = fCheck.readlines()
+            fCheck.close()
+            
+            if len(Text) > 0 :
+                for SingleValue in Text:
+                    decodedString = DecodeInfo(SingleValue)
+                    if decodedString.find('EOWSC|') >= 0:
+                        information['onlyonchange'] = decodedString
+                    elif decodedString.find('fil|') >= 0:
+                        information['filters'] = decodedString
+                    elif decodedString.find('RWOBP|') >= 0:
+                        information['RunWhenOnBatteryPower'] = decodedString  
+                    elif decodedString.find('IMRUA|') >= 0:
+                        information['IfMissedRunUponAvailable'] = decodedString
+                    elif decodedString.find('RIS|') >= 0:
+                        information['RunInitialScan'] = decodedString
+                    elif decodedString.find('algo|') >= 0:
+                        information['Algorithm'] = decodedString
+                                          
+    return information
+    # Triggers     
+def EncodeInfo(stringToBeEncoded):
+    stringToBeEncoded = str(stringToBeEncoded).strip()
+    return base64.b16encode(base64.b16encode(stringToBeEncoded))
+
+def DecodeInfo(stringToBeDecoded):
+    stringToBeDecoded = str(stringToBeDecoded).strip()
+    return base64.b16decode(base64.b16decode(stringToBeDecoded))
 ## To test Main Functionality  
 # projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy')
+# run(projects_path+'New_Project.fxy','','New_Project')
 # exit()
 
