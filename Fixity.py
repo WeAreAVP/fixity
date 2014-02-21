@@ -78,7 +78,7 @@ class ProjectWin(QMainWindow):
                 quit = QAction('&Quit Fixity', self)
                 
                 FilterFilesMane = QAction('&Filter Files', self)
-                DecryptionManagerMenu = QAction('&Select Encryption Method', self)
+                DecryptionManagerMenu = QAction('&Select Checksum Algorithm', self)
                 
                 self.Debuging = QAction('&Turn Debugging Off', self)
                 self.switchDebugger('start')
@@ -725,7 +725,7 @@ class ProjectWin(QMainWindow):
                     projectFile.close()
                     binFile.close()
                     if (not binFileLines) or (not projectFileLines):
-                        QMessageBox.warning(self, "Fixity", "Please save the current Project")
+                        QMessageBox.warning(self, "Fixity", "Please save the current project before scanning.")
                         return
                     
             Configurations = {}
@@ -831,7 +831,7 @@ class ProjectWin(QMainWindow):
                 if isRcipentEmailAddressSet:
                     EmailInfo = self.EP.getConfigInfo()
                     if EmailInfo['email'] == '' or EmailInfo['email'] == '':
-                        QMessageBox.information(self, "Email Validation", 'Please Configure Sender Email in Preferences Menu')
+                        QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
                         return
                                 
                 self.process(flagInitialScanUponSaving)

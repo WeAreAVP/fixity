@@ -52,6 +52,6 @@ def send(recipients, text, attachment, emailaddr, password,projectName=''):
 		D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		
 		msgBox = QMessageBox();
-		msgBox.setText("Some Problem occurred while sending the email, please check your Internet Connection or try different Email Credentials and try again.")
+		msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
 		msgBox.exec_()
 		return False

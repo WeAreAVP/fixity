@@ -63,15 +63,15 @@ class EmailPref(QDialog):
     
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgBox = QMessageBox();
-            msgBox.setText("Invalid Email Address")
+            msgBox.setText("Invalid email address provided.\nPlease provide a valid address and try again.")
             msgBox.exec_()
             self.loader.hide()
             return False
-        text = 'Testing email credentials for Fixity'
+        text = 'Testing email access for Fixity reporting...'
         flag = self.FM.send(Email, text, None, Email, Pass)
         if flag:
             msgBox = QMessageBox();
-            msgBox.setText("Please Check , if you recieve email from your email address then provided credentails are correct ")
+            msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
             msgBox.exec_()
             
         self.loader.hide()
@@ -92,11 +92,11 @@ class EmailPref(QDialog):
         self.reset = QPushButton("Reset")
         self.checkEmail = QPushButton("Check Credentials")
         self.cancel = QPushButton("Close")
-        self.loader = QLabel("Sending Email ....")
+        self.loader = QLabel("Sending Email...")
         
         self.EmailAddrBar.setPlaceholderText("Email")
         self.Password.setPlaceholderText("Password")
-        self.Project.setPlaceholderText("For the Project")
+        self.Project.setPlaceholderText("Project")
         
         self.EmailAddrBar.setMaximumSize(200, 100)
         self.Password.setMaximumSize(200, 100)
@@ -135,7 +135,7 @@ class EmailPref(QDialog):
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
-        self.Project.setText('For the Project')
+        self.Project.setText('Project')
         
         
     # Fetch information related to email configuration    
@@ -210,16 +210,16 @@ class EmailPref(QDialog):
         return flag   
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid email address provided.  Please provide a valid address and try again."
             return msg
     # Validation Configuration provided
     def validateInformation(self, Email, Pass , Project):
         msg = None
         if Pass == '':
-            msg = "Invalid information provided, please try again! "
+            msg = "Please provide a password to access the reporting email account."
             return msg
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid Invalid Email Address provided, please try again! "
+            msg = "Invalid email address provided.  Please provide a valid address and try again"
             return msg
         
         
@@ -244,7 +244,7 @@ class EmailPref(QDialog):
         information['pass'] = P_unbased
         
         self.setConfigInfo(information)
-        QMessageBox.information(self, "Success", "Information Successfully Saved! ")
+        QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
         
         self.CloseClick()
     
