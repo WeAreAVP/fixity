@@ -115,12 +115,12 @@ class DecryptionManager(QDialog):
     # Update Filters information    
     def SetInformation(self):
         
-        msgBox = QLabel('sadsadsadsad')
+        msgBox = QLabel('Loading')
         response = True
         hasChanged = False
         selectedProject = self.Porjects.currentText()
         projects_path = getcwd()+'\\projects\\'
-        Information = self.EmailPref.getConfigInfo(selectedProject)
+        Information = FixityCore.getConfigInfo(selectedProject)
         
         aloValueSelected = ''
         if self.methods.currentText() == None or self.methods.currentText() == '':
@@ -133,7 +133,7 @@ class DecryptionManager(QDialog):
             sameValueFlag =True
             response = self.slotWarning(selectedProject)
             if response:
-                msgBox.setWindowTitle("Loading ....")
+                msgBox.setWindowTitle("Processing ....")
                 msgBox.setText("Reading Files, please wait ...")
                 msgBox.show()
                 QCoreApplication.processEvents()
@@ -153,7 +153,7 @@ class DecryptionManager(QDialog):
         flag = self.EmailPref.setConfigInfo(Information, selectedProject)
         if response:
             if flag and hasChanged:
-                if not FixityCore.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
+                if not self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
                     try:
                         msgBox.close()
                     except:
@@ -172,9 +172,11 @@ class DecryptionManager(QDialog):
         Algorithm = ''
         selectedProject = self.Porjects.currentText()
         
-        Information = self.EmailPref.getConfigInfo(selectedProject)
+        Information = FixityCore.getConfigInfo(selectedProject)
         
+    
         Algorithm = str(Information['Algorithm']).replace('algo|', '').replace('\n', '')
+    
         if Algorithm =='md5':
             self.methods.setCurrentIndex(1)
         else:
@@ -219,11 +221,9 @@ class DecryptionManager(QDialog):
         for SingleDircOption in ToBeScannedDirectoriesInProjectFileRaw:
             SingleDircOption = SingleDircOption.strip()
             SignleDirCodeAndPath = SingleDircOption.split('|-|-|')
-            print(SignleDirCodeAndPath)
             if SignleDirCodeAndPath[0].strip():
                 ToBeScannedDirectoriesInProjectFile.append(SignleDirCodeAndPath[0].strip())
                 InfReplacementArray[SignleDirCodeAndPath[0].strip()]= {'path':SignleDirCodeAndPath[0].strip(),'code':'Fixity-'+SignleDirCodeAndPath[2] ,'number': SignleDirCodeAndPath[2]}
-        
         mails = second.split(';')
         keeptime = infile.readline()
         trash = infile.readline()
@@ -282,17 +282,11 @@ class DecryptionManager(QDialog):
         information = FixityCore.getConfigInfo(projectName)
         Algorithm = str(information['Algorithm']).replace('algo|', '').replace('\n', '')
         
-        
-        
-        
-            
         for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
             counter = self.getnumberoffiles(SingleDirectory)
-
             DirectorysInsideDetails = self.quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName,counter)
             
             for e in DirectorysInsideDetails:
-                
                 
                 flag =True
                 e = list(e)
@@ -311,7 +305,7 @@ class DecryptionManager(QDialog):
                     
                     try:
                         response = FixityCore.verify_using_inode(dict,dict_Hash,dict_File, e , file)
-                       
+                        
                         
                     except Exception as ex :
                         moreInformation = {"moreInfo":'null'}
@@ -344,23 +338,25 @@ class DecryptionManager(QDialog):
                         else:
                             flagAnyChanges = True
                             corruptedOrChanged += 1
-                            pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
-                        
-                        newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
-                        tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
-                        
+                            
                     except:
                         pass
+                    
+                    pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
+                    newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
+                    
+                    tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+                        
+                    
         missingFile =[0,0,0]            
         try:  
             missingFile = FixityCore.missing(dict_Hash,SingleDirectory)
             if missingFile[0] > 0:
                 flagAnyChanges = True
+            if len(missingFile) > 0:
+                FileChangedList += str(missingFile[0])
         except:
             pass
-        
-        if len(missingFile) > 0:
-            FileChangedList += str(missingFile[0])
         tmp.close()
         infile.close()
         
@@ -378,8 +374,8 @@ class DecryptionManager(QDialog):
         shutil.copy(file + ".tmp", file)
         remove(file + ".tmp")
         
-        total = confirmed + moved + created + corruptedOrChanged + missingFile[1]
-        repath = FixityCore.writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
+#         total = confirmed + moved + created + corruptedOrChanged + missingFile[1]
+#         repath = FixityCore.writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
         
         return flagAnyChanges
         
@@ -450,9 +446,9 @@ class DecryptionManager(QDialog):
                 Debugging.logError('Error Reporting Line 169-183 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
                 
                 pass        
-            
-        return listOfValues
         
+        return listOfValues
+#         
 # app = QApplication('asdas')
 # w = DecryptionManager()
 # w.CreateWindow()
@@ -460,6 +456,6 @@ class DecryptionManager(QDialog):
 # w.SetDesgin()
 # w.ShowDialog()
 # app.exec_() 
-         
+#          
 # projects_path = getcwd()+'\\projects\\'
-# w.run(projects_path+'New_Project.fxy','','New_Project')
+# print(w.run(projects_path+'New_Project.fxy','','New_Project'))

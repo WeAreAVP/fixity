@@ -512,12 +512,33 @@ class ProjectWin(QMainWindow):
                     
                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                     total = 0
+                    directoryIncreament = 0
+                    
                     
                     for ds in self.dtx:
-                            if ds.text().strip() != "":
-                                    CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
-                                    projfile.write(str(ds.text()) + "|-|-|" + CodeOfPath + ";")
-                                                                 
+                        directoryIncreament = directoryIncreament + 1 
+                        if ds.text().strip() != "":
+                            self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
+                            orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                            changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                            
+                            CodeOfPath = ''
+                            if self.FileChanged.changeThePathInformation:
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                pathToSaveInManifest = str(ds.text())
+                            else:   
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
+                                
+                            if(pathToSaveInManifest ==''):
+                                pathToSaveInManifest = str(ds.text())
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                
+                            if self.FileChanged.changeThePathInformation:
+                                self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
+                            
+                            projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
+                                                             
                     projfile.write("\n")
                     
                     for ms in self.mtx:
@@ -572,11 +593,31 @@ class ProjectWin(QMainWindow):
                         configurations['emails'] = ''
                         configurations['timingandtype'] = ''
                         
-                        for ds in self.dtx:
-                            if ds.text().strip() != "": 
+                        directoryIncreament = 0
+                        
+                        for ds  in self.dtx:
+                            directoryIncreament = directoryIncreament + 1 
+                            if ds.text().strip() != "":
+                                self.checkForChanges(self.projects.currentItem().text(), ds.text(), directoryIncreament)
+                                orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                                changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
+                                CodeOfPath = ''
+
+                                if self.FileChanged.changeThePathInformation:
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    pathToSaveInManifest = str(ds.text())
+                                else:   
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
+                                    
+                                if(pathToSaveInManifest ==''):
+                                    pathToSaveInManifest = str(ds.text())
+                                    CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                    
+                                if self.FileChanged.changeThePathInformation:
+                                    self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
                                 
-                                CodeOfPath = FixityCore.pathCodeEncode(str(ds.text()))
-                                configurations['directories'] +=  str(ds.text()) + "|-|-|" + CodeOfPath + ";"
+                                configurations['directories'] +=  (pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";")
 
                         configurations['directories'] += "\n"
                             
@@ -907,6 +948,7 @@ class ProjectWin(QMainWindow):
                                     self.ChangeRootDirectoryInfor(pathGiven , searchForPath )
                     except:
                         pass
+                    
 if __name__ == '__main__':
         app = QApplication(sys.argv)
         w = ProjectWin(EmailPref , FilterFiles)

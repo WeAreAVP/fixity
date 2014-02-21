@@ -21,7 +21,8 @@ def EncodeInfo(stringToBeEncoded):
 def DecodeInfo(stringToBeDecoded):
 	return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
 
-project = sys.argv[1]
+# project = sys.argv[1]
+project = 'New_Project'
 
 
 IsemailSet = None
@@ -30,6 +31,7 @@ try:
 		IsemailSet = sys.argv[2]
 except:
 	pass
+IsemailSet = 'Run'
 Text = '' 
 projectConfNotAvailable = True
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
