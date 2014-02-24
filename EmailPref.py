@@ -60,6 +60,23 @@ class EmailPref(QDialog):
     def checkIsEmailValid(self):
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
+        port = self.port.text()
+        outgoingMailServer = self.outgoingMailServer.text()
+        if(self.SSL.isChecked()):
+            protocol = 'SSL'
+        elif(self.TLS.isChecked()):
+            protocol = 'TLS'
+        else:
+            protocol = 'NONE'
+        information = {}
+            
+        information['email'] = Email
+        information['pass'] = Pass
+        information['port'] = port
+        information['outgoingMailServer'] = outgoingMailServer
+        information['protocol'] = protocol
+         
+        
     
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgBox = QMessageBox();
@@ -68,7 +85,7 @@ class EmailPref(QDialog):
             self.loader.hide()
             return False
         text = 'Testing email access for Fixity reporting...'
-        flag = self.FM.send(Email, text, None, Email, Pass)
+        flag = self.FM.send(Email, text, None,information)
         if flag:
             msgBox = QMessageBox();
             msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
@@ -85,8 +102,13 @@ class EmailPref(QDialog):
         self.GetLayout().addStrut(200)
         
         self.EmailAddrBar = QLineEdit()
+        self.outgoingMailServer = QLineEdit()
+        self.port = QLineEdit()
         self.Password = QLineEdit()
-        self.Project = QLineEdit()
+        self.SSL = QRadioButton("SSL Protocols")
+        self.TLS = QRadioButton("TLS Protocols")
+        self.none = QRadioButton("None")
+        
         self.Password.setEchoMode(QLineEdit.Password)
         self.setInformation = QPushButton("Set Information")
         self.reset = QPushButton("Reset")
@@ -96,25 +118,32 @@ class EmailPref(QDialog):
         
         self.EmailAddrBar.setPlaceholderText("Email")
         self.Password.setPlaceholderText("Password")
-        self.Project.setPlaceholderText("Project")
+        self.outgoingMailServer.setPlaceholderText("outgoing mail server")
+        self.port.setPlaceholderText("Port ")
         
         self.EmailAddrBar.setMaximumSize(200, 100)
         self.Password.setMaximumSize(200, 100)
         self.reset.setMaximumSize(200, 100)
         self.cancel.setMaximumSize(200, 100)
         self.setInformation.setMaximumSize(200, 100)
+        self.outgoingMailServer.setMaximumSize(200, 100)
+        self.port.setMaximumSize(200, 100)
         self.checkEmail.setMaximumSize(200, 100)
-        self.Project.setMaximumSize(200, 100)
         
-        information = self.getConfigInfo()
         
+        self.GetLayout().addWidget(self.outgoingMailServer)
         self.GetLayout().addWidget(self.loader)
         self.GetLayout().addWidget(self.EmailAddrBar)
         self.GetLayout().addWidget(self.Password)
+        self.GetLayout().addWidget(self.port)
+        self.GetLayout().addWidget(self.SSL)
+        self.GetLayout().addWidget(self.TLS)
+        self.GetLayout().addWidget(self.none)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.checkEmail)
         self.GetLayout().addWidget(self.reset)
         self.GetLayout().addWidget(self.cancel)
+        
         self.loader.hide()
         
         self.reset.clicked.connect(self.ResetForm)
@@ -124,18 +153,36 @@ class EmailPref(QDialog):
 
         
         self.SetWindowLayout()
+        information = self.getConfigInfo()
+        
         EmailAddr = str(information['email']).replace('e|', '').replace('\n', '')
         Pass = str(information['pass']).replace('p|', '').replace('\n', '')
+        port = str(information['port']).replace('port|', '').replace('\n', '')
+        smtp = str(information['outgoingMailServer']).replace('smtp|', '').replace('\n', '')
+        protocol = str(information['protocol']).replace('protocol|', '').replace('\n', '')
+        
         self.EmailAddrBar.setText(EmailAddr)
         self.Password.setText(Pass)
+        self.outgoingMailServer.setText(smtp)
+        self.port.setText(port)
         
-        
-        
+        if protocol == 'SSL':
+            self.SSL.setChecked(True)
+            self.TLS.setChecked(False)
+            self.none.setChecked(False)
+        elif protocol == 'TLS':
+            self.TLS.setChecked(True)
+            self.SSL.setChecked(False)
+            self.none.setChecked(False)
+        else:
+            self.none.setChecked(True)
+            self.TLS.setChecked(False)
+            self.SSL.setChecked(False)
     # Reset Form information    
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
-        self.Project.setText('Project')
+        
         
         
     # Fetch information related to email configuration    
@@ -146,6 +193,11 @@ class EmailPref(QDialog):
             information['pass'] = ''
             information['onlyonchange'] = ''
             information['debugging'] = ''
+            information['protocol'] = ''
+            information['outgoingMailServer'] = ''
+            information['port'] = ''
+            
+            
             if path.isfile(getcwd() + '\\bin\\conf.txt'): 
                 fCheck = open(getcwd() + '\\bin\\conf.txt', 'rb') 
                 Text = fCheck.readlines()
@@ -153,15 +205,21 @@ class EmailPref(QDialog):
                 if len(Text) > 0 :
                     for SingleValue in Text:
                         decodedString = self.DecodeInfo(SingleValue)
-                        if decodedString.find('e|') >= 0:
+                        if decodedString.find('smtp|') >= 0:
+                            information['outgoingMailServer'] = decodedString
+                        elif decodedString.find('e|') >= 0:
                             information['email'] = decodedString
                         elif decodedString.find('p|') >= 0: 
                             information['pass'] = decodedString
+                        elif decodedString.find('port|') >= 0: 
+                            information['port'] = decodedString
+                        elif decodedString.find('protocol|') >= 0: 
+                            information['protocol'] = decodedString
                         elif decodedString.find('debug|') >= 0: 
                             information['debugging'] = decodedString
+                        
                         else:    
                             information['onlyonchange'] = decodedString
-             
             return information
         else:    
             information = {} 
@@ -171,6 +229,7 @@ class EmailPref(QDialog):
             information['IfMissedRunUponAvailable'] = ''
             information['RunInitialScan'] = ''
             information['filters'] = ''
+            information['Algorithm'] = ''
             if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
                 fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb') 
                 Text = fCheck.readlines()
@@ -189,6 +248,8 @@ class EmailPref(QDialog):
                             information['IfMissedRunUponAvailable'] = decodedString
                         elif decodedString.find('RIS|') >= 0:
                             information['RunInitialScan'] = decodedString
+                        elif decodedString.find('algo|') >= 0:  
+                            information['Algorithm'] = decodedString
                         
                                               
         return information
@@ -212,8 +273,9 @@ class EmailPref(QDialog):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msg = "Invalid email address provided.  Please provide a valid address and try again."
             return msg
+    
     # Validation Configuration provided
-    def validateInformation(self, Email, Pass , Project):
+    def validateInformation(self, Email, Pass):
         msg = None
         if Pass == '':
             msg = "Please provide a password to access the reporting email account."
@@ -228,8 +290,16 @@ class EmailPref(QDialog):
     def SetInformation(self):
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
-        Project = self.Project.text()
-        errorMsg = self.validateInformation(Email, Pass, Project)
+        outgoingMailServer = self.outgoingMailServer.text()
+        port = self.port.text()
+        
+        if(self.SSL.isChecked()):
+            protocol = 'SSL'
+        elif(self.TLS.isChecked()):
+            protocol = 'TLS'
+        else:
+            protocol = 'NONE'
+        errorMsg = self.validateInformation(Email, Pass)
         if not str(errorMsg).strip() == 'None':
             QB = QMessageBox()
             errorMsg = QB.information(self, "Error", errorMsg)
@@ -237,13 +307,21 @@ class EmailPref(QDialog):
         
         E_unbased = "e|" + Email
         P_unbased = "p|" + Pass
+        smtp_unbased = "smtp|" + outgoingMailServer
+        port_unbased = "port|" + port
+        protocol_unbased = "protocol|" + protocol
         
         information = self.getConfigInfo()
         
         information['email'] = E_unbased
         information['pass'] = P_unbased
+        information['port'] = port_unbased
+        information['smtp'] = smtp_unbased
+        information['protocol'] = protocol_unbased
+        
         
         self.setConfigInfo(information)
+        
         QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
         
         self.CloseClick()
@@ -260,6 +338,7 @@ class EmailPref(QDialog):
     def CloseClick(self):
         self.destroyEmailPref()
         self.EmailPrefWin.close()
+        
 # Main Code
 # app = QApplication('asdas')
 # w = EmailPref()

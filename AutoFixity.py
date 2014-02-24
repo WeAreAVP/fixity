@@ -21,17 +21,15 @@ def EncodeInfo(stringToBeEncoded):
 def DecodeInfo(stringToBeDecoded):
 	return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
 
-# project = sys.argv[1]
-project = 'New_Project'
-
-
+project = sys.argv[1]
+# project = 'New_Project'
 IsemailSet = None
 try:
 	if sys.argv[2]:
 		IsemailSet = sys.argv[2]
 except:
 	pass
-IsemailSet = 'Run'
+# IsemailSet = 'Run'
 Text = '' 
 projectConfNotAvailable = True
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
@@ -93,6 +91,9 @@ information['email'] = ''
 information['pass'] = ''
 information['onlyonchange'] = ''
 information['filters'] = ''
+information['port'] = ''
+information['protocol'] = ''
+information['outgoingMailServer'] = ''
 
 for SingleValue in Text:
 	decodedString = DecodeInfo(SingleValue)
@@ -103,11 +104,17 @@ for SingleValue in Text:
 			
 for SingleValue in TextEmail:
 	decodedString = DecodeInfo(SingleValue)
-	if decodedString.find('e|') >= 0:
+	if decodedString.find('smtp|') >= 0:
+		information['outgoingMailServer'] = str(decodedString).replace('smtp|', '').replace('\n', '')
+	elif decodedString.find('e|') >= 0:
 		information['email'] = decodedString.replace('e|', '').replace('\n', '')
 	elif decodedString.find('p|') >= 0: 
 		information['pass'] = decodedString.replace('p|', '').replace('\n', '')
-			
+	elif decodedString.find('port|') >= 0:
+		information['port'] = str(decodedString).replace('port|', '').replace('\n', '')
+	elif decodedString.find('protocol|') >= 0:
+		information['protocol'] = str(decodedString).replace('protocol|', '').replace('\n', '')
+
 f = open(AutiFixPath+'\\projects\\' + project + ".fxy", 'rb')
 f.readline()
 email = f.readline().rstrip("\r\n").split(';')
@@ -124,5 +131,5 @@ msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(resu
 if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
 	if (not information['email'] =='') and  (not information['pass'] ==''):
 		for e in email:
-			resposne = FixityMail.send(e, msg, results[5], information['email'] , information['pass'],project)
+			resposne = FixityMail.send(e, msg, results[5], information,project)
 		

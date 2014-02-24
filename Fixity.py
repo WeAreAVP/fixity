@@ -368,8 +368,9 @@ class ProjectWin(QMainWindow):
                         projectName = new.text()
                 except:
                         for n in xrange(0, 7):
-                                self.dtx[n].setText("")
-                                self.mtx[n].setText("")
+                            self.dtx[n].setText("")
+                            self.mtx[n].setText("")
+                            
                         self.timer.setTime(QTime(0, 0))
                         self.monthclick()
                         self.monthly.setChecked(True)
@@ -830,6 +831,7 @@ class ProjectWin(QMainWindow):
                             
                 if isRcipentEmailAddressSet:
                     EmailInfo = self.EP.getConfigInfo()
+                    
                     if EmailInfo['email'] == '' or EmailInfo['email'] == '':
                         QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
                         return
@@ -875,7 +877,7 @@ class ProjectWin(QMainWindow):
                 remove('projects\\' + self.projects.currentItem().text() + '.tmp.fxy')
                 
                 Configurations = {}
-                
+                Configurations = self.EP.getConfigInfo(self.projects.currentItem().text())
                 Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked() 
                 Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()

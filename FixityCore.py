@@ -38,7 +38,9 @@ def fixity(f, Algorithm , projectName= None):
 			fix = hashlib.sha1()
 		elif Algorithm == 'sha256':
 			fix = hashlib.sha256()
-
+		else:
+			fix = hashlib.sha256()
+			
 	except Exception as e:
 
 			moreInformation = {"moreInfo":'null'}
@@ -705,11 +707,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	flagAnyChanges = False
 	
 	information = getConfigInfo(projectName)
-	print(information)
-	
-	
 	Algorithm = str(information['Algorithm']).replace('algo|', '').replace('\n', '')
-	print(Algorithm)
+	
 	counter = 0
 	thisnumber = 0
 
@@ -782,7 +781,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 				
 	missingFile = missing(dict_Hash,SingleDirectory) 
 	FileChangedList += missingFile[0]
-	print(1)
+	
 	tmp.close()
 	infile.close()
 	
@@ -874,7 +873,7 @@ def getConfigInfo(project=None):
         information['IfMissedRunUponAvailable'] = ''
         information['RunInitialScan'] = ''
         information['filters'] = ''
-        information['Algorithm'] = ''
+        information['Algorithm'] = 'sha256'
         
         if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
             fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb')
@@ -899,7 +898,10 @@ def getConfigInfo(project=None):
                     elif decodedString.find('algo|') >= 0:
                     	checker = str(decodedString).replace('algo|', '')
                     	if decodedString != None and checker != '':
-                        	information['Algorithm'] = decodedString
+                    		if decodedString == '' or decodedString == None :
+                    			information['Algorithm'] ='sha256'
+                    		else:
+								information['Algorithm'] = decodedString
                         else:
                         	information['Algorithm'] = 'sha256'
                                           
@@ -914,7 +916,7 @@ def DecodeInfo(stringToBeDecoded):
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
    
 ## To test Main Functionality  
-projects_path = getcwd()+'\\projects\\'
-run(projects_path+'New_Project.fxy','','New_Project')
+# projects_path = getcwd()+'\\projects\\'
+# run(projects_path+'New_Project.fxy','','New_Project')
 # exit()
 

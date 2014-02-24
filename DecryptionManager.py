@@ -281,7 +281,8 @@ class DecryptionManager(QDialog):
         
         information = FixityCore.getConfigInfo(projectName)
         Algorithm = str(information['Algorithm']).replace('algo|', '').replace('\n', '')
-        
+        if Algorithm == '' or Algorithm == None :
+            Algorithm = 'sha256'
         for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
             counter = self.getnumberoffiles(SingleDirectory)
             DirectorysInsideDetails = self.quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName,counter)
