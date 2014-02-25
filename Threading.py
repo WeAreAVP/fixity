@@ -36,22 +36,27 @@ class Threading (threading.Thread):
         self.FilePath = FilePath
         self.params = params
         
-        
     # Run thread to scan the given Given file path using given command    
     def run(self):
         
         command = str(self.FilePath)
-        command= '"'+command+ self.FileName +'"'
-                
-        command = command +" "+self.params
+        command = command + 'fixity-'+self.name+'.vbs'
         
         try:
-            popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#             popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+#             
+#             out, err = popen.communicate()
+#             errcode = popen.returncode
+            loger = open('log.inf','wb')
+            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            proc.stdin.close()
+            proc.wait()
+            result = proc.returncode
+            loger.write(proc.stdout.read())
+            loger.close()
             
-            out, err = popen.communicate()
-            errcode = popen.returncode
         except Exception as e:
-            Debuging = Debuger()
+            
             moreInformation = {"moreInfo":'null'}
             try:   
                 if not e[0] == None:
@@ -63,13 +68,12 @@ class Threading (threading.Thread):
                     moreInformation['LogsMore1'] =str(e[1])
             except:
                 pass
-                
+            Debuging = Debuger()
             Debuging.tureDebugerOn()    
             Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
             pass
         print_time(self.name, self.counter, 5,self , command)
         
-
 def print_time(threadName, delay, counter,thread,command):
     while counter:
         if exitFlag:

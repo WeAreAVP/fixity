@@ -187,7 +187,6 @@ class ProjectWin(QMainWindow):
                 self.dtx, self.but = [], []
                 
                 for n in xrange(0, 7):
-                        
                         hbox = QHBoxLayout()
                         hbox.setContentsMargins(0, 0, 0, 0)
                         hbox.setSpacing(0)
@@ -219,20 +218,18 @@ class ProjectWin(QMainWindow):
                     self.runOnlyOnACPower.setDisabled(False)
                     self.StartWhenAvailable.setDisabled(False)
                     self.EmailOnlyWhenSomethingChanged.setDisabled(False)
-                    
                 else:
-                    
                     self.runOnlyOnACPower.setDisabled(True)
                     self.StartWhenAvailable.setDisabled(True)
                     self.EmailOnlyWhenSomethingChanged.setDisabled(True)
                     
                 try:
-                        self.old = self.projects.itemAt(0, 0)
-                        self.update(self.old)
-                        self.old.setSelected(True)
+                    self.old = self.projects.itemAt(0, 0)
+                    self.update(self.old)
+                    self.old.setSelected(True)
                 except:
-
-                        pass
+                    pass
+                
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
                 self.show()
@@ -740,6 +737,8 @@ class ProjectWin(QMainWindow):
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations,self.SystemInformation)
             FileName = 'AutoFixity.exe';
             params = self.projects.currentItem().text() +' '+'Run'
+            
+            
             
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
             

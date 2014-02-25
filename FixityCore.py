@@ -417,15 +417,15 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 			for dictionarySingle in dictHash:
 				allInforHashRelated = dictHash[dictionarySingle]
 				for singleInforHashRelated in allInforHashRelated:
-					#Y	Y	Y	N	Confirmed File	
+					# Y	 Y	Y N	Confirmed File	
 					if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0]:
 						verifiedFiles.append(line[1])
 						return line, "Confirmed File :\t" + str(line[1])
-					#Y	N	Y	N	Changed File
+					
+					# Y	 N	Y N	Changed File
 					elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0]:
 						verifiedFiles.append(line[1])
 						return line, 'File Changed :\t' + str(line[1])
-
 
 			for dictionarySingle1 in dictHash:
 				allInforHashRelated1 = dictHash[dictionarySingle1]
@@ -434,11 +434,8 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 						verifiedFiles.append(line[1])
 						return line, "Moved or Renamed :\t" + line[1]
 
-
-
 		verifiedFiles.append(line[1])
 		return line, 'New File :\t' + str(line[1])
-
 
 # Method to verify a tuple against the dictionary
 # Input: defaultDict (from buildDict), tuple

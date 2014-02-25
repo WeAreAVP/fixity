@@ -58,9 +58,12 @@ class EmailPref(QDialog):
         
     # Check is Email address and Password is valid by sending email on its own inbox
     def checkIsEmailValid(self):
+        self.loader.show()
+        QCoreApplication.processEvents()
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
         port = self.port.text()
+        
         outgoingMailServer = self.outgoingMailServer.text()
         if(self.SSL.isChecked()):
             protocol = 'SSL'
@@ -130,9 +133,8 @@ class EmailPref(QDialog):
         self.port.setMaximumSize(200, 100)
         self.checkEmail.setMaximumSize(200, 100)
         
-        
-        self.GetLayout().addWidget(self.outgoingMailServer)
         self.GetLayout().addWidget(self.loader)
+        self.GetLayout().addWidget(self.outgoingMailServer)
         self.GetLayout().addWidget(self.EmailAddrBar)
         self.GetLayout().addWidget(self.Password)
         self.GetLayout().addWidget(self.port)
@@ -150,6 +152,9 @@ class EmailPref(QDialog):
         self.setInformation.clicked.connect(self.SetInformation)
         self.cancel.clicked.connect(self.CloseClick)
         self.checkEmail.clicked.connect(self.checkIsEmailValid)
+        self.SSL.clicked.connect(self.SSLConif)
+        self.TLS.clicked.connect(self.TLSConif)
+        self.none.clicked.connect(self.NoneConif)
 
         
         self.SetWindowLayout()
@@ -163,21 +168,41 @@ class EmailPref(QDialog):
         
         self.EmailAddrBar.setText(EmailAddr)
         self.Password.setText(Pass)
-        self.outgoingMailServer.setText(smtp)
-        self.port.setText(port)
+        if(smtp != None and smtp !='' ):
+            self.outgoingMailServer.setText(smtp)
+        else:
+            self.outgoingMailServer.setText('smtp.gmail.com')
+        
+                
+        
         
         if protocol == 'SSL':
             self.SSL.setChecked(True)
             self.TLS.setChecked(False)
             self.none.setChecked(False)
+            
+            if(port != None and port !='' ):
+                self.port.setText(port)
+            else:
+                self.port.setText('465')
+                
         elif protocol == 'TLS':
             self.TLS.setChecked(True)
             self.SSL.setChecked(False)
             self.none.setChecked(False)
+            if(port != None and port !='' ):
+                self.port.setText(port)
+            else:
+                self.port.setText('587')
         else:
             self.none.setChecked(True)
             self.TLS.setChecked(False)
             self.SSL.setChecked(False)
+            if(port != None and port !='' ):
+                self.port.setText(port)
+            else:
+                self.port.setText('587')
+                
     # Reset Form information    
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
@@ -339,6 +364,32 @@ class EmailPref(QDialog):
         self.destroyEmailPref()
         self.EmailPrefWin.close()
         
+    def TLSConif(self):
+        information = self.getConfigInfo()
+        port = str(information['port']).replace('port|', '').replace('\n', '')
+        
+        if(port != None and port !='' ):
+            self.port.setText(port)
+        else:
+            self.port.setText('587')
+            
+    def SSLConif(self):
+        information = self.getConfigInfo()
+        port = str(information['port']).replace('port|', '').replace('\n', '')
+        
+        if(port != None and port !='' ):
+            self.port.setText(port)
+        else:
+            self.port.setText('465')
+            
+    def NoneConif(self):
+        information = self.getConfigInfo()
+        port = str(information['port']).replace('port|', '').replace('\n', '')
+        
+        if(port != None and port !='' ):
+            self.port.setText(port)
+        else:
+            self.port.setText('587')
 # Main Code
 # app = QApplication('asdas')
 # w = EmailPref()

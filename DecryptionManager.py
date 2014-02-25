@@ -119,6 +119,11 @@ class DecryptionManager(QDialog):
         response = True
         hasChanged = False
         selectedProject = self.Porjects.currentText()
+        
+        if(selectedProject == None or selectedProject == ''):
+            QMessageBox.information(self, "Warning", "Please Select a Project, and Try Again.")
+            return
+        
         projects_path = getcwd()+'\\projects\\'
         Information = FixityCore.getConfigInfo(selectedProject)
         
