@@ -4,6 +4,9 @@
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
+
+
+
 #Bultin Libraries
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -16,7 +19,7 @@ import platform
 import os
 from collections import deque
 from genericpath import exists
-
+from avp import Database
 #Custom Libraries
 import FixityCore
 import FixitySchtask
@@ -31,7 +34,15 @@ from DecryptionManager import DecryptionManager
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
-                
+                db1 = Database()
+                print(db1)
+                db1.initProjectPathObj()
+                 
+                page_q =  db1.dbSession.query(db1.ProjectPathCls)
+                print(page_q)
+                SingleResult = page_q.get(1)
+                print(SingleResult.path)
+                exit()
                 QMainWindow.__init__(self)
                 Debuggin = Debuger()
                 Debuggin.tureDebugerOn()
