@@ -143,6 +143,13 @@ class Debuger():
         stringToBeDecoded = str(stringToBeDecoded).strip()
         return base64.b16decode(base64.b16decode(stringToBeDecoded))
     
-
+# app = QApplication('asdas')
+# w = FilterFiles()
+# w.CreateWindow()
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+#       
+# app.exec_() 
 
             

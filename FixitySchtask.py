@@ -11,7 +11,7 @@ from Debuger import Debuger
 import sys
 import time
 from EmailPref import EmailPref
-
+from Database import Database
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
         startupinfo = subprocess.STARTUPINFO()
@@ -62,7 +62,7 @@ def RunThisBatchFile(Command):
         subprocess.call(Command, shell=True)
           
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
-def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation):
+def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
         EP = EmailPref()
         VERSION = EP.getVersion()
         USERNAME = environ.get("USERNAME")
@@ -70,15 +70,14 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         
         
         deltask(prj)
-        if not path.isfile(getcwd() + '\\bin\\' + prj + '-conf.txt'): 
-            fCheck = open(getcwd() + '\\bin\\' + prj + '-conf.txt', 'w+')
-            fCheck.close() 
+        
+        
         spec = ""
-        if interval == 1:
+        if Configurations['runDayOrMonth'] == 1:
             mo = "MONTHLY"
-        if interval == 2:
+        if Configurations['runDayOrMonth'] == 2:
             mo = "WEEKLY"
-        if interval == 3:
+        if Configurations['runDayOrMonth'] == 3:
             mo = "DAILY"
             
         if dow != 99:
@@ -160,14 +159,14 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         Settings['AllowHardTerminate'] = 'true'
         Settings['WakeToRun'] = 'true'
         
-        if Configurations['IfMissedRunUponAvailable'] == True or Configurations['IfMissedRunUponAvailable'] == 'True':
+        if Configurations['ifMissedRunUponRestart'] == 1 or Configurations['ifMissedRunUponRestart'] == '1':
             IfMissedRunUponAvailable = 'IMRUA|T'
             Settings['StartWhenAvailable'] = 'true'
         else:
             IfMissedRunUponAvailable = 'IMRUA|F'
             Settings['StartWhenAvailable'] = 'false'
             
-        if Configurations['RunWhenOnBatteryPower'] == True or Configurations['RunWhenOnBatteryPower'] == 'True':
+        if Configurations['runWhenOnBattery'] == 1 or Configurations['runWhenOnBattery'] == '1':
             Settings['DisallowStartIfOnBatteries'] = 'false'
             RunWhenOnBatteryPower = 'RWOBP|T'
         else:
@@ -175,12 +174,11 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             RunWhenOnBatteryPower = 'RWOBP|F'
 
 
-        if Configurations['RunInitialScan'] == True or Configurations['RunInitialScan'] == 'True':
+#         if Configurations['RunInitialScan'] == 1 or Configurations['RunInitialScan'] == '1':
+#             RunInitialScan = 'RIS|T'
+#         else:    
             
-            RunInitialScan = 'RIS|T'
-        else:    
-            
-            RunInitialScan = 'RIS|F'
+        RunInitialScan = 'RIS|T'
             
             
         Actions['Exec'] = {}
@@ -188,7 +186,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
 
 
         text = ''
-        if Configurations['onlyonchange'] == True or Configurations['onlyonchange'] == 'True':
+        if Configurations['emailOnlyUponWarning'] == 1 or Configurations['emailOnlyUponWarning'] == '1':
             text = 'EOWSC|F'
         else:
             text = 'EOWSC|T'
@@ -198,13 +196,13 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
       
         information = EP.getConfigInfo(prj)
         
-        information['onlyonchange'] = E_text
-        information['IfMissedRunUponAvailable'] = IfMissedRunUponAvailable
-        information['RunWhenOnBatteryPower'] = RunWhenOnBatteryPower
+        information['emailUponWarning'] = E_text
+        information['ifMissedRunUponRestart'] = IfMissedRunUponAvailable
+        information['runWhenOnBattery'] = RunWhenOnBatteryPower
         information['RunInitialScan'] = RunInitialScan
         
-        EP.setConfigInfo(information , prj)
-            
+#         EP.setConfigInfo(information , prj)
+       
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval)
         ############################################################################################################################
         
@@ -214,7 +212,37 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
         else: 
             Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
-            
+        DB = Database()
+        DB.connect()
+        isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
+        DB.closeConnection()
+        print(isProjectExists)
+        DB = Database()
+        DB.connect() 
+        projectID = 0  
+        if (len(isProjectExists) <= 0):
+            projectID = DB.insert(DB._tableProject, Configurations)
+            projectID = projectID['id']
+        else:
+            projectID = isProjectExists[0]['id']
+            DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
+        DB.closeConnection()    
+        print(projectID)    
+        DB = Database()
+        DB.connect()
+        DB.delete(DB._tableProjectPath, "projectID='"+str(projectID)+"'")
+        counter = 1
+        for ms in dirInfo:
+            if (ms.text().strip() != ''):
+                PathsInfo = {}
+                PathsInfo['projectID'] = projectID
+                PathsInfo['versionID'] = projectID
+                PathsInfo['path'] = ms.text().strip()
+                PathsInfo['pathID'] = 'Fixity-' + str(counter)
+                DB = Database()
+                DB.connect()
+                DB.insert(DB._tableProjectPath, PathsInfo)
+                counter = counter + 1   
         try:
             subprocess.call(Command, startupinfo=startupinfo)
         except Exception as e:

@@ -8,14 +8,15 @@ Created on Dec 1, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+#Built in Library
 from PySide.QtCore import *
 from PySide.QtGui import *
 import base64
 from os import getcwd , path
-import FixityMail
 import re
-
+# Custom Library
+import FixityMail
+from Database import Database
 
 class EmailPref(QDialog):
     '''This class is created to handle all Email configurations and management'''
@@ -28,6 +29,7 @@ class EmailPref(QDialog):
         self.EmailPrefLayout = QVBoxLayout()
         self.FM = FixityMail
         self.version = '0.3'
+        
         
     # Distructor        
     def destroyEmailPref(self):
@@ -159,12 +161,18 @@ class EmailPref(QDialog):
         
         self.SetWindowLayout()
         information = self.getConfigInfo()
+        EmailAddr = ''
+        Pass = ''
+        port = ''
+        smtp = ''
+        protocol = ''
         
-        EmailAddr = str(information['email']).replace('e|', '').replace('\n', '')
-        Pass = str(information['pass']).replace('p|', '').replace('\n', '')
-        port = str(information['port']).replace('port|', '').replace('\n', '')
-        smtp = str(information['outgoingMailServer']).replace('smtp|', '').replace('\n', '')
-        protocol = str(information['protocol']).replace('protocol|', '').replace('\n', '')
+        if(len(information)> 0):
+            EmailAddr = information['email']
+            Pass = str(information['pass'])
+            port = str(information['port'])
+            smtp = str(information['smtp'])
+            protocol = str(information['protocol'])
         
         self.EmailAddrBar.setText(EmailAddr)
         self.Password.setText(Pass)
@@ -172,9 +180,6 @@ class EmailPref(QDialog):
             self.outgoingMailServer.setText(smtp)
         else:
             self.outgoingMailServer.setText('smtp.gmail.com')
-        
-                
-        
         
         if protocol == 'SSL':
             self.SSL.setChecked(True)
@@ -210,90 +215,30 @@ class EmailPref(QDialog):
         
         
         
-    # Fetch information related to email configuration    
+          # Fetch information related to email configuration    
     def getConfigInfo(self, project=None):
-        if project == None:
-            information = {} 
-            information['email'] = ''
-            information['pass'] = ''
-            information['onlyonchange'] = ''
-            information['debugging'] = ''
-            information['protocol'] = ''
-            information['outgoingMailServer'] = ''
-            information['port'] = ''
-            
-            
-            if path.isfile(getcwd() + '\\bin\\conf.txt'): 
-                fCheck = open(getcwd() + '\\bin\\conf.txt', 'rb') 
-                Text = fCheck.readlines()
-                fCheck.close()
-                if len(Text) > 0 :
-                    for SingleValue in Text:
-                        decodedString = self.DecodeInfo(SingleValue)
-                        if decodedString.find('smtp|') >= 0:
-                            information['outgoingMailServer'] = decodedString
-                        elif decodedString.find('e|') >= 0:
-                            information['email'] = decodedString
-                        elif decodedString.find('p|') >= 0: 
-                            information['pass'] = decodedString
-                        elif decodedString.find('port|') >= 0: 
-                            information['port'] = decodedString
-                        elif decodedString.find('protocol|') >= 0: 
-                            information['protocol'] = decodedString
-                        elif decodedString.find('debug|') >= 0: 
-                            information['debugging'] = decodedString
-                        
-                        else:    
-                            information['onlyonchange'] = decodedString
-            return information
-        else:    
-            information = {} 
-            information['onlyonchange'] = ''
-            information['filters'] = ''
-            information['RunWhenOnBatteryPower'] = ''
-            information['IfMissedRunUponAvailable'] = ''
-            information['RunInitialScan'] = ''
-            information['filters'] = ''
-            information['Algorithm'] = ''
-            if path.isfile(getcwd() + '\\bin\\' + project + '-conf.txt'): 
-                fCheck = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'rb') 
-                Text = fCheck.readlines()
-                fCheck.close()
-                
-                if len(Text) > 0 :
-                    for SingleValue in Text:
-                        decodedString = self.DecodeInfo(SingleValue)
-                        if decodedString.find('EOWSC|') >= 0:
-                            information['onlyonchange'] = decodedString
-                        elif decodedString.find('fil|') >= 0:
-                            information['filters'] = decodedString
-                        elif decodedString.find('RWOBP|') >= 0:
-                            information['RunWhenOnBatteryPower'] = decodedString  
-                        elif decodedString.find('IMRUA|') >= 0:
-                            information['IfMissedRunUponAvailable'] = decodedString
-                        elif decodedString.find('RIS|') >= 0:
-                            information['RunInitialScan'] = decodedString
-                        elif decodedString.find('algo|') >= 0:  
-                            information['Algorithm'] = decodedString
-                        
-                                              
-        return information
-    
-    # Update/Save Information Related To Email Configuration 
-    def setConfigInfo(self, information , project=None):
+        self.Database = Database()
+        self.Database.connect()
         
-        flag = False
-        if project == None:  
-            f = open(getcwd() + '\\bin\\conf.txt', 'wb')
-        else:
-            f = open(getcwd() + '\\bin\\' + project + '-conf.txt', 'wb')
-            
-        for key , Sngleitem in information.iteritems():
-            if Sngleitem != '':
-                f.write(self.EncodeInfo(Sngleitem) + '\n')
-                flag = True
-        f.close()      
-        return flag   
+        queryResult = self.Database.select(self.Database._tableConfiguration)
+        
+        if len(queryResult)>0 :
+            information = {}
+            print(queryResult)
+            for  result in queryResult:
+                print(result)
+                information['id'] = queryResult[result]['id']
+                information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
+                information['email'] = self.DecodeInfo(queryResult[result]['email'])
+                information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
+                information['port'] = queryResult[result]['port']
+                information['protocol'] = queryResult[result]['protocol']
+                information['debugger'] = queryResult[result]['debugger']
+                break;
+            self.Database.closeConnection()
+            return information
+        return {}
+    
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msg = "Invalid email address provided.  Please provide a valid address and try again."
@@ -313,6 +258,8 @@ class EmailPref(QDialog):
         
     # Updating Configuration     
     def SetInformation(self):
+        self.Database = Database()
+        self.Database.connect()
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
         outgoingMailServer = self.outgoingMailServer.text()
@@ -330,26 +277,27 @@ class EmailPref(QDialog):
             errorMsg = QB.information(self, "Error", errorMsg)
             return
         
-        E_unbased = "e|" + Email
-        P_unbased = "p|" + Pass
-        smtp_unbased = "smtp|" + outgoingMailServer
-        port_unbased = "port|" + port
-        protocol_unbased = "protocol|" + protocol
+        E_unbased = Email
+        P_unbased = Pass
+        smtp_unbased = outgoingMailServer
+        port_unbased = port
+        protocol_unbased = protocol
         
         information = self.getConfigInfo()
-        
-        information['email'] = E_unbased
-        information['pass'] = P_unbased
+
+        information['email'] = self.EncodeInfo(E_unbased)
+        information['pass'] = self.EncodeInfo(P_unbased)
         information['port'] = port_unbased
-        information['smtp'] = smtp_unbased
+        information['smtp'] = self.EncodeInfo(smtp_unbased)
         information['protocol'] = protocol_unbased
         
-        
-        self.setConfigInfo(information)
+        self.Database.delete(self.Database._tableConfiguration, '1=1')
+        self.Database.insert(self.Database._tableConfiguration, information)
         
         QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
-        
+        self.Database.closeConnection()
         self.CloseClick()
+        
     
     # Triggers     
     def EncodeInfo(self, stringToBeEncoded):
@@ -366,7 +314,7 @@ class EmailPref(QDialog):
         
     def TLSConif(self):
         information = self.getConfigInfo()
-        port = str(information['port']).replace('port|', '').replace('\n', '')
+        port = str(information['port'])
         
         if(port != None and port !='' ):
             self.port.setText(port)
@@ -375,7 +323,7 @@ class EmailPref(QDialog):
             
     def SSLConif(self):
         information = self.getConfigInfo()
-        port = str(information['port']).replace('port|', '').replace('\n', '')
+        port = str(information['port'])
         
         if(port != None and port !='' ):
             self.port.setText(port)
@@ -384,7 +332,7 @@ class EmailPref(QDialog):
             
     def NoneConif(self):
         information = self.getConfigInfo()
-        port = str(information['port']).replace('port|', '').replace('\n', '')
+        port = str(information['port'])
         
         if(port != None and port !='' ):
             self.port.setText(port)

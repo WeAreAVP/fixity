@@ -12,7 +12,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
-
+from Database import Database
 
 #Custom Classes
 from EmailPref import EmailPref
@@ -111,14 +111,19 @@ class FilterFiles(QDialog):
         
     # Update Filters information    
     def SetInformation(self):
+        
+        DB = Database()
         selectedProject = self.Porjects.currentText()
-        Information = self.EmailPref.getConfigInfo(selectedProject)
-        Information['filters'] = 'fil|' + self.FilterField.text()
+        Information = DB.getProjectInfo(selectedProject)
+        Information[0]['filters'] = self.FilterField.text()
+        
+        DB1 = Database()
         if selectedProject == '':
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
-        flag = self.EmailPref.setConfigInfo(Information, selectedProject)
-        if flag:
+        flag = DB.update(DB._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
+        
+        if flag != None:
             QMessageBox.information(self, "Success", "Filter set successfully!")
             self.Cancel()
             return
@@ -131,11 +136,12 @@ class FilterFiles(QDialog):
         
     # Triggers on project changed from drop down and sets related information in filters Field    
     def projectChanged(self):
-        
+        DB = Database()
         filters = ''
         selectedProject = self.Porjects.currentText()
-        Information = self.EmailPref.getConfigInfo(selectedProject)
-        filters = str(Information['filters']).replace('fil|', '').replace('\n', '')
+        
+        Information = DB.getProjectInfo(selectedProject)
+        filters = str(Information[0]['filters']).replace('\n', '')
         self.FilterField.setText(filters)
         return
     # close the dailog box
@@ -149,6 +155,6 @@ class FilterFiles(QDialog):
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#     
+#      
 # app.exec_() 
          

@@ -20,6 +20,7 @@ from EmailPref import EmailPref
 import FixityCore
 import FixitySchtask
 from Debuger import Debuger
+from Database import Database 
 
 class DecryptionManager(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -421,8 +422,6 @@ class DecryptionManager(QDialog):
             for f in xrange(len(fls)):
                 
                 p = path.abspath(fls[f])
-                
-                
                 
                 EcodedBasePath = InfReplacementArray[r]['code']
                 

@@ -4,8 +4,8 @@ Created on Feb 27, 2014
 @author: Furqan
 '''
 from avp import DBHanlder
-from pprint import pprint
-class Database():
+
+class Database(object):
     def __init__(self):
         self.ConfigurationObj = None
         self.VersionsObj = None
@@ -61,3 +61,20 @@ class Database():
         
     def delete(self, obj):
         self.dbSession.delete(obj) 
+
+db1 = Database()
+# db1.initConfigurationObj()
+
+# page_q =  db1.queryTableBased(db1.ConfigurationCls)
+# print(page_q)
+# for page in page_q:
+#     print(page.email)
+
+page_q = db1.dbSession.query(DBHanlder.model.Configuration)
+ressult =page_q.all()
+print(ressult)
+# for page in page_q:
+#   print page
+
+# print(SingleResult.id)
+exit()
