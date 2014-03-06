@@ -172,25 +172,16 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         else:
             Settings['DisallowStartIfOnBatteries'] = 'true'    
             RunWhenOnBatteryPower = 'RWOBP|F'
-
-
-#         if Configurations['RunInitialScan'] == 1 or Configurations['RunInitialScan'] == '1':
-#             RunInitialScan = 'RIS|T'
-#         else:    
             
         RunInitialScan = 'RIS|T'
-            
-            
+        
         Actions['Exec'] = {}
         Actions['Exec']['Command'] = pathCommand
-
-
         text = ''
         if Configurations['emailOnlyUponWarning'] == 1 or Configurations['emailOnlyUponWarning'] == '1':
             text = 'EOWSC|F'
         else:
             text = 'EOWSC|T'
-            
         
         E_text = text
       
@@ -216,32 +207,46 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         DB.connect()
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
         DB.closeConnection()
-        print(isProjectExists)
+        
+      
+            
+        DB = Database()
+        DB.connect()
+        
+        Information = {}
+        Information['versionType'] = ' save'
+        Information['name'] = EP.EncodeInfo(str(CurrentDate)) 
+        
+        versionID  = DB.insert(DB._tableVersions, Information)
+        DB.closeConnection()
+        
         DB = Database()
         DB.connect() 
+        
         projectID = 0  
         if (len(isProjectExists) <= 0):
+            Configurations['versionCurrentID'] = versionID['id']
             projectID = DB.insert(DB._tableProject, Configurations)
             projectID = projectID['id']
         else:
             projectID = isProjectExists[0]['id']
+            Configurations['versionCurrentID'] = versionID['id']
             DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
+            
         DB.closeConnection()    
-        print(projectID)    
-        DB = Database()
-        DB.connect()
-        DB.delete(DB._tableProjectPath, "projectID='"+str(projectID)+"'")
         counter = 1
+        
         for ms in dirInfo:
             if (ms.text().strip() != ''):
                 PathsInfo = {}
                 PathsInfo['projectID'] = projectID
-                PathsInfo['versionID'] = projectID
+                PathsInfo['versionID'] = versionID['id']
                 PathsInfo['path'] = ms.text().strip()
                 PathsInfo['pathID'] = 'Fixity-' + str(counter)
                 DB = Database()
                 DB.connect()
                 DB.insert(DB._tableProjectPath, PathsInfo)
+                DB.closeConnection()
                 counter = counter + 1   
         try:
             subprocess.call(Command, startupinfo=startupinfo)

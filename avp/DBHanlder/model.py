@@ -15,9 +15,10 @@ def now():
 
 project_table = schema.Table('project', metadata,
     schema.Column('id', types.Integer, schema.Sequence('project_seq_id', optional=True), primary_key=True),
+    schema.Column('versionCurrentID', types.Integer, schema.ForeignKey('versions.id'), nullable = False),
     schema.Column('title', types.String(255)),
-    # 0=Monthly, 1=Weekly, 2=Daily 
     
+    # 0=Monthly, 1=Weekly, 2=Daily 
     schema.Column('durationType', types.Integer),
     schema.Column('runTime', types.String(10)),
     schema.Column('runDayOrMonth', types.String(12)),
@@ -35,7 +36,7 @@ project_table = schema.Table('project', metadata,
 projectPath_table = schema.Table('projectPath', metadata,
     schema.Column('id', types.Integer, schema.Sequence('project_seq_id', optional=True), primary_key = True),
     schema.Column('projectID', types.Integer, schema.ForeignKey('project.id'), nullable = False),
-    schema.Column('versionID', types.Integer, schema.ForeignKey('versions.id'), nullable = False),
+    schema.Column('versionID', types.Integer, schema.ForeignKey('versions.id'), nullable = True),
     schema.Column('path', types.Text, nullable = False),
     schema.Column('pathID', types.String(15), nullable = False),
     schema.Column('updatedAt', types.DateTime() , default = now),
@@ -45,7 +46,8 @@ projectPath_table = schema.Table('projectPath', metadata,
 
 versions_table = schema.Table('versions', metadata,
     schema.Column('id', types.Integer, schema.Sequence('versions_seq_id', optional=True), primary_key=True),
-    schema.Column('projectID', types.Integer, schema.ForeignKey('project.id'), nullable=False),
+#     schema.Column('projectID', types.Integer, schema.ForeignKey('project.id'), nullable=False),
+    schema.Column('versionType', types.String(10) , nullable = False),
     schema.Column('name', types.String(255) , nullable = False),
     schema.Column('updatedAt', types.DateTime() , default=now),
     schema.Column('createdAt', types.DateTime() , default=now),
@@ -55,6 +57,7 @@ versionDetail_table = schema.Table('versionDetail', metadata,
     schema.Column('id', types.Integer,schema.Sequence('vd_seq_id', optional=True), primary_key=True),
     schema.Column('versionID', types.Integer, schema.ForeignKey('versions.id'), nullable=False),
     schema.Column('projectID', types.Integer, schema.ForeignKey('project.id'), nullable=False),
+    schema.Column('projectPathID', types.Integer, schema.ForeignKey('projectPath.id'), nullable = False),
     schema.Column('md5_hash', types.Text , nullable = False),
     schema.Column('ssh256_hash', types.Text , nullable = False),
     schema.Column('path', types.Text, nullable = False),
@@ -96,25 +99,25 @@ class ProjectPath(BaseProjectPath):
     pass
 
 orm.mapper(Project, project_table, properties={
-    'Versions':orm.relation(Versions, backref='project_versions'),
-    'Configuration':orm.relation(Configuration, backref='project_configuration'),
-    'ProjectPath':orm.relation(ProjectPath, backref='project_projectPath'),
-    'VersionDetail':orm.relation(VersionDetail, backref='project_versionDetail')
+        'Versions':orm.relation(Versions, backref='project_versions'),
+        'Configuration':orm.relation(Configuration, backref='project_configuration'),
+        'ProjectPath':orm.relation(ProjectPath, backref='project_projectPath'),
+        'VersionDetail':orm.relation(VersionDetail, backref='project_versionDetail')
 });
 # 
 orm.mapper(Versions, versions_table,properties={
-    'Project':orm.relation(Project, backref='versions_project'),
+#     'Project':orm.relation(Project, backref='versions_project'),
     });
 orm.mapper(Configuration, configuration_table,properties={
-    'Project':orm.relation(Project, backref='Configuration_project'),
+        'Project':orm.relation(Project, backref='Configuration_project'),
     });
      
 orm.mapper(VersionDetail, versionDetail_table,properties={
-    'Versions':orm.relation(Versions, backref='versionDetail_versions'),
-    'Project':orm.relation(Project, backref='versionDetai_project'),
+        'Versions':orm.relation(Versions, backref='versionDetail_versions'),
+        'Project':orm.relation(Project, backref='versionDetai_project'),
     });
      
 orm.mapper(ProjectPath, projectPath_table,properties={
-    'Versions':orm.relation(Versions, backref='projectPath_versions'),
-    'Project':orm.relation(Project, backref='projectPath_project'),
+        'Versions':orm.relation(Versions, backref='projectPath_versions'),
+        'Project':orm.relation(Project, backref='projectPath_project'),
     });

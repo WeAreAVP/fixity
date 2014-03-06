@@ -7,6 +7,7 @@
 import FixityCore
 import FixityMail
 from Debuger import Debuger
+from Database import Database
 
 import sys
 
@@ -33,103 +34,25 @@ except:
 Text = '' 
 projectConfNotAvailable = True
 AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-try:
-	if path.isfile(AutiFixPath+ '\\bin\\'  + project + '-conf.txt'):
-		
-		fconf = open(AutiFixPath+ '\\bin\\'  + project + '-conf.txt', 'rb') 
-		Text = fconf.readlines()
-		fconf.close()
-	else:
-		projectConfNotAvailable = False
-except Exception as e:
-	Debuging = Debuger()
-	moreInformation = {"moreInfo":'null'}
-	try:
-		if not e[0] == None:
-			moreInformation['LogsMore'] =str(e[0])
-	except:
-		pass
-	try:	
-		if not e[1] == None:
-			moreInformation['LogsMore1'] =str(e[1])
-	except:
-		pass
-		
-	Debuging.tureDebugerOn()	
-	Debuging.logError('Configuration File Dose not exist  Line range 57 - 61 File AutoFixity ', moreInformation)
-	pass
-
-if projectConfNotAvailable :
-	TextEmail = ''
 	
-try:
-	fconfEmail = open(AutiFixPath + '\\bin\\'  +'conf.txt', 'rb')
-	TextEmail = fconfEmail.readlines()
-	fconfEmail.close()
-except Exception as e:
-	Debuging = Debuger()
-	moreInformation = {"moreInfo":'null'}
-	try:
-		if not e[0] == None:
-			moreInformation['LogsMore'] =str(e[0])
-	except:
-		pass
-	try:	
-		if not e[1] == None:
-			moreInformation['LogsMore1'] =str(e[1])
-	except:
-		pass
-		
-	Debuging.tureDebugerOn()	
-	Debuging.logError('Configuration File Dose not exists  Line range 57 - 61 File AutoFixity ', moreInformation)
-	pass	
+DB = Database()
+Information = DB.getProjectInfo(project)
+configuration =  DB.getConfiguration()
 
 
-	
-information = {} 
-information['email'] = ''
-information['pass'] = ''
-information['onlyonchange'] = ''
-information['filters'] = ''
-information['port'] = ''
-information['protocol'] = ''
-information['outgoingMailServer'] = ''
-
-for SingleValue in Text:
-	decodedString = DecodeInfo(SingleValue)
-	if decodedString.find('EOWSC|') >= 0:
-		information['onlyonchange'] = decodedString.replace('EOWSC|', '').replace('\n', '')
-	elif decodedString.find('fil|') >= 0:
-		information['filters'] = decodedString  
-			
-for SingleValue in TextEmail:
-	decodedString = DecodeInfo(SingleValue)
-	if decodedString.find('smtp|') >= 0:
-		information['outgoingMailServer'] = str(decodedString).replace('smtp|', '').replace('\n', '')
-	elif decodedString.find('e|') >= 0:
-		information['email'] = decodedString.replace('e|', '').replace('\n', '')
-	elif decodedString.find('p|') >= 0: 
-		information['pass'] = decodedString.replace('p|', '').replace('\n', '')
-	elif decodedString.find('port|') >= 0:
-		information['port'] = str(decodedString).replace('port|', '').replace('\n', '')
-	elif decodedString.find('protocol|') >= 0:
-		information['protocol'] = str(decodedString).replace('protocol|', '').replace('\n', '')
-
-f = open(AutiFixPath+'\\projects\\' + project + ".fxy", 'rb')
-f.readline()
-email = f.readline().rstrip("\r\n").split(';')
+email = str(Information[0]['emailAddress']).rstrip("\r\n").split(',')
 
 if '' in email:
 	email.remove('')
 results = []	
 
-Fitlers = str(information['filters']).replace('fil|', '').replace('\n', '')
+Fitlers = str(Information[0]['filters'])
 results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
 
 msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
 
-if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or information['onlyonchange'] == 'T' or IsemailSet =='Run':
-	if (not information['email'] =='') and  (not information['pass'] ==''):
+if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or IsemailSet =='Run':
+	if (not configuration[0]['email'] =='') and  (not configuration[0]['pass'] ==''):
 		for e in email:
-			resposne = FixityMail.send(e, msg, results[5], information,project)
+			resposne = FixityMail.send(e, msg, results[5], configuration[0],project)
 		

@@ -5,7 +5,7 @@ Created on Feb 27, 2014
 '''
 import sqlite3 as sql
 from os import   getcwd
-from avp import DBHanlder
+# from avp import DBHanlder
 from DBObjectHanlder import DBObjectHanlder  as hanlder
 
 class Database(hanlder):
@@ -39,13 +39,15 @@ class Database(hanlder):
 
             
          
-    def select(self,tableName , select  = '*' ,condition=None):
+    def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
             query= ''
             query = 'SELECT '+ str(select) +' FROM '+str(tableName)
             if(condition != None):
                 query += ' WHERE ' + condition
-            
+            if(orderBy != None):
+                query += ' ORDER BY '+ orderBy
+                
             response = {}
             responseCounter = 0
             for r in self.dict_gen(self.cursor.execute(query)):
@@ -60,8 +62,7 @@ class Database(hanlder):
             self.con.close()
             self.closeConnection()
             pass
-        finally:
-            pass
+        
         
     def dict_gen(self,curs):
         ''' From Python Essential Reference by David Beazley
@@ -86,19 +87,21 @@ class Database(hanlder):
                     counter = counter + 1
                 except Exception as e:
 #                     print('insert')
-#                     print(e[0])
+                    print(e[0])
                     self.con.close()
                     self.closeConnection()
                     pass
-                finally:
-                    pass
-                
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
-            self.sqlQuery(query)
+            
+            try:
+                print(query)
+                self.cursor.execute(query)
+            except Exception as e:
+                print('insert')
+                print(e[0])
+                pass
             
             return {'id':self.cursor.lastrowid}
-            
-       
         
     def delete(self,tableName , condition):
         try:
@@ -110,8 +113,6 @@ class Database(hanlder):
             self.con.close()
             self.closeConnection()
             return None
-        finally:
-            self.closeConnection()
     
     def update(self,tableName , information,condition):
                 try:
@@ -161,8 +162,7 @@ class Database(hanlder):
                     self.con.close()
                     self.closeConnection()
                     pass
-                finally:
-                    pass
+              
             return stringGlued
         
     
@@ -177,9 +177,7 @@ class Database(hanlder):
 #             print('close')
             self.con.close()
             pass
-        finally:
-            self = None
-            pass
+     
         
     def getProjectInfo(self,projectName = None ,limit = True):
         
@@ -202,25 +200,33 @@ class Database(hanlder):
       
     
     def getProjectPathInfo(self,projectID):
-        
-        
         self.connect()
         information = {}
         information['id'] = None
         response = self.select(self._tableProjectPath, '*', "projectID='"+str(projectID)+"'")
         self.closeConnection()
         return response
-
-
+    
+    def getConfiguration(self):
+        self.connect()
+        response = self.select(self._tableConfiguration, '*')
+        self.closeConnection()
+        return response
+    
+    def getVersionDetails(self,projectID,OrderBy=None):
+        self.connect()
+        response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"'" , OrderBy)
+        self.closeConnection()
+        return response
 # print(1)
 # try:
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-db = Database()
-# db._tableProject
-db.connect()
-    
-print(db.select(db._tableProject, '*'))
-db.closeConnection()
+# db = Database()
+# # db._tableProject
+# db.connect()
+#     
+# print(db.select(db._tableProject, '*'))
+# db.closeConnection()
 #      
 # except Exception as e :
 #     print(e)

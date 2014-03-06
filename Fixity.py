@@ -364,28 +364,7 @@ class ProjectWin(QMainWindow):
                         sval = sbox.exec_()
                         if sval == QMessageBox.Ok:
                                 self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                                return
-#                 for n in xrange(0, 7):
-#                     self.dtx[n].setText("")
-#                     self.mtx[n].setText("")
-#                            
-#                 if not path.isfile('projects\\' + self.old.text() + '.fxy'):
-#                         projectName = self.old.text()
-#                         self.projects.takeItem(self.projects.row(self.old))
-#                 try:
-#                         f = open('projects\\' + new.text() + '.fxy', 'rb')
-#                         projectName = new.text()
-#                 except:
-#                         for n in xrange(0, 7):
-#                             self.dtx[n].setText("")
-#                             self.mtx[n].setText("")
-#                              
-#                         self.timer.setTime(QTime(0, 0))
-#                         self.monthclick()
-#                         self.monthly.setChecked(True)
-#                         self.dom.setValue(1)
-#                         return
- 
+                                return 
                 information = {}
                 
                 projectName = self.projects.currentItem().text() 
@@ -397,20 +376,18 @@ class ProjectWin(QMainWindow):
            
 
                 
-                n, p = 0, 0
+                n = 0
                 for n in pathInfo:
                     if n != None :
                         try:        
                             self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
                         except:
                             self.dtx[(n)].setText("")
-                            
                 if int(projectInfo[0]['emailOnlyUponWarning']) == 1:
                     self.EmailOnlyWhenSomethingChanged.setChecked(True)
                 elif  int(projectInfo[0]['emailOnlyUponWarning']) == 0:
                     self.EmailOnlyWhenSomethingChanged.setChecked(False)
                     
-                print(projectInfo[0]['runWhenOnBattery'])
                 
                 if  int(projectInfo[0]['runWhenOnBattery']) == 1:
                     self.runOnlyOnACPower.setChecked(True)
@@ -601,7 +578,7 @@ class ProjectWin(QMainWindow):
                     Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                     Configurations['RunInitialScan'] = False
                     
-                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation)
+                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , self.dtx)
                     
                     ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                     FiltersArray = {}
@@ -764,38 +741,48 @@ class ProjectWin(QMainWindow):
                 QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans")
                 return
             
-            if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
-                    projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
-                    binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
-                    projectFileLines = projectFile.readlines();
-                    binFileLines = binFile.readlines();
-                    projectFile.close()
-                    binFile.close()
-                    if (not binFileLines) or (not projectFileLines):
-                        QMessageBox.warning(self, "Fixity", "Please save the current project before scanning.")
-                        return
+#             if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
+#                     projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
+#                     binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
+#                     projectFileLines = projectFile.readlines();
+#                     binFileLines = binFile.readlines();
+#                     projectFile.close()
+#                     binFile.close()
+#                     if (not binFileLines) or (not projectFileLines):
+#                         QMessageBox.warning(self, "Fixity", "Please save the current project before scanning.")
+#                         return
                     
             Configurations = {}
+            
             DB = Database()
             Configurations = DB.getProjectInfo(self.projects.currentItem().text())
-                  
-            Configurations[0]['runWhenOnBattery'] = self.runOnlyOnACPower.isChecked() 
-            Configurations[0]['ifMissedRunUponRestart'] = self.StartWhenAvailable.isChecked()
-            Configurations[0]['emailOnlyUponWarning'] = self.EmailOnlyWhenSomethingChanged.isChecked()
-#             Configurations[0]['RunInitialScan'] = False
+            
+            if self.runOnlyOnACPower.isChecked():
+                Configurations[0]['runWhenOnBattery'] = 1
+            else:  
+                Configurations[0]['runWhenOnBattery'] = 0
+                
+            if self.StartWhenAvailable.isChecked():
+                Configurations[0]['ifMissedRunUponRestart'] = 1
+            else:
+                Configurations[0]['ifMissedRunUponRestart'] = 0
+                
+            if self.EmailOnlyWhenSomethingChanged.isChecked():    
+                Configurations[0]['emailOnlyUponWarning'] = 1
+            else:
+                Configurations[0]['emailOnlyUponWarning'] = 0
+
                         
             FilePath = getcwd()+'\\schedules\\'
-            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation)
+            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, self.dtx)
+            
             FileName = 'AutoFixity.exe';
             params = self.projects.currentItem().text() +' '+'Run'
-            
-            
             
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
             
             self.Threading.start()
             QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
-
         
         #DELETE Given PROJECT 
         def deleteproject(self):
@@ -811,11 +798,10 @@ class ProjectWin(QMainWindow):
                 if sval == QMessageBox.Cancel:
                     return
                 try:
-                    remove("projects\\" + self.projects.currentItem().text() + ".fxy")
-                    remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".bat")
-                    remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + ".vbs")
-                    remove("schedules\\fixity-" + self.projects.currentItem().text().replace(' ', '_') + "-sch.xml")
-                    remove("bin\\" + self.projects.currentItem().text() + "-conf.txt")
+                    DB = Database()
+                    DB.connect()
+                    DB.delete(DB._tableProject, "title like '"+self.projects.currentItem().text()+"'")
+                    DB.closeConnection()
                 except:
                     pass
                 

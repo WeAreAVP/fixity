@@ -5,7 +5,7 @@ Created on Feb 27, 2014
 '''
 import sqlite3 as sql
 from os import   getcwd
-from avp import DBHanlder
+
 
 
 class DBObjectHanlder(object):
