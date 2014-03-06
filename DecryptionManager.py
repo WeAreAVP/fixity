@@ -126,16 +126,22 @@ class DecryptionManager(QDialog):
             return
         
         projects_path = getcwd()+'\\projects\\'
-        Information = FixityCore.getConfigInfo(selectedProject)
+        DB  = Database()
+        info = DB.getProjectInfo(selectedProject)
+        Information= {}
+        
+        if(len(info) > 0):
+            Information = info[0]
         
         aloValueSelected = ''
         if self.methods.currentText() == None or self.methods.currentText() == '':
-            aloValueSelected = 'algo|sha256' 
+            aloValueSelected = 'sha256' 
         else:
-            aloValueSelected = 'algo|' + str(self.methods.currentText())
+            aloValueSelected = str(self.methods.currentText())
         
         sameValueFlag = False
-        if aloValueSelected != Information['Algorithm']:
+        if aloValueSelected != Information['selectedAlgo']:
+            
             sameValueFlag =True
             response = self.slotWarning(selectedProject)
             if response:
@@ -146,7 +152,7 @@ class DecryptionManager(QDialog):
 
                 hasChanged = self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True)
                 if hasChanged:
-                    Information['Algorithm'] = aloValueSelected
+                    Information['selectedAlgo'] = aloValueSelected
                     response = True
             else:
                 response = False
@@ -155,8 +161,11 @@ class DecryptionManager(QDialog):
         if selectedProject == '':
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
-        
-        flag = self.EmailPref.setConfigInfo(Information, selectedProject)
+        DB  = Database()
+        DB.connect()
+        flag = DB.update(DB._tableProject, Information, "id='" + str(Information['id']) + "'")
+        DB.closeConnection()
+
         if response:
             if flag and hasChanged:
                 if not self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
@@ -177,11 +186,15 @@ class DecryptionManager(QDialog):
     def projectChanged(self):
         Algorithm = ''
         selectedProject = self.Porjects.currentText()
-        
-        Information = FixityCore.getConfigInfo(selectedProject)
+        DB  = Database()
+        info = DB.getProjectInfo(selectedProject)
+        Information= {}
+        Information['selectedAlgo'] = 'sha256'
+        if(len(info) > 0):
+            Information = info[0]
         
     
-        Algorithm = str(Information['Algorithm']).replace('algo|', '').replace('\n', '')
+        Algorithm = str(Information['selectedAlgo'])
     
         if Algorithm =='md5':
             self.methods.setCurrentIndex(1)
@@ -206,8 +219,13 @@ class DecryptionManager(QDialog):
 
         
     def run(self,file,filters='',projectName = '',checkForChanges = False):
-        
-        
+        DB = Database()
+        DB.connect()
+            
+        projectInformation = DB.getProjectInfo(projectName)
+        projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
+        projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
+             
         FiltersArray = filters.split(',')
         dict = defaultdict(list)
         dict_Hash = defaultdict(list)
@@ -222,15 +240,13 @@ class DecryptionManager(QDialog):
         first = infile.readline()
         second = infile.readline()
         ToBeScannedDirectoriesInProjectFile = []
-        ToBeScannedDirectoriesInProjectFileRaw = first.split(';')
-        
-        for SingleDircOption in ToBeScannedDirectoriesInProjectFileRaw:
-            SingleDircOption = SingleDircOption.strip()
-            SignleDirCodeAndPath = SingleDircOption.split('|-|-|')
-            if SignleDirCodeAndPath[0].strip():
-                ToBeScannedDirectoriesInProjectFile.append(SignleDirCodeAndPath[0].strip())
-                InfReplacementArray[SignleDirCodeAndPath[0].strip()]= {'path':SignleDirCodeAndPath[0].strip(),'code':'Fixity-'+SignleDirCodeAndPath[2] ,'number': SignleDirCodeAndPath[2]}
-        mails = second.split(';')
+        for pathInfo in projectPathInformation:
+            ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
+            IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
+            InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
+    
+        mails = str(projectInformation[0]['emailAddress']).split(',')
+              
         keeptime = infile.readline()
         trash = infile.readline()
         
@@ -240,9 +256,9 @@ class DecryptionManager(QDialog):
         tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
         
         check = 0
-        for l in infile.readlines():
+        for l in projectDetailInformation:
             try:
-                x = FixityCore.toTuple(l)
+                x = FixityCore.toTuple(projectDetailInformation[l])
                 if x != None and x:
                     pathInformation = str(x[1]).split('||')
                     if pathInformation:
@@ -285,8 +301,15 @@ class DecryptionManager(QDialog):
             pass    
         flagAnyChanges = False
         
-        information = FixityCore.getConfigInfo(projectName)
-        Algorithm = str(information['Algorithm']).replace('algo|', '').replace('\n', '')
+        
+        DB  = Database()
+        info = DB.getProjectInfo(projectName)
+        information= {}
+        information['selectedAlgo'] = 'sha256'
+        if(len(info) > 0):
+            information = info[0]
+            
+        Algorithm = str(information['selectedAlgo'])
         if Algorithm == '' or Algorithm == None :
             Algorithm = 'sha256'
         for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
@@ -312,8 +335,6 @@ class DecryptionManager(QDialog):
                     
                     try:
                         response = FixityCore.verify_using_inode(dict,dict_Hash,dict_File, e , file)
-                        
-                        
                     except Exception as ex :
                         moreInformation = {"moreInfo":'null'}
                         try:
@@ -350,10 +371,23 @@ class DecryptionManager(QDialog):
                         pass
                     
                     pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
+                    pathID = FixityCore.getPathId(str(SingleDirectory),InfReplacementArray)
                     newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
-                    
-                    tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
                         
+                    DB = Database()
+                    DB.connect()
+                    versionDetailOptions = {}
+                    versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
+                    versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
+                    versionDetailOptions['path'] = str(newCodedPath)
+                    versionDetailOptions['inode'] = str(response[0][2])
+                    versionDetailOptions['versionID'] = projectInformation[0]['versionCurrentID']
+                    versionDetailOptions['projectID'] = projectInformation[0]['id']
+                    versionDetailOptions['projectPathID'] = pathID
+                    
+                    DB.insert(DB._tableVersionDetail, versionDetailOptions)
+                    tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+                    DB.closeConnection()    
                     
         missingFile =[0,0,0]            
         try:  
@@ -380,9 +414,6 @@ class DecryptionManager(QDialog):
             
         shutil.copy(file + ".tmp", file)
         remove(file + ".tmp")
-        
-#         total = confirmed + moved + created + corruptedOrChanged + missingFile[1]
-#         repath = FixityCore.writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
         
         return flagAnyChanges
         
@@ -454,13 +485,13 @@ class DecryptionManager(QDialog):
         
         return listOfValues
 #         
-# app = QApplication('asdas')
-# w = DecryptionManager()
+app = QApplication('asdas')
+w = DecryptionManager()
 # w.CreateWindow()
 # w.SetWindowLayout() 
 # w.SetDesgin()
 # w.ShowDialog()
 # app.exec_() 
 #          
-# projects_path = getcwd()+'\\projects\\'
-# print(w.run(projects_path+'New_Project.fxy','','New_Project'))
+projects_path = getcwd()+'\\projects\\'
+print(w.run(projects_path+'New_Project.fxy','','New_Project'))

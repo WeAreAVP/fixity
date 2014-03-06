@@ -127,7 +127,7 @@ class Database(hanlder):
                             counter=counter+1
                     query += ' WHERE '+condition
                     self.connect()
-
+                    print(query)
                     return self.cursor.execute(query)
                 except Exception as e:
                     print('update')
@@ -199,11 +199,11 @@ class Database(hanlder):
         return response
       
     
-    def getProjectPathInfo(self,projectID):
+    def getProjectPathInfo(self,projectID,versionID):
         self.connect()
         information = {}
         information['id'] = None
-        response = self.select(self._tableProjectPath, '*', "projectID='"+str(projectID)+"'")
+        response = self.select(self._tableProjectPath, '*', "projectID='"+str(projectID)+"' and versionID = '"+ str(versionID) + "'")
         self.closeConnection()
         return response
     
@@ -213,9 +213,9 @@ class Database(hanlder):
         self.closeConnection()
         return response
     
-    def getVersionDetails(self,projectID,OrderBy=None):
+    def getVersionDetails(self,projectID,versionID,OrderBy=None):
         self.connect()
-        response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"'" , OrderBy)
+        response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
 # print(1)

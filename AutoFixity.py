@@ -15,7 +15,6 @@ import datetime
 from os import getcwd ,path  
 import base64
 
-
 def EncodeInfo(stringToBeEncoded):
 	return base64.b16encode(base64.b16encode(stringToBeEncoded))
 	

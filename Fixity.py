@@ -278,24 +278,36 @@ class ProjectWin(QMainWindow):
             self.DecryptionManager.ShowDialog()
                
         def switchDebugger(self,start= None):
-            
-            Information = self.EP.getConfigInfo()            
-#             debugText = ''
-#             
-#             if start == None:
-#                 if Information['debugging'] == 'debug|off' or Information['debugging'] == '' or Information['debugging'] == None:
-#                     Information['debugging'] ='debug|on'
-#                 else:
-#                     Information['debugging'] ='debug|off'
-#             
-#             self.EP.setConfigInfo(Information)
-#             
-#             if Information['debugging'] == 'debug|off' or Information['debugging'] == '' or Information['debugging'] == None:
-#                 debugText = 'Turn Debugging On' 
-#             else:
-#                 debugText = 'Turn Debugging Off'
-#             
-#             self.Debuging.setText(debugText)    
+            DB = Database()
+           
+            Information = {'debugger':0}
+            info = DB.getConfiguration()
+            if(len(info)>0):
+                Information = info[0] 
+                        
+            debugText = ''
+             
+            if start == None:
+                if len(info) < 0:
+                        Information['debugger'] = 1
+                elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
+                    Information['debugger'] = 1
+                else:
+                    Information['debugger'] = 0
+                    
+                DB = Database()
+                DB.connect()
+                if len(info) > 0:
+                    DB.update(DB._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
+                else:
+                    DB.insert(DB._tableConfiguration,Information) 
+                DB.closeConnection()
+            if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
+                debugText = 'Turn Debugging On' 
+            else:
+                debugText = 'Turn Debugging Off'
+             
+            self.Debuging.setText(debugText)    
             
         def newWindow(self):
             self = ProjectWin()
@@ -364,18 +376,15 @@ class ProjectWin(QMainWindow):
                         sval = sbox.exec_()
                         if sval == QMessageBox.Ok:
                                 self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                                return 
+                                return
+                             
                 information = {}
-                
                 projectName = self.projects.currentItem().text() 
                 projectInfo = self.Database.getProjectInfo(projectName)
-                
-                pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'])
+                pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
                 
                 rlabel = projectInfo[0]['lastRan']
            
-
-                
                 n = 0
                 for n in pathInfo:
                     if n != None :
@@ -831,9 +840,9 @@ class ProjectWin(QMainWindow):
                 progress.setMaximum(100)
                 progress.setMinimumDuration(0)
                 for root, subFolders, files in walk(r):
-                      
                         for file in files:
                                 fls.append(path.join(root, file))
+                                
                 for f in xrange(len(fls)):
                         txt = path.abspath(fls[f])
                         if len(txt) > 43:
@@ -989,9 +998,6 @@ class ProjectWin(QMainWindow):
                         self.removeNotRequiredFiles()
                         event.accept()
                         
-       
-            
-    
         #Check for Difference in root directory in the fixity tool and in manifest                        
         def checkForChanges(self,projectName , searchForPath ,code):
                     directoryIncreament = 0

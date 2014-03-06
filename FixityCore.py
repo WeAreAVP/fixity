@@ -207,8 +207,6 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
 
 			p = path.abspath(fls[f])
 
-
-
 			EcodedBasePath = InfReplacementArray[r]['code']
 			
 			givenPath = str(p).replace(r, EcodedBasePath + '||')
@@ -615,9 +613,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	DB.connect()
 		
 	projectInformation = DB.getProjectInfo(projectName)
-	projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'])
-	projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],' id DESC')
-	
+	projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
+	projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
 	
 	FiltersArray = filters.split(',')
 	dict = defaultdict(list)
@@ -634,12 +631,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	second = infile.readline()
 	ToBeScannedDirectoriesInProjectFile = []
 	
-
 	for pathInfo in projectPathInformation:
 		ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
 		IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
 		InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
-	
 	
 	mails = str(projectInformation[0]['emailAddress']).split(',')
 	
@@ -656,7 +651,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	check = 0
 	
 	for l in projectDetailInformation:
-		
+		print('1a')
 		try:
 			x = toTuple(projectDetailInformation[l])
 			
@@ -665,6 +660,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 				if pathInformation:
 					CodeInfoormation=''
 					CodeInfoormation = pathInformation[0]
+					
 					pathInfo = getCodePathMore(CodeInfoormation ,dctValue)
 					
 					dict[x[2]].append([pathInfo+pathInformation[1], x[0], False])
@@ -703,7 +699,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		pass	
 	flagAnyChanges = False
 
-# 	information = getConfigInfo(projectName)
+
 	Algorithm = str(projectInformation[0]['selectedAlgo'])
 	
 	counter = 0
@@ -769,9 +765,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 					else:
 						flagAnyChanges = True
 						corruptedOrChanged += 1
-					
-					
-					
+		
 				except:
 					pass
 				
@@ -781,7 +775,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 				
 				DB = Database()
 				DB.connect()
-				print(response)
 				versionDetailOptions = {}
 				versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
 				versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
@@ -820,6 +813,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 #Path Encoding to a Code To Identify the Path of each file
 def pathCodeEncode(pathStr):
 	return 'Fixity-'+str(pathStr)
+
 #Path decoding to a Path From Encoded Code To Identify the Path of each file
 def pathCodedecode(code):
 	return base64.b64decode(code)
@@ -862,6 +856,7 @@ def getDirectoryDetail(projectName ,fullpath = False):
 				DirectoryDetail[indexOfDet] = detialInformation
 				
 	return DirectoryDetail 		
+
 # Fetch information related to email configuration    
 # Triggers     
 def EncodeInfo(stringToBeEncoded):

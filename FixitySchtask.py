@@ -22,7 +22,6 @@ def deltask(project):
         try:
             remove("schedules\\fixity-" + project + ".bat")
         except Exception as e:
-            
             moreInformation = {"moreInfo":'null'}
             try:   
                 if not e[0] == None:
@@ -68,9 +67,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')
         
-        
         deltask(prj)
-        
         
         spec = ""
         if Configurations['runDayOrMonth'] == 1:
@@ -106,7 +103,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         pathCommand = "\"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\""
        
-        
         ############################################################################################################################
 
         # TODO Time Zone Handling
@@ -121,8 +117,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         RegistrationInfo['Author'] = USERNAME
         RegistrationInfo['Version'] = VERSION
         RegistrationInfo['Description'] = 'Fixity Task Scheduler to Monitor A Folder Activity!'
-
-        
+  
         CurrentDate = time.strftime("%Y-%m-%d")
         EndBoundary = '2015-12-12'                        
         Triggers['CalendarTrigger'] = {}
@@ -135,7 +130,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth'] = {}
         Triggers['CalendarTrigger']['Repetition']['Interval'] = ''
         Triggers['CalendarTrigger']['Repetition']['Duration'] = ''
-        
         
         if interval == 1:
             Triggers['CalendarTrigger']['ScheduleByMonth'] = {}    
@@ -191,9 +185,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         information['ifMissedRunUponRestart'] = IfMissedRunUponAvailable
         information['runWhenOnBattery'] = RunWhenOnBatteryPower
         information['RunInitialScan'] = RunInitialScan
-        
-#         EP.setConfigInfo(information , prj)
-       
+      
         XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval)
         ############################################################################################################################
         
@@ -207,9 +199,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         DB.connect()
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
         DB.closeConnection()
-        
-      
-            
+           
         DB = Database()
         DB.connect()
         
@@ -234,8 +224,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
             
         DB.closeConnection()    
-        counter = 1
         
+        counter = 1
         for ms in dirInfo:
             if (ms.text().strip() != ''):
                 PathsInfo = {}
@@ -243,10 +233,12 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 PathsInfo['versionID'] = versionID['id']
                 PathsInfo['path'] = ms.text().strip()
                 PathsInfo['pathID'] = 'Fixity-' + str(counter)
+                
                 DB = Database()
                 DB.connect()
                 DB.insert(DB._tableProjectPath, PathsInfo)
                 DB.closeConnection()
+                
                 counter = counter + 1   
         try:
             subprocess.call(Command, startupinfo=startupinfo)
@@ -267,8 +259,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Debuging.tureDebugerOn()    
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
             pass
-        
-        
+         
 def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
         Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
@@ -326,10 +317,4 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         xmlsch.close()
         
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
-        
-        
-        
-          
-        
-        
         
