@@ -623,6 +623,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		return
 	projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
 	projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
+	
 	print('1')
 	if(projectDetailInformation != None):
 		if (len(projectDetailInformation)<=0):
@@ -635,7 +636,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
 	FileChangedList = ""
 	InfReplacementArray = {} 
-# 	dctValue = getDirectoryDetail(projectName , file)
+	historyFile = str(file).replace('projects', 'history')
+	historyFile = str(historyFile).replace('.fxy',str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf')
+	tmp = open(historyFile , 'w')
+	first = ''
+	for singlePathDF in projectPathInformation:
+		first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
 	
 	
 	print('2')
@@ -707,6 +713,23 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	Information['versionType'] = 'save'
 	Information['name'] = EncodeInfo(str(CurrentDate)) 
 	versionID  = DB.insert(DB._tableVersions, Information)
+	
+	tmp.write(first+"\n")
+	tmp.write(str(projectInformation[0]['emailAddress'])+"\n")
+	
+	keeptime = ''
+	keeptime += str(projectInformation[0]['durationType'])
+	keeptime +=' ' + str(projectInformation[0]['lastRan'])
+	
+	if int(projectInformation[0]['durationType']) == 3 :
+		keeptime += ' 99 99'
+	elif int(projectInformation[0]['durationType']) == 2 :
+		keeptime += ' 99 '+str(projectInformation[0]['runDayOrMonth'])
+	elif int(projectInformation[0]['durationType']) == 1 :
+		keeptime += ' ' + str(projectInformation[0]['runDayOrMonth']) + ' 99'
+	
+	tmp.write(keeptime+"\n")
+	tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
 	
 	print('5')
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
@@ -809,7 +832,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
 		
 	tmp.close()
-	infile.close()
 # 	
 	print('10')
 	information = str(file).split('\\')

@@ -174,10 +174,12 @@ class Database(object):
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
+            print(query)
             response = self.sqlQuery(query)
             self.closeConnection()
             return response
         except Exception as e:
+            print(e[0])
             self.closeConnection()
             return None
     

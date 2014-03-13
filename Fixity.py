@@ -519,7 +519,7 @@ class ProjectWin(QMainWindow):
                     
                 if shouldRun or (not isfileExists):
                     
-                    projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
+#                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                     total = 0
                     directoryIncreament = 1
                     
@@ -548,18 +548,18 @@ class ProjectWin(QMainWindow):
                             if self.FileChanged.changeThePathInformation:
                                 self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
                             
-                            projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
+#                             projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
                                                              
-                    projfile.write("\n")
+#                     projfile.write("\n")
                     
-                    for ms in self.mtx:
-                            
-                            if ms.text().strip() != "":
-                                    projfile.write(ms.text() + ";")
-                    projfile.write("\n")
-                    projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
-                    
-                    projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+#                     for ms in self.mtx:
+#                             
+#                             if ms.text().strip() != "":
+#                                     projfile.write(ms.text() + ";")
+#                     projfile.write("\n")
+#                     projfile.write(str(interval) + " " + self.timer.time().toString() + " " + str(dmonth) + " " + str(dweek) + "\n")
+#                     
+#                     projfile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
                 
                     currentProject = self.projects.currentItem().text()
                     
@@ -626,14 +626,14 @@ class ProjectWin(QMainWindow):
                                 if FiltersArray:
                                     for FA in FiltersArray :
                                         if FA == '' or l[n][1].find(FA) < 0:
-                                            projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
+#                                             projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                             total += 1
                      
                     if shouldRun:
                         QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
                     else:
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())   
-                    projfile.close()                     
+#                     projfile.close()                     
                 else :
                     
                     projfileFileText = []            
@@ -822,7 +822,15 @@ class ProjectWin(QMainWindow):
                     return
                 try:
                     DB = Database()
-                    DB.delete(DB._tableProject, "title like '"+self.projects.currentItem().text()+"'")
+                    projInfo = DB.getProjectInfo(self.projects.currentItem().text())
+                    print(projInfo)
+                    if len(projInfo) > 0:
+                        
+                        DB.delete(DB._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
+                        DB.delete(DB._tableProjectPath, "`projectID` = '"+str(projInfo[0]['id'])+"'")
+                        DB.delete(DB._tableVersions, "`id` = '"+str(projInfo[0]['versionCurrentID'])+"'")
+                        DB.delete(DB._tableProject, "title like '"+self.projects.currentItem().text()+"'")
+
                 except:
                     pass
                 
