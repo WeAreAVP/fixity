@@ -68,7 +68,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         prj = project.replace(' ', '_')
         
         deltask(prj)
-        
+        mo = ""
         spec = ""
         if Configurations['runDayOrMonth'] == 1:
             mo = "MONTHLY"
@@ -196,22 +196,16 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         else: 
             Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
         DB = Database()
-        DB.connect()
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
-        DB.closeConnection()
-           
-        DB = Database()
-        DB.connect()
         
         Information = {}
-        Information['versionType'] = ' save'
+        Information['versionType'] = 'save'
+        CurrentDate = time.strftime("%Y-%m-%d")
         Information['name'] = EP.EncodeInfo(str(CurrentDate)) 
         
         versionID  = DB.insert(DB._tableVersions, Information)
-        DB.closeConnection()
         
-        DB = Database()
-        DB.connect() 
+       
         
         projectID = 0  
         if (len(isProjectExists) <= 0):
@@ -223,21 +217,17 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Configurations['versionCurrentID'] = versionID['id']
             DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
             
-        DB.closeConnection()    
         
         counter = 1
         for ms in dirInfo:
-            if (ms.text().strip() != ''):
+            if (str(dirInfo[ms]) != ''):
                 PathsInfo = {}
                 PathsInfo['projectID'] = projectID
                 PathsInfo['versionID'] = versionID['id']
-                PathsInfo['path'] = ms.text().strip()
+                PathsInfo['path'] = str(dirInfo[ms]).strip()
                 PathsInfo['pathID'] = 'Fixity-' + str(counter)
-                
-                DB = Database()
-                DB.connect()
+           
                 DB.insert(DB._tableProjectPath, PathsInfo)
-                DB.closeConnection()
                 
                 counter = counter + 1   
         try:

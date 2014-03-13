@@ -78,7 +78,7 @@ class EmailPref(QDialog):
         information['email'] = Email
         information['pass'] = Pass
         information['port'] = port
-        information['outgoingMailServer'] = outgoingMailServer
+        information['smtp'] = outgoingMailServer
         information['protocol'] = protocol
          
         
@@ -218,15 +218,13 @@ class EmailPref(QDialog):
           # Fetch information related to email configuration    
     def getConfigInfo(self, project=None):
         self.Database = Database()
-        self.Database.connect()
+        
         
         queryResult = self.Database.select(self.Database._tableConfiguration)
         
         if len(queryResult)>0 :
             information = {}
-            print(queryResult)
             for  result in queryResult:
-                print(result)
                 information['id'] = queryResult[result]['id']
                 information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
                 information['email'] = self.DecodeInfo(queryResult[result]['email'])
@@ -235,7 +233,6 @@ class EmailPref(QDialog):
                 information['protocol'] = queryResult[result]['protocol']
                 information['debugger'] = queryResult[result]['debugger']
                 break;
-            self.Database.closeConnection()
             return information
         return {}
     
@@ -259,7 +256,7 @@ class EmailPref(QDialog):
     # Updating Configuration     
     def SetInformation(self):
         self.Database = Database()
-        self.Database.connect()
+        
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
         outgoingMailServer = self.outgoingMailServer.text()
@@ -295,7 +292,7 @@ class EmailPref(QDialog):
         self.Database.insert(self.Database._tableConfiguration, information)
         
         QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
-        self.Database.closeConnection()
+        
         self.CloseClick()
         
     
@@ -314,7 +311,11 @@ class EmailPref(QDialog):
         
     def TLSConif(self):
         information = self.getConfigInfo()
-        port = str(information['port'])
+        try:
+            port = str(information['port'])
+        except:
+            port = ''
+            pass
         
         if(port != None and port !='' ):
             self.port.setText(port)
@@ -323,7 +324,11 @@ class EmailPref(QDialog):
             
     def SSLConif(self):
         information = self.getConfigInfo()
-        port = str(information['port'])
+        try:
+            port = str(information['port'])
+        except:
+            port = ''
+            pass
         
         if(port != None and port !='' ):
             self.port.setText(port)
@@ -332,7 +337,11 @@ class EmailPref(QDialog):
             
     def NoneConif(self):
         information = self.getConfigInfo()
-        port = str(information['port'])
+        try:
+            port = str(information['port'])
+        except:
+            port = ''
+            pass
         
         if(port != None and port !='' ):
             self.port.setText(port)

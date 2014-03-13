@@ -3,40 +3,76 @@ Created on Feb 27, 2014
 
 @author: Furqan
 '''
-import sqlite3 as sql
+import sqlite3 
 from os import   getcwd
 # from avp import DBHanlder
-from DBObjectHanlder import DBObjectHanlder  as hanlder
+# from DBObjectHanlder import DBObjectHanlder  as hanlder
 
-class Database(hanlder):
+
+class Database(object):
     
     def __init__(self):
-        super(hanlder,self).__init__()
         self._tableConfiguration = 'configuration'
         self._tableProject = 'project'
         self._tableProjectPath = 'projectPath'
         self._tableVersionDetail = 'versionDetail'
         self._tableVersions ='versions' 
-
-    def sqlQuery(self, query):
-        print(query)
+        self.con = None
+        self.cursor = None
+        
+    def connect(self):
         try:
+            pathInfo = str(getcwd()).replace('\\schedules','')
+            pathInfo = pathInfo.replace('schedules','')
+            self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
+#             self.con = sqlite3.connect(r"D:\\python\\Fixity Project\\bin\\Fixity.sql")
+            
+            self.cursor = self.con.cursor()
+            
+        except Exception as ex:
+            moreInformation = {"moreInfo":'null'}
+            try:
+                if not ex[0] == None:
+                    moreInformation['LogsMore'] =str(ex[0])
+            except:
+                pass
+            try:    
+                if not ex[1] == None:
+                    moreInformation['LogsMore1'] =str(ex[1])
+            except:
+                pass
+            print(moreInformation)
+            
+    def sqlQuery(self, query):
+        
+        try:
+            try:
+                self.connect()
+            except:
+                pass
+            
             response = self.cursor.execute(query)
+            try:
+                self.commit()
+            except:
+                pass
+            
+            try:
+                self.closeConnection()
+            except:
+                pass
+            self.closeConnection()
             return response
+            
         except Exception as e:
-            print(e[0])
-            print('sqlQuery')
             try:
                 self.closeConnection()                
                 self.connect()
                 response = self.cursor.execute(query)
-                print(response)
                 return response
             except:
-                print(e[0])
-                print('sqlQuery')
                 pass
-
+        
             
          
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
@@ -50,17 +86,36 @@ class Database(hanlder):
                 
             response = {}
             responseCounter = 0
-            for r in self.dict_gen(self.cursor.execute(query)):
-                response[responseCounter] = r
-                responseCounter =responseCounter + 1
+            
+            try:
+                self.connect()
+            except:
+                pass
+            
+            try:
+                for r in self.dict_gen(self.cursor.execute(query)):
+                    response[responseCounter] = r
+                    responseCounter =responseCounter + 1
+            except Exception as e:
+                print(e[0])
+                pass
+            
+            try:
+                self.commit()
+            except:
+                pass
+            
+            try:
+                self.closeConnection()
+            except:
+                pass
             return response
-
+            
         
         except Exception as e:
-#             print('select')
-#             print(e[0])
-            self.con.close()
+            print(e[0])
             self.closeConnection()
+            
             pass
         
         
@@ -73,7 +128,8 @@ class Database(hanlder):
             rows = curs.fetchmany()
             if not rows: return
             for row in rows:
-                yield dict(itertools.izip(field_names, row))                  
+                yield dict(itertools.izip(field_names, row))  
+                                
     def insert(self, tableName, information):
        
             query = 'INSERT INTO '+str(tableName)
@@ -85,32 +141,43 @@ class Database(hanlder):
                     columnName[str(counter)] = index
                     values[str(counter)]  = str(information[index])
                     counter = counter + 1
-                except Exception as e:
-#                     print('insert')
-                    print(e[0])
-                    self.con.close()
-                    self.closeConnection()
+                except:
                     pass
+                
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
             
             try:
-                print(query)
+                self.connect()
+            except:
+                print('er1')
+                pass
+            
+            try:
                 self.cursor.execute(query)
             except Exception as e:
-                print('insert')
                 print(e[0])
                 pass
             
+            try:
+                self.commit()
+            except Exception as e:
+                print(e[0])
+                pass
+            self.closeConnection()
+            try:
+                self.closeConnection()
+            except:
+                print(e[0])
+                pass
             return {'id':self.cursor.lastrowid}
         
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
-            return self.sqlQuery(query)
+            response = self.sqlQuery(query)
+            self.closeConnection()
+            return response
         except Exception as e:
-#             print('delete')
-#             print(e[0])
-            self.con.close()
             self.closeConnection()
             return None
     
@@ -126,18 +193,35 @@ class Database(hanlder):
                                 query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
                             counter=counter+1
                     query += ' WHERE '+condition
-                    self.connect()
-                    print(query)
-                    return self.cursor.execute(query)
+                    
+                    try:
+                        self.connect()
+                    except:
+                        pass
+                    
+                    try:
+                        response = self.cursor.execute(query)
+                    except:
+                        print('er1')
+                        pass
+                    
+                    try:
+                        self.commit()
+                    except:
+                        pass
+                    
+                    try:
+                        self.closeConnection()
+                    except:
+                        pass
+                    
+                    return response
+                    
                 except Exception as e:
-                    print('update')
                     print(e[0])
-                    self.con.close()
                     self.closeConnection()
                     return None
            
-          
-        
     def implode(self,information , glue , isColumn = True):
         
             counter = 0
@@ -157,45 +241,42 @@ class Database(hanlder):
                             stringGlued =  stringGlued +" , '"    + information[info] + "'"
                     counter = counter + 1
                 except Exception as e:
-#                     print('implode')
-#                     print(e[0])
-                    self.con.close()
                     self.closeConnection()
                     pass
               
             return stringGlued
         
-    
-    def closeConnection(self):
-        try:
+    def commit(self):
+        if(self.con and self.con != None):
             self.con.commit()
+        
+    def closeConnection(self):
+        if(self.con and self.con != None):
             self.con.close()
             self.con = None
             self = None
-        except Exception as e:
-#             print(e[0])
-#             print('close')
-            self.con.close()
-            pass
-     
-        
+          
     def getProjectInfo(self,projectName = None ,limit = True):
-        
-        self.connect()
-        information = {}
-        information['id'] = None
-        limit = ' '
-        condition = None
-        
-        if limit:
-            limit  = " LIMIT 1"
+        response = {}
+        try:
+
+            information = {}
+            information['id'] = None
+            limit = ' '
+            condition = None
+            if limit:
+                limit  = " LIMIT 1"
             
+            if projectName:
+                condition ="title like '"+projectName+"' " + limit
+                
+            response = self.select(self._tableProject, '*', condition)
+            
+            self.closeConnection()
+        except:
+            pass
         
-        if projectName:
-            condition ="title like '"+projectName+"' " + limit
-        response = self.select(self._tableProject, '*', condition)
         self.closeConnection()
-        
         return response
       
     
@@ -208,35 +289,39 @@ class Database(hanlder):
         return response
     
     def getConfiguration(self):
-        self.connect()
         response = self.select(self._tableConfiguration, '*')
         self.closeConnection()
         return response
     
     def getVersionDetails(self,projectID,versionID,OrderBy=None):
-        self.connect()
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
-# print(1)
+    
+    def getVersionDetailsLast(self,projectID):
+        response = {}
+        resultOfLastVersion = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"'", ' versionID DESC LIMIT 1')
+        self.closeConnection()
+        if(len(resultOfLastVersion) > 0):
+            response = self.getVersionDetails(projectID,resultOfLastVersion[0]['versionID'],' id DESC')
+        return response
+    
+
 # try:
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
 # db = Database()
-# # db._tableProject
 # db.connect()
-#     
-# print(db.select(db._tableProject, '*'))
+# db.select(db._tableProject, '*')
 # db.closeConnection()
 #      
 # except Exception as e :
-#     print(e)
-#     print(e[0])
+
     
     
-# print(2)
+
 # db1 = Database()
 # db1.connect()
 # db1.insert(db1._tableProject, var1)
-# print(3)
+
 
         

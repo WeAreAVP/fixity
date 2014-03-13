@@ -9,23 +9,20 @@ Created on Dec 11, 2013
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-
-
-
+#Bult-in Libraries
 import threading
 import time
 import subprocess
-import tkMessageBox
 
-
+#Custom Libraries
 from Debuger import Debuger
+from AutoRuner import AutoRuner
+
 exitFlag = 0
 
 
 
-# Custom class to run the scanning process using multithreading  
-
-
+# Custom class to run the scanning process using Multi-Threading  
 class Threading (threading.Thread):
     def __init__(self, threadID, name, counter,FileName,FilePath,params):
         threading.Thread.__init__(self)
@@ -41,19 +38,21 @@ class Threading (threading.Thread):
         
         command = str(self.FilePath)
         command = command + 'fixity-'+self.name+'.vbs'
+#         command = '"'+command + 'AutoFixity.exe" "'+self.name+'" "Run"'
+        
         
         try:
-#             popen = subprocess.Popen(command, shell=True,stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-#             
-#             out, err = popen.communicate()
-#             errcode = popen.returncode
-            loger = open('log.inf','wb')
-            proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
-            proc.stdin.close()
-            proc.wait()
-            result = proc.returncode
-            loger.write(proc.stdout.read())
-            loger.close()
+#             loger = open('log.inf','wb')
+#             proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+#             proc.stdin.close()
+#             proc.wait()
+#             result = proc.returncode
+#             loger.write(proc.stdout.read())
+#             loger.close()
+            IsemailSet = 'Run'
+            AR = AutoRuner()
+            AR.runAutoFix(self.name, IsemailSet)
+            
             
         except Exception as e:
             
@@ -80,4 +79,10 @@ def print_time(threadName, delay, counter,thread,command):
             thread.exit()
         time.sleep(delay)
         counter -= 1
-        
+# "D:\python\Fixity Project\schedules\AutoFixity.exe" "New_Project" "Run"
+# params = 'New_Project' +' '+'Run'
+# FileName = 'AutoFixity.exe';
+# FilePath = 'D:\\python\\Fixity Project\\schedules\\'
+# t = Threading('New_Project', 'New_Project', 1,FileName,FilePath , params)
+# #  
+# t.start()     

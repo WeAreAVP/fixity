@@ -75,9 +75,16 @@ class FilterFiles(QDialog):
                                     
     # All design Management Done in Here            
     def SetDesgin(self):
+        DB = Database()
         
-        ProjectList = self.getProjects(getcwd() + '\\projects')
-        
+        ProjectListArr = DB.getProjectInfo()
+        counter = 0 
+        ProjectList = []
+        for PLA in ProjectListArr:
+            counter = counter + 1
+            ProjectList.append(ProjectListArr[PLA]['title'])
+            
+        print(ProjectList)
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
         self.Porjects.addItems(ProjectList)
@@ -155,6 +162,6 @@ class FilterFiles(QDialog):
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#      
+#       
 # app.exec_() 
          

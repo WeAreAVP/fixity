@@ -30,9 +30,9 @@ class Debuger():
         self.Information ={}
         self.Information['debugger'] = 0
         info = DB.getConfiguration()
-        
-        if len(info) > 0 :
-            self.Information = info[0]
+        if info != None:
+            if len(info) > 0 :
+                self.Information = info[0]
         
     # Function to Log Errors
     # @param msg Message to log

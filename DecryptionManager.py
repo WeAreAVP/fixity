@@ -149,11 +149,8 @@ class DecryptionManager(QDialog):
                 msgBox.setText("Reading Files, please wait ...")
                 msgBox.show()
                 QCoreApplication.processEvents()
-
-                hasChanged = self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True)
-                if hasChanged:
-                    Information['selectedAlgo'] = aloValueSelected
-                    response = True
+                Information['selectedAlgo'] = aloValueSelected
+                response = True
             else:
                 response = False
         else:
@@ -162,13 +159,10 @@ class DecryptionManager(QDialog):
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
         DB  = Database()
-        DB.connect()
         flag = DB.update(DB._tableProject, Information, "id='" + str(Information['id']) + "'")
-        DB.closeConnection()
-
+        
         if response:
-            if flag and hasChanged:
-                if not self.run(projects_path + selectedProject + '.fxy' , '' , selectedProject, True):
+            if flag :
                     try:
                         msgBox.close()
                     except:
@@ -218,205 +212,7 @@ class DecryptionManager(QDialog):
         return sum([len(files) for r, d, files in walk(path)])
 
         
-    def run(self,file,filters='',projectName = '',checkForChanges = False):
-        DB = Database()
-        DB.connect()
-            
-        projectInformation = DB.getProjectInfo(projectName)
-        projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
-        projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
-             
-        FiltersArray = filters.split(',')
-        dict = defaultdict(list)
-        dict_Hash = defaultdict(list)
-        dict_File = defaultdict(list)
-        confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
-        FileChangedList = ""
-        InfReplacementArray = {} 
-        dctValue = FixityCore.getDirectoryDetail(projectName , file)
-        
-        infile = open(file, 'r')
-        tmp = open(file + ".tmp", 'w')
-        first = infile.readline()
-        second = infile.readline()
-        ToBeScannedDirectoriesInProjectFile = []
-        for pathInfo in projectPathInformation:
-            ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
-            IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
-            InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
-    
-        mails = str(projectInformation[0]['emailAddress']).split(',')
-              
-        keeptime = infile.readline()
-        trash = infile.readline()
-        
-        tmp.write(first)
-        tmp.write(second)
-        tmp.write(keeptime)
-        tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-        
-        check = 0
-        for l in projectDetailInformation:
-            try:
-                x = FixityCore.toTuple(projectDetailInformation[l])
-                if x != None and x:
-                    pathInformation = str(x[1]).split('||')
-                    if pathInformation:
-                        CodeInfoormation=''
-                        CodeInfoormation = pathInformation[0]
-                        pathInfo = FixityCore.getCodePathMore(CodeInfoormation ,dctValue)
-                    
-                        dict[x[2]].append([pathInfo+pathInformation[1], x[0], False])
-                        dict_Hash[x[0]].append([pathInfo+pathInformation[1], x[2], False])
-                        dict_File[pathInfo+pathInformation[1]].append([x[0], x[2], False])
-                else:
-                    raise Exception
-            
-            except Exception as ex :
-                moreInformation = {"moreInfo":'null'}
-                try:
-                    if not ex[0] == None:
-                        moreInformation['LogsMore'] =str(ex[0])
-                except:
-                    pass
-                try:    
-                    if not ex[1] == None:
-                        moreInformation['LogsMore1'] =str(ex[1])
-                except:
-                    pass
-                try:
-                    moreInformation['directoryScanning']
-                except:
-                    moreInformation['directoryScanning'] = ''
-                for SingleVal in ToBeScannedDirectoriesInProjectFile:
-                    moreInformation['directoryScanning']= str(moreInformation['directoryScanning']) + "\t \t"+str(SingleVal)
-                    
-                Debugging = Debuger()
-                Debugging.tureDebugerOn()    
-                Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)    
-        
-        try:
-            ToBeScannedDirectoriesInProjectFile.remove('\n')
-        except:
-            pass    
-        flagAnyChanges = False
-        
-        
-        DB  = Database()
-        info = DB.getProjectInfo(projectName)
-        information= {}
-        information['selectedAlgo'] = 'sha256'
-        if(len(info) > 0):
-            information = info[0]
-            
-        Algorithm = str(information['selectedAlgo'])
-        if Algorithm == '' or Algorithm == None :
-            Algorithm = 'sha256'
-        for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
-            counter = self.getnumberoffiles(SingleDirectory)
-            DirectorysInsideDetails = self.quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName,counter)
-            
-            for e in DirectorysInsideDetails:
-                
-                flag =True
-                e = list(e)
-                filePath = str(e[1]).split('||')
-                pathInfo = FixityCore.getCodePath(filePath[0], InfReplacementArray)
-                
-                valDecoded = pathInfo
-                e[1] = (str(valDecoded)+str(filePath[1]))
-                
-                for Filter in FiltersArray:
-                    if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
-                        flag =False
-                
-                if flag:
-                    check+= 1
-                    
-                    try:
-                        response = FixityCore.verify_using_inode(dict,dict_Hash,dict_File, e , file)
-                    except Exception as ex :
-                        moreInformation = {"moreInfo":'null'}
-                        try:
-                            if not ex[0] == None:
-                                moreInformation['LogsMore'] =str(ex[0])
-                        except:
-                            pass
-                        try:    
-                            if not ex[1] == None:
-                                moreInformation['LogsMore1'] =str(ex[1])
-                        except:
-                            pass
-                        
-                        Debugging = Debuger()
-                        Debugging.tureDebugerOn()    
-                        Debugging.logError('Error Reporting Line 500 FixityCore While Verfiying file status' +str(file)+' '+'||'+str(e[0])+'||'+'||'+str(e[1])+' '+'||'+str(e[2])+'||'+"\n", moreInformation)
-                        pass
-                    try:
-                        
-                        FileChangedList += response[1] + "\n"
-                        if response[1].startswith('Confirmed'): 
-                            confirmed += 1
-                        elif response[1].startswith('Moved'):
-                            flagAnyChanges = True
-                            moved += 1
-                        elif response[1].startswith('New'):
-                            flagAnyChanges = True
-                            created += 1
-                        else:
-                            flagAnyChanges = True
-                            corruptedOrChanged += 1
-                            
-                    except:
-                        pass
-                    
-                    pathCode = FixityCore.getPathCode(str(SingleDirectory),InfReplacementArray)
-                    pathID = FixityCore.getPathId(str(SingleDirectory),InfReplacementArray)
-                    newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
-                        
-                    DB = Database()
-                    DB.connect()
-                    versionDetailOptions = {}
-                    versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
-                    versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
-                    versionDetailOptions['path'] = str(newCodedPath)
-                    versionDetailOptions['inode'] = str(response[0][2])
-                    versionDetailOptions['versionID'] = projectInformation[0]['versionCurrentID']
-                    versionDetailOptions['projectID'] = projectInformation[0]['id']
-                    versionDetailOptions['projectPathID'] = pathID
-                    
-                    DB.insert(DB._tableVersionDetail, versionDetailOptions)
-                    tmp.write(str(response[0][0]) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
-                    DB.closeConnection()    
-                    
-        missingFile =[0,0,0]            
-        try:  
-            missingFile = FixityCore.missing(dict_Hash,SingleDirectory)
-            if missingFile[0] > 0:
-                flagAnyChanges = True
-            if len(missingFile) > 0:
-                FileChangedList += str(missingFile[0])
-        except:
-            pass
-        tmp.close()
-        infile.close()
-        
-        
-        
-        information = str(file).split('\\')
-        projectName = information[(len(information)-1)]
-        projectName = str(projectName).split('.')
-        
-        
-        if(flagAnyChanges):
-            shutil.copy(file , getcwd()+'\\history\\'+projectName[0]+'-'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf')
-        
-            
-        shutil.copy(file + ".tmp", file)
-        remove(file + ".tmp")
-        
-        return flagAnyChanges
-        
+   
 # Method to create (hash, path, id) tables from file root
 # Input: root, output (boolean), hash algorithm, QApplication
 # Output: list of tuples of (hash, path, id)
@@ -485,13 +281,13 @@ class DecryptionManager(QDialog):
         
         return listOfValues
 #         
-app = QApplication('asdas')
-w = DecryptionManager()
+# app = QApplication('asdas')
+# w = DecryptionManager()
 # w.CreateWindow()
 # w.SetWindowLayout() 
 # w.SetDesgin()
 # w.ShowDialog()
 # app.exec_() 
-#          
-projects_path = getcwd()+'\\projects\\'
-print(w.run(projects_path+'New_Project.fxy','','New_Project'))
+# #          
+# projects_path = getcwd()+'\\projects\\'
+# print(w.run(projects_path+'New_Project.fxy','','New_Project'))

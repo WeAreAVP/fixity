@@ -3,7 +3,7 @@ from sqlalchemy import orm
 from sqlalchemy import create_engine
 from os import getcwd 
 # Create an engine and create all the tables we need
-engine = create_engine('sqlite:///'+getcwd()+'\\Fixity.db', echo=True)
+engine = create_engine('sqlite:///'+getcwd()+'\\bin\\Fixity.db', echo=True)
 model.metadata.bind = engine
 model.metadata.create_all()
 

@@ -9,7 +9,7 @@ from smtplib import *
 import email
 import datetime
 from os import getcwd , path
-
+import base64
 from Debuger import Debuger
 
 # sends email
@@ -43,19 +43,20 @@ def send(recipients, text, attachment, information,projectName=''):
 	try:
 
 		if(protocol == 'SSL' or protocol == 'ssl'):
-			server = SMTP_SSL(str(information['outgoingMailServer']), port)
+			server = SMTP_SSL(str(information['smtp']), port)
 			server.ehlo
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
 			return True
 		if(protocol == 'TLS' or protocol == 'tls'):
-			server = SMTP(str(information['outgoingMailServer']), port)
+			
+			server = SMTP(str(information['smtp']), port)
 			server.starttls()
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
 			return True
 		else:
-			server = SMTP(str(information['outgoingMailServer']), port)
+			server = SMTP(str(information['smtp']), port)
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
 			return True
@@ -72,7 +73,12 @@ def send(recipients, text, attachment, information,projectName=''):
 		D = Debuger()
 		D.tureDebugerOn()
 		D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
-		msgBox = QMessageBox();
-		msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
-		msgBox.exec_()
+		try:
+			msgBox = QMessageBox();
+			msgBox.exec_()
+			msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
+		except:
+			pass
 		return False
+
+ 
