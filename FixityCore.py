@@ -378,7 +378,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 	if path.isfile(line[1]):
 		
 		if CurrentDirectory != None :
-
+			
 			CurrentDirectory = CurrentDirectory[0]
 			isHashSame , isFilePathSame = '' , ''
 
@@ -618,12 +618,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	DB = Database()
 	print('started')
 	projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
-	
+	print(projectInformation)
 	if len(projectInformation) <=0:
 		return
 	projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
 	projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
-	
+	print(projectPathInformation)
+	print(projectDetailInformation)
 	print('1')
 	if(projectDetailInformation != None):
 		if (len(projectDetailInformation)<=0):
@@ -733,8 +734,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	
 	print('5')
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
-		
+		print(SingleDirectory)
 		DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
+		print('checking')
+		print(DirectorysInsideDetails)
 		
 		for e in DirectorysInsideDetails:
 			
@@ -754,9 +757,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 			if flag:
 				check+= 1
 				try:
-					
 					response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
-					
 				except Exception as ex :
 					moreInformation = {"moreInfo":'null'}
 					try:
@@ -798,21 +799,29 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 				newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
 				
 				
-				
+				print(response)
 				versionDetailOptions = {}
-				versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
-				versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
-				versionDetailOptions['path'] = str(newCodedPath)
-				versionDetailOptions['inode'] = str(response[0][2])
-				versionDetailOptions['versionID'] = str(versionID['id'])
-				versionDetailOptions['projectID'] = projectInformation[0]['id']
-				versionDetailOptions['projectPathID'] = pathID
-				
-				DB.insert(DB._tableVersionDetail, versionDetailOptions)
-				if(Algorithm == 'md5'):
-					tmp.write(str(response[0][0]['md5']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
-				else:
-					tmp.write(str(response[0][0]['sha256']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+				try:
+					versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
+					versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
+					versionDetailOptions['path'] = str(newCodedPath)
+					versionDetailOptions['inode'] = str(response[0][2])
+					versionDetailOptions['versionID'] = str(versionID['id'])
+					versionDetailOptions['projectID'] = projectInformation[0]['id']
+					versionDetailOptions['projectPathID'] = pathID
+					print(versionDetailOptions)
+					DB.insert(DB._tableVersionDetail, versionDetailOptions)
+				except:
+					print(e[0])
+					pass
+				try:
+					if(Algorithm == 'md5'):
+						tmp.write(str(response[0][0]['md5']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+					else:
+						tmp.write(str(response[0][0]['sha256']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+				except:
+					print(e[0])
+					pass
 	print('8')
 	missingFile = ('','')
 	try:

@@ -526,7 +526,7 @@ class ProjectWin(QMainWindow):
                     pathsInfoChanges = {}
                     
                     for ds in self.dtx:
-                        directoryIncreament = directoryIncreament + 1 
+                        
                         if ds.text().strip() != "":
                             self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
                             orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
@@ -547,6 +547,7 @@ class ProjectWin(QMainWindow):
                                 
                             if self.FileChanged.changeThePathInformation:
                                 self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
+                            directoryIncreament = directoryIncreament + 1 
                             
 #                             projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
                                                              
@@ -911,24 +912,7 @@ class ProjectWin(QMainWindow):
                         dweek = int(self.dow.currentIndex())
                 elif self.daily.isChecked():
                         interval = 3
-                          
-#                 try: 
-#                         new = open('projects\\' + self.projects.currentItem().text() + '.tmp.fxy', 'wb')
-#                         old = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
-#                 except:
-#                         QMessageBox.information(self, "Fixity", "No project selected to reschedule!")
-#                         return
-#                 new.write(old.readline())
-#                 
-#                 for ms in self.mtx:
-#                         if ms.text().strip() != "":
-#                                 new.write(ms.text() + ";")
-#                                 
-#                 new.write("\n")
-#                 old.readline()
-#                 old.readline()
-                
-                
+                                        
                 projectInformation = {}
                 projectInformation['title'] = self.projects.currentItem().text() 
                 projectInformation['durationType'] = interval
@@ -1021,31 +1005,7 @@ class ProjectWin(QMainWindow):
                     else:
                         self.removeNotRequiredFiles()
                         event.accept()
-                        
-        #Check for Difference in root directory in the fixity tool and in manifest                        
-        def checkForChanges1(self,projectName , searchForPath ,code):
-                    directoryIncreament = 0
-                    DB = Database()
-                    info = DB.getProjectInfo(projectName)
-                    information = info[0]
-                    DirectoryDetail = DB.getProjectPathInfo(information['id'], information['versionCurrentID'])
-                    
-                    try:
-                        for ds  in self.dtx:
-                            directoryIncreament = directoryIncreament + 1 
-                            if ds.text().strip() != "":
-                                if(DirectoryDetail[directoryIncreament]  != None and DirectoryDetail[directoryIncreament]  != '' ):
-                                    if DirectoryDetail[directoryIncreament][1] != None  and DirectoryDetail[directoryIncreament][1] != '':
-                                        pathGiven = FixityCore.getCodePathMore(DirectoryDetail[directoryIncreament][1],DirectoryDetail)
-                                    else:
-                                        pathGiven = ''
-                                else:
-                                    pathGiven = ''
-                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                                if ('Fixity-'+str(code)) == CodeOfPath and pathGiven !=searchForPath:
-                                    self.ChangeRootDirectoryInfor(pathGiven , searchForPath )
-                    except:
-                        pass
+      
         def importProjects(self):
             self.ImportProjects.destroyImportProjects()
             self.ImportProjects = None
@@ -1055,6 +1015,7 @@ class ProjectWin(QMainWindow):
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
             app.exec_()            
+                
         def checkForChanges(self,projectName , searchForPath ,code):
                     try:
                         DB = Database()
@@ -1062,7 +1023,7 @@ class ProjectWin(QMainWindow):
                         information = info[0]
                         DirectoryDetail = DB.getProjectPathInfo(information['id'], information['versionCurrentID'])
                         for  DD in DirectoryDetail:
-                            if (DirectoryDetail[DD]['pathID'] == 'Fixity-'+str(code)):
+                            if (str(DirectoryDetail[DD]['pathID']).strip() == str(code).strip()):
                                 if(DirectoryDetail[DD]['path'] != searchForPath):
                                     self.ChangeRootDirectoryInfor(DirectoryDetail[DD]['path'] , searchForPath )
                     except:
