@@ -105,15 +105,17 @@ class ImportProjects(QDialog):
 
         filePath = self.projectSelected.text()
         
+        if(filePath == None or filePath == ''):
+            QMessageBox.information(self, "Error", "Please select valid Project/Manifest file path")
+            return 
         fileName = str(path.basename(filePath))
         fileName = fileName.replace('.fxy','')
         
         Project = DB.getProjectInfo(fileName)
-        
-#         if(len(Project)>0):
-#             QMessageBox.information(self, "Error", "A Project with this name already exists!")
-#             self.Cancel()
-#             return
+    
+        if(len(Project)>0):
+            QMessageBox.information(self, "Error", "A Project with this name already exists!")
+            return
             
         fileToImportInfoOf =  open(filePath,'rb')
         

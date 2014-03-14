@@ -81,12 +81,17 @@ class DecryptionManager(QDialog):
                                     
     # All design Management Done in Here            
     def SetDesgin(self):
+        DB = Database()
         
-        ProjectList = self.getProjects(getcwd() + '\\projects')
         
+        ProjectList = DB.getProjectInfo(None,False)
+        AllProjectList = []
+        for singleProj in ProjectList:
+            AllProjectList.append(ProjectList[singleProj]['title'])
+
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
-        self.Porjects.addItems(ProjectList)
+        self.Porjects.addItems(AllProjectList)
         methods = ['sha256' , 'md5']
         self.methods = QComboBox()
         self.methods.addItems(methods)
@@ -108,7 +113,7 @@ class DecryptionManager(QDialog):
         self.setInformation.clicked.connect(self.SetInformation)
         
         self.cancel.clicked.connect(self.Cancel)
-        self.Porjects.currentIndexChanged .connect(self.projectChanged)
+        self.Porjects.currentIndexChanged.connect(self.projectChanged)
         self.SetWindowLayout()
         self.projectChanged()
         

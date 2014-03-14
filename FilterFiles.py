@@ -84,7 +84,7 @@ class FilterFiles(QDialog):
             counter = counter + 1
             ProjectList.append(ProjectListArr[PLA]['title'])
             
-        print(ProjectList)
+        
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
         self.Porjects.addItems(ProjectList)

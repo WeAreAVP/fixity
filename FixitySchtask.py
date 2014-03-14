@@ -62,6 +62,7 @@ def RunThisBatchFile(Command):
           
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
 def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
+        print(dirInfo)
         EP = EmailPref()
         VERSION = EP.getVersion()
         USERNAME = environ.get("USERNAME")
@@ -226,7 +227,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 PathsInfo['versionID'] = versionID['id']
                 PathsInfo['path'] = str(dirInfo[ms]).strip()
                 PathsInfo['pathID'] = 'Fixity-' + str(counter)
-           
+                print(PathsInfo)
                 DB.insert(DB._tableProjectPath, PathsInfo)
                 
                 counter = counter + 1   

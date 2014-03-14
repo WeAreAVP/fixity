@@ -255,6 +255,7 @@ class ProjectWin(QMainWindow):
         # orignalPathText:: Path In Manifest
         # changePathText:: New Path Given in Fixity Tool  
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
+            
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
             self.FileChanged = FileChanged(orignalPathText,changePathText)
@@ -524,7 +525,7 @@ class ProjectWin(QMainWindow):
                     directoryIncreament = 1
                     
                     pathsInfoChanges = {}
-                    
+                    dontSave = False
                     for ds in self.dtx:
                         
                         if ds.text().strip() != "":
@@ -544,9 +545,15 @@ class ProjectWin(QMainWindow):
                             if(pathToSaveInManifest ==''):
                                 pathToSaveInManifest = str(ds.text())
                                 CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                                
+                            
                             if self.FileChanged.changeThePathInformation:
                                 self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
+                            else:
+                                self.unsaved = False
+                                self.update(self.projects.selectedItems()[0])
+                                dontSave =True
+                                break
+                            
                             directoryIncreament = directoryIncreament + 1 
                             
 #                             projfile.write( ( pathToSaveInManifest + "|-|-|" + CodeOfPath + "|-|-|" + str(directoryIncreament) + ";" ) )
@@ -607,8 +614,8 @@ class ProjectWin(QMainWindow):
                     Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                     Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                     Configurations['RunInitialScan'] = False
-                    
-                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
+                    if(not dontSave):
+                        FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
                     
                     ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                     FiltersArray = {}
@@ -632,8 +639,14 @@ class ProjectWin(QMainWindow):
                      
                     if shouldRun:
                         QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
+                        return
                     else:
-                        QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())   
+                        if(not dontSave):
+                            QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
+                            self.unsaved = False
+                            return
+                        
+                        
 #                     projfile.close()                     
                 else :
                     
@@ -687,7 +700,7 @@ class ProjectWin(QMainWindow):
                         projfileFileText[2] =  configurations['timingandtype']
                         projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                         projfile.writelines(projfileFileText)
-
+                        
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
                         
                 self.unsaved = False
@@ -775,7 +788,6 @@ class ProjectWin(QMainWindow):
             
             DB = Database()
             Configurations = DB.getProjectInfo(self.projects.currentItem().text())
-            print(Configurations)
             
             if self.runOnlyOnACPower.isChecked():
                 Configurations[0]['runWhenOnBattery'] = 1
@@ -798,6 +810,7 @@ class ProjectWin(QMainWindow):
                 directoryIncreamentDirs = directoryIncreamentDirs + 1
                         
             FilePath = getcwd()+'\\schedules\\'
+            
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
             
             FileName = 'AutoFixity.exe';
@@ -824,7 +837,7 @@ class ProjectWin(QMainWindow):
                 try:
                     DB = Database()
                     projInfo = DB.getProjectInfo(self.projects.currentItem().text())
-                    print(projInfo)
+                    
                     if len(projInfo) > 0:
                         
                         DB.delete(DB._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
@@ -900,7 +913,7 @@ class ProjectWin(QMainWindow):
                     if len(EmailInfo) <= 0:
                         QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
                         return
-                                
+                                 
                 self.process(flagInitialScanUponSaving)
                 
                 dmonth, dweek = 99, 99
@@ -960,6 +973,7 @@ class ProjectWin(QMainWindow):
                 for ds in self.dtx:    
                     pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
                     directoryIncreamentDirs = directoryIncreamentDirs + 1
+                
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
                 self.unsaved = False
         

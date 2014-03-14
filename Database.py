@@ -41,7 +41,7 @@ class Database(object):
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
-            print(moreInformation)
+#             print(moreInformation)
             
     def sqlQuery(self, query):
         
@@ -145,7 +145,7 @@ class Database(object):
                     pass
                 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
-            print(query)
+#             print(query)
             
             try:
                 self.connect()
