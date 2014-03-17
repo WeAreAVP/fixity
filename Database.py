@@ -145,7 +145,7 @@ class Database(object):
                     pass
                 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
-#             print(query)
+            print('inserting info for ' + tableName)
             
             try:
                 self.connect()
@@ -175,8 +175,9 @@ class Database(object):
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
-            print(query)
+            print('Deleting  info from ' + tableName)
             response = self.sqlQuery(query)
+            
             self.closeConnection()
             return response
         except Exception as e:
@@ -203,6 +204,7 @@ class Database(object):
                         pass
                     
                     try:
+                        print('Updating  info of ' + tableName)
                         response = self.cursor.execute(query)
                     except:
                         print('er1')

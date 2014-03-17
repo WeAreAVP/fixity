@@ -563,7 +563,7 @@ def verify(dict, line, fileNamePath=''):
 # Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
 # Output: All this, written nicely to a tab-delimited file, with the filepath returned
 def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
-	print('report')
+	
 	try:
 		report = "Fixity report\n"
 		report += "Project name\t" + proj + "\n"
@@ -577,7 +577,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 		report += "Removed Files\t" + str(dels) + "\n"
 	
 		report += str(out)
-		print(report)
+		
 		AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 		rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
 		
@@ -616,16 +616,13 @@ def missing(dict,file=''):
 
 def run(file,filters='',projectName = '',checkForChanges = False):
 	DB = Database()
-	print('started')
+	
 	projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
-	print(projectInformation)
+	
 	if len(projectInformation) <=0:
 		return
 	projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
 	projectDetailInformation = DB.getVersionDetails(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'],' id DESC')
-	print(projectPathInformation)
-	print(projectDetailInformation)
-	print('1')
 	if(projectDetailInformation != None):
 		if (len(projectDetailInformation)<=0):
 			if(len(projectInformation) > 0):
@@ -645,14 +642,14 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
 	
 	
-	print('2')
+	
 	ToBeScannedDirectoriesInProjectFile = []
 	
 	for pathInfo in projectPathInformation:
 		ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
 		IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
 		InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
-	print('3')
+	
 	mails = str(projectInformation[0]['emailAddress']).split(',')
 	
 	check = 0
@@ -704,7 +701,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		pass	
 	flagAnyChanges = False
 
-	print('4')
+	
 	Algorithm = str(projectInformation[0]['selectedAlgo'])
 	
 	counter = 0
@@ -732,12 +729,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	tmp.write(keeptime+"\n")
 	tmp.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
 	
-	print('5')
+	
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
-		print(SingleDirectory)
 		DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
-		print('checking')
-		print(DirectorysInsideDetails)
 		
 		for e in DirectorysInsideDetails:
 			
@@ -753,7 +747,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 			for Filter in FiltersArray:
 				if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
 					flag =False
-			print('7')
+			
 			if flag:
 				check+= 1
 				try:
@@ -799,7 +793,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 				newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
 				
 				
-				print(response)
+				
 				versionDetailOptions = {}
 				try:
 					versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
@@ -809,24 +803,24 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 					versionDetailOptions['versionID'] = str(versionID['id'])
 					versionDetailOptions['projectID'] = projectInformation[0]['id']
 					versionDetailOptions['projectPathID'] = pathID
-					print(versionDetailOptions)
+					
 					DB.insert(DB._tableVersionDetail, versionDetailOptions)
 				except:
 					print(e[0])
 					pass
 				try:
 					if(Algorithm == 'md5'):
-						tmp.write(str(response[0][0]['md5']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+						tmp.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
 					else:
-						tmp.write(str(response[0][0]['sha256']) + "\t" + str(newCodedPath) + "\t" + str(response[0][2]) + "\n")
+						tmp.write(str(response[0][0]['sha256']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
 				except:
 					print(e[0])
 					pass
-	print('8')
+	
 	missingFile = ('','')
 	try:
 		missingFile = missing(dict_Hash,SingleDirectory)
-		print(missingFile) 
+		 
 		FileChangedList += missingFile[0]
 	except:
 		pass
@@ -834,7 +828,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	informationToUpate['versionCurrentID'] = versionID['id']
 	DB.update(DB._tableProject, informationToUpate, "id='" + str(projectInformation[0]['id']) + "'")
 	cpyProjectPathInformation  = projectPathInformation
-	print('9')
+	
 	for PDI in cpyProjectPathInformation:
 		del cpyProjectPathInformation[PDI]['id']
 		cpyProjectPathInformation[PDI]['versionID'] = versionID['id']
@@ -842,7 +836,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		
 	tmp.close()
 # 	
-	print('10')
+	
 	information = str(file).split('\\')
 	projectName = information[(len(information)-1)]
 	projectName = str(projectName).split('.')
@@ -853,7 +847,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 		
 # 	shutil.copy(file + ".tmp", file)
 # 	remove(file + ".tmp")
-	print(missingFile)
+	
 	total = confirmed
 	total +=moved
 	total +=created
@@ -863,7 +857,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	except:
 		missingFile = ('','')
 		pass
-	print('11')
+	
 	repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 	return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 

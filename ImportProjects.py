@@ -235,7 +235,9 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['path'] = FixInfo[1]
                                 inforVersionDetail['inode'] = FixInfo[2]
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
-                
+        
+        QMessageBox.information(self, "Success", "Project importing completed ")
+        return        
         self.Cancel()
     def pickdir(self):
         fileInformation  = list(QFileDialog.getOpenFileName())

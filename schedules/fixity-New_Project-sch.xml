@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <Task xmlns="http://schemas.microsoft.com/windows/2004/02/mit/task">
     <RegistrationInfo>
-        <Date>2014-03-14T18:20:43</Date>
+        <Date>2014-03-14T20:40:06</Date>
         <Author>Furqan</Author>
         <Version>Fixity Task Scheduler to Monitor A Folder Activity!</Version>
         <Description>Fixity Task Scheduler to Monitor A Folder Activity!</Description>
@@ -9,32 +9,19 @@
     <Triggers>
         <CalendarTrigger>
             <StartBoundary>2014-03-14T00:00:00</StartBoundary>
-            <ScheduleByMonth>
-                <DaysOfMonth>
-                    <Day>1</Day>
-                </DaysOfMonth >
-                <Months>
-                <January/>
-                <February/>
-                <March/>
-                <April/>
-                <May/>
-                <June/>
-                <July/>
-                <August/>
-                <September/>
-                <October/>
-                <November/>
-                <December/>
-                </Months>
-            </ScheduleByMonth>
+            <ScheduleByWeek>
+                <WeeksInterval >1</WeeksInterval >
+                <DaysOfWeek>
+                    <Thursday/>
+                </DaysOfWeek >
+            </ScheduleByWeek>
         </CalendarTrigger>
     </Triggers>
     <Settings>
         <Enabled>true</Enabled>
         <AllowStartOnDemand>true</AllowStartOnDemand>
         <AllowHardTerminate>true</AllowHardTerminate>
-        <DisallowStartIfOnBatteries>false</DisallowStartIfOnBatteries>
+        <DisallowStartIfOnBatteries>true</DisallowStartIfOnBatteries>
         <StartWhenAvailable>false</StartWhenAvailable>
         <WakeToRun>true</WakeToRun>
     </Settings>

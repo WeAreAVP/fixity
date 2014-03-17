@@ -222,18 +222,21 @@ class EmailPref(QDialog):
         
         queryResult = self.Database.select(self.Database._tableConfiguration)
         
-        if len(queryResult)>0 :
-            information = {}
-            for  result in queryResult:
-                information['id'] = queryResult[result]['id']
-                information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
-                information['email'] = self.DecodeInfo(queryResult[result]['email'])
-                information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
-                information['port'] = queryResult[result]['port']
-                information['protocol'] = queryResult[result]['protocol']
-                information['debugger'] = queryResult[result]['debugger']
-                break;
-            return information
+        try:
+            if len(queryResult)>0 :
+                information = {}
+                for  result in queryResult:
+                    information['id'] = queryResult[result]['id']
+                    information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
+                    information['email'] = self.DecodeInfo(queryResult[result]['email'])
+                    information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
+                    information['port'] = queryResult[result]['port']
+                    information['protocol'] = queryResult[result]['protocol']
+                    information['debugger'] = queryResult[result]['debugger']
+                    break;
+                return information
+        except:
+            pass
         return {}
     
     def ValidateEmail(self, Email):

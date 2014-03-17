@@ -41,12 +41,14 @@ def send(recipients, text, attachment, information,projectName=''):
 	port = int(str(information['port']).strip())
 	
 	try:
-
+		
 		if(protocol == 'SSL' or protocol == 'ssl'):
+			
 			server = SMTP_SSL(str(information['smtp']), port)
 			server.ehlo
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
+			print('sending email')
 			return True
 		if(protocol == 'TLS' or protocol == 'tls'):
 			
@@ -54,11 +56,13 @@ def send(recipients, text, attachment, information,projectName=''):
 			server.starttls()
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
+			print('sending email')
 			return True
 		else:
 			server = SMTP(str(information['smtp']), port)
 			server.login(addr, pas)
 			server.sendmail(addr, recipients, msg.as_string())
+			print('sending email')
 			return True
 		
 	except (SMTPException ,SMTPServerDisconnected , SMTPResponseException , SMTPSenderRefused , SMTPRecipientsRefused , SMTPDataError , SMTPConnectError , SMTPHeloError , SMTPAuthenticationError , Exception ) as e:
