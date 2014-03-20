@@ -450,7 +450,7 @@ class ProjectWin(QMainWindow):
                         t = ['00', '00']
                 
                 self.timer.setTime(QTime(int(t[0]), int(t[1])))
-                self.lastrun.setText("Last checked:\n" + str(rlabel))
+                self.lastrun.setText("Last checked:\n" + rlabel)
                 self.unsaved = False
                 self.old = new
                 
@@ -791,7 +791,7 @@ class ProjectWin(QMainWindow):
             
             FileName = 'AutoFixity.exe';
             params = self.projects.currentItem().text() +' '+'Run'
-            print(str(self.projects.currentItem().text()) +','+ str(self.projects.currentItem().text()) +','+ str(1) +','+str(FileName) +','+str(FilePath) +','+ str(params))
+            
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
             
             self.Threading.start()
@@ -815,6 +815,7 @@ class ProjectWin(QMainWindow):
                     projInfo = DB.getProjectInfo(self.projects.currentItem().text())
                     
                     if len(projInfo) > 0:
+                        
                         DB.delete(DB._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
                         DB.delete(DB._tableProjectPath, "`projectID` = '"+str(projInfo[0]['id'])+"'")
                         DB.delete(DB._tableVersions, "`id` = '"+str(projInfo[0]['versionCurrentID'])+"'")
@@ -888,8 +889,6 @@ class ProjectWin(QMainWindow):
                         return
                                  
                 pathsInfoChanges = self.process(flagInitialScanUponSaving)
-                print(pathsInfoChanges)
-                
                 dmonth, dweek = 99, 99
                 if self.monthly.isChecked():
                         interval = 1

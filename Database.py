@@ -81,14 +81,13 @@ class Database(object):
          
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
-            
             query= ''
             query = 'SELECT '+ str(select) +' FROM '+str(tableName)
             if(condition != None):
                 query += ' WHERE ' + condition
             if(orderBy != None):
                 query += ' ORDER BY '+ orderBy
-            
+                
             response = {}
             responseCounter = 0
             
@@ -96,19 +95,16 @@ class Database(object):
                 self.connect()
             except:
                 pass
-
+            
             try:
-               
                 for r in self.dict_gen(self.cursor.execute(query)):
                     response[responseCounter] = r
                     responseCounter =responseCounter + 1
-                
             except Exception as e:
                 print(e[0])
                 pass
             
             try:
-                
                 self.commit()
             except:
                 pass
@@ -143,7 +139,6 @@ class Database(object):
             query = 'INSERT INTO '+str(tableName)
             values = {}
             columnName = {}
-            setter = {}
             counter = 0  
             for index in information:
                 try:
@@ -330,10 +325,10 @@ class Database(object):
 
 # try:
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-db = Database()
-db.connect()
-db.select(db._tableVersionDetail, '*')
-db.closeConnection()
+#db = Database()
+#db.connect()
+#db.select(db._tableVersionDetail, '*')
+#db.closeConnection()
 #      
 # except Exception as e :
 # db = Database()
