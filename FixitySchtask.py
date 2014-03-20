@@ -196,6 +196,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
         else: 
             Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
+            
         DB = Database()
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
         
@@ -206,8 +207,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         
         versionID  = DB.insert(DB._tableVersions, Information)
         
-       
-        
         projectID = 0  
         if (len(isProjectExists) <= 0):
             Configurations['versionCurrentID'] = versionID['id']
@@ -217,7 +216,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             projectID = isProjectExists[0]['id']
             Configurations['versionCurrentID'] = versionID['id']
             DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
-            
         
         counter = 1
         for ms in dirInfo:

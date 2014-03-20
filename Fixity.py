@@ -4,7 +4,6 @@
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-
 #Bultin Libraries
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -17,7 +16,6 @@ import shutil
 import sys
 import platform
 import os
-
 
 #Custom Libraries
 import FixityCore
@@ -314,6 +312,7 @@ class ProjectWin(QMainWindow):
             self = ProjectWin()
             self.show()
             sys.exit(app.exec_())
+            
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
@@ -451,7 +450,7 @@ class ProjectWin(QMainWindow):
                         t = ['00', '00']
                 
                 self.timer.setTime(QTime(int(t[0]), int(t[1])))
-                self.lastrun.setText("Last checked:\n" + rlabel)
+                self.lastrun.setText("Last checked:\n" + str(rlabel))
                 self.unsaved = False
                 self.old = new
                 
@@ -516,11 +515,8 @@ class ProjectWin(QMainWindow):
                     if not projFileText :
                         isfileExists = False
                     
-                    
-                    
                 if shouldRun or (not isfileExists):
-                    
-#                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
+
                     total = 0
                     directoryIncreament = 1
                     
@@ -592,7 +588,9 @@ class ProjectWin(QMainWindow):
                     
                     
                     projectInformation['extraConf'] = ''
-                    projectInformation['lastRan'] = None
+                    
+                    data = str(datetime.datetime.now()).split('.')
+                    projectInformation['lastRan'] = data[0]
                         
                     
                     Configurations = {}
@@ -602,7 +600,7 @@ class ProjectWin(QMainWindow):
                     Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                     Configurations['RunInitialScan'] = False
                     
-                    FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
+#                     FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
                     
                     ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                     FiltersArray = {}
@@ -631,9 +629,7 @@ class ProjectWin(QMainWindow):
                         
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
                         return pathsInfoChanges
-                        
-                        
-#                     projfile.close()                     
+                  
                 else :
                     
                     projfileFileText = []            
@@ -688,8 +684,6 @@ class ProjectWin(QMainWindow):
                         projfile.writelines(projfileFileText)
                         
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
-                
-               
                 return
 
         # Toggles fields on/off
@@ -706,7 +700,6 @@ class ProjectWin(QMainWindow):
                 self.dom.setDisabled(switch)
                 self.dow.setDisabled(switch)
                 
-        
         def changed(self):
                 self.unsaved = True
                 
@@ -720,17 +713,16 @@ class ProjectWin(QMainWindow):
                 self.dom.hide()
                 self.dow.show()
                 
+                
         def monthclick(self):
                 self.spacer.changeSize(0, 0)
                 self.dow.hide()
                 self.dom.show()
-
-
+                
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
                 
-            
         def replacePathInformation(self):
             projFileChangePath = open('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'wb')    
             currentProjFile = open('projects\\' + self.projects.currentItem().text()+ '.fxy', 'rb')
@@ -748,8 +740,6 @@ class ProjectWin(QMainWindow):
             
             shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
             remove('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy')
-            
-            
             
         #Saves And Runs 
         def run(self):
@@ -801,7 +791,7 @@ class ProjectWin(QMainWindow):
             
             FileName = 'AutoFixity.exe';
             params = self.projects.currentItem().text() +' '+'Run'
-            
+            print(str(self.projects.currentItem().text()) +','+ str(self.projects.currentItem().text()) +','+ str(1) +','+str(FileName) +','+str(FilePath) +','+ str(params))
             self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
             
             self.Threading.start()
@@ -825,12 +815,10 @@ class ProjectWin(QMainWindow):
                     projInfo = DB.getProjectInfo(self.projects.currentItem().text())
                     
                     if len(projInfo) > 0:
-                        
                         DB.delete(DB._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
                         DB.delete(DB._tableProjectPath, "`projectID` = '"+str(projInfo[0]['id'])+"'")
                         DB.delete(DB._tableVersions, "`id` = '"+str(projInfo[0]['versionCurrentID'])+"'")
                         DB.delete(DB._tableProject, "title like '"+self.projects.currentItem().text()+"'")
-
                 except:
                     pass
                 
@@ -877,7 +865,6 @@ class ProjectWin(QMainWindow):
                 progress.close()
                 return list
         
-        
         #Update Schedule information 
         def updateschedule(self):
                 flagInitialScanUponSaving = False
@@ -901,6 +888,8 @@ class ProjectWin(QMainWindow):
                         return
                                  
                 pathsInfoChanges = self.process(flagInitialScanUponSaving)
+                print(pathsInfoChanges)
+                
                 dmonth, dweek = 99, 99
                 if self.monthly.isChecked():
                         interval = 1
@@ -919,11 +908,12 @@ class ProjectWin(QMainWindow):
                 runDayOrMonth = '2'
                 
                 if(dmonth == 99 and dweek == 99):
-                    runDayOrMonth = '2'
+                    runDayOrMonth = ''
                 elif (dmonth == 99 and dweek != 99):
-                    runDayOrMonth = '1'
+                    runDayOrMonth = self.dow.currentIndex()
+                    
                 elif(dmonth != 99 and dweek == 99):
-                    runDayOrMonth = '0'
+                    runDayOrMonth = self.dom.value() 
                 projectInformation['emailAddress'] = allEmailAddres
                 projectInformation['runDayOrMonth'] = runDayOrMonth
                 projectInformation['selectedAlgo'] = 'sha256'
@@ -945,7 +935,8 @@ class ProjectWin(QMainWindow):
                     projectInformation['emailOnlyUponWarning'] = 0
                                 
                 projectInformation['extraConf'] = ''
-                projectInformation['lastRan'] = self.timer.time().toString()
+                data = str(datetime.datetime.now()).split('.')
+                projectInformation['lastRan'] = data[0] 
                 
                 Configurations = {}
                 Configurations = self.EP.getConfigInfo(self.projects.currentItem().text())
@@ -954,15 +945,7 @@ class ProjectWin(QMainWindow):
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                 Configurations['RunInitialScan'] = False
                 self.unsaved = False
-                self.update(self.projects.currentItem().text())
-                self.unsaved = True
-#                 pathsInfoChanges = {}
-#                 directoryIncreamentDirs = 1
-#                 
-#                 for ds in self.dtx:    
-#                     pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
-#                     directoryIncreamentDirs = directoryIncreamentDirs + 1
-#                 
+                
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
                 self.unsaved = False
         
