@@ -6,7 +6,7 @@
  
 from AutoRuner import AutoRuner
 import sys
-
+#from Threading import Threading
 project = sys.argv[1]
 IsemailSet = ''
 try:
@@ -14,6 +14,9 @@ try:
         IsemailSet = sys.argv[2]
 except:
     pass
+
+#Thread = Threading('New_Project','New_Project',1,'AutoFixity.exe','D:\python\Fixity Project\schedules\/','New_Project Run')
+#Thread.start()
 
 AR = AutoRuner()
 

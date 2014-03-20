@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''
 Created on Feb 27, 2014
 
@@ -5,6 +6,18 @@ Created on Feb 27, 2014
 '''
 import sqlite3
 from os import   getcwd
+import re
+
+
+import os
+OS_Info = ''
+if os.name == 'posix':
+    OS_Info = 'linux'
+elif os.name == 'nt':
+    OS_Info = 'Windows'
+elif os.name == 'os2':
+    OS_Info = 'check'
+
 # from avp import DBHanlder
 # from DBObjectHanlder import DBObjectHanlder  as hanlder
 
@@ -20,12 +33,15 @@ class Database(object):
         self.con = None
         self.cursor = None
 
+
     def connect(self):
         try:
             pathInfo = str(getcwd()).replace('\\schedules','')
             pathInfo = pathInfo.replace('schedules','')
-
-            self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
+            if(OS_Info == 'Windows'):
+                self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
+            else:
+                self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
 #             self.con = sqlite3.connect(r"D:\\python\\Fixity Project\\bin\\Fixity.sql")
 
             self.cursor = self.con.cursor()
@@ -146,7 +162,6 @@ class Database(object):
                     pass
 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
-            print('inserting info for ' + tableName)
 
             try:
                 self.connect()
@@ -158,18 +173,21 @@ class Database(object):
                 self.cursor.execute(query)
             except Exception as e:
                 print(e[0])
+                print('er1')
                 pass
 
             try:
                 self.commit()
             except Exception as e:
                 print(e[0])
+                print('er2')
                 pass
             self.closeConnection()
             try:
                 self.closeConnection()
             except:
                 print(e[0])
+                print('er3')
                 pass
             return {'id':self.cursor.lastrowid}
 
@@ -187,46 +205,46 @@ class Database(object):
             return None
 
     def update(self,tableName , information,condition):
-                try:
-                    query = 'UPDATE '+str(tableName) +' SET '
-                    counter = 0
-                    for singleInfo in information:
+        try:
+            query = 'UPDATE '+str(tableName) +' SET '
+            counter = 0
+            for singleInfo in information:
 
-                            if(counter == 0):
-                                query += str(singleInfo) + "='" + str(information[singleInfo]) +"'"
-                            else:
-                                query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
-                            counter=counter+1
-                    query += ' WHERE '+condition
+                    if(counter == 0):
+                        query += str(singleInfo) + "='" + str(information[singleInfo]) +"'"
+                    else:
+                        query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
+                    counter=counter+1
+            query += ' WHERE '+condition
 
-                    try:
-                        self.connect()
-                    except:
-                        pass
+            try:
+                self.connect()
+            except:
+                pass
 
-                    try:
-                        print('Updating  info of ' + tableName)
-                        response = self.cursor.execute(query)
-                    except:
-                        print('er1')
-                        pass
+            try:
 
-                    try:
-                        self.commit()
-                    except:
-                        pass
+                response = self.cursor.execute(query)
+            except:
+                print('er1')
+                pass
 
-                    try:
-                        self.closeConnection()
-                    except:
-                        pass
+            try:
+                self.commit()
+            except:
+                pass
 
-                    return response
+            try:
+                self.closeConnection()
+            except:
+                pass
 
-                except Exception as e:
-                    print(e[0])
-                    self.closeConnection()
-                    return None
+            return response
+
+        except Exception as e:
+            print(e[0])
+            self.closeConnection()
+            return None
 
     def implode(self,information , glue , isColumn = True):
 
@@ -242,9 +260,9 @@ class Database(object):
 
                     else:
                         if(counter == 0):
-                            stringGlued = stringGlued + " '"+information[info] + "'"
+                            stringGlued = stringGlued + ' "'+ str(information[info]).encode('utf-8') + '" '
                         else:
-                            stringGlued =  stringGlued +" , '"    + information[info] + "'"
+                            stringGlued =  stringGlued +' , "'    + information[info].encode('utf-8') + '" '
                     counter = counter + 1
                 except Exception as e:
                     self.closeConnection()
@@ -311,21 +329,43 @@ class Database(object):
         if(len(resultOfLastVersion) > 0):
             response = self.getVersionDetails(projectID,resultOfLastVersion[0]['versionID'],' id DESC')
         return response
+    def listToTuple(self,provededList):
+
+        NewList = []
+        for singleOfprovededList in  provededList:
+            NewList.append(provededList[singleOfprovededList])
+        return tuple(NewList)
+
+# try:
+#     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
+#db = Database()
+#db.connect()
+#db.select(db._tableVersionDetail, '*')
+#db.closeConnection()
+#
+# except Exception as e :
+# db = Database()
+# versionDetailOptions ={}
+# versionDetailOptions['md5_hash'] = 'sadasdsadas'
+# versionDetailOptions['ssh256_hash'] = 'sadasdsadas'
+# versionDetailOptions['path'] = 'Fixity-1||\Bright Morningstar   DJ Tiësto   Elements of Life www.dilandau.eu.mp3'
+# versionDetailOptions['inode'] = '112312312'
+# versionDetailOptions['versionID'] = '1'
+# versionDetailOptions['projectID'] = '1'
+# versionDetailOptions['projectPathID'] = '1'
+# print(versionDetailOptions)
+# db.insert(db._tableVersionDetail, versionDetailOptions)
+#
+# db.connect()
+# resposne = db.select(db._tableVersionDetail, '*')
+# db.closeConnection()
+# print(resposne[0]['path'])
+# print(resposne)
+#
 
 
-try:
-     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-     db = Database()
-     db.connect()
-     db.select(db._tableProject, '*')
-     db.closeConnection()
-except Exception as e :
-     pass
 
 
 
-# db1 = Database()
-# db1.connect()
-# db1.insert(db1._tableProject, var1)
 
 

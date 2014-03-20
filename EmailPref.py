@@ -210,8 +210,11 @@ class EmailPref(QDialog):
                 
     # Reset Form information    
     def ResetForm(self):
-        self.EmailAddrBar.setText('Email')
-        self.Password.setText('Password')
+        self.EmailAddrBar.setText('')
+        self.Password.setText('')
+        self.outgoingMailServer.setText('')
+        self.port.setText('')
+        
         
         
         
@@ -271,6 +274,7 @@ class EmailPref(QDialog):
             protocol = 'TLS'
         else:
             protocol = 'NONE'
+        
         errorMsg = self.validateInformation(Email, Pass)
         if not str(errorMsg).strip() == 'None':
             QB = QMessageBox()
