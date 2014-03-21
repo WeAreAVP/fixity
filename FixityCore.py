@@ -1,5 +1,5 @@
-# -*- coding: UTF-8 -*-  
 
+# -*- coding: UTF-8 -*-  
 # Fixity Core module
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -393,17 +393,17 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 
 			# Check For File Path Change
 			isFilePathSame = (CurrentDirectory[0] == line[1])
-
+			
 			if isHashSame and isFilePathSame:
 				verifiedFiles.append(line[1])
 				return line, "Confirmed File :\t" + str(line[1])
 
 			if isHashSame and (not isFilePathSame):
 				verifiedFiles.append(line[1])
+				verifiedFiles.append(CurrentDirectory[0])
 				return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
-
-				verifiedFiles.append(line[1])
 			if (not isHashSame) and isFilePathSame:
+				verifiedFiles.append(line[1])
 				return line, "Changed File :\t" + str(line[1])
 
 			if (not isHashSame) and (not isFilePathSame):
@@ -431,136 +431,10 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 				for singleInforHashRelated1 in allInforHashRelated1:
 					if singleInforHashRelated1[0] == line[1] :
 						verifiedFiles.append(line[1])
-						return line, "Moved or Renamed :\t" + line[1]
+					return line, "Moved or Renamed :\t" + line[1]
 		verifiedFiles.append(line[1])
 		return line, 'New File :\t' + str(line[1])
 
-# Method to verify a tuple against the dictionary
-# Input: defaultDict (from buildDict), tuple
-# Output: Message based on whether the file was good or not
-
-def verify(dict, line, fileNamePath=''):
-
-	# if the hash is a key in the dictionary, return the values
-	# returns None on a miss
-	# Current Directory Status (Information of this directory using hash from the project file by scanning the directory)
-	global verifiedFiles
-
-	CurrentDirectoryStatus = dict.get(line[0])
-	
-
-	copies = ""
-
-	i = 0
-
-	# if we found values, check file attendance (If this file exist)
-	if path.isfile(line[1]):
-		if CurrentDirectoryStatus != None:
-			mainDirectory = getDirectory(CurrentDirectoryStatus,line[2],fileNamePath,dict);
-			SingleDirectoryStatus = mainDirectory
-
-			isFilePresent , isSameHash , isSameFilepath , isSameinode = True , True , False , False 
-
-			if not SingleDirectoryStatus is None :
-				# Check For File INODE Change 
-				isSameinode = (SingleDirectoryStatus[1] == line[2])
-
-
-				# Check For File Path Change
-				isSameFilepath = (SingleDirectoryStatus[0] == line[1])
-
-				# If Nothing changed 
-				if isSameFilepath and isSameinode:
-					verifiedFiles.append(line[1])
-					dict[line[0]][i][2] = True
-					return line, "Confirmed Files\t" + str(line[1])
-
-				# If  Path changed But Inode is same
-				elif not isSameFilepath and isSameinode:
-					verifiedFiles.append(line[1])
-					dict[line[0]][i][2] = True
-					return line, "Moved or Renamed Files\t" + str(SingleDirectoryStatus[0]) + "\t changed to " + str(line[1])
-
-				# If Inode changed But Path is same 
-				elif (isSameFilepath and not isSameinode) :
-					verifiedFiles.append(line[1])
-					dict[line[0]][i][2] = True
-					return line, "Confirmed Files\t" + str(line[1])
-				# If Inode and Path both changed
-				elif (not isSameFilepath and not isSameinode) :
-					verifiedFiles.append(line[1])
-					dict[line[0]][i][2] = True
-					Response = getFileInformationConditional(fileNamePath  ,line[0],line[1])
-					if len(Response) <=0:
-						copies += " " + str(SingleDirectoryStatus[0])
-						return line, "New Files\t" + line[1] + "\tcopy of " + copies
-					else:
-						#check if both manifest , directory file exists in manifest
-						IfFileInLineExistsInMenifest = getFileInformationConditional(fileNamePath  , '' ,str(line[1]))
-						IfMovedFileExistsInMenifest = getFileInformationConditional(fileNamePath  , '' ,str(SingleDirectoryStatus[0]))
-						if len(IfFileInLineExistsInMenifest) > 0 and len(IfMovedFileExistsInMenifest) > 0:
-							verifiedFiles.append(line[1])
-							return line, "Confirmed Files\t" + str(line[1])
-						else:	
-							verifiedFiles.append(line[1])
-							return line, "Moved or Renamed Files\t" + str(SingleDirectoryStatus[0]) + "\t changed to " + str(line[1])
-
-				# If File Dose not exist and path exists	
-				elif not path.isfile(line[1]) and line[2] and line[1]:
-					verifiedFiles.append(line[1])
-					dict[line[0]][i][2] = True
-					return line, "Moved or Renamed Files\t" + str(SingleDirectoryStatus[0]) + "\t changed to " + str(line[1])
-
-				copies += " " + str(SingleDirectoryStatus[0])
-				i += 1
-				verifiedFiles.append(line[1])	
-				return line, "New Files\t" + line[1] + "\tcopy of " + copies
-			else:
-				verifiedFiles.append(line[1])
-
-				return (line[0], line[1], line[2]), "Changed Files\t" + str(line[1])
-		# if we don't have a given hash, figure out why
-		else:
-
-			# iterate through the dictionary until we find a matching ID and/or path
-			isFilePresent , isSameHash , isSameFilepath , isSameinode = False , False , False , False
-
-			for key in dict: 
-
-				NewDirectoryStatus = dict.get(key)
-				i = 0
-				if NewDirectoryStatus:
-
-					for SingleDirectoryStatus in NewDirectoryStatus:
-						# Check if its the same inode
-						isSameinode = (SingleDirectoryStatus[1] == line[2])
-
-						# Check For File Path Change
-						isSameFilepath = (SingleDirectoryStatus[0] == line[1])
-						lengthRes = 0
-						try:
-							Response1231 = []      
-							Response1231 = getFileInformationConditional(fileNamePath ,'',line[1],line[2])
-							lengthRes = len(Response1231)
-						except:
-							pass
-
-						# First Condition: If both Path and inode changed
-						# Second Condition: If  Path changed But Inode is same
-						# Third Condition: If  Path same But Inode changed
-						# Found it! Set the found flag as True and return a Changed message
-						if (isSameinode and isSameFilepath) or (isSameinode and (not isSameFilepath)) or ((not isSameinode) and isSameFilepath):
-							dict[key][i][2] = True
-							verifiedFiles.append(SingleDirectoryStatus[0])
-							return (line[0], line[1], line[2]), "Changed Files\t" + str(line[1])
-						elif ( lengthRes and lengthRes > 0 ):
-							dict[key][i][2] = True
-							verifiedFiles.append(SingleDirectoryStatus[0])
-							return (line[0], line[1], line[2]), "Changed Files\t" + str(line[1])
-
-						i += 1
-			verifiedFiles.append(line[1])
-			return line, "New File\t" + str(line[1])
 
 # Writes report about the most recent fixity check
 # Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
@@ -580,7 +454,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 		report += "Removed Files\t" + str(dels) + "\n"
 	
 		report += str(out)
-		print(report)
+		
 		
 		AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 		rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
@@ -607,6 +481,7 @@ def missing(dict,file=''):
 				#check if file already exists in the manifest
 				if not obj[0] in verifiedFiles:
 					count += 1
+					verifiedFiles.append(obj[0])
 					msg += "Removed Files\t" + obj[0] +"\n"
 
 	return msg, count
@@ -615,6 +490,8 @@ def missing(dict,file=''):
 # With on the given directory
 
 def run(file,filters='',projectName = '',checkForChanges = False):
+	global verifiedFiles
+	verifiedFiles = []
 	DB = Database()
 	missingFile = ('','')
 	projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
@@ -729,7 +606,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 	
 	for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 		DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
-		print(DirectorysInsideDetails)
+		
 		for e in DirectorysInsideDetails:
 			
 			thisnumber=thisnumber+1
@@ -748,10 +625,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 			if flag:
 				check+= 1
 				try:
-					
+					response = []
 					response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
-					print(response)
-					if not response:
+					
+					if not response or len(response) < 1:
 							continue
 					
 					
@@ -818,7 +695,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 					print(e[0])
 					pass
 	
-	print(dict_Hash)
+	
 	try:
 		missingFile = missing(dict_Hash,SingleDirectory)
 		FileChangedList += missingFile[0]

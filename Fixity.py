@@ -41,6 +41,7 @@ from FileChanged import FileChanged
 from DecryptionManager import DecryptionManager
 from Database import Database
 from ImportProjects import ImportProjects
+from ChangeName import ChangeName
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
@@ -70,6 +71,8 @@ class ProjectWin(QMainWindow):
                 self.FileChanged.setVersion('0.3')
 
                 self.FilterFiles = FilterFiles()
+                self.ChangeName = ChangeName()
+                
                 self.Threading = Threading
 
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
@@ -88,6 +91,7 @@ class ProjectWin(QMainWindow):
                 quit = QAction('&Quit Fixity', self)
 
                 FilterFilesMane = QAction('&Filter Files', self)
+                ChangeNameManu = QAction('&Change Project Name', self)
                 DecryptionManagerMenu = QAction('&Select Checksum Algorithm', self)
 
                 self.Debuging = QAction('&Turn Debugging Off', self)
@@ -101,6 +105,8 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(quit)
 
                 self.Preferences.addAction(FilterFilesMane)
+                self.Preferences.addAction(ChangeNameManu)
+                
                 self.Preferences.addAction(configemail)
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
@@ -114,6 +120,8 @@ class ProjectWin(QMainWindow):
                 quit.triggered.connect(self.close)
 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
+                ChangeNameManu.triggered.connect(self.ChangeNameBox)
+                
                 DecryptionManagerMenu.triggered.connect(self.DecryptionManagerBox)
                 self.Debuging.triggered.connect(self.switchDebugger)
                 self.ImportProjectfxy.triggered.connect(self.importProjects)
@@ -279,9 +287,16 @@ class ProjectWin(QMainWindow):
             self.FilterFiles = None
             self.FilterFiles = FilterFiles()
             self.FilterFiles.SetDesgin()
-            self.FilterFiles.ShowDialog()
-
-        # Pop up to set Filters
+            self.FilterFiles.ShowDialog()    
+        # Pop up to set Filters        
+        def ChangeNameBox(self):
+            self.ChangeName.Cancel()
+            self.ChangeName = None
+            self.ChangeName = ChangeName()
+            self.ChangeName.SetDesgin()
+            self.ChangeName.ShowDialog()
+            
+        # Pop up to set Filters        
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
@@ -756,6 +771,7 @@ class ProjectWin(QMainWindow):
 
         #Saves And Runs
         def run(self):
+            
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
@@ -768,7 +784,7 @@ class ProjectWin(QMainWindow):
                 interval = 2
                 dweek = int(self.dow.currentIndex())
             elif self.daily.isChecked():
-                interval = 3
+                interval = 3 
             else:
                 QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans")
                 return
