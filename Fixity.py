@@ -3,7 +3,6 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -52,15 +51,16 @@ class ProjectWin(QMainWindow):
 
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
-                    Debuggin.logInfo('System Information' + "\n" ,{})
-                    Debuggin.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
-                    Debuggin.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
-                    Debuggin.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
-                    Debuggin.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
-                    Debuggin.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
-                    Debuggin.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
-                    Debuggin.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
-                    Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
+                    if OS_Info == 'Windows':
+                        Debuggin.logInfo('System Information' + "\n" ,{})
+                        Debuggin.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
+                        Debuggin.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
+                        Debuggin.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
+                        Debuggin.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
+                        Debuggin.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
+                        Debuggin.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
+                        Debuggin.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
+                        Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
                 self.EP = EmailPref()
                 self.EP.setVersion('0.3')
@@ -234,14 +234,15 @@ class ProjectWin(QMainWindow):
                 self.widget.setLayout(self.main)
                 self.setCentralWidget(self.widget)
                 self.projects.itemClicked.connect(self.update)
-                if(self.SystemInformation and str(self.SystemInformation['WindowsType']) == '7'):
-                    self.runOnlyOnACPower.setDisabled(False)
-                    self.StartWhenAvailable.setDisabled(False)
-                    self.EmailOnlyWhenSomethingChanged.setDisabled(False)
-                else:
-                    self.runOnlyOnACPower.setDisabled(True)
-                    self.StartWhenAvailable.setDisabled(True)
-                    self.EmailOnlyWhenSomethingChanged.setDisabled(True)
+                if OS_Info == 'Windows':
+                    if(self.SystemInformation and str(self.SystemInformation['WindowsType']) == '7'):
+                        self.runOnlyOnACPower.setDisabled(False)
+                        self.StartWhenAvailable.setDisabled(False)
+                        self.EmailOnlyWhenSomethingChanged.setDisabled(False)
+                    else:
+                        self.runOnlyOnACPower.setDisabled(True)
+                        self.StartWhenAvailable.setDisabled(True)
+                        self.EmailOnlyWhenSomethingChanged.setDisabled(True)
 
                 try:
                     self.old = self.projects.itemAt(0, 0)
@@ -266,7 +267,6 @@ class ProjectWin(QMainWindow):
         # orignalPathText:: Path In Manifest
         # changePathText:: New Path Given in Fixity Tool
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
-
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
             self.FileChanged = FileChanged(orignalPathText,changePathText)
@@ -567,7 +567,6 @@ class ProjectWin(QMainWindow):
 
                     currentProject = self.projects.currentItem().text()
 
-
                     projectInformation = {}
                     projectInformation['title'] = self.projects.currentItem().text()
 
@@ -599,12 +598,10 @@ class ProjectWin(QMainWindow):
                     else:
                         projectInformation['emailOnlyUponWarning'] = 0
 
-
                     projectInformation['extraConf'] = ''
 
                     data = str(datetime.datetime.now()).split('.')
                     projectInformation['lastRan'] = data[0]
-
 
                     Configurations = {}
 
@@ -612,9 +609,7 @@ class ProjectWin(QMainWindow):
                     Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                     Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                     Configurations['RunInitialScan'] = False
-
 #                     FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
-
                     ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                     FiltersArray = {}
 
@@ -642,9 +637,7 @@ class ProjectWin(QMainWindow):
 
                         QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
                         return pathsInfoChanges
-
                 else :
-
                     projfileFileText = []
                     if isfileExists:
                         projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
@@ -725,7 +718,6 @@ class ProjectWin(QMainWindow):
                 self.spacer.changeSize(0, 0)
                 self.dom.hide()
                 self.dow.show()
-
 
         def monthclick(self):
                 self.spacer.changeSize(0, 0)

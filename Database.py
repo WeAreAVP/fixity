@@ -5,9 +5,8 @@ Created on Feb 27, 2014
 @author: Furqan
 '''
 import sqlite3
-from os import   getcwd
+from os import  getcwd
 import re
-
 
 import os
 OS_Info = ''
@@ -20,8 +19,6 @@ elif os.name == 'os2':
 
 # from avp import DBHanlder
 # from DBObjectHanlder import DBObjectHanlder  as hanlder
-
-
 class Database(object):
 
     def __init__(self):
@@ -33,7 +30,6 @@ class Database(object):
         self.con = None
         self.cursor = None
 
-
     def connect(self):
         try:
             pathInfo = str(getcwd()).replace('\\schedules','')
@@ -42,10 +38,8 @@ class Database(object):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
             else:
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
-#             self.con = sqlite3.connect(r"D:\\python\\Fixity Project\\bin\\Fixity.sql")
 
             self.cursor = self.con.cursor()
-
         except Exception as ex:
             moreInformation = {"moreInfo":'null'}
             try:
@@ -58,7 +52,7 @@ class Database(object):
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
-#             print(moreInformation)
+
 
     def sqlQuery(self, query):
 
@@ -89,8 +83,6 @@ class Database(object):
                 return response
             except:
                 pass
-
-
 
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
@@ -132,9 +124,7 @@ class Database(object):
         except Exception as e:
             print(e[0])
             self.closeConnection()
-
             pass
-
 
     def dict_gen(self,curs):
         ''' From Python Essential Reference by David Beazley
@@ -348,7 +338,7 @@ class Database(object):
 # versionDetailOptions ={}
 # versionDetailOptions['md5_hash'] = 'sadasdsadas'
 # versionDetailOptions['ssh256_hash'] = 'sadasdsadas'
-# versionDetailOptions['path'] = 'Fixity-1||\Bright Morningstar   DJ Tiësto   Elements of Life www.dilandau.eu.mp3'
+# versionDetailOptions['path'] = 'Fixity-1||\Bright Morningstar   DJ Ti√´sto   Elements of Life www.dilandau.eu.mp3'
 # versionDetailOptions['inode'] = '112312312'
 # versionDetailOptions['versionID'] = '1'
 # versionDetailOptions['projectID'] = '1'
