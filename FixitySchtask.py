@@ -351,7 +351,7 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         xmlsch.write("</plist>")
         xmlsch.close()
 
-
+        return "schedules\\fixity-" + ProjectName + "-sch.xml"
         xmlsch.write("<?xml version=\"1.0\" ?>\n")
         xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
         xmlsch.write("    <RegistrationInfo>\n")
@@ -405,4 +405,3 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         xmlsch.write("</Task>\n")
         xmlsch.close()
 
-        return "schedules\\fixity-" + ProjectName + "-sch.xml"

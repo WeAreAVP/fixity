@@ -329,10 +329,14 @@ class ProjectWin(QMainWindow):
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
+
                 major , minor , build , platformType , servicePack = sys.getwindowsversion()
+
                 WindowsInformation['major'] = major
                 WindowsInformation['minor'] = minor
                 WindowsInformation['build'] = build
+
+
                 WindowsInformation['platformType'] = platformType
                 WindowsInformation['servicePack'] = servicePack
                 windowDetailedName = platform.platform()
