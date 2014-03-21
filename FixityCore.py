@@ -401,6 +401,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 			if isHashSame and (not isFilePathSame):
 				verifiedFiles.append(line[1])
 				verifiedFiles.append(CurrentDirectory[0])
+				
 				return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
 			if (not isHashSame) and isFilePathSame:
 				verifiedFiles.append(line[1])
@@ -425,13 +426,14 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 					elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0][Algorithm]:
 						verifiedFiles.append(line[1])
 						return line, 'File Changed :\t' + str(line[1])
-
+			
 			for dictionarySingle1 in dictHash:
 				allInforHashRelated1 = dictHash[dictionarySingle1]
+				
 				for singleInforHashRelated1 in allInforHashRelated1:
 					if singleInforHashRelated1[0] == line[1] :
 						verifiedFiles.append(line[1])
-					return line, "Moved or Renamed :\t" + line[1]
+						return line, "1Moved or Renamed :\t" + line[1]
 		verifiedFiles.append(line[1])
 		return line, 'New File :\t' + str(line[1])
 
@@ -454,7 +456,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 		report += "Removed Files\t" + str(dels) + "\n"
 	
 		report += str(out)
-		
+		print(report)
 		
 		AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
 		rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
@@ -789,6 +791,6 @@ def DecodeInfo(stringToBeDecoded):
 	return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
 ## To test Main Functionality  
-# projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy','','New_Project')
+projects_path = getcwd()+'\\projects\\'
+run(projects_path+'New_Project.fxy','','New_Project')
 # exit()
