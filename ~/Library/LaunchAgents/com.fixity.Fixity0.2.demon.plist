@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//ENhttp://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+        <dict>
+            <key>Label</key>
+                <string>com.fixity.Fixity0.2.demon</string>
+            <key>ProgramArguments</key>
+            <array>
+                <string>touch</string>
+                <string>/tmp/helloworld</string>
+            </array>
+            <key>StartCalendarInterval</key>
+            <dict>
+            <key>Minute</key>
+            <integer>22</integer>
+            <key>Hour</key>
+            <integer>11</integer>
+            <key>Day</key>
+            <integer>1</integer>
+            </dict>
+        </dict>
+    </plist>

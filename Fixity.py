@@ -291,28 +291,23 @@ class ProjectWin(QMainWindow):
 
         def switchDebugger(self,start= None):
             DB = Database()
+            Debuging = Debuger()
             Information = {'debugger':0}
-            info = DB.getConfiguration()
-            if info != None:
-                if(len(info)>0):
-                    Information = info[0]
+            Information = Debuging.getConfiguration()
 
             debugText = ''
 
             if start == None:
-                if info != None:
-                    if len(info) < 0:
+                if infInformationo != None:
+                    if len(Information) < 0:
                             Information['debugger'] = 1
                     elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
                         Information['debugger'] = 1
                     else:
                         Information['debugger'] = 0
 
-                    if info != None:
-                        if len(info) > 0:
-                            DB.update(DB._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
-                        else:
-                            DB.insert(DB._tableConfiguration,Information)
+                    if Information != None:
+                        Debuging.setDebugConfiguration(Information['debugger'])
 
             if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
                 debugText = 'Turn Debugging On'

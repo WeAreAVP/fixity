@@ -7,7 +7,7 @@ Created on Feb 27, 2014
 import sqlite3
 from os import  getcwd
 import re
-
+from Debuger import Debuger
 import os
 import time
 OS_Info = ''
@@ -31,11 +31,14 @@ class Database(object):
         self._tableVersions ='versions'
         self.con = None
         self.cursor = None
+        self.timeSpan = 1
 
     def connect(self):
+        print('hello')
+        pathInfo = str(getcwd()).replace('\\schedules','')
+        pathInfo = pathInfo.replace('schedules','')
+        gab = 30
         try:
-            pathInfo = str(getcwd()).replace('\\schedules','')
-            pathInfo = pathInfo.replace('schedules','')
             if(OS_Info == 'Windows'):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
             else:
@@ -54,17 +57,23 @@ class Database(object):
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
-            import Debuger
-            print(Debuger)
-            Debuger.Debuger.tureDebugerOn()
-            Debuger.Debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
-            QMessageBox.warning(self, "Fixity", "Some Other process have locked the Database,waiting for release of database please wait" + str(moreInformation['LogsMore']))
-            time.sleep(30)
-            self.connect()
+            debuger = Debuger()
+            debuger.tureDebugerOn()
+            debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
 
+            if not self.timeSpan:
+                self.timeSpan = 1
 
-            print(debug)
-
+            if self.timeSpan <= 600:
+                self.timeSpan = self.timeSpan + gab
+                print(self.timeSpan)
+                time.sleep(gab)
+                self.connect()
+            else:
+                print('exiting process')
+                self.closeConnection()
+                self = None
+                exit()
 
 
     def sqlQuery(self, query):
@@ -343,7 +352,7 @@ class Database(object):
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
 db = Database()
 db.connect()
-print(1)
+
 #db.select(db._tableVersionDetail, '*')
 #db.closeConnection()
 #
