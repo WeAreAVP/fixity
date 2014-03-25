@@ -1,9 +1,0 @@
-('d:\\python\\Fixity Project\\dist\\AutoFixity.exe',
- True,
- False,
- 'images\\icon.ico',
- None,
- [],
- None,
- False,
- 1394811701L)

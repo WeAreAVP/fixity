@@ -23,23 +23,28 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
+
 ''' Class to manage all the the errors and warning loging'''
 class Debuger(object):
 
-
     # Constuctor
     def __init__(self):
+        self.configFilePath= basePath+'/bin/conf.txt'
         self.loger = logging
+        ConfigFile = open(self.configFilePath,'w+')
+        ConfigFile.close()
         if(OS_Info == 'Windows'):
             self.loger.basicConfig(filename=getcwd() + '\\debug\\debug.log',level=logging.DEBUG)
         else:
             self.loger.basicConfig(filename=getcwd() + '/debug/debug.log',level=logging.DEBUG)
+
         self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
         self.isdebugerOn = False
+
         DB = Database()
         self.Information ={}
         self.Information['debugger'] = 0
-        info = DB.getConfiguration()
+        info = self.getDebugConfiguration()
         if info != None:
             if len(info) > 0 :
                 self.Information = info[0]
@@ -52,8 +57,6 @@ class Debuger(object):
             if(moreInformation):
                 for key in moreInformation:
                     self.loger.debug(key + '::' + moreInformation[key]+"\n")
-
-
 
     # Function to Log Information
     # @param msg Message to log
@@ -73,10 +76,9 @@ class Debuger(object):
                 for key in moreInformation:
                     self.loger.warning(key + '::' + moreInformation[key]+"\n")
 
-
     # Function to turn debugging On
     def tureDebugerOn(self):
-
+        ConfigFile = open(self.configFilePath,'r')
         if self.Information['debugger'] == 1:
             self.isdebugerOn = True
         else:
@@ -91,13 +93,10 @@ class Debuger(object):
         if(self.isdebugerOn):
             return str(datetime.datetime.now()).rpartition('.')[0]
 
+    def getDebugConfiguration(self):
+        print('hello')
 
-# app = QApplication('asdas')
-# w = FilterFiles()
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-#
-# app.exec_()
-
+#Deg = Debuger()
+#Deg.tureDebugerOn()
+#info = {'0':'testing debug','1':'checking Val'}
+#Deg.logError('asdadasda', info)

@@ -9,6 +9,7 @@ from os import  getcwd
 import re
 
 import os
+import time
 OS_Info = ''
 if os.name == 'posix':
     OS_Info = 'linux'
@@ -22,6 +23,7 @@ elif os.name == 'os2':
 class Database(object):
 
     def __init__(self):
+
         self._tableConfiguration = 'configuration'
         self._tableProject = 'project'
         self._tableProjectPath = 'projectPath'
@@ -38,9 +40,9 @@ class Database(object):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
             else:
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
-
+            raise sqlite3.OperationalError
             self.cursor = self.con.cursor()
-        except Exception as ex:
+        except (sqlite3.OperationalError,Exception) as ex:
             moreInformation = {"moreInfo":'null'}
             try:
                 if not ex[0] == None:
@@ -52,6 +54,17 @@ class Database(object):
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
+            import Debuger
+            print(Debuger)
+            Debuger.Debuger.tureDebugerOn()
+            Debuger.Debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
+            QMessageBox.warning(self, "Fixity", "Some Other process have locked the Database,waiting for release of database please wait" + str(moreInformation['LogsMore']))
+            time.sleep(30)
+            self.connect()
+
+
+            print(debug)
+
 
 
     def sqlQuery(self, query):
@@ -328,8 +341,9 @@ class Database(object):
 
 # try:
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-#db = Database()
-#db.connect()
+db = Database()
+db.connect()
+print(1)
 #db.select(db._tableVersionDetail, '*')
 #db.closeConnection()
 #

@@ -248,6 +248,20 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         try:
             if OS_Info == 'Windows':
                 subprocess.call(Command , startupinfo=startupinfo)
+            else:
+
+                try:
+                    p = subprocess.Popen(["launchctl", "unload", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
+                    output, err = p.communicate()
+                except:
+                    pass
+
+                try:
+                    p = subprocess.Popen(["launchctl", "load", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
+                    output, err = p.communicate()
+                except:
+                    pass
+
         except Exception as e:
             Debuging = Debuger()
             moreInformation = {"moreInfo":'null'}
@@ -325,83 +339,70 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
 
 def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
-        Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-        xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
-        xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-        xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">")
-        xmlsch.write("<plist version=\"1.0\">")
-        xmlsch.write("<dict>")
-            xmlsch.write("<key>Label</key>")
-            xmlsch.write("<string>"+str(ProjectName)+"</string>")
-            xmlsch.write("<key>ProgramArguments</key>")
-            xmlsch.write("<array>")
-                xmlsch.write("<string>touch</string>")
-                xmlsch.write("<string>/tmp/helloworld</string>")
-            xmlsch.write("</array>")
-            xmlsch.write("<key>StartCalendarInterval</key>")
-            xmlsch.write("<dict>")
-                xmlsch.write("<key>Minute</key>")
-                xmlsch.write("<integer>45</integer>")
-                xmlsch.write("<key>Hour</key>")
-                xmlsch.write("<integer>13</integer>")
-                xmlsch.write("<key>Day</key>")
-                xmlsch.write("<integer>7</integer>")
-            xmlsch.write("</dict>")
-        xmlsch.write("</dict>")
-        xmlsch.write("</plist>")
-        xmlsch.close()
 
-        return "schedules\\fixity-" + ProjectName + "-sch.xml"
-        xmlsch.write("<?xml version=\"1.0\" ?>\n")
-        xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
-        xmlsch.write("    <RegistrationInfo>\n")
-        xmlsch.write("        <Date>" + RegistrationInfo['Date'] + "</Date>\n")
-        xmlsch.write("        <Author>" + RegistrationInfo['Author'] + "</Author>\n")
-        xmlsch.write("        <Version>" + RegistrationInfo['Description'] + "</Version>\n")
-        xmlsch.write("        <Description>" + RegistrationInfo['Description'] + "</Description>\n")
-        xmlsch.write("    </RegistrationInfo>\n")
-        xmlsch.write("    <Triggers>\n")
-        xmlsch.write("        <CalendarTrigger>\n")
-        xmlsch.write("            <StartBoundary>" + Triggers['CalendarTrigger']['StartBoundary'] + "</StartBoundary>\n")
+        Months = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
+
+        p = subprocess.Popen(["whoami"], stdout=subprocess.PIPE)
+        output, err = p.communicate()
+
+        homePath = "/Users/"+str(output)
+        homePath = str(homePath).replace("\n", '')
+
+        LibPath = homePath+"/Library"
+        AgentPath = homePath+"/Library/LaunchAgents/"
+
+        if(not os.path.isdir(LibPath)):
+            os.makedirs(homePath+"/Library")
+
+        if(not os.path.isdir(AgentPath)):
+            os.makedirs(AgentPath)
+
+        lunchAject= AgentPath + "/com.fixity."+str(ProjectName) + ".demon.plist"
+
+        xmlsch = open(u''+lunchAject, "w")
+
+        xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+        xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
+        xmlsch.write("    <plist version=\"1.0\">\n")
+        xmlsch.write("        <dict>\n")
+        xmlsch.write("            <key>Label</key>\n")
+        xmlsch.write("                <string>com.fixity."+str(ProjectName)+".demon</string>\n")
+        xmlsch.write("            <key>ProgramArguments</key>\n")
+        xmlsch.write("            <array>\n")
+        xmlsch.write("                <string>touch</string>\n")
+        xmlsch.write("                <string>/tmp/helloworld</string>\n")
+        xmlsch.write("            </array>\n")
+        xmlsch.write("            <key>StartCalendarInterval</key>\n")
+        xmlsch.write("            <dict>\n")
+
+        infoTrigger = str(Triggers['CalendarTrigger']['StartBoundary']).split('T')
+        TriggerInformation = str(infoTrigger[1]).split(':')
 
         if interval == 1:
-            xmlsch.write("            <ScheduleByMonth>\n")
-            xmlsch.write("                <DaysOfMonth>\n")
-            xmlsch.write("                    <Day>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</Day>\n")
-            xmlsch.write("                </DaysOfMonth >\n")
-            xmlsch.write("                <Months>\n")
-            for Month in Months:
-                xmlsch.write("                <" + Month + "/>\n")
-            xmlsch.write("                </Months>\n")
-            xmlsch.write("            </ScheduleByMonth>\n")
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+            xmlsch.write("            <key>Day</key>\n")
+            xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
+
         if interval == 2:
-            xmlsch.write("            <ScheduleByWeek>\n")
-            xmlsch.write("                <WeeksInterval >" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
-            xmlsch.write("                <DaysOfWeek>\n")
-            xmlsch.write("                    <" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n");
-            xmlsch.write("                </DaysOfWeek >\n")
-            xmlsch.write("            </ScheduleByWeek>\n")
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+            xmlsch.write("            <key>Weekday</key>\n")
+            xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</integer>\n")
+
         if interval == 3:
-            xmlsch.write("            <ScheduleByDay>\n")
-            xmlsch.write("                <DaysInterval>" + str(Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']) + "</DaysInterval>\n")
-            xmlsch.write("            </ScheduleByDay>\n")
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
 
-        xmlsch.write("        </CalendarTrigger>\n")
-        xmlsch.write("    </Triggers>\n")
-        xmlsch.write("    <Settings>\n")
-        xmlsch.write("        <Enabled>" + Settings['Enabled'] + "</Enabled>\n")
-        xmlsch.write("        <AllowStartOnDemand>" + Settings['AllowStartOnDemand'] + "</AllowStartOnDemand>\n")
-        xmlsch.write("        <AllowHardTerminate>" + Settings['AllowHardTerminate'] + "</AllowHardTerminate>\n")
-        xmlsch.write("        <DisallowStartIfOnBatteries>" + Settings['DisallowStartIfOnBatteries'] + "</DisallowStartIfOnBatteries>\n")
-        xmlsch.write("        <StartWhenAvailable>" + Settings['StartWhenAvailable'] + "</StartWhenAvailable>\n")
-        xmlsch.write("        <WakeToRun>" + Settings['WakeToRun'] + "</WakeToRun>\n")
-
-        xmlsch.write("    </Settings>\n")
-        xmlsch.write("    <Actions>\n")
-        xmlsch.write("        <Exec>\n")
-        xmlsch.write("            <Command>" + Actions['Exec']['Command'] + "</Command>\n")
-        xmlsch.write("        </Exec>\n")
-        xmlsch.write("      </Actions>\n")
-        xmlsch.write("</Task>\n")
+        xmlsch.write("            </dict>\n")
+        xmlsch.write("        </dict>\n")
+        xmlsch.write("    </plist>\n")
         xmlsch.close()
+        return lunchAject
 
