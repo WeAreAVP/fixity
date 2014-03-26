@@ -4,6 +4,8 @@ Created on Feb 27, 2014
 
 @author: Furqan
 '''
+from PySide.QtCore import *
+from PySide.QtGui import *
 import sqlite3
 from os import  getcwd
 import re
@@ -34,7 +36,7 @@ class Database(object):
         self.timeSpan = 1
 
     def connect(self):
-        print('hello')
+
         pathInfo = str(getcwd()).replace('\\schedules','')
         pathInfo = pathInfo.replace('schedules','')
         gab = 30
@@ -43,8 +45,9 @@ class Database(object):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
             else:
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
-            raise sqlite3.OperationalError
+
             self.cursor = self.con.cursor()
+
         except (sqlite3.OperationalError,Exception) as ex:
             moreInformation = {"moreInfo":'null'}
             try:
@@ -66,11 +69,12 @@ class Database(object):
 
             if self.timeSpan <= 600:
                 self.timeSpan = self.timeSpan + gab
-                print(self.timeSpan)
                 time.sleep(gab)
                 self.connect()
+
             else:
-                print('exiting process')
+
+                print('Exiting process')
                 self.closeConnection()
                 self = None
                 exit()
@@ -350,8 +354,8 @@ class Database(object):
 
 # try:
 #     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-db = Database()
-db.connect()
+#db = Database()
+#db.connect()
 
 #db.select(db._tableVersionDetail, '*')
 #db.closeConnection()

@@ -19,7 +19,7 @@ if OS_Info == 'linux':
     from os import path, listdir, remove, walk , getcwd , spawnl , system
 else:
     from os import path, listdir, remove, walk , getcwd , P_DETACH , spawnl , system
-
+#import pdb; pdb.set_trace()
 from collections import deque
 from genericpath import exists
 import re
@@ -293,7 +293,7 @@ class ProjectWin(QMainWindow):
             DB = Database()
             Debuging = Debuger()
             Information = {'debugger':0}
-            Information = Debuging.getConfiguration()
+            Information = Debuging.getDebugConfiguration()
 
             debugText = ''
 
