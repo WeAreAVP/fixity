@@ -355,11 +355,11 @@ class EmailPref(QDialog):
         else:
             self.port.setText('587')
 # Main Code
-app = QApplication('asdas')
-w = EmailPref()
-w.CreateWindow()
-w.SetWindowLayout()
-w.SetDesgin()
-w.ShowDialog()
-app.exec_()
+#app = QApplication('asdas')
+#w = EmailPref()
+#w.CreateWindow()
+#w.SetWindowLayout()
+#w.SetDesgin()
+#w.ShowDialog()
+#app.exec_()
 
