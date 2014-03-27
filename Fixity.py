@@ -1025,9 +1025,10 @@ if __name__ == '__main__':
         AR = AutoRuner()
         IsemailSet = 'Run'
         AR.runAutoFix(project , IsemailSet)
+        exit()
     except:
         pass
-    exit()
+
 
     app = QApplication(sys.argv)
     w = ProjectWin(EmailPref , FilterFiles)
