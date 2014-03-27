@@ -43,6 +43,7 @@ from ImportProjects import ImportProjects
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
+                print('1')
                 self.Database = Database()
                 QMainWindow.__init__(self)
                 Debuggin = Debuger()
@@ -1019,6 +1020,14 @@ class ProjectWin(QMainWindow):
                 pass
 
 if __name__ == '__main__':
+    try:
+        project = sys.argv[1]
+        AR = AutoRuner()
+        IsemailSet = 'Run'
+        AR.runAutoFix(project , IsemailSet)
+    except:
+        pass
+
         app = QApplication(sys.argv)
         w = ProjectWin(EmailPref , FilterFiles)
         w.show()

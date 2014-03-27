@@ -6,11 +6,11 @@ Usage:
 """
 
 from setuptools import setup
+import PySide
 
 APP = ['Fixity.py']
 DATA_FILES = []
 OPTIONS = {'argv_emulation': True}
-
 setup(
     app=APP,
     data_files=DATA_FILES,
