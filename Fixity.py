@@ -26,6 +26,7 @@ import re
 import datetime
 import shutil
 import sys
+import argparse
 import platform
 import os
 
@@ -1020,20 +1021,23 @@ class ProjectWin(QMainWindow):
             except:
                 pass
 
-if __name__ == '__main__':
-    project = None
-    try:
-        project = sys.argv[1]
-    except:
-        pass
-    print(project)
-    if(project != None or project !=''):
-        AR = AutoRuner()
-        IsemailSet = 'Run'
-        AR.runAutoFix(project , IsemailSet)
-        exit()
+def auto_run(project):
+    AR = AutoRuner()
+    IsemailSet = 'Run'
+    AR.runAutoFix(project , IsemailSet)
 
-    app = QApplication(sys.argv)
-    w = ProjectWin(EmailPref , FilterFiles)
-    w.show()
-    sys.exit(app.exec_())
+
+if __name__ == '__main__':
+
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-a', '--autorun')
+    args = parser.parse_args()
+    if(args.autorun == None or args.autorun == ''):
+        app = QApplication(sys.argv)
+        w = ProjectWin(EmailPref , FilterFiles)
+        w.show()
+        sys.exit(app.exec_())
+    else:
+        auto_run(args.autorun)
+        sys.exit()

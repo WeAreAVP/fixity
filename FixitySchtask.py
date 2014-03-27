@@ -357,6 +357,9 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         if(not os.path.isdir(AgentPath)):
             os.makedirs(AgentPath)
 
+
+        pathInfo = str(getcwd()).replace('/Contents/Resources','')+"/Contents/MacOS/Fixity"
+
         lunchAject= AgentPath + "/com.fixity."+str(ProjectName) + ".demon.plist"
 
         xmlsch = open(u''+lunchAject, "w")
@@ -369,9 +372,13 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         xmlsch.write("                <string>com.fixity."+str(ProjectName)+".demon</string>\n")
         xmlsch.write("            <key>ProgramArguments</key>\n")
         xmlsch.write("            <array>\n")
-        xmlsch.write("                <string>touch</string>\n")
-        xmlsch.write("                <string>/tmp/helloworld</string>\n")
+        xmlsch.write("                <string>"+pathInfo+"</string>\n")
+        xmlsch.write("                <string>-a="+str(ProjectName)+"</string>\n")
         xmlsch.write("            </array>\n")
+        xmlsch.write("            <key>StandardOutPath</key>\n")
+        xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
+        xmlsch.write("            <key>StandardErrorPath</key>\n")
+        xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
         xmlsch.write("            <key>StartCalendarInterval</key>\n")
         xmlsch.write("            <dict>\n")
 
