@@ -654,7 +654,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     mails = str(projectInformation[0]['emailAddress']).split(',')
 
     check = 0
-
+    print('1')
     for l in projectDetailInformation:
 
         try:
@@ -845,6 +845,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     total +=moved
     total +=created
     total +=corruptedOrChanged
+
     try:
         total +=missingFile[1]
     except:
@@ -911,6 +912,6 @@ def DecodeInfo(stringToBeDecoded):
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
 ## To test Main Functionality
-projects_path = getcwd()+'/projects/'
-run(projects_path+'Fixity0.2.fxy','','Fixity0.2')
+#projects_path = getcwd()+'/projects/'
+#run(projects_path+'Fixity0.2.fxy','','Fixity0.2')
 # exit()

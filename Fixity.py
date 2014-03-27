@@ -40,6 +40,7 @@ from FileChanged import FileChanged
 from DecryptionManager import DecryptionManager
 from Database import Database
 from ImportProjects import ImportProjects
+from AutoRuner import AutoRuner
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
@@ -1020,15 +1021,17 @@ class ProjectWin(QMainWindow):
                 pass
 
 if __name__ == '__main__':
+    project = None
     try:
         project = sys.argv[1]
+    except:
+        pass
+    print(project)
+    if(project != None or project !=''):
         AR = AutoRuner()
         IsemailSet = 'Run'
         AR.runAutoFix(project , IsemailSet)
         exit()
-    except:
-        pass
-
 
     app = QApplication(sys.argv)
     w = ProjectWin(EmailPref , FilterFiles)
