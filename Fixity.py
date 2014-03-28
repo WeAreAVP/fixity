@@ -1034,10 +1034,13 @@ if __name__ == '__main__':
         pass
 
     if(args.autorun == None or args.autorun == ''):
-        app = QApplication(sys.argv)
-        w = ProjectWin(EmailPref , FilterFiles)
-        w.show()
-        sys.exit(app.exec_())
+        try:
+            app = QApplication(sys.argv)
+            w = ProjectWin(EmailPref , FilterFiles)
+            w.show()
+            sys.exit(app.exec_())
+        except:
+            print("Some thing have gone wrong , please try restarting Fixity")
     else:
         try:
             auto_run(args.autorun)
