@@ -7,7 +7,7 @@
 '''
 Created on Dec 1, 2013
 @version: 0.3
-@author: Furqan Wasi
+@author: Furqan Wasi <furqan@geekschicago.com>
 '''
 
 #Built in Library

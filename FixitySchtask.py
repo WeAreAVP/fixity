@@ -5,7 +5,7 @@
 # Released under the Apache license, v. 2.0
 '''
 Updated on Feb 4, 2014
-@author: Furqan Wasi
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 import os
 OS_Info = ''
@@ -18,10 +18,12 @@ elif os.name == 'os2':
 
 import subprocess
 from os import getcwd, remove , environ , path, remove
-from Debuger import Debuger
+from os.path import expanduser
 
 import sys
 import time
+
+from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
 # Deletes the SCHTASK entry and its corresponding files
@@ -347,26 +349,17 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
 def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
 
         Months = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
+        homePath = expanduser("~")
+        LibPath = homePath+str(os.sep)+"Library"
+        AgentPath = homePath+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
 
-        p = subprocess.Popen(["whoami"], stdout=subprocess.PIPE)
-        output, err = p.communicate()
-
-        homePath = "/Users/"+str(output)
-        homePath = str(homePath).replace("\n", '')
-
-        LibPath = homePath+"/Library"
-        AgentPath = homePath+"/Library/LaunchAgents/"
-
-        if(not os.path.isdir(LibPath)):
-            os.makedirs(homePath+"/Library")
-
-        if(not os.path.isdir(AgentPath)):
-            os.makedirs(AgentPath)
+        if(not os.path.isdir(LibPath)) or (not os.path.isdir(AgentPath)):
+                os.makedirs(AgentPath)
 
 
-        pathInfo = str(getcwd()).replace('/Contents/Resources','')+"/Contents/MacOS/Fixity"
+        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')+str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
 
-        lunchAject= AgentPath + "/com.fixity."+str(ProjectName) + ".demon.plist"
+        lunchAject= AgentPath +str(os.sep)+ "com.fixity."+str(ProjectName) + ".demon.plist"
 
         xmlsch = open(u''+lunchAject, "w")
 

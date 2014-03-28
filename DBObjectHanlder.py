@@ -6,7 +6,7 @@
 
 '''
 Created on Feb 27, 2014
-@author: Furqan
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 import sqlite3 as sql
 from os import   getcwd

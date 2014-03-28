@@ -5,9 +5,10 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
 '''
 Created on Feb 27, 2014
-@author: Furqan Wasi
+@author: Furqan Wasi <furqan@geekschicago.com>
 '''
 from PySide.QtCore import *
 from PySide.QtGui import *

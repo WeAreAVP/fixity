@@ -5,7 +5,7 @@
 # Released under the Apache license, v. 2.0
 '''
 Created on Feb 4, 2014
-@author: Furqan Wasi
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 
 import logging
@@ -39,7 +39,7 @@ class Debuger(object):
         if(OS_Info == 'Windows'):
             self.loger.basicConfig(filename=getcwd() + '\\debug\\debug.log',level=logging.DEBUG)
         else:
-            self.loger.basicConfig(filename=getcwd() + '/debug/debug.log',level=logging.DEBUG)
+            self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
 
         self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
         self.isdebugerOn = False

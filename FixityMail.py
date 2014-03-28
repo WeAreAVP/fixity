@@ -6,7 +6,7 @@
 
 '''
 Updated on Feb 4, 2014
-@author: Furqan Wasi
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 from PySide.QtCore import *
 from PySide.QtGui import *

@@ -5,7 +5,7 @@
 # Released under the Apache license, v. 2.0
 '''
 Created on Dec 11, 2013
-@author: Furqan Wasi
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 
 #Bult-in Libraries

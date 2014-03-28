@@ -45,7 +45,6 @@ from AutoRuner import AutoRuner
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
-                print('1')
                 self.Database = Database()
                 QMainWindow.__init__(self)
                 Debuggin = Debuger()
@@ -186,9 +185,9 @@ class ProjectWin(QMainWindow):
 
                 self.spacer = QSpacerItem(125, 30)
                 slay.addItem(self.spacer)
-
-                slay.addWidget(self.runOnlyOnACPower)
-                slay.addWidget(self.StartWhenAvailable)
+                if OS_Info == 'Windows':
+                    slay.addWidget(self.runOnlyOnACPower)
+                    slay.addWidget(self.StartWhenAvailable)
                 slay.addWidget(self.EmailOnlyWhenSomethingChanged)
 
 
@@ -301,7 +300,7 @@ class ProjectWin(QMainWindow):
             debugText = ''
 
             if start == None:
-                if infInformationo != None:
+                if Information != None:
                     if len(Information) < 0:
                             Information['debugger'] = 1
                     elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
@@ -1026,18 +1025,23 @@ def auto_run(project):
     IsemailSet = 'Run'
     AR.runAutoFix(project , IsemailSet)
 
-
 if __name__ == '__main__':
+    try:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-a', '--autorun')
+        args = parser.parse_args()
+    except:
+        pass
 
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--autorun')
-    args = parser.parse_args()
     if(args.autorun == None or args.autorun == ''):
         app = QApplication(sys.argv)
         w = ProjectWin(EmailPref , FilterFiles)
         w.show()
         sys.exit(app.exec_())
     else:
-        auto_run(args.autorun)
-        sys.exit()
+        try:
+            auto_run(args.autorun)
+            sys.exit()
+        except:
+            pass
+        pass:

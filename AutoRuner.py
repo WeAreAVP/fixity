@@ -5,7 +5,7 @@
 # Released under the Apache license, v. 2.0
 '''
 Created on Mar 10, 2014
-@author: Furqan Wasi
+@author: Furqan Wasi <furqan@geekschicago.com>
 '''
 #build in Library
 import datetime

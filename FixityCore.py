@@ -13,7 +13,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
-
+#Built in Library
 import hashlib
 from os import chdir, walk, path, stat, getcwd, O_RDWR, O_CREAT
 from sys import argv ,exit
@@ -24,15 +24,6 @@ import time
 from glob import glob
 from os import path, makedirs, remove
 from re import sub, compile
-import os
-
-OS_Info = ''
-if os.name == 'posix':
-    OS_Info = 'linux'
-elif os.name == 'nt':
-    OS_Info = 'Windows'
-elif os.name == 'os2':
-    OS_Info = 'check'
 
 if(OS_Info == 'Windows'):
     import win32file
@@ -40,10 +31,12 @@ if(OS_Info == 'Windows'):
 import shutil
 import base64
 import unicodedata
-#Custom
+
+#Custom Library
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
+
 global verifiedFiles
 verifiedFiles = []
 
@@ -397,10 +390,12 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 
             if isHashSame and (not isFilePathSame):
                 verifiedFiles.append(line[1])
+                verifiedFiles.append(CurrentDirectory[0])
                 return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
 
                 verifiedFiles.append(line[1])
             if (not isHashSame) and isFilePathSame:
+                verifiedFiles.append(line[1])
                 return line, "Changed File :\t" + str(line[1])
 
             if (not isHashSame) and (not isFilePathSame):
@@ -457,12 +452,12 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
         print(report)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-            rn = AutiFixPath+'\\reports\\fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
+            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
         else:
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[0]).split('/')
             NameOfFile[(len(NameOfFile)-1)]
-            rn = AutiFixPath+'/reports/fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.csv'
+            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.csv'
 
         r = open(rn, 'w+')
         r.write(report)
@@ -486,7 +481,7 @@ def missing(dict,file=''):
             if not path.isfile(obj[0]):
                 #check if file already exists in the manifest
                 if not obj[0] in verifiedFiles:
-                    count += 1
+                    verifiedFiles.append(obj[0])
                     msg += "Removed Files\t" + obj[0] +"\n"
 
     return msg, count
@@ -495,6 +490,9 @@ def missing(dict,file=''):
 # With on the given directory
 
 def run(file,filters='',projectName = '',checkForChanges = False):
+
+    global verfiedFiels
+    verfiedFiels = []
     DB = Database()
 
     missingFile = ('','')
@@ -517,9 +515,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
     FileChangedList = ""
     InfReplacementArray = {}
-    historyFile = str(file).replace('projects', 'history')
-    historyFile = str(historyFile).replace('.fxy',str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf')
-    tmp = open(historyFile , 'w')
+
+    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf'
+
+    tmp = open(historyFile , 'w+')
     first = ''
     for singlePathDF in projectPathInformation:
         first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
@@ -534,7 +533,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     mails = str(projectInformation[0]['emailAddress']).split(',')
 
     check = 0
-    print('1')
     for l in projectDetailInformation:
 
         try:
@@ -630,10 +628,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             if flag:
                 check+= 1
                 try:
-
+                    response = []
                     response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
 
-                    if not response:
+                    if not response or len(response) < 1:
                             continue
 
                 except Exception as ex :
@@ -794,3 +792,4 @@ def EncodeInfo(stringToBeEncoded):
 def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
+
