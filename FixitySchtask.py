@@ -3,6 +3,10 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+'''
+Updated on Feb 4, 2014
+@author: Furqan Wasi
+'''
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -93,23 +97,23 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 spec = " /D " + days[dow] + " "
         elif dom != 99:
                 spec = " /D " + str(dom) + " "
+        if OS_Info == 'Windows':
+            f = open("schedules\\fixity-" + prj + ".bat", "w")
+            f.write("@ECHO OFF\n")
+            f.write("cd /d %~dp0\n")
+            f.write("cd ..\n")
+            f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
+            f.close()
 
-        f = open("schedules\\fixity-" + prj + ".bat", "w")
-        f.write("@ECHO OFF\n")
-        f.write("cd /d %~dp0\n")
-        f.write("cd ..\n")
-        f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
-        f.close()
-
-        x = open("schedules\\fixity-" + prj + ".vbs", "w")
-        x.write("Dim location, p\n")
-        x.write("location = WScript.ScriptFullName\n")
-        x.write("p = Replace(location, \"fixity-" + prj + ".vbs\", \"fixity-" + prj + ".bat\")\n")
-        x.write("Set WinScriptHost = CreateObject(\"WScript.Shell\")\n")
-        x.write('WinScriptHost.Run("""" & p & """")')
-        x.write("\n")
-        x.write("Set WinScriptHost = Nothing")
-        x.close()
+            x = open("schedules\\fixity-" + prj + ".vbs", "w")
+            x.write("Dim location, p\n")
+            x.write("location = WScript.ScriptFullName\n")
+            x.write("p = Replace(location, \"fixity-" + prj + ".vbs\", \"fixity-" + prj + ".bat\")\n")
+            x.write("Set WinScriptHost = CreateObject(\"WScript.Shell\")\n")
+            x.write('WinScriptHost.Run("""" & p & """")')
+            x.write("\n")
+            x.write("Set WinScriptHost = Nothing")
+            x.close()
         pathCommand= ''
         if OS_Info == 'Windows':
             startupinfo = subprocess.STARTUPINFO()
@@ -280,6 +284,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
             pass
 
+#Create XML for Window 7 task schedules
 def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
         Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
@@ -338,6 +343,7 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
 
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
 
+#Create XML for Mac launchd process
 def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
 
         Months = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
@@ -412,4 +418,3 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         xmlsch.write("    </plist>\n")
         xmlsch.close()
         return lunchAject
-

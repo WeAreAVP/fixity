@@ -1,8 +1,13 @@
 # -*- coding: UTF-8 -*-
+
+# Fixity command line application
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 '''
 Created on Feb 27, 2014
-
-@author: Furqan
+@author: Furqan Wasi
 '''
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -12,6 +17,7 @@ import re
 from Debuger import Debuger
 import os
 import time
+#Getting OS Info
 OS_Info = ''
 if os.name == 'posix':
     OS_Info = 'linux'
@@ -20,10 +26,9 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-# from avp import DBHanlder
-# from DBObjectHanlder import DBObjectHanlder  as hanlder
-class Database(object):
 
+class Database(object):
+    #Constructor
     def __init__(self):
 
         self._tableConfiguration = 'configuration'
@@ -34,7 +39,7 @@ class Database(object):
         self.con = None
         self.cursor = None
         self.timeSpan = 1
-
+    #Connect to Database
     def connect(self):
 
         pathInfo = str(getcwd()).replace('\\schedules','')
@@ -79,7 +84,7 @@ class Database(object):
                 self = None
                 exit()
 
-
+    #SQL Query Runner
     def sqlQuery(self, query):
 
         try:
@@ -109,7 +114,7 @@ class Database(object):
                 return response
             except:
                 pass
-
+    #SQL Select Query
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
             query= ''
@@ -151,7 +156,7 @@ class Database(object):
             print(e[0])
             self.closeConnection()
             pass
-
+    #Query Result to list converter
     def dict_gen(self,curs):
         ''' From Python Essential Reference by David Beazley
         '''
@@ -162,7 +167,7 @@ class Database(object):
             if not rows: return
             for row in rows:
                 yield dict(itertools.izip(field_names, row))
-
+    #SQL Insert Query
     def insert(self, tableName, information):
 
             query = 'INSERT INTO '+str(tableName)
@@ -206,7 +211,7 @@ class Database(object):
                 print('er3')
                 pass
             return {'id':self.cursor.lastrowid}
-
+    #SQL Delete Query
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
@@ -219,7 +224,7 @@ class Database(object):
             print(e[0])
             self.closeConnection()
             return None
-
+    #SQL Update Query
     def update(self,tableName , information,condition):
         try:
             query = 'UPDATE '+str(tableName) +' SET '
@@ -261,7 +266,7 @@ class Database(object):
             print(e[0])
             self.closeConnection()
             return None
-
+    #Columns and records Implode for query
     def implode(self,information , glue , isColumn = True):
 
             counter = 0
@@ -285,17 +290,17 @@ class Database(object):
                     pass
 
             return stringGlued
-
+    #Commit Query
     def commit(self):
         if(self.con and self.con != None):
             self.con.commit()
-
+    #Close connection safely
     def closeConnection(self):
         if(self.con and self.con != None):
             self.con.close()
             self.con = None
             self = None
-
+    #Get Project Information
     def getProjectInfo(self,projectName = None ,limit = True):
         response = {}
         try:
@@ -319,7 +324,7 @@ class Database(object):
         self.closeConnection()
         return response
 
-
+    #Get Projects paths Information
     def getProjectPathInfo(self,projectID,versionID):
         self.connect()
         information = {}
@@ -327,17 +332,17 @@ class Database(object):
         response = self.select(self._tableProjectPath, '*', "projectID='"+str(projectID)+"' and versionID = '"+ str(versionID) + "'")
         self.closeConnection()
         return response
-
+    #Get Configuration
     def getConfiguration(self):
         response = self.select(self._tableConfiguration, '*')
         self.closeConnection()
         return response
-
+    #Get Given Version Details
     def getVersionDetails(self,projectID,versionID,OrderBy=None):
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
-
+    #Get Last Inserted Version of given project
     def getVersionDetailsLast(self,projectID):
         response = {}
         resultOfLastVersion = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"'", ' versionID DESC LIMIT 1')
@@ -345,42 +350,13 @@ class Database(object):
         if(len(resultOfLastVersion) > 0):
             response = self.getVersionDetails(projectID,resultOfLastVersion[0]['versionID'],' id DESC')
         return response
+    #Convert List to Tuple Data type
     def listToTuple(self,provededList):
 
         NewList = []
         for singleOfprovededList in  provededList:
             NewList.append(provededList[singleOfprovededList])
         return tuple(NewList)
-
-# try:
-#     var1 = {'runWhenOnBattery': 1, 'durationType': 2, 'extraConf': '', 'title': u'New_Project', 'runDayOrMonth': '1', 'lastRan': None, 'selectedAlgo': 'sha256', 'filters': '', 'ifMissedRunUponRestart': 1, 'runTime': u'00:00:00', 'emailOnlyUponWarning': 1}
-#db = Database()
-#db.connect()
-
-#db.select(db._tableVersionDetail, '*')
-#db.closeConnection()
-#
-# except Exception as e :
-# db = Database()
-# versionDetailOptions ={}
-# versionDetailOptions['md5_hash'] = 'sadasdsadas'
-# versionDetailOptions['ssh256_hash'] = 'sadasdsadas'
-# versionDetailOptions['path'] = 'Fixity-1||\Bright Morningstar   DJ Ti√´sto   Elements of Life www.dilandau.eu.mp3'
-# versionDetailOptions['inode'] = '112312312'
-# versionDetailOptions['versionID'] = '1'
-# versionDetailOptions['projectID'] = '1'
-# versionDetailOptions['projectPathID'] = '1'
-# print(versionDetailOptions)
-# db.insert(db._tableVersionDetail, versionDetailOptions)
-#
-# db.connect()
-# resposne = db.select(db._tableVersionDetail, '*')
-# db.closeConnection()
-# print(resposne[0]['path'])
-# print(resposne)
-#
-
-
 
 
 

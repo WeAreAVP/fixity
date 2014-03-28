@@ -1,13 +1,15 @@
+# Email Prefercences
+# Version 0.3, Dec 1, 2013
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
+
 '''
 Created on Dec 1, 2013
 @version: 0.3
 @author: Furqan Wasi
 '''
-# Fixity Scheduler
-# Version 0.3, Dec 1, 2013
-# Copyright (c) 2013 AudioVisual Preservation Solutions
-# All rights reserved.
-# Released under the Apache license, v. 2.0
+
 #Built in Library
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -30,30 +32,29 @@ class EmailPref(QDialog):
         self.FM = FixityMail
         self.version = '0.3'
 
-
-    # Distructor
+    #Distructor
     def destroyEmailPref(self):
         del self
-
+    #Get Version
     def getVersion(self):
         return self.version
-
+    #Set Version
     def setVersion(self,version):
         return self.version
-
+    #Create Window
     def CreateWindow(self):
         self.EmailPrefWin = QDialog()
-
+    #Get Window info
     def GetWindow(self):
         return self.EmailPrefWin
-
+    #Show Dialog
     def ShowDialog(self):
         self.EmailPrefWin.show()
         self.EmailPrefWin.exec_()
-
+    #Set Layout
     def SetLayout(self, layout):
         self.EmailPrefLayout = layout
-
+    #Set layout for windows
     def SetWindowLayout(self):
         self.EmailPrefWin.setLayout(self.EmailPrefLayout)
 
@@ -80,8 +81,6 @@ class EmailPref(QDialog):
         information['port'] = port
         information['smtp'] = outgoingMailServer
         information['protocol'] = protocol
-
-
 
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgBox = QMessageBox();
@@ -206,7 +205,7 @@ class EmailPref(QDialog):
             if(port != None and port !='' ):
                 self.port.setText(port)
             else:
-                self.port.setText('587')
+                self.port.setText('25')
 
     # Reset Form information
     def ResetForm(self):
@@ -214,9 +213,6 @@ class EmailPref(QDialog):
         self.Password.setText('')
         self.outgoingMailServer.setText('')
         self.port.setText('')
-
-
-
 
           # Fetch information related to email configuration
     def getConfigInfo(self, project=None):
@@ -241,7 +237,7 @@ class EmailPref(QDialog):
         except:
             pass
         return {}
-
+    #Validate given email address
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msg = "Invalid email address provided.  Please provide a valid address and try again."
@@ -256,8 +252,6 @@ class EmailPref(QDialog):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msg = "Invalid email address provided.  Please provide a valid address and try again"
             return msg
-
-
 
     # Updating Configuration
     def SetInformation(self):
@@ -302,20 +296,22 @@ class EmailPref(QDialog):
 
         self.CloseClick()
 
-
     # Triggers
     def EncodeInfo(self, stringToBeEncoded):
         stringToBeEncoded = str(stringToBeEncoded).strip()
         return base64.b16encode(base64.b16encode(stringToBeEncoded))
 
+    #Decode Information of path
     def DecodeInfo(self, stringToBeDecoded):
         stringToBeDecoded = str(stringToBeDecoded).strip()
         return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
+    #Manage click on close
     def CloseClick(self):
         self.destroyEmailPref()
         self.EmailPrefWin.close()
 
+    #TSL configuration manager
     def TLSConif(self):
         information = self.getConfigInfo()
         try:
@@ -329,6 +325,7 @@ class EmailPref(QDialog):
         else:
             self.port.setText('587')
 
+    #SSL configuration manager
     def SSLConif(self):
         information = self.getConfigInfo()
         try:
@@ -342,6 +339,7 @@ class EmailPref(QDialog):
         else:
             self.port.setText('465')
 
+    #No Encryption Manager
     def NoneConif(self):
         information = self.getConfigInfo()
         try:
@@ -354,12 +352,3 @@ class EmailPref(QDialog):
             self.port.setText(port)
         else:
             self.port.setText('587')
-# Main Code
-#app = QApplication('asdas')
-#w = EmailPref()
-#w.CreateWindow()
-#w.SetWindowLayout()
-#w.SetDesgin()
-#w.ShowDialog()
-#app.exec_()
-

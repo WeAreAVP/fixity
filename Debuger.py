@@ -1,13 +1,12 @@
-'''
-Created on Feb 4, 2014
-@version: 0.3
-@author: Furqan Wasi
-'''
-# Fixity Scheduler
-# Version 0.3, 2013-10-28
+# Manage Debugging of Fixity
+# Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+'''
+Created on Feb 4, 2014
+@author: Furqan Wasi
+'''
 
 import logging
 import datetime
@@ -93,7 +92,7 @@ class Debuger(object):
     def getCurrentTime(self):
         if(self.isdebugerOn):
             return str(datetime.datetime.now()).rpartition('.')[0]
-
+    #Set Debug On or Off information
     def setDebugConfiguration(self,flagOfDebug):
         try:
             ConfigFile = open(self.configFilePath, 'w+')
@@ -115,7 +114,7 @@ class Debuger(object):
 
             self.tureDebugerOn()
             self.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
-
+    #Get Debug On or Off information
     def getDebugConfiguration(self):
         Information = {}
         Information['debugger'] = 0

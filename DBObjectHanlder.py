@@ -1,12 +1,15 @@
+# DB Objects Hanlder
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
+
 '''
 Created on Feb 27, 2014
-
 @author: Furqan
 '''
 import sqlite3 as sql
 from os import   getcwd
-
-
 
 class DBObjectHanlder(object):
 
@@ -21,16 +24,8 @@ class DBObjectHanlder(object):
                     moreInformation['LogsMore'] =str(ex[0])
             except:
                 pass
-            try:    
+            try:
                 if not ex[1] == None:
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
-            print(moreInformation)
-#             Debugging = Debuger.Debuger()
-#             Debugging.tureDebugerOn()    
-#             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)    
-            
-     
-
- 
