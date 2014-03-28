@@ -1046,5 +1046,5 @@ if __name__ == '__main__':
             auto_run(args.autorun)
             sys.exit()
         except:
-            print("Could not run this project Project ")
+            print("Could not run this Project ")
 
