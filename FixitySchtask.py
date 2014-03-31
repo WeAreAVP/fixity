@@ -166,7 +166,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         Principals['Principal']['UserId'] = 'Administrator'
         Principals['Principal']['LogonType'] = 'InteractiveToken'
 
-
         Settings['Enabled'] = 'true'
         Settings['AllowStartOnDemand'] = 'true'
         Settings['AllowHardTerminate'] = 'true'
@@ -357,9 +356,11 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
                 os.makedirs(AgentPath)
 
 
-        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')+str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
+        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
+        lunchAject= AgentPath +str(os.sep)+ "Com.fixity."+str(ProjectName) + ".demon.plist"
 
-        lunchAject= AgentPath +str(os.sep)+ "com.fixity."+str(ProjectName) + ".demon.plist"
+        lunchAject =str(lunchAject).replace(' ','\\ ')
+        pathInfo =str(pathInfo).replace(' ','\\ ')
 
         xmlsch = open(u''+lunchAject, "w")
 
@@ -367,8 +368,10 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
         xmlsch.write("    <plist version=\"1.0\">\n")
         xmlsch.write("        <dict>\n")
+        xmlsch.write("            <key>Program</key>\n")
+        xmlsch.write("                <string>" + str(pathInfo) +"</string>\n")
         xmlsch.write("            <key>Label</key>\n")
-        xmlsch.write("                <string>com.fixity."+str(ProjectName)+".demon</string>\n")
+        xmlsch.write("            <string>Com.fixity."+str(ProjectName)+".demon</string>\n")
         xmlsch.write("            <key>ProgramArguments</key>\n")
         xmlsch.write("            <array>\n")
         xmlsch.write("                <string>"+pathInfo+"</string>\n")

@@ -3,6 +3,8 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
+
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -29,6 +31,7 @@ import sys
 import argparse
 import platform
 import os
+
 
 #Custom Libraries
 import FixityCore
@@ -214,7 +217,9 @@ class ProjectWin(QMainWindow):
                     hbox.setSpacing(0)
                     self.dtx.append(QLineEdit())
                     self.but.append(QPushButton('...'))
-                    self.but[n].setFixedSize(30, 20)
+                    self.but[n].setFixedSize(30, 21)
+                    self.dtx[n].setContentsMargins(0, 2, 0, 0)
+                    self.dtx[n].setFixedSize(150,22)
                     self.but[n].clicked.connect(self.pickdir)
                     self.dtx[n].textChanged.connect(self.changed)
                     hbox.addWidget(self.dtx[n])
@@ -1043,6 +1048,7 @@ if __name__ == '__main__':
             print("Some thing have gone wrong , please try restarting Fixity")
     else:
         try:
+            print('Scanning is in progress!........')
             auto_run(args.autorun)
             sys.exit()
         except:

@@ -509,6 +509,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             if(len(projectInformation) > 0):
                 projectDetailInformation = DB.getVersionDetailsLast(projectInformation[0]['id'])
     FiltersArray = filters.split(',')
+    print(FiltersArray)
     dict = defaultdict(list)
     dict_Hash = defaultdict(list)
     dict_File = defaultdict(list)
