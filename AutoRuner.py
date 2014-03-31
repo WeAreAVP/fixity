@@ -76,3 +76,9 @@ class AutoRuner(object):
                     if ( configuration[0]['email'] !='') and (configuration[0]['pass'] !=''):
                         for e in email:
                             resposne = FixityMail.send(e, msg, results[5], newConfiguration,project)
+
+    def EncodeInfo(self,stringToBeEncoded):
+        return base64.b16encode(base64.b16encode(stringToBeEncoded))
+
+    def DecodeInfo(self,stringToBeDecoded):
+        return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))

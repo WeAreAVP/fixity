@@ -26,7 +26,7 @@ class FileChanged(QDialog):
         self.FileChangedWin.setWindowTitle('Change Directory')
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
-        self.version = '0.3'
+        self.version = '0.4'
         self.orignalPathText = orignalPathText
         self.changePathText = changePathText
         self.changeThePathInformation = False

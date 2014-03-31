@@ -517,7 +517,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     FileChangedList = ""
     InfReplacementArray = {}
 
-    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.inf'
+    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.csv'
 
     tmp = open(historyFile , 'w+')
     first = ''
@@ -690,9 +690,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     pass
                 try:
                     if(Algorithm == 'md5'):
-                        tmp.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
+                        tmp.write(str(response[0][0]['md5']) + "," + str(response[0][1]) + "," + str(response[0][2]) + "\n")
                     else:
-                        tmp.write(str(response[0][0]['sha256']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
+                        tmp.write(str(response[0][0]['sha256']) + "," + str(response[0][1]) + "," + str(response[0][2]) + "\n")
                 except:
                     print(e[0])
                     pass

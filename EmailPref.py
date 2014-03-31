@@ -1,12 +1,12 @@
 # Email Prefercences
-# Version 0.3, Dec 1, 2013
+# Version 0.4, Dec 1, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
 '''
 Created on Dec 1, 2013
-@version: 0.3
+@version: 0.4
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
 
@@ -30,7 +30,7 @@ class EmailPref(QDialog):
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         self.FM = FixityMail
-        self.version = '0.3'
+        self.version = '0.4'
 
     #Distructor
     def destroyEmailPref(self):

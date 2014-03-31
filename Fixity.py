@@ -1,5 +1,5 @@
 # Fixity GUI
-# Version 0.3, 2013-10-28
+# Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -68,11 +68,11 @@ class ProjectWin(QMainWindow):
                         Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
                 self.EP = EmailPref()
-                self.EP.setVersion('0.3')
+                self.EP.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager()
                 self.FileChanged = FileChanged()
                 self.ImportProjects = ImportProjects()
-                self.FileChanged.setVersion('0.3')
+                self.FileChanged.setVersion('0.4')
 
                 self.FilterFiles = FilterFiles()
                 self.Threading = Threading
@@ -218,7 +218,7 @@ class ProjectWin(QMainWindow):
                     self.dtx.append(QLineEdit())
                     self.but.append(QPushButton('...'))
                     self.but[n].setFixedSize(30, 21)
-                    self.dtx[n].setContentsMargins(0, 2, 0, 0)
+                    self.dtx[n].setContentsMargins(0, 2, 7, 0)
                     self.dtx[n].setFixedSize(150,22)
                     self.but[n].clicked.connect(self.pickdir)
                     self.dtx[n].textChanged.connect(self.changed)
