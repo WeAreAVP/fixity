@@ -1027,7 +1027,7 @@ class ProjectWin(QMainWindow):
 
 def auto_run(project):
     AR = AutoRuner()
-    IsemailSet = 'Run'
+    IsemailSet = ''
     AR.runAutoFix(project , IsemailSet)
 
 if __name__ == '__main__':

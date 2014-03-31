@@ -452,12 +452,12 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
         print(report)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.csv'
+            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
         else:
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[0]).split('/')
             NameOfFile[(len(NameOfFile)-1)]
-            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.csv'
+            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
 
         r = open(rn, 'w+')
         r.write(report)
@@ -517,7 +517,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     FileChangedList = ""
     InfReplacementArray = {}
 
-    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.csv'
+    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
 
     tmp = open(historyFile , 'w+')
     first = ''
@@ -690,9 +690,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     pass
                 try:
                     if(Algorithm == 'md5'):
-                        tmp.write(str(response[0][0]['md5']) + "," + str(response[0][1]) + "," + str(response[0][2]) + "\n")
+                        tmp.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
                     else:
-                        tmp.write(str(response[0][0]['sha256']) + "," + str(response[0][1]) + "," + str(response[0][2]) + "\n")
+                        tmp.write(str(response[0][0]['sha256']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
                 except:
                     print(e[0])
                     pass

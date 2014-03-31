@@ -238,7 +238,7 @@ class Database(object):
                         query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
                     counter=counter+1
             query += ' WHERE '+condition
-
+            print(query)
             try:
                 self.connect()
             except:

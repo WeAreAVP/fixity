@@ -39,7 +39,7 @@ class Threading (threading.Thread):
         command = command + 'fixity-'+self.name+'.vbs'
 
         try:
-            IsemailSet = 'Run'
+            IsemailSet = ''
             AR = AutoRuner()
             AR.runAutoFix(self.name, IsemailSet)
 
