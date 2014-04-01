@@ -252,7 +252,7 @@ class DecryptionManager(QDialog):
                         moreInformation['LogsMore1'] =str(e[1])
                 except:
                     pass
-                ;
+
                 Debugging.tureDebugerOn()
                 Debugging.logError('Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
 
