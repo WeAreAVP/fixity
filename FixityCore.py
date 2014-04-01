@@ -40,6 +40,8 @@ from Database import Database
 global verifiedFiles
 verifiedFiles = []
 
+Debugging = Debuger()
+
 # Checksum generation method
 # Input: Filepath, algorithm
 # Output: Hexadecimal value of hashed file
@@ -63,7 +65,7 @@ def fixity(f, Algorithm , projectName= None):
         except:
             pass
 
-        Debugging = Debuger()
+
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 36 - 40 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
 
@@ -90,7 +92,7 @@ def fixity(f, Algorithm , projectName= None):
         except:
             pass
 
-        Debugging = Debuger()
+
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
         pass
@@ -110,8 +112,11 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
         for singleLine in content:
             if ( hashVal in str(singleLine) or hashVal == '' ) and ( inode in str(singleLine) or inode == '' ) and ( path in str(singleLine) or editedPadth in str(singleLine) or path == ''  ):
                 Information.append(singleLine)
+        f.close()
         return Information
+
     except:
+
         return Information
 
 # File ID for NTFS
@@ -125,6 +130,7 @@ def ntfsID(f):
         info = os.fstat(target)
         # Now get uid of the file
         id = str(info.st_ino)
+        target.close()
         return id
 
     except Exception as e:
@@ -141,7 +147,7 @@ def ntfsID(f):
         except:
             pass
 
-        Debugging = Debuger()
+
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
 
@@ -195,7 +201,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             except:
                 pass
 
-            Debugging = Debuger();
+
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
             pass
@@ -229,7 +235,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             except:
                 pass
 
-            Debugging = Debuger();
+
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting Line 169-183 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
 
@@ -245,7 +251,7 @@ def toTuple(line):
     try:
         return [line['ssh256_hash'], line['path'].strip(), line['inode']]
     except Exception as e:
-        Debugging = Debuger();
+
         Debugging.tureDebugerOn();
         moreInformation = {"moreInfo":'null'}
         try:
@@ -276,9 +282,10 @@ def buildDict(file):
         for line in table.readlines():
             x = toTuple(line)
             db[x[0]].append([x[1], x[2], False])
+        table.close()
         return db
     except Exception as e:
-        Debugging = Debuger();
+
         Debugging.tureDebugerOn();
         moreInformation = {"moreInfo":'null'}
         try:
@@ -288,6 +295,7 @@ def buildDict(file):
             pass
         try:
             if not e[1] == None:
+                table.close()
                 moreInformation['LogsMore1'] =str(e[1])
         except:
             pass
@@ -355,7 +363,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     try:
         CurrentDirectory = dicty.get(line[2])
     except Exception as e:
-        Debugging = Debuger();
+
         moreInformation = {"moreInfo":'null'}
         try:
             if not e[0] == None:
@@ -454,9 +462,10 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
         else:
+            print(projectName)
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[0]).split('/')
-            NameOfFile[(len(NameOfFile)-1)]
+            print(NameOfFile[(len(NameOfFile)-1)])
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
 
         r = open(rn, 'w+')
@@ -571,7 +580,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             for SingleVal in ToBeScannedDirectoriesInProjectFile:
                 moreInformation['directoryScanning']= str(moreInformation['directoryScanning']) + "\t \t"+str(SingleVal)
 
-            Debugging = Debuger()
+
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)
 
@@ -648,7 +657,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     except:
                         pass
 
-                    Debugging = Debuger()
+
                     Debugging.tureDebugerOn()
                     Debugging.logError('Error Reporting Line 500 FixityCore While Verfiying file status' +str(file)+' '+'||'+str(e[0])+'||'+'||'+str(e[1])+' '+'||'+str(e[2])+'||'+"\n", moreInformation)
                     pass
@@ -730,6 +739,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         missingFile = ('','')
         pass
+    try:
+        tmp.close()
+    except:
+        pass
 
     repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
@@ -782,7 +795,7 @@ def getDirectoryDetail(projectName ,fullpath = False):
             if detialInformation[2] != None and detialInformation[2] !='' :
                 indexOfDet = int(detialInformation[2])
                 DirectoryDetail[indexOfDet] = detialInformation
-
+    projfile.close()
     return DirectoryDetail
 
 

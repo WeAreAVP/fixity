@@ -14,6 +14,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
+import os
 from Database import Database
 
 #Custom Classes
@@ -28,7 +29,7 @@ class FilterFiles(QDialog):
         self.EmailPref = EmailPref()
         self.FilterFilesWin = QDialog()
         self.FilterFilesWin.setWindowTitle('Filter File')
-        self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
 
     # Distructor

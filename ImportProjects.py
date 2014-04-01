@@ -15,7 +15,7 @@ import sys
 import time
 import re
 import hashlib
-
+import os
 #Custom Classes
 from EmailPref import EmailPref
 from Database import Database
@@ -28,7 +28,7 @@ class ImportProjects(QDialog):
         QDialog.__init__(self)
         self.ImportProjectsWin = QDialog()
         self.ImportProjectsWin.setWindowTitle('Filter File')
-        self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 
     # Distructor
@@ -234,6 +234,10 @@ class ImportProjects(QDialog):
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
 
         QMessageBox.information(self, "Success", "Project importing completed ")
+        try:
+            fileToImportInfoOf.close()
+        except:
+            pass
         return
         self.Cancel()
     def pickdir(self):

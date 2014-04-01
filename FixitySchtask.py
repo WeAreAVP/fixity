@@ -26,13 +26,17 @@ import time
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
+
+
+Debuging = Debuger()
+
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
     if OS_Info == 'Windows':
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         subprocess.call("schtasks /Delete /F /TN \"Fixity-" + project.replace(' ', '_') + "\"", startupinfo=startupinfo)
-        Debuging = Debuger()
+
 
         try:
             remove("schedules\\fixity-" + project + ".bat")
@@ -101,20 +105,26 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 spec = " /D " + str(dom) + " "
         if OS_Info == 'Windows':
             f = open("schedules\\fixity-" + prj + ".bat", "w")
-            f.write("@ECHO OFF\n")
-            f.write("cd /d %~dp0\n")
-            f.write("cd ..\n")
-            f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
+            try:
+                f.write("@ECHO OFF\n")
+                f.write("cd /d %~dp0\n")
+                f.write("cd ..\n")
+                f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
+            except:
+                pass
             f.close()
 
             x = open("schedules\\fixity-" + prj + ".vbs", "w")
-            x.write("Dim location, p\n")
-            x.write("location = WScript.ScriptFullName\n")
-            x.write("p = Replace(location, \"fixity-" + prj + ".vbs\", \"fixity-" + prj + ".bat\")\n")
-            x.write("Set WinScriptHost = CreateObject(\"WScript.Shell\")\n")
-            x.write('WinScriptHost.Run("""" & p & """")')
-            x.write("\n")
-            x.write("Set WinScriptHost = Nothing")
+            try:
+                x.write("Dim location, p\n")
+                x.write("location = WScript.ScriptFullName\n")
+                x.write("p = Replace(location, \"fixity-" + prj + ".vbs\", \"fixity-" + prj + ".bat\")\n")
+                x.write("Set WinScriptHost = CreateObject(\"WScript.Shell\")\n")
+                x.write('WinScriptHost.Run("""" & p & """")')
+                x.write("\n")
+                x.write("Set WinScriptHost = Nothing")
+            except:
+                pass
             x.close()
         pathCommand= ''
         if OS_Info == 'Windows':
@@ -268,7 +278,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                     pass
 
         except Exception as e:
-            Debuging = Debuger()
+
             moreInformation = {"moreInfo":'null'}
             try:
                 if not e[0] == None:
@@ -289,57 +299,60 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
 def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
         Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
-        xmlsch.write("<?xml version=\"1.0\" ?>\n")
-        xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
-        xmlsch.write("    <RegistrationInfo>\n")
-        xmlsch.write("        <Date>" + RegistrationInfo['Date'] + "</Date>\n")
-        xmlsch.write("        <Author>" + RegistrationInfo['Author'] + "</Author>\n")
-        xmlsch.write("        <Version>" + RegistrationInfo['Description'] + "</Version>\n")
-        xmlsch.write("        <Description>" + RegistrationInfo['Description'] + "</Description>\n")
-        xmlsch.write("    </RegistrationInfo>\n")
-        xmlsch.write("    <Triggers>\n")
-        xmlsch.write("        <CalendarTrigger>\n")
-        xmlsch.write("            <StartBoundary>" + Triggers['CalendarTrigger']['StartBoundary'] + "</StartBoundary>\n")
+        try:
+            xmlsch.write("<?xml version=\"1.0\" ?>\n")
+            xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
+            xmlsch.write("    <RegistrationInfo>\n")
+            xmlsch.write("        <Date>" + RegistrationInfo['Date'] + "</Date>\n")
+            xmlsch.write("        <Author>" + RegistrationInfo['Author'] + "</Author>\n")
+            xmlsch.write("        <Version>" + RegistrationInfo['Description'] + "</Version>\n")
+            xmlsch.write("        <Description>" + RegistrationInfo['Description'] + "</Description>\n")
+            xmlsch.write("    </RegistrationInfo>\n")
+            xmlsch.write("    <Triggers>\n")
+            xmlsch.write("        <CalendarTrigger>\n")
+            xmlsch.write("            <StartBoundary>" + Triggers['CalendarTrigger']['StartBoundary'] + "</StartBoundary>\n")
 
-        if interval == 1:
-            xmlsch.write("            <ScheduleByMonth>\n")
-            xmlsch.write("                <DaysOfMonth>\n")
-            xmlsch.write("                    <Day>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</Day>\n")
-            xmlsch.write("                </DaysOfMonth >\n")
-            xmlsch.write("                <Months>\n")
-            for Month in Months:
-                xmlsch.write("                <" + Month + "/>\n")
-            xmlsch.write("                </Months>\n")
-            xmlsch.write("            </ScheduleByMonth>\n")
-        if interval == 2:
-            xmlsch.write("            <ScheduleByWeek>\n")
-            xmlsch.write("                <WeeksInterval >" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
-            xmlsch.write("                <DaysOfWeek>\n")
-            xmlsch.write("                    <" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n");
-            xmlsch.write("                </DaysOfWeek >\n")
-            xmlsch.write("            </ScheduleByWeek>\n")
-        if interval == 3:
-            xmlsch.write("            <ScheduleByDay>\n")
-            xmlsch.write("                <DaysInterval>" + str(Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']) + "</DaysInterval>\n")
-            xmlsch.write("            </ScheduleByDay>\n")
+            if interval == 1:
+                xmlsch.write("            <ScheduleByMonth>\n")
+                xmlsch.write("                <DaysOfMonth>\n")
+                xmlsch.write("                    <Day>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</Day>\n")
+                xmlsch.write("                </DaysOfMonth >\n")
+                xmlsch.write("                <Months>\n")
+                for Month in Months:
+                    xmlsch.write("                <" + Month + "/>\n")
+                xmlsch.write("                </Months>\n")
+                xmlsch.write("            </ScheduleByMonth>\n")
+            if interval == 2:
+                xmlsch.write("            <ScheduleByWeek>\n")
+                xmlsch.write("                <WeeksInterval >" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
+                xmlsch.write("                <DaysOfWeek>\n")
+                xmlsch.write("                    <" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n");
+                xmlsch.write("                </DaysOfWeek >\n")
+                xmlsch.write("            </ScheduleByWeek>\n")
+            if interval == 3:
+                xmlsch.write("            <ScheduleByDay>\n")
+                xmlsch.write("                <DaysInterval>" + str(Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']) + "</DaysInterval>\n")
+                xmlsch.write("            </ScheduleByDay>\n")
 
-        xmlsch.write("        </CalendarTrigger>\n")
-        xmlsch.write("    </Triggers>\n")
-        xmlsch.write("    <Settings>\n")
-        xmlsch.write("        <Enabled>" + Settings['Enabled'] + "</Enabled>\n")
-        xmlsch.write("        <AllowStartOnDemand>" + Settings['AllowStartOnDemand'] + "</AllowStartOnDemand>\n")
-        xmlsch.write("        <AllowHardTerminate>" + Settings['AllowHardTerminate'] + "</AllowHardTerminate>\n")
-        xmlsch.write("        <DisallowStartIfOnBatteries>" + Settings['DisallowStartIfOnBatteries'] + "</DisallowStartIfOnBatteries>\n")
-        xmlsch.write("        <StartWhenAvailable>" + Settings['StartWhenAvailable'] + "</StartWhenAvailable>\n")
-        xmlsch.write("        <WakeToRun>" + Settings['WakeToRun'] + "</WakeToRun>\n")
+            xmlsch.write("        </CalendarTrigger>\n")
+            xmlsch.write("    </Triggers>\n")
+            xmlsch.write("    <Settings>\n")
+            xmlsch.write("        <Enabled>" + Settings['Enabled'] + "</Enabled>\n")
+            xmlsch.write("        <AllowStartOnDemand>" + Settings['AllowStartOnDemand'] + "</AllowStartOnDemand>\n")
+            xmlsch.write("        <AllowHardTerminate>" + Settings['AllowHardTerminate'] + "</AllowHardTerminate>\n")
+            xmlsch.write("        <DisallowStartIfOnBatteries>" + Settings['DisallowStartIfOnBatteries'] + "</DisallowStartIfOnBatteries>\n")
+            xmlsch.write("        <StartWhenAvailable>" + Settings['StartWhenAvailable'] + "</StartWhenAvailable>\n")
+            xmlsch.write("        <WakeToRun>" + Settings['WakeToRun'] + "</WakeToRun>\n")
 
-        xmlsch.write("    </Settings>\n")
-        xmlsch.write("    <Actions>\n")
-        xmlsch.write("        <Exec>\n")
-        xmlsch.write("            <Command>" + Actions['Exec']['Command'] + "</Command>\n")
-        xmlsch.write("        </Exec>\n")
-        xmlsch.write("      </Actions>\n")
-        xmlsch.write("</Task>\n")
+            xmlsch.write("    </Settings>\n")
+            xmlsch.write("    <Actions>\n")
+            xmlsch.write("        <Exec>\n")
+            xmlsch.write("            <Command>" + Actions['Exec']['Command'] + "</Command>\n")
+            xmlsch.write("        </Exec>\n")
+            xmlsch.write("      </Actions>\n")
+            xmlsch.write("</Task>\n")
+        except:
+            pass
         xmlsch.close()
 
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
@@ -355,7 +368,6 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         if(not os.path.isdir(LibPath)) or (not os.path.isdir(AgentPath)):
                 os.makedirs(AgentPath)
 
-
         pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
         lunchAject= AgentPath +str(os.sep)+ "Com.fixity."+str(ProjectName) + ".demon.plist"
 
@@ -363,54 +375,57 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
         pathInfo =str(pathInfo).replace(' ','\\ ')
 
         xmlsch = open(u''+lunchAject, "w")
+        try:
+            xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+            xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
+            xmlsch.write("    <plist version=\"1.0\">\n")
+            xmlsch.write("        <dict>\n")
+            xmlsch.write("            <key>Program</key>\n")
+            xmlsch.write("                <string>" + str(pathInfo) +"</string>\n")
+            xmlsch.write("            <key>Label</key>\n")
+            xmlsch.write("            <string>Com.fixity."+str(ProjectName)+".demon</string>\n")
+            xmlsch.write("            <key>ProgramArguments</key>\n")
+            xmlsch.write("            <array>\n")
+            xmlsch.write("                <string>"+pathInfo+"</string>\n")
+            xmlsch.write("                <string>-a="+str(ProjectName)+"</string>\n")
+            xmlsch.write("            </array>\n")
+            xmlsch.write("            <key>StandardOutPath</key>\n")
+            xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
+            xmlsch.write("            <key>StandardErrorPath</key>\n")
+            xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
+            xmlsch.write("            <key>StartCalendarInterval</key>\n")
+            xmlsch.write("            <dict>\n")
 
-        xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-        xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
-        xmlsch.write("    <plist version=\"1.0\">\n")
-        xmlsch.write("        <dict>\n")
-        xmlsch.write("            <key>Program</key>\n")
-        xmlsch.write("                <string>" + str(pathInfo) +"</string>\n")
-        xmlsch.write("            <key>Label</key>\n")
-        xmlsch.write("            <string>Com.fixity."+str(ProjectName)+".demon</string>\n")
-        xmlsch.write("            <key>ProgramArguments</key>\n")
-        xmlsch.write("            <array>\n")
-        xmlsch.write("                <string>"+pathInfo+"</string>\n")
-        xmlsch.write("                <string>-a="+str(ProjectName)+"</string>\n")
-        xmlsch.write("            </array>\n")
-        xmlsch.write("            <key>StandardOutPath</key>\n")
-        xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
-        xmlsch.write("            <key>StandardErrorPath</key>\n")
-        xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
-        xmlsch.write("            <key>StartCalendarInterval</key>\n")
-        xmlsch.write("            <dict>\n")
+            infoTrigger = str(Triggers['CalendarTrigger']['StartBoundary']).split('T')
+            TriggerInformation = str(infoTrigger[1]).split(':')
 
-        infoTrigger = str(Triggers['CalendarTrigger']['StartBoundary']).split('T')
-        TriggerInformation = str(infoTrigger[1]).split(':')
+            if interval == 1:
+                xmlsch.write("            <key>Minute</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                xmlsch.write("            <key>Hour</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+                xmlsch.write("            <key>Day</key>\n")
+                xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
 
-        if interval == 1:
-            xmlsch.write("            <key>Minute</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-            xmlsch.write("            <key>Hour</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
-            xmlsch.write("            <key>Day</key>\n")
-            xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
+            if interval == 2:
+                xmlsch.write("            <key>Minute</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                xmlsch.write("            <key>Hour</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+                xmlsch.write("            <key>Weekday</key>\n")
+                xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</integer>\n")
 
-        if interval == 2:
-            xmlsch.write("            <key>Minute</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-            xmlsch.write("            <key>Hour</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
-            xmlsch.write("            <key>Weekday</key>\n")
-            xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</integer>\n")
+            if interval == 3:
+                xmlsch.write("            <key>Minute</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                xmlsch.write("            <key>Hour</key>\n")
+                xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
 
-        if interval == 3:
-            xmlsch.write("            <key>Minute</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-            xmlsch.write("            <key>Hour</key>\n")
-            xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+            xmlsch.write("            </dict>\n")
+            xmlsch.write("        </dict>\n")
+            xmlsch.write("    </plist>\n")
+        except:
+            pass
 
-        xmlsch.write("            </dict>\n")
-        xmlsch.write("        </dict>\n")
-        xmlsch.write("    </plist>\n")
         xmlsch.close()
         return lunchAject

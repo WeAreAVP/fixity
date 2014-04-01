@@ -27,6 +27,7 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
+debuger = Debuger()
 
 class Database(object):
     #Constructor
@@ -66,7 +67,7 @@ class Database(object):
                     moreInformation['LogsMore1'] =str(ex[1])
             except:
                 pass
-            debuger = Debuger()
+
             debuger.tureDebugerOn()
             debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
 

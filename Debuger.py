@@ -41,7 +41,6 @@ class Debuger(object):
         else:
             self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
 
-        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
         self.isdebugerOn = False
 
         self.Information ={}
@@ -57,6 +56,9 @@ class Debuger(object):
             if(moreInformation):
                 for key in moreInformation:
                     self.loger.debug(key + '::' + moreInformation[key]+"\n")
+
+
+
 
     # Function to Log Information
     # @param msg Message to log
@@ -78,7 +80,7 @@ class Debuger(object):
 
     # Function to turn debugging On
     def tureDebugerOn(self):
-
+        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
         if self.Information['debugger'] == 1:
             self.isdebugerOn = True
         else:
@@ -144,7 +146,9 @@ class Debuger(object):
 
         return Information
 
-#Deg = Debuger()
-#Deg.tureDebugerOn()
-#info = {'0':'testing debug','1':'checking Val'}
-#Deg.logError('asdadasda', info)
+Deg = Debuger()
+Deg.tureDebugerOn()
+info = {'0':'testing debug','1':'checking Val'}
+Deg.logError('asdadasda', info)
+Deg.logInfo('asdadasda', info)
+Deg.logWarning('asdadasda', info)

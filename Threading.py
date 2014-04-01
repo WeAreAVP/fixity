@@ -18,7 +18,7 @@ from Debuger import Debuger
 from AutoRuner import AutoRuner
 
 exitFlag = 0
-
+Debuging = Debuger()
 
 
 # Custom class to run the scanning process using Multi-Threading
@@ -55,7 +55,7 @@ class Threading (threading.Thread):
                     moreInformation['LogsMore1'] =str(e[1])
             except:
                 pass
-            Debuging = Debuger()
+
             Debuging.tureDebugerOn()
             Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
             pass

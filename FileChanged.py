@@ -15,6 +15,7 @@ from os import getcwd  , path
 from PySide.QtCore import *
 from PySide.QtGui import *
 
+import os
 
 ''' Class to manage all the the errors and warning loging'''
 class FileChanged(QDialog):
@@ -24,7 +25,7 @@ class FileChanged(QDialog):
     def __init__(self , orignalPathText ='', changePathText = '' ):
         self.FileChangedWin = QDialog()
         self.FileChangedWin.setWindowTitle('Change Directory')
-        self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
         self.version = '0.4'
         self.orignalPathText = orignalPathText

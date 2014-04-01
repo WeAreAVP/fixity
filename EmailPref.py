@@ -15,6 +15,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 import base64
 from os import getcwd , path
+import os
 import re
 # Custom Library
 import FixityMail
@@ -27,7 +28,7 @@ class EmailPref(QDialog):
         QDialog.__init__(self)
         self.EmailPrefWin = QDialog()
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
-        self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         self.FM = FixityMail
         self.version = '0.4'

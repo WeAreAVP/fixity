@@ -15,12 +15,16 @@ import sys
 from collections import defaultdict
 import shutil
 import datetime
+import os
+
 #Custom Classes
 from EmailPref import EmailPref
 import FixityCore
 import FixitySchtask
 from Debuger import Debuger
 from Database import Database
+
+Debugging = Debuger()
 
 class DecryptionManager(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -30,7 +34,8 @@ class DecryptionManager(QDialog):
         self.EmailPref = EmailPref()
         self.DecryptionManagerWin = QDialog()
         self.DecryptionManagerWin.setWindowTitle('Encryption Manager')
-        self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+
         self.DecryptionManagerLayout = QVBoxLayout()
 
         self.isMethodChanged = False
@@ -247,7 +252,7 @@ class DecryptionManager(QDialog):
                         moreInformation['LogsMore1'] =str(e[1])
                 except:
                     pass
-                Debugging = Debuger();
+                ;
                 Debugging.tureDebugerOn()
                 Debugging.logError('Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
 
@@ -281,7 +286,7 @@ class DecryptionManager(QDialog):
                 except:
                     pass
 
-                Debugging = Debuger();
+
                 Debugging.tureDebugerOn()
                 Debugging.logError('Error Reporting Line 169-183 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
 

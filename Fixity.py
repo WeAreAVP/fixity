@@ -13,6 +13,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
+import resource
 
 #Bultin Libraries
 from PySide.QtCore import *
@@ -45,29 +46,35 @@ from DecryptionManager import DecryptionManager
 from Database import Database
 from ImportProjects import ImportProjects
 from AutoRuner import AutoRuner
+from AboutFixity import AboutFixity
+
+Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
                 self.Database = Database()
                 QMainWindow.__init__(self)
-                Debuggin = Debuger()
-                Debuggin.tureDebugerOn()
-                Debuggin.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
+                resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
+                pureResponseNames = ['f'+str(i) for i in range(434)]
+
+                Debugging.tureDebugerOn()
+                Debugging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
 
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
                     if OS_Info == 'Windows':
-                        Debuggin.logInfo('System Information' + "\n" ,{})
-                        Debuggin.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
-                        Debuggin.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
-                        Debuggin.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
-                        Debuggin.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
-                        Debuggin.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
-                        Debuggin.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
-                        Debuggin.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
-                        Debuggin.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
+                        Debugging.logInfo('System Information' + "\n" ,{})
+                        Debugging.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
+                        Debugging.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
+                        Debugging.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
+                        Debugging.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
+                        Debugging.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
+                        Debugging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
+                        Debugging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
+                        Debugging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
                 self.EP = EmailPref()
+                self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager()
                 self.FileChanged = FileChanged()
@@ -77,7 +84,7 @@ class ProjectWin(QMainWindow):
                 self.FilterFiles = FilterFiles()
                 self.Threading = Threading
 
-                self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+                self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
                 versoin = self.EP.getVersion()
                 self.setWindowTitle("Fixity "+versoin);
                 self.unsaved = False
@@ -85,11 +92,11 @@ class ProjectWin(QMainWindow):
                 self.f = menubar.addMenu('&File')
                 self.Preferences = menubar.addMenu('&Preferences')
                 newp = QAction('&New Project', self)
-
                 save = QAction('&Run Now', self)
                 usch = QAction('&Save Settings', self)
                 dlte = QAction('&Delete Project', self)
                 configemail = QAction('&Configure Sender Email', self)
+                aboutFixity = QAction('&About Fixity', self)
                 quit = QAction('&Quit Fixity', self)
 
                 FilterFilesMane = QAction('&Filter Files', self)
@@ -103,7 +110,9 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(usch)
                 self.f.addAction(save)
                 self.f.addAction(dlte)
+                self.f.addAction(aboutFixity)
                 self.f.addAction(quit)
+
 
                 self.Preferences.addAction(FilterFilesMane)
                 self.Preferences.addAction(configemail)
@@ -116,6 +125,7 @@ class ProjectWin(QMainWindow):
                 configemail.triggered.connect(self.ConfigEmailView)
                 save.triggered.connect(self.run)
                 usch.triggered.connect(self.updateschedule)
+                aboutFixity.triggered.connect(self.AboutFixityView)
                 quit.triggered.connect(self.close)
 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
@@ -270,6 +280,13 @@ class ProjectWin(QMainWindow):
             self.EP.SetDesgin()
             self.EP.ShowDialog()
 
+        def AboutFixityView(self):
+
+            self.AF.Cancel()
+            self.AF = None
+            self.AF = AboutFixity()
+            self.AF.SetDesgin()
+            self.AF.ShowDialog()
         # Pop Up to Change Root Directory If any change occured
         # orignalPathText:: Path In Manifest
         # changePathText:: New Path Given in Fixity Tool
@@ -298,7 +315,7 @@ class ProjectWin(QMainWindow):
 
         def switchDebugger(self,start= None):
             DB = Database()
-            Debuging = Debuger()
+
             Information = {'debugger':0}
             Information = Debuging.getDebugConfiguration()
 
@@ -365,7 +382,7 @@ class ProjectWin(QMainWindow):
 
                 WindowsInformation['bitType'] = "Win{0}".format(bits)
             except Exception as e:
-                Debuging = Debuger()
+
                 moreInformation = {"moreInfo":'null'}
                 try:
                     if not e[0] == None:
@@ -694,7 +711,14 @@ class ProjectWin(QMainWindow):
                     projfileFileText[2] =  configurations['timingandtype']
                     projfile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'wb')
                     projfile.writelines(projfileFileText)
-
+                    try:
+                        projfileFile.close()
+                    except:
+                        pass
+                    try:
+                        projfile.close()
+                    except:
+                        pass
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
             return
 
@@ -775,38 +799,40 @@ class ProjectWin(QMainWindow):
 
             DB = Database()
             Configurations = DB.getProjectInfo(self.projects.currentItem().text())
+            if (len(Configurations)>0):
+                if self.runOnlyOnACPower.isChecked():
+                    Configurations[0]['runWhenOnBattery'] = 1
+                else:
+                    Configurations[0]['runWhenOnBattery'] = 0
 
-            if self.runOnlyOnACPower.isChecked():
-                Configurations[0]['runWhenOnBattery'] = 1
+                if self.StartWhenAvailable.isChecked():
+                    Configurations[0]['ifMissedRunUponRestart'] = 1
+                else:
+                    Configurations[0]['ifMissedRunUponRestart'] = 0
+
+                if self.EmailOnlyWhenSomethingChanged.isChecked():
+                    Configurations[0]['emailOnlyUponWarning'] = 1
+                else:
+                    Configurations[0]['emailOnlyUponWarning'] = 0
+                pathsInfoChanges = {}
+                directoryIncreamentDirs = 1
+                for ds in self.dtx:
+                    pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
+                    directoryIncreamentDirs = directoryIncreamentDirs + 1
+
+                FilePath = getcwd()+'\\schedules\\'
+
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
+
+                FileName = 'AutoFixity.exe';
+                params = self.projects.currentItem().text() +' '+'Run'
+
+                self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
+
+                self.Threading.start()
+                QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
             else:
-                Configurations[0]['runWhenOnBattery'] = 0
-
-            if self.StartWhenAvailable.isChecked():
-                Configurations[0]['ifMissedRunUponRestart'] = 1
-            else:
-                Configurations[0]['ifMissedRunUponRestart'] = 0
-
-            if self.EmailOnlyWhenSomethingChanged.isChecked():
-                Configurations[0]['emailOnlyUponWarning'] = 1
-            else:
-                Configurations[0]['emailOnlyUponWarning'] = 0
-            pathsInfoChanges = {}
-            directoryIncreamentDirs = 1
-            for ds in self.dtx:
-                pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
-                directoryIncreamentDirs = directoryIncreamentDirs + 1
-
-            FilePath = getcwd()+'\\schedules\\'
-
-            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
-
-            FileName = 'AutoFixity.exe';
-            params = self.projects.currentItem().text() +' '+'Run'
-
-            self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
-
-            self.Threading.start()
-            QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
+                QMessageBox.information(self, "Fixity", "Project Configuration Not Found,Please Save the project and Try Again")
 
         #DELETE Given PROJECT
         def deleteproject(self):
@@ -1039,13 +1065,14 @@ if __name__ == '__main__':
         pass
 
     if(args.autorun == None or args.autorun == ''):
-        try:
+#        try:
             app = QApplication(sys.argv)
             w = ProjectWin(EmailPref , FilterFiles)
             w.show()
             sys.exit(app.exec_())
-        except:
-            print("Some thing have gone wrong , please try restarting Fixity")
+#        except Exception as ex:
+#            print(ex[0])
+#            print("Some thing have gone wrong , please try restarting Fixity")
     else:
         try:
             print('Scanning is in progress!........')

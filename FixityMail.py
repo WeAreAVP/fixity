@@ -19,6 +19,8 @@ import base64
 #Custom Library
 from Debuger import Debuger
 
+D = Debuger()
+
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
 def send(recipients, text, attachment, information,projectName=''):
@@ -76,7 +78,7 @@ def send(recipients, text, attachment, information,projectName=''):
 		except:
 			pass
 
-		D = Debuger()
+
 		D.tureDebugerOn()
 		D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		try:
