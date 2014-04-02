@@ -70,7 +70,7 @@ class Database(object):
 
             debuger.tureDebugerOn()
             debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
-
+            print(moreInformation)
             if not self.timeSpan:
                 self.timeSpan = 1
 
@@ -153,6 +153,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 140- 155 File Database While Querying database information'+"\n", moreInformation)
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -175,7 +176,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 160- 170 File Database While Commiting database information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -237,7 +238,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 320- 336 File Database While Commiting database information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -260,7 +261,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 250- 255 File Database While executing Query information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -284,7 +285,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 160- 170 File Database While Commiting database information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -308,7 +309,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 295- 296 File Database While closing Database information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -338,7 +339,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 324- 330 File Database While executing Query information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -381,7 +382,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 367- 370 File Database While executing Query information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
@@ -414,7 +415,7 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 250- 255 File Database While executing Query information'+"\n", moreInformation)
-
+                print(moreInformation)
                 try:
                     self.closeConnection()
                 except:
