@@ -212,7 +212,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             p = path.abspath(u''+fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
-            print('Getting File Information of File: '+str(p))
+            #print('Getting File Information of File: '+str(p))
             givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
@@ -462,8 +462,6 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
         else:
-            print('Project Name')
-
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[1]).split('/')
 

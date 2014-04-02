@@ -138,14 +138,48 @@ class Database(object):
                 for r in self.dict_gen(self.cursor.execute(query)):
                     response[responseCounter] = r
                     responseCounter =responseCounter + 1
-            except Exception as e:
-                print(e[0])
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 140- 155 File Database While Querying database information'+"\n", moreInformation)
+                try:
+                    self.closeConnection()
+                except:
+                    pass
 
             try:
                 self.commit()
-            except:
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 160- 170 File Database While Commiting database information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
 
             try:
                 self.closeConnection()
@@ -188,44 +222,128 @@ class Database(object):
 
             try:
                 self.connect()
-            except:
-                print('er1')
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 320- 336 File Database While Commiting database information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
 
             try:
                 self.cursor.execute(query)
-            except Exception as e:
-                print(e[0])
-                print('er1')
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 250- 255 File Database While executing Query information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
 
             try:
                 self.commit()
-            except Exception as e:
-                print(e[0])
-                print('er2')
-                pass
-            self.closeConnection()
+                self.closeConnection()
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 160- 170 File Database While Commiting database information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
+
+
             try:
                 self.closeConnection()
-            except:
-                print(e[0])
-                print('er3')
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 295- 296 File Database While closing Database information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
             return {'id':self.cursor.lastrowid}
     #SQL Delete Query
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
-            print('Deleting  info from ' + tableName)
+
             response = self.sqlQuery(query)
 
             self.closeConnection()
             return response
-        except Exception as e:
-            print(e[0])
-            self.closeConnection()
-            return None
+        except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 324- 330 File Database While executing Query information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
+                return None
     #SQL Update Query
     def update(self,tableName , information,condition):
         try:
@@ -239,7 +357,7 @@ class Database(object):
                         query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
                     counter=counter+1
             query += ' WHERE '+condition
-            print(query)
+
             try:
                 self.connect()
             except:
@@ -248,9 +366,26 @@ class Database(object):
             try:
 
                 response = self.cursor.execute(query)
-            except:
-                print('er1')
-                pass
+            except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 367- 370 File Database While executing Query information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
 
             try:
                 self.commit()
@@ -264,10 +399,27 @@ class Database(object):
 
             return response
 
-        except Exception as e:
-            print(e[0])
-            self.closeConnection()
-            return None
+        except Exception as ex:
+                moreInformation = {"moreInfo":'null'}
+                try:
+                    if not ex[0] == None:
+                        moreInformation['LogsMore'] =str(ex[0])
+                except:
+                    pass
+                try:
+                    if not ex[1] == None:
+                        moreInformation['LogsMore1'] =str(ex[1])
+                except:
+                    pass
+
+                debuger.tureDebugerOn()
+                debuger.logError('Error Reporting 250- 255 File Database While executing Query information'+"\n", moreInformation)
+
+                try:
+                    self.closeConnection()
+                except:
+                    pass
+                return None
     #Columns and records Implode for query
     def implode(self,information , glue , isColumn = True):
 
