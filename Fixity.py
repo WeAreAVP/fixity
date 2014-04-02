@@ -95,7 +95,7 @@ class ProjectWin(QMainWindow):
                 save = QAction('&Run Now', self)
                 usch = QAction('&Save Settings', self)
                 dlte = QAction('&Delete Project', self)
-                configemail = QAction('&Configure Sender Email', self)
+                self.configemail = QAction('&Configure Sender Email', self)
                 aboutFixity = QAction('&About Fixity', self)
                 quit = QAction('&Quit Fixity', self)
 
@@ -115,14 +115,16 @@ class ProjectWin(QMainWindow):
 
 
                 self.Preferences.addAction(FilterFilesMane)
-                self.Preferences.addAction(configemail)
+                settings = QSettings('asdasd','asdasda')
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
                 self.Preferences.addAction(self.ImportProjectfxy)
+                self.Preferences.addAction(self.configemail)
+
 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
-                configemail.triggered.connect(self.ConfigEmailView)
+                self.configemail.triggered.connect(self.ConfigEmailView)
                 save.triggered.connect(self.run)
                 usch.triggered.connect(self.updateschedule)
                 aboutFixity.triggered.connect(self.AboutFixityView)

@@ -74,8 +74,12 @@ class AboutFixity(QDialog):
         return self.AboutFixityLayout
 
     def showDescription(self):
-        self.monthly.setText('<h1>Description</h1>')
-        self.weekly.setText('This is description Bitch')
+        self.monthly.setText('<h1>DESCRIPTION</h1>')
+        decriptionText = '<p>AVPreserve Fixity 0.4</p>'
+        decriptionText += '<p>Fixity was developed by AVPreserve and can be found at www.avpreserve.com/tools</p></br>'
+        decriptionText += '<p>The GitHub repository for Fixity can be found at https://github.com/avpreserve/fixity</p>'
+        decriptionText += '<p>Fixity is a utility for the documentation and regular review of stored files. Fixity scans a folder or directory, creating a manifest of the files including their file paths and their checksums, against which a regular comparative analysis can be run. Fixity monitors file integrity through generation and validation of checksums, and file attendance through monitoring and reporting on new, missing, moved and renamed files. Fixity emails a report to the user documenting flagged items along with the reason for a flag, such as that a file has been moved to a new location in the directory, has been edited, or has failed a checksum comparison for other reasons. Supplementing tools like BagIt that review files at points of exchange, when run regularly Fixity becomes a powerful tool for monitoring digital files in repositories, servers, and other long-term storage locations.</p>'
+        self.weekly.setText(decriptionText)
         self.DescriptionBtn.setDisabled(True)
         self.AuthorandLicenseBtn.setDisabled(False)
         self.ContactBtn.setDisabled(False)
@@ -83,14 +87,23 @@ class AboutFixity(QDialog):
 
     def showLicense(self):
         self.monthly.setText('<h1>Author and License </h1>')
-        self.weekly.setText('This is Author and License Bitch')
+        LicenseText = '<p>*Fixity Copyright and License*</p>'
+        LicenseText += '<p>Copyright (C) 2013-2014 www.avpreserve.com, info@avpreserve.com</p></br>'
+        LicenseText += '<p>Fixity is licensed under an Apache License, Version 2.0</p>'
+        LicenseText += '<p>Fixity is a utility for the documentation and regular review of stored files. Fixity scans a folder or directory, creating a manifest of the files including their file paths and their checksums, against which a regular comparative analysis can be run. Fixity monitors file integrity through generation and validation of checksums, and file attendance through monitoring and reporting on new, missing, moved and renamed files. Fixity emails a report to the user documenting flagged items along with the reason for a flag, such as that a file has been moved to a new location in the directory, has been edited, or has failed a checksum comparison for other reasons. Supplementing tools like BagIt that review files at points of exchange, when run regularly Fixity becomes a powerful tool for monitoring digital files in repositories, servers, and other long-term storage locations.</p>'
+
+        self.weekly.setText(LicenseText)
         self.DescriptionBtn.setDisabled(False)
         self.AuthorandLicenseBtn.setDisabled(True)
         self.ContactBtn.setDisabled(False)
 
     def showContact(self):
         self.monthly.setText('<h1>Contact</h1>')
-        self.weekly.setText('This is Contact Bitch')
+
+        ContactText = '<p>Please post issues and feature requests at https://github.com/avpreserve/fixity/issues</p>'
+        ContactText += '<p>Please send questions, comments or feedback to info@avpreserve.com</p></br>'
+
+        self.weekly.setText(ContactText)
         self.DescriptionBtn.setDisabled(False)
         self.AuthorandLicenseBtn.setDisabled(False)
         self.ContactBtn.setDisabled(True)
@@ -145,9 +158,4 @@ class AboutFixity(QDialog):
         self.AboutFixityWin.close()
 
 # Main Code
-#app = QApplication('asdas')
-#w = AboutFixity()
-#w.CreateWindow()
-#w.SetDesgin()
-#w.ShowDialog()
-#app.exec_()
+
