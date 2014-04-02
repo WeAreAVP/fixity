@@ -15,6 +15,6 @@ try:
 except:
     pass
 AR = AutoRuner()
-
+print(project)
 IsemailSet = 'Run'
 AR.runAutoFix(project , IsemailSet)

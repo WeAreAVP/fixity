@@ -469,13 +469,16 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             print('-----------------------------')
             print('-----------------------------')
             print('-----------------------------')
+
             print(projectName)
             print('-----------------------------')
             print(NameOfFile[(len(NameOfFile)-1)])
             print('-----------------------------')
             print(rn)
+
             print('-----------------------------')
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+
             print('-----------------------------')
             print('-----------------------------')
             print('-----------------------------')
@@ -754,7 +757,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         tmp.close()
     except:
         pass
-
+    print('=========================')
+    print('=========================')
+    print('from the bottom')
+    print(projectName)
+    print('=========================')
+    print('=========================')
     repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
