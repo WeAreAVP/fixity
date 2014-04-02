@@ -57,21 +57,21 @@ class ProjectWin(QMainWindow):
                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
                 pureResponseNames = ['f'+str(i) for i in range(434)]
 
-                Debugging.tureDebugerOn()
-                Debugging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
+                Debuging.tureDebugerOn()
+                Debuging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
 
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
                     if OS_Info == 'Windows':
-                        Debugging.logInfo('System Information' + "\n" ,{})
-                        Debugging.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
-                        Debugging.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
-                        Debugging.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
-                        Debugging.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
-                        Debugging.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
-                        Debugging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
-                        Debugging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
-                        Debugging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
+                        Debuging.logInfo('System Information' + "\n" ,{})
+                        Debuging.logInfo('platform = '+str(self.SystemInformation['platform'])  , {} )
+                        Debuging.logInfo('major = '+ str(self.SystemInformation['major']) , {} )
+                        Debuging.logInfo('minor = '+str(self.SystemInformation['minor'])  , {} )
+                        Debuging.logInfo('build = '+str(self.SystemInformation['build'])  , {} )
+                        Debuging.logInfo('platformType = '+str(self.SystemInformation['platformType'])  , {} )
+                        Debuging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
+                        Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
+                        Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
                 self.EP = EmailPref()
                 self.AF = AboutFixity()
@@ -102,7 +102,7 @@ class ProjectWin(QMainWindow):
                 FilterFilesMane = QAction('&Filter Files', self)
                 DecryptionManagerMenu = QAction('&Select Checksum Algorithm', self)
 
-                self.Debuging = QAction('&Turn Debugging Off', self)
+                self.Debuging = QAction('&Turn Debuging Off', self)
                 self.ImportProjectfxy = QAction('&Import Project', self)
                 self.switchDebugger('start')
 
@@ -334,9 +334,9 @@ class ProjectWin(QMainWindow):
                         Debuging.setDebugConfiguration(Information['debugger'])
 
             if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
-                debugText = 'Turn Debugging On'
+                debugText = 'Turn Debuging On'
             else:
-                debugText = 'Turn Debugging Off'
+                debugText = 'Turn Debuging Off'
 
             self.Debuging.setText(debugText)
 
