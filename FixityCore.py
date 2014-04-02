@@ -466,10 +466,11 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[1]).split('/')
-            print('-----------------------------')
-            print('-----------------------------')
-            print('-----------------------------')
 
+            print('-----------------------------')
+            print('-----------------------------')
+            print('-----------------------------')
+            print(NameOfFile)
             print(projectName)
             print('-----------------------------')
             print(NameOfFile[(len(NameOfFile)-1)])
