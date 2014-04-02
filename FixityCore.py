@@ -462,12 +462,23 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
         else:
-            print(projectName)
+            print('Project Name')
+
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[0]).split('/')
+            print('-----------------------------')
+            print('-----------------------------')
+            print('-----------------------------')
+            print(projectName)
+            print('-----------------------------')
             print(NameOfFile[(len(NameOfFile)-1)])
+            print('-----------------------------')
+            print(rn)
+            print('-----------------------------')
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-
+            print('-----------------------------')
+            print('-----------------------------')
+            print('-----------------------------')
         r = open(rn, 'w+')
         r.write(report)
         r.close()
