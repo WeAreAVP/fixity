@@ -757,12 +757,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         tmp.close()
     except:
         pass
-    print('=========================')
-    print('=========================')
-    print('from the bottom')
-    print(projectName)
-    print('=========================')
-    print('=========================')
+
     repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
