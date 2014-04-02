@@ -113,6 +113,10 @@ class Database(object):
                 self.closeConnection()
                 self.connect()
                 response = self.cursor.execute(query)
+                try:
+                    self.closeConnection()
+                except:
+                    pass
                 return response
             except:
                 pass
