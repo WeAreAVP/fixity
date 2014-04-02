@@ -475,11 +475,9 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             print('-----------------------------')
             print(NameOfFile[(len(NameOfFile)-1)])
             print('-----------------------------')
-            print(rn)
-
             print('-----------------------------')
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-
+            print(rn)
             print('-----------------------------')
             print('-----------------------------')
             print('-----------------------------')
