@@ -52,6 +52,7 @@ Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
+                print('Here we go')
                 self.Database = Database()
                 QMainWindow.__init__(self)
                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
@@ -550,6 +551,7 @@ class ProjectWin(QMainWindow):
                 projFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                 projFileText = projFile.readlines()
                 projFile.close()
+                print('closing projFile File')
                 if not projFileText :
                     isfileExists = False
 
@@ -668,6 +670,7 @@ class ProjectWin(QMainWindow):
                     projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                     projfileFileText = projfileFile.readlines()
                     projfileFile.close()
+                    print('closing projfileFile File')
                     configurations = {}
                     configurations['directories'] = ''
                     configurations['emails'] = ''
@@ -715,10 +718,12 @@ class ProjectWin(QMainWindow):
                     projfile.writelines(projfileFileText)
                     try:
                         projfileFile.close()
+                        print('closing projfileFile File')
                     except:
                         pass
                     try:
                         projfile.close()
+                        print('closing projfile File')
                     except:
                         pass
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
@@ -773,6 +778,7 @@ class ProjectWin(QMainWindow):
                 projFileChangePath.write(lineToWrite)
                 lineNumber = lineNumber+1
             currentProjFile.close()
+            print('closing currentProjFile File')
             projFileChangePath.close()
 
             shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
@@ -903,6 +909,7 @@ class ProjectWin(QMainWindow):
                     progress.setValue(100 * float(f) / len(fls))
                     qApp.processEvents()
             progress.close()
+            print('closing progress File')
             return list
 
         #Update Schedule information
@@ -997,7 +1004,9 @@ class ProjectWin(QMainWindow):
                     projectFileLines = projectFile.readlines();
                     binFileLines = binFile.readlines();
                     projectFile.close()
+                    print('closing project File File')
                     binFile.close()
+                    print('closing bin File File')
                     if (not binFileLines) or (not projectFileLines):
                         remove('projects\\' + self.projects.currentItem().text() + '.fxy')
                         remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
@@ -1014,7 +1023,9 @@ class ProjectWin(QMainWindow):
                     if (not binFileLines) or (not projectFileLines):
                         self.unsaved = True
                     projectFile.close()
+                    print('closing project File File')
                     binFile.close()
+                    print('closing bin File File')
 
             if self.unsaved:
                     sbox = QMessageBox()
