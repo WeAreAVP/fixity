@@ -108,7 +108,7 @@ class ProjectWin(QMainWindow):
                 save = QAction('&Run Now', self)
                 usch = QAction('&Save Settings', self)
                 dlte = QAction('&Delete Project', self)
-                self.configemail = QAction('&Configure Sender Email', self)
+                self.configemail = QAction('&Email Settings', self)
                 aboutFixity = QAction('&About Fixity', self)
                 quit = QAction('&Quit Fixity', self)
 

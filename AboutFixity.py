@@ -119,7 +119,7 @@ class AboutFixity(QDialog):
         pic.setGeometry(30, 30, 500, 600)
         pic.setFixedSize(400,400)
         #use full ABSOLUTE path to the image, not relative
-        pic.setPixmap(QPixmap(path.join(getcwd(), 'images'+str(os.sep)+'audiovisual.jpg')))
+        pic.setPixmap(QPixmap(path.join(getcwd(), 'images'+str(os.sep)+'avpreserve.png')))
 
         self.DescriptionBtn.clicked.connect(self.showDescription)
         self.AuthorandLicenseBtn.clicked.connect(self.showLicense)
