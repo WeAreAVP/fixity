@@ -18,6 +18,7 @@ import re
 from Debuger import Debuger
 import os
 import time
+
 #Getting OS Info
 OS_Info = ''
 if os.name == 'posix':
@@ -28,11 +29,10 @@ elif os.name == 'os2':
     OS_Info = 'check'
 
 debuger = Debuger()
-
-class Database(object):
+class Database(QDialog):
     #Constructor
     def __init__(self):
-
+        QDialog.__init__(self)
         self._tableConfiguration = 'configuration'
         self._tableProject = 'project'
         self._tableProjectPath = 'projectPath'
@@ -41,12 +41,13 @@ class Database(object):
         self.con = None
         self.cursor = None
         self.timeSpan = 1
+
     #Connect to Database
     def connect(self):
 
         pathInfo = str(getcwd()).replace('\\schedules','')
         pathInfo = pathInfo.replace('schedules','')
-        gab = 30
+        gab = 10
         try:
             if(OS_Info == 'Windows'):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
@@ -54,7 +55,7 @@ class Database(object):
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
 
             self.cursor = self.con.cursor()
-
+            raise(Exception)
         except (sqlite3.OperationalError,Exception) as ex:
             moreInformation = {"moreInfo":'null'}
             try:
@@ -75,13 +76,36 @@ class Database(object):
             if not self.timeSpan:
                 self.timeSpan = 1
 
-            if self.timeSpan <= 600:
+            if self.timeSpan <= 60:
                 self.timeSpan = self.timeSpan + gab
+                print(self.timeSpan)
+                try:
+                    self.QMChecking.close()
+                except:
+                    pass
+
+                try:
+                    self.QMWait = QMessageBox()
+                    self.QMWait.information(self, "Information", "Please wait, Some the Database recourses are in use, Fixity will continue this process as soon as Database is released ,this may take several ")
+                except:
+                    pass
+
                 time.sleep(gab)
+                try:
+                    self.QMWait.close()
+                except:
+                    pass
+
+                try:
+                    self.QMChecking = QMessageBox()
+                    self.QMChecking.information(self, "Information", "Checking for Recourses")
+                    self.QMChecking.close()
+                except:
+                    pass
+
                 self.connect()
 
             else:
-
                 print('Exiting process')
                 self.closeConnection()
                 self = None
@@ -97,6 +121,7 @@ class Database(object):
                 pass
 
             response = self.cursor.execute(query)
+
             try:
                 self.commit()
             except:
@@ -106,6 +131,7 @@ class Database(object):
                 self.closeConnection()
             except:
                 pass
+
             self.closeConnection()
             return response
 
@@ -121,6 +147,7 @@ class Database(object):
                 return response
             except:
                 pass
+
     #SQL Select Query
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
@@ -200,6 +227,7 @@ class Database(object):
             print(e[0])
             self.closeConnection()
             pass
+
     #Query Result to list converter
     def dict_gen(self,curs):
         ''' From Python Essential Reference by David Beazley
@@ -211,6 +239,7 @@ class Database(object):
             if not rows: return
             for row in rows:
                 yield dict(itertools.izip(field_names, row))
+
     #SQL Insert Query
     def insert(self, tableName, information):
 
@@ -325,6 +354,7 @@ class Database(object):
                 except:
                     pass
             return {'id':self.cursor.lastrowid}
+
     #SQL Delete Query
     def delete(self,tableName , condition):
         try:
@@ -356,6 +386,7 @@ class Database(object):
                 except:
                     pass
                 return None
+
     #SQL Update Query
     def update(self,tableName , information,condition):
         try:
@@ -433,6 +464,7 @@ class Database(object):
                 except:
                     pass
                 return None
+
     #Columns and records Implode for query
     def implode(self,information , glue , isColumn = True):
 
@@ -457,16 +489,19 @@ class Database(object):
                     pass
 
             return stringGlued
+
     #Commit Query
     def commit(self):
         if(self.con and self.con != None):
             self.con.commit()
+
     #Close connection safely
     def closeConnection(self):
         if(self.con and self.con != None):
             self.con.close()
             self.con = None
             self = None
+
     #Get Project Information
     def getProjectInfo(self,projectName = None ,limit = True):
         response = {}
@@ -499,16 +534,19 @@ class Database(object):
         response = self.select(self._tableProjectPath, '*', "projectID='"+str(projectID)+"' and versionID = '"+ str(versionID) + "'")
         self.closeConnection()
         return response
+
     #Get Configuration
     def getConfiguration(self):
         response = self.select(self._tableConfiguration, '*')
         self.closeConnection()
         return response
+
     #Get Given Version Details
     def getVersionDetails(self,projectID,versionID,OrderBy=None):
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
+
     #Get Last Inserted Version of given project
     def getVersionDetailsLast(self,projectID):
         response = {}
@@ -517,6 +555,7 @@ class Database(object):
         if(len(resultOfLastVersion) > 0):
             response = self.getVersionDetails(projectID,resultOfLastVersion[0]['versionID'],' id DESC')
         return response
+
     #Convert List to Tuple Data type
     def listToTuple(self,provededList):
 
@@ -524,8 +563,3 @@ class Database(object):
         for singleOfprovededList in  provededList:
             NewList.append(provededList[singleOfprovededList])
         return tuple(NewList)
-
-
-
-
-

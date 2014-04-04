@@ -395,7 +395,7 @@ def getDirectory(directory,inode,filePath,dicty):
 
 #Verify File Changes
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
-    print('verify_using_inode')
+
     global verifiedFiles
     try:
         CurrentDirectory = dicty.get(line[2])
