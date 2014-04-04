@@ -150,9 +150,16 @@ class FilterFiles(QDialog):
         DB = Database()
         filters = ''
         selectedProject = self.Porjects.currentText()
+        try:
+            Information = DB.getProjectInfo(selectedProject)
+        except:
+            pass
 
-        Information = DB.getProjectInfo(selectedProject)
-        filters = str(Information[0]['filters']).replace('\n', '')
+        try:
+            filters = str(Information[0]['filters']).replace('\n', '')
+        except:
+            pass
+
         self.FilterField.setText(filters)
         return
 
