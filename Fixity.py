@@ -48,12 +48,14 @@ from ImportProjects import ImportProjects
 from AutoRuner import AutoRuner
 from AboutFixity import AboutFixity
 
+
 Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
 
                 pathInfo = str(getcwd()).replace('\\schedules','')
+
                 pathInfo = pathInfo.replace('schedules','')
                 if(OS_Info == 'Windows'):
                     databasePath = pathInfo+"\\bin\\Fixity.db-journal"
@@ -124,14 +126,12 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(aboutFixity)
                 self.f.addAction(quit)
 
-
                 self.Preferences.addAction(FilterFilesMane)
                 settings = QSettings('asdasd','asdasda')
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
                 self.Preferences.addAction(self.ImportProjectfxy)
                 self.Preferences.addAction(self.configemail)
-
 
                 dlte.triggered.connect(self.deleteproject)
                 newp.triggered.connect(self.new)
@@ -328,12 +328,10 @@ class ProjectWin(QMainWindow):
 
         def switchDebugger(self,start= None):
             DB = Database()
-
             Information = {'debugger':0}
             Information = Debuging.getDebugConfiguration()
 
             debugText = ''
-
             if start == None:
                 if Information != None:
                     if len(Information) < 0:
@@ -361,13 +359,11 @@ class ProjectWin(QMainWindow):
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
-
                 major , minor , build , platformType , servicePack = sys.getwindowsversion()
 
                 WindowsInformation['major'] = major
                 WindowsInformation['minor'] = minor
                 WindowsInformation['build'] = build
-
 
                 WindowsInformation['platformType'] = platformType
                 WindowsInformation['servicePack'] = servicePack
@@ -467,7 +463,6 @@ class ProjectWin(QMainWindow):
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)
             elif  int(projectInfo[0]['emailOnlyUponWarning']) == 0:
                 self.EmailOnlyWhenSomethingChanged.setChecked(False)
-
 
             if  int(projectInfo[0]['runWhenOnBattery']) == 1:
                 self.runOnlyOnACPower.setChecked(True)
@@ -796,6 +791,7 @@ class ProjectWin(QMainWindow):
 
         #Saves And Runs
         def run(self):
+
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return

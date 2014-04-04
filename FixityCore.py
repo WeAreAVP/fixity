@@ -36,17 +36,18 @@ import unicodedata
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
-
+from AboutFixity import AboutFixity
 global verifiedFiles
 verifiedFiles = []
 
 Debugging = Debuger()
+from FileLock import FileLock
 
 # Checksum generation method
 # Input: Filepath, algorithm
 # Output: Hexadecimal value of hashed file
 def fixity(f, Algorithm , projectName= None):
-    print('fixity')
+    #print('fixity')
     moreInformation= {}
 
     try:
@@ -73,11 +74,11 @@ def fixity(f, Algorithm , projectName= None):
         pass
     try:
         with open(f, 'rb') as target:
-            print('Open '+f+' File')
+            #print('Open '+f+' File')
             for piece in iter(lambda: target.read(4096), b''):
                 fixmd5.update(piece)
                 fixsha256.update(piece)
-            print('closing '+f+' File')
+            #print('closing '+f+' File')
             target.close()
             return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
     except Exception as e:
@@ -106,12 +107,12 @@ def fixity(f, Algorithm , projectName= None):
 # path: search this path from given Project File
 # inode: search this inode from given Project File
 def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
-    print('getFileInformationConditional')
+
     Information=[]
     try:
         editedPadth = path.replace('\\\\','\\')
         f = open(ProjectPath)
-        print('Open '+ProjectPath+' File')
+        #print('Open '+ProjectPath+' File')
         try:
             content = f.readlines()
             for singleLine in content:
@@ -121,7 +122,7 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
             pass
         try:
             f.close()
-            print('closing '+ProjectPath+' File')
+            #print('closing '+ProjectPath+' File')
         except:
             pass
         return Information
@@ -135,17 +136,17 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
 # (volume number, high index, low index)
 def ntfsID(f):
     id=''
-    print('ntfsID')
+    #print('ntfsID')
     try:
         target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
-        print('Open '+f+' File')
+        #print('Open '+f+' File')
         # Now get  the touple
         info = os.fstat(target)
         # Now get uid of the file
         id = str(info.st_ino)
 
         os.close(target)
-        print('closing '+f+' File')
+        #print('closing '+f+' File')
         return id
 
     except Exception as e:
@@ -161,10 +162,10 @@ def ntfsID(f):
                 moreInformation['LogsMore1'] =str(e[1])
         except:
             pass
-        print(moreInformation)
+        #print(moreInformation)
         try:
             target.close()
-            print('closing '+f+' File')
+            #print('closing '+f+' File')
         except:
             pass
         Debugging.tureDebugerOn()
@@ -181,7 +182,7 @@ def ntfsID(f):
 # scan given path and searches for the File which have this given Inode
 
 def GetDirectoryInformationUsingInode(Path,Inode):
-    print('GetDirectoryInformationUsingInode')
+    #print('GetDirectoryInformationUsingInode')
     try:
         if Path and Inode:
             for root, subFolders, files in walk(Path):
@@ -198,7 +199,7 @@ def GetDirectoryInformationUsingInode(Path,Inode):
 # Input: root, output (boolean), hash algorithm, QApplication
 # Output: list of tuples of (hash, path, id)
 def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
-    print('quietTable')
+    #print('quietTable')
     listOfValues = []
     fls = []
     try:
@@ -293,11 +294,11 @@ def toTuple(line):
 # Input: Database file
 # Output: defaultdict keyed to hash values
 def buildDict(file):
-    print('buildDict')
+    #print('buildDict')
     try:
 
         table = open(file, 'r')
-        print('Open '+file+' File')
+        #print('Open '+file+' File')
         db = defaultdict(list)
 
         for line in table.readlines():
@@ -308,7 +309,7 @@ def buildDict(file):
                 pass
         try:
             table.close()
-            print('closing '+file+' File')
+            #print('closing '+file+' File')
         except:
             pass
         return db
@@ -337,28 +338,28 @@ def buildDict(file):
 # Input: filepath, table (list of tuples from toTuple)
 # Output: A nicely written file
 def tableToFile(path, listOfValue):
-    print('tableToFile')
+    #print('tableToFile')
     f = open(path, 'w')
-    print('Open '+path+' File')
+    #print('Open '+path+' File')
     for item in listOfValue:
         x = str(item[0]) + "\t" + str(item[1]) + "\t" + str(item[2])
         f.write("%s\n" % x)
     f.close()
-    print('closing '+path+' File')
+    #print('closing '+path+' File')
     return
 
 # Writes one tuple to file
 # Input: filepath, tuple (hash, path, id)
 # Output: file has one new line
 def tupleToFile(path, t):
-    print('tupleToFile')
-    print('Open '+path+' File')
+    #print('tupleToFile')
+    #print('Open '+path+' File')
     f = open(path, 'a')
-    print('Open '+path+' File')
+    #print('Open '+path+' File')
     x = str(t[0]) + "\t" + str(t[1]) + "\t" + str(t[2])
     f.write("%s\n" % x)
     f.close()
-    print('closing '+path+' File')
+    #print('closing '+path+' File')
     return
 #Get hash from list
 def getHash(string):
@@ -481,7 +482,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 # Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
 # Output: All this, written nicely to a tab-delimited file, with the filepath returned
 def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
-    print('writer')
+    #print('writer')
     rn = ''
     try:
         report = "Fixity report\n"
@@ -509,10 +510,10 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
 
         r = open(rn, 'w+')
-        print('Open '+rn+' File')
+        #print('Open '+rn+' File')
         r.write(report)
         r.close()
-        print('closing '+rn+' File')
+        #print('closing '+rn+' File')
     except Exception as e:
         print(e[0])
 
@@ -523,7 +524,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
 # Input: defaultdict (from buildDict)
 # Output: warning messages about missing files (one long string and printing to stdout)
 def missing(dict,file=''):
-    print('missing')
+    #print('missing')
     msg = ""
     count = 0
     global verifiedFiles
@@ -542,8 +543,10 @@ def missing(dict,file=''):
 # With on the given directory
 
 def run(file,filters='',projectName = '',checkForChanges = False):
-    print('run')
     global verfiedFiels
+
+    lock = FileLock(getcwd()+str(os.sep)+'bin'+str(os.sep)+'dblocker.log', timeout=20)
+    lock.acquire()
 
     verfiedFiels = []
     DB = Database()
@@ -551,12 +554,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     missingFile = ('','')
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
-
+    print('1')
     if len(projectInformation) <=0:
         return
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
     projectDetailInformation = DB.getVersionDetails( projectInformation[0]['id'] , projectInformation[0]['versionCurrentID'] ,' id DESC')
-
+    print('2')
     if(projectDetailInformation != None):
         if (len(projectDetailInformation)<=0):
             if(len(projectInformation) > 0):
@@ -568,22 +571,22 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
     FileChangedList = ""
     InfReplacementArray = {}
-
+    print('3')
     historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
-    print('Open '+historyFile+' File')
+    #print('Open '+historyFile+' File')
     HistoryFile = open(historyFile , 'w+')
-    print('closing '+historyFile+'File')
+    #print('closing '+historyFile+'File')
     first = ''
     for singlePathDF in projectPathInformation:
         first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
-
+    print('4')
     ToBeScannedDirectoriesInProjectFile = []
-
+    print('5')
     for pathInfo in projectPathInformation:
         ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
         IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
         InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
-
+    print('6')
     mails = str(projectInformation[0]['emailAddress']).split(',')
 
     check = 0
@@ -768,7 +771,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
 
     HistoryFile.close()
-    print('closing '+historyFile+' File')
+    #print('closing '+historyFile+' File')
 
     information = str(file).split('\\')
     projectName = information[(len(information)-1)]
@@ -786,11 +789,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pass
     try:
         HistoryFile.close()
-        print('closing '+historyFile+' File')
+        #print('closing '+historyFile+' File')
     except:
         pass
 
     repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
+
+    lock.release()
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 #Path Encoding to a Code To Identify the Path of each file
@@ -827,14 +832,14 @@ def getCodePathMore(code , InfReplacementArray):
 
 #Get Directory Detail
 def getDirectoryDetail(projectName ,fullpath = False):
-    print('getDirectoryDetail')
+    #print('getDirectoryDetail')
     DirectoryDetail = [[],[],[],[],[],[],[],[]]
     if fullpath:
         projfile = open(fullpath, 'rb')
-        print('Open '+fullpath+' File')
+        #print('Open '+fullpath+' File')
     else:
         projfile = open('projects\\' + projectName + '.fxy', 'rb')
-        print('Open '+'projects\\' + projectName + '.fxy'+' File')
+        #print('Open '+'projects\\' + projectName + '.fxy'+' File')
 
     allProjectDirectoryList = projfile.readline()
     projectDirectoryList = allProjectDirectoryList.split(';')
@@ -845,7 +850,7 @@ def getDirectoryDetail(projectName ,fullpath = False):
                 indexOfDet = int(detialInformation[2])
                 DirectoryDetail[indexOfDet] = detialInformation
     projfile.close()
-    print('closing '+fullpath+' File')
+    #print('closing '+fullpath+' File')
     return DirectoryDetail
 
 
