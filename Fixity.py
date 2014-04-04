@@ -53,6 +53,16 @@ Debuging = Debuger()
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
 
+                pathInfo = str(getcwd()).replace('\\schedules','')
+                pathInfo = pathInfo.replace('schedules','')
+                if(OS_Info == 'Windows'):
+                    databasePath = pathInfo+"\\bin\\Fixity.db-journal"
+                else:
+                    databasePath = pathInfo+"/bin/Fixity.db-journal"
+
+                if path.isfile(databasePath):
+                    remove(databasePath)
+
                 self.Database = Database()
                 QMainWindow.__init__(self)
                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))

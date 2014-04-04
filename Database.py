@@ -29,6 +29,11 @@ elif os.name == 'os2':
     OS_Info = 'check'
 
 debuger = Debuger()
+
+class MsgBox(QDialog):
+    def __init__(self):
+        QDialog.__init__(self)
+
 class Database(object):
     #Constructor
     def __init__(self):
@@ -53,9 +58,7 @@ class Database(object):
                 self.con = sqlite3.connect(pathInfo+"\\bin\\Fixity.db")
             else:
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
-
             self.cursor = self.con.cursor()
-
         except (sqlite3.OperationalError,Exception) as ex:
             moreInformation = {"moreInfo":'null'}
             try:
@@ -71,8 +74,6 @@ class Database(object):
 
             debuger.tureDebugerOn()
             debuger.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
-            print('Error Reporting 36 - 42 File Database While Connecting for database information')
-            print(moreInformation)
             if not self.timeSpan:
                 self.timeSpan = 1
 
@@ -81,26 +82,29 @@ class Database(object):
 
                 try:
                     self.QMChecking.close()
-                except:
+                except Exception as ex:
                     pass
 
                 try:
-                    self.QMWait = QDialog.QMessageBox()
-                    self.QMWait.information(self, "Information", "Please wait, Some the Database recourses are in use, Fixity will continue this process as soon as Database is released ,this may take several ")
-                except:
+                    self.QMWait = QMessageBox()
+                    self.QMWait.information(MsgBox(), "Information", "Please wait, Some the Database recourses are in use, Fixity will continue this process as soon as Database is released ,this may take several ")
+                except Exception as ex:
+
                     pass
 
                 time.sleep(gab)
                 try:
                     self.QMWait.close()
-                except:
+                    QCoreApplication.processEvents()
+                except Exception as ex:
+
                     pass
 
                 try:
-                    self.QMChecking = QDialog.QMessageBox()
-                    self.QMChecking.information(self, "Information", "Checking for Recourses")
-                    self.QMChecking.close()
-                except:
+                    self.QMChecking = QMessageBox()
+                    self.QMChecking.information(MsgBox(), "Information", "Checking for Recourses")
+                except Exception as ex:
+
                     pass
 
                 self.connect()
@@ -224,7 +228,7 @@ class Database(object):
 
 
         except Exception as e:
-            print(e[0])
+
             self.closeConnection()
             pass
 
@@ -359,9 +363,7 @@ class Database(object):
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
-
             response = self.sqlQuery(query)
-
             self.closeConnection()
             return response
         except Exception as ex:
@@ -563,3 +565,4 @@ class Database(object):
         for singleOfprovededList in  provededList:
             NewList.append(provededList[singleOfprovededList])
         return tuple(NewList)
+
