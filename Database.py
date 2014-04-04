@@ -29,10 +29,10 @@ elif os.name == 'os2':
     OS_Info = 'check'
 
 debuger = Debuger()
-class Database(QDialog):
+class Database(object):
     #Constructor
     def __init__(self):
-        QDialog.__init__(self)
+
         self._tableConfiguration = 'configuration'
         self._tableProject = 'project'
         self._tableProjectPath = 'projectPath'
@@ -55,7 +55,7 @@ class Database(QDialog):
                 self.con = sqlite3.connect(pathInfo+"/bin/Fixity.db")
 
             self.cursor = self.con.cursor()
-            raise(Exception)
+
         except (sqlite3.OperationalError,Exception) as ex:
             moreInformation = {"moreInfo":'null'}
             try:
@@ -78,14 +78,14 @@ class Database(QDialog):
 
             if self.timeSpan <= 60:
                 self.timeSpan = self.timeSpan + gab
-                print(self.timeSpan)
+
                 try:
                     self.QMChecking.close()
                 except:
                     pass
 
                 try:
-                    self.QMWait = QMessageBox()
+                    self.QMWait = QDialog.QMessageBox()
                     self.QMWait.information(self, "Information", "Please wait, Some the Database recourses are in use, Fixity will continue this process as soon as Database is released ,this may take several ")
                 except:
                     pass
@@ -97,7 +97,7 @@ class Database(QDialog):
                     pass
 
                 try:
-                    self.QMChecking = QMessageBox()
+                    self.QMChecking = QDialog.QMessageBox()
                     self.QMChecking.information(self, "Information", "Checking for Recourses")
                     self.QMChecking.close()
                 except:

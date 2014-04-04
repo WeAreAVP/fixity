@@ -52,7 +52,7 @@ Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
         def __init__(self, EmailPref , FilterFiles):
-                print('Here we go')
+
                 self.Database = Database()
                 QMainWindow.__init__(self)
                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
