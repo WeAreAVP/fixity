@@ -2,9 +2,13 @@
 <?eclipse-pydev version="1.0"?>
 
 <pydev_project>
+<<<<<<< HEAD
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
 <path>/Fixity Project/src</path>
 </pydev_pathproperty>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.4</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
+=======
+<pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.4</pydev_property>
+>>>>>>> mac
 </pydev_project>
