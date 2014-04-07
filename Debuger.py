@@ -1,7 +1,11 @@
+# Manage Debugging of Fixity
+# Version 0.4, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 '''
 Created on Feb 4, 2014
-@version: 0.3
-@author: Furqan Wasi
+@author: Furqan Wasi  <furqan@geekschicago.com>
 '''
 # Fixity Scheduler
 # Version 0.3, 2013-10-28
@@ -13,7 +17,7 @@ import logging
 import datetime
 import base64
 from os import getcwd  , path
-from Database import Database
+
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -29,20 +33,25 @@ class Debuger(object):
 
     # Constuctor
     def __init__(self):
+
+        self.configFilePath= getcwd()+ str(os.sep)+'bin' +str(os.sep)+'conf.txt'
         self.loger = logging
+        if not path.isfile(self.configFilePath):
+           file =  open(self.configFilePath,'w+')
+           file.write('debugger:0')
+           file.close()
+
         if(OS_Info == 'Windows'):
-            self.loger.basicConfig(filename=getcwd() + '\\debug\\debug.log',level=logging.DEBUG)
+            self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
         else:
-            self.loger.basicConfig(filename=getcwd() + '/debug/debug.log',level=logging.DEBUG)
-        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
+            self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
+
         self.isdebugerOn = False
-        DB = Database()
+
         self.Information ={}
-        self.Information['debugger'] = 0
-        info = DB.getConfiguration()
-        if info != None:
-            if len(info) > 0 :
-                self.Information = info[0]
+
+        self.Information = self.getDebugConfiguration()
+
 
     # Function to Log Errors
     # @param msg Message to log
@@ -76,7 +85,7 @@ class Debuger(object):
 
     # Function to turn debugging On
     def tureDebugerOn(self):
-
+        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
         if self.Information['debugger'] == 1:
             self.isdebugerOn = True
         else:
@@ -90,14 +99,54 @@ class Debuger(object):
     def getCurrentTime(self):
         if(self.isdebugerOn):
             return str(datetime.datetime.now()).rpartition('.')[0]
+    #Set Debug On or Off information
+    def setDebugConfiguration(self,flagOfDebug):
+        try:
+            ConfigFile = open(self.configFilePath, 'w+')
+            ConfigFile.write('debugger:'+str(flagOfDebug))
+            ConfigFile.close()
+        except Exception as ex :
+            moreInformation = {"moreInfo":'null'}
+            try:
+                if not ex[0] == None:
+                    moreInformation['LogsMore'] =str(ex[0])
+            except:
+                pass
 
+            try:
+                if not ex[1] == None:
+                    moreInformation['LogsMore1'] =str(ex[1])
+            except:
+                pass
 
-# app = QApplication('asdas')
-# w = FilterFiles()
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-#
-# app.exec_()
+            self.tureDebugerOn()
+            self.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
+    #Get Debug On or Off information
+    def getDebugConfiguration(self):
+        Information = {}
+        Information['debugger'] = 0
+        try:
+            ConfigFile = open(self.configFilePath, 'r+')
+            debugline  = ConfigFile.readline()
+            ConfigFile.close()
 
+            debugInfo = str(debugline).split(':')
+            Information[str(debugInfo[0])] = int(debugInfo[1])
+
+        except Exception as ex :
+            moreInformation = {"moreInfo":'null'}
+            try:
+                if not ex[0] == None:
+                    moreInformation['LogsMore'] =str(ex[0])
+            except:
+                pass
+            try:
+                if not ex[1] == None:
+                    moreInformation['LogsMore1'] =str(ex[1])
+            except:
+                pass
+
+            self.tureDebugerOn()
+            self.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
+
+        return Information
