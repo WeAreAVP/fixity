@@ -139,13 +139,7 @@ class ChangeName(QDialog):
         
     # Triggers on project changed from drop down and sets related information in filters Field    
     def projectChanged(self):
-        DB = Database()
-        filters = ''
-        selectedProject = self.Porjects.currentText()
         
-        Information = DB.getProjectInfo(selectedProject)
-        filters = str(Information[0]['filters']).replace('\n', '')
-        self.changeNameField.setText(filters)
         return
     # close the dailog box
     def Cancel(self):

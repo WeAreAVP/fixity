@@ -13,7 +13,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
-import resource
+# import resource
 
 #Bultin Libraries
 from PySide.QtCore import *
@@ -45,8 +45,9 @@ from FileChanged import FileChanged
 from DecryptionManager import DecryptionManager
 from Database import Database
 from ImportProjects import ImportProjects
-from AutoRuner import AutoRuner
 from AboutFixity import AboutFixity
+from ChangeName import ChangeName
+from AutoRuner import AutoRuner
 
 
 Debuging = Debuger()
@@ -67,8 +68,8 @@ class ProjectWin(QMainWindow):
 
                 self.Database = Database()
                 QMainWindow.__init__(self)
-                resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
-                pureResponseNames = ['f'+str(i) for i in range(434)]
+#                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
+#                 pureResponseNames = ['f'+str(i) for i in range(434)]
 
                 Debuging.tureDebugerOn()
                 Debuging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
@@ -92,6 +93,8 @@ class ProjectWin(QMainWindow):
                 self.DecryptionManager = DecryptionManager()
                 self.FileChanged = FileChanged()
                 self.ImportProjects = ImportProjects()
+                self.ChangeName = ChangeName()
+                
                 self.FileChanged.setVersion('0.4')
 
                 self.FilterFiles = FilterFiles()
@@ -114,6 +117,7 @@ class ProjectWin(QMainWindow):
                 quit = QAction('&Quit Fixity', self)
 
                 FilterFilesMane = QAction('&Filter Files', self)
+                ChangeNameManu = QAction('&Change Project Name', self)
                 DecryptionManagerMenu = QAction('&Select Checksum Algorithm', self)
 
                 self.Debuging = QAction('&Turn Debuging Off', self)
@@ -128,7 +132,8 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(quit)
 
                 self.Preferences.addAction(FilterFilesMane)
-                settings = QSettings('asdasd','asdasda')
+                self.Preferences.addAction(ChangeNameManu)
+                
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
                 self.Preferences.addAction(self.ImportProjectfxy)
@@ -143,6 +148,8 @@ class ProjectWin(QMainWindow):
                 quit.triggered.connect(self.close)
 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
+                ChangeNameManu.triggered.connect(self.ChangeNameBox)
+                
                 DecryptionManagerMenu.triggered.connect(self.DecryptionManagerBox)
                 self.Debuging.triggered.connect(self.switchDebugger)
                 self.ImportProjectfxy.triggered.connect(self.importProjects)
@@ -426,53 +433,52 @@ class ProjectWin(QMainWindow):
         #Updates Fields When Project Is Selected In List
         @Slot(str)
         def update(self, new):
-                if self.unsaved:
-                        sbox = QMessageBox()
-                        sbox.setText("There are unsaved changes to this project.")
-                        sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
-                        sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
-                        sbox.setDefaultButton(QMessageBox.Ok)
-                        sval = sbox.exec_()
-                        if sval == QMessageBox.Ok:
-                                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                                return
-                for n in range(0,7):
-                    self.dtx[(n)].setText("")
-                    self.mtx[(n)].setText("")
-                self.runOnlyOnACPower.setChecked(False)
-                self.StartWhenAvailable.setChecked(False)
-                self.EmailOnlyWhenSomethingChanged.setChecked(False)
+            if self.unsaved:
+                    sbox = QMessageBox()
+                    sbox.setText("There are unsaved changes to this project.")
+                    sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
+                    sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
+                    sbox.setDefaultButton(QMessageBox.Ok)
+                    sval = sbox.exec_()
+                    if sval == QMessageBox.Ok:
+                            self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                            return
+            for n in range(0,7):
+                self.dtx[(n)].setText("")
+                self.mtx[(n)].setText("")
+            self.runOnlyOnACPower.setChecked(False)
+            self.StartWhenAvailable.setChecked(False)
+            self.EmailOnlyWhenSomethingChanged.setChecked(False)
 
-                information = {}
-                projectName = self.projects.currentItem().text()
-                projectInfo = self.Database.getProjectInfo(projectName)
-                pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
-                emails = str(projectInfo[0]['emailAddress'])
-                emails = emails.split(',')
-                rlabel = projectInfo[0]['lastRan']
-                countEmail = 0
-                for email in emails:
+            information = {}
+            projectName = self.projects.currentItem().text()
+            projectInfo = self.Database.getProjectInfo(projectName)
+            pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
+            emails = str(projectInfo[0]['emailAddress'])
+            emails = emails.split(',')
+            rlabel = projectInfo[0]['lastRan']
+            countEmail = 0
+            for email in emails:
+                try:
+                    self.mtx[(countEmail)].setText(str(email).strip())
+                except:
+                    pass
+                countEmail = countEmail + 1
+
+            n = 0
+            for n in pathInfo:
+                if n != None :
                     try:
-                        self.mtx[(countEmail)].setText(str(email).strip())
+                        self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
                     except:
-                        pass
-                    countEmail = countEmail + 1
+                        self.dtx[(n)].setText("")
 
-                n = 0
-                for n in pathInfo:
-                    if n != None :
-                        try:
-                            self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
-                        except:
-                            self.dtx[(n)].setText("")
-
-                for n in pathInfo:
-                    if n != None :
-                        try:
-                            self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
-                        except:
-                            self.dtx[(n)].setText("")
-
+            for n in pathInfo:
+                if n != None :
+                    try:
+                        self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
+                    except:
+                        self.dtx[(n)].setText("")
             if int(projectInfo[0]['emailOnlyUponWarning']) == 1:
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)
             elif  int(projectInfo[0]['emailOnlyUponWarning']) == 0:
@@ -924,7 +930,12 @@ class ProjectWin(QMainWindow):
                     progress.setLabelText(txt.ljust(43))
                     p = path.abspath(fls[f])
                     h = FixityCore.fixity(p, a)
-                    i = FixityCore.ntfsID(p)
+                    
+                    if(OS_Info == 'Windows'):
+                        i = FixityCore.ntfsIDForWindows(p)
+                    else:
+                        i = FixityCore.ntfsIDForMac(p)
+                        
                     list.append((h, p, i))
                     progress.setValue(100 * float(f) / len(fls))
                     qApp.processEvents()

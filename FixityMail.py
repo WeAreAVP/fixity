@@ -75,6 +75,7 @@ def send(recipients, text, attachment, information,projectName=''):
 		moreInformation= {}
 		try:
 			moreInformation ={'SenderEmailAddress::':addr ,'RecipientsEmailAddress':recipients , '::More Detail':'' ,'ErrorCode':str(e[0]) , 'ErrorMsg':str(e[1]) }
+			print(moreInformation)
 		except:
 			pass
 

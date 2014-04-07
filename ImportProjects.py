@@ -19,7 +19,7 @@ import sys
 import time
 import re
 import hashlib
-
+import os
 
 #Custom Classes
 from Database import Database

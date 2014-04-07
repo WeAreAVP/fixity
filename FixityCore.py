@@ -237,7 +237,11 @@ def GetDirectoryInformationUsingInode(Path,Inode):
             for root, subFolders, files in walk(Path):
                 for SingleFile in files:
                     path.join(root, SingleFile)
-                    ThisInode = str(ntfsID(path.join(root, SingleFile)))
+                    
+                    if(OS_Info == 'Windows'):
+                        ThisInode = str(ntfsIDForWindows(path.join(root, SingleFile)))
+                    else:
+                        ThisInode = str(ntfsIDForMac(path.join(root, SingleFile)))
                     if  ThisInode == Inode:
                         return Inode
         return True
@@ -285,10 +289,10 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
-			if(OS_Info == 'Windows'):
-	            i = ntfsIDForWindows(p)
-			else:
-				i = ntfsIDForMac(p)
+            if(OS_Info == 'Windows'):
+                i = ntfsIDForWindows(p)
+            else:
+                i = ntfsIDForMac(p)
 
             listOfValues.append((h, u''+givenPath, i))
 
@@ -485,15 +489,13 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             if isHashSame and isFilePathSame:
                 verifiedFiles.append(line[1])
                 return line, "Confirmed File :\t" + str(line[1])
-
-			if isHashSame and (not isFilePathSame):
-				verifiedFiles.append(line[1])
-				verifiedFiles.append(CurrentDirectory[0])
-				
-				return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
-			if (not isHashSame) and isFilePathSame:
-				verifiedFiles.append(line[1])
-				return line, "Changed File :\t" + str(line[1])
+            if isHashSame and (not isFilePathSame):
+                verifiedFiles.append(line[1])
+                verifiedFiles.append(CurrentDirectory[0])
+                return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
+            if (not isHashSame) and isFilePathSame:
+                verifiedFiles.append(line[1])
+                return line, "Changed File :\t" + str(line[1])
 
             if (not isHashSame) and (not isFilePathSame):
                 verifiedFiles.append(line[1])
