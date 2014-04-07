@@ -11,7 +11,7 @@ class FileLock(object):
         compatible as it doesn't rely on msvcrt or fcntl for the locking.
     """
 
-    def __init__(self, file_name, timeout=10, delay=30):
+    def __init__(self, file_name, timeout=10, delay=.05):
         """ Prepare the file locker. Specify the file to lock and optionally
             the maximum timeout and the delay between each attempt to lock.
         """
@@ -29,20 +29,22 @@ class FileLock(object):
             an exception.
         """
         start_time = time.time()
+
+        self.fd = os.open(self.lockfile, os.O_CREAT|os.O_EXCL|os.O_RDWR)
+
         while True:
             try:
-                self.fd = os.open(self.lockfile, os.O_CREAT|os.O_EXCL|os.O_RDWR)
+                print(self.lockfile)
+
                 break;
             except OSError as e:
                 if e.errno != errno.EEXIST:
-                    print('process slept for 20 sec')
-                    time.sleep(self.delay)
-
+                    raise
                 if (time.time() - start_time) >= self.timeout:
-                    print('process slept for 20 sec')
-                    time.sleep(self.delay)
-
+                    raise FileLockException("Timeout occured.")
+                time.sleep(self.delay)
         self.is_locked = True
+
 
     def release(self):
         """ Get rid of the lock by deleting the lockfile.
@@ -53,3 +55,10 @@ class FileLock(object):
             os.close(self.fd)
             os.unlink(self.lockfile)
             self.is_locked = False
+
+
+lock = FileLock("Yyyyyy", timeout=2)
+print("Lock acquired.")
+lock.acquire()
+lock.acquire()
+lock.acquire()
