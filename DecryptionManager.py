@@ -12,6 +12,16 @@ Created on Dec 5, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
+import os
+OS_Info = ''
+if os.name == 'posix':
+    OS_Info = 'linux'
+elif os.name == 'nt':
+    OS_Info = 'Windows'
+elif os.name == 'os2':
+    OS_Info = 'check'
+    
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -19,7 +29,7 @@ import sys
 from collections import defaultdict
 import shutil
 import datetime
-import os
+
 
 #Custom Classes
 from EmailPref import EmailPref
@@ -272,7 +282,10 @@ class DecryptionManager(QDialog):
                 givenPath = str(p).replace(r, EcodedBasePath+'||')
 
                 h = FixityCore.fixity(p, a , projectName)
-                i = FixityCore.ntfsID(p)
+                if(OS_Info == 'Windows'):
+                    i = FixityCore.ntfsIDForWindows(p)
+                else:
+                    i = FixityCore.ntfsIDForMac(p)
                 listOfValues.append((h, givenPath, i))
 
 
