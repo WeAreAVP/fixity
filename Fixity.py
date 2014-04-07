@@ -49,7 +49,6 @@ from AboutFixity import AboutFixity
 from ChangeName import ChangeName
 from AutoRuner import AutoRuner
 
-
 Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
@@ -68,8 +67,6 @@ class ProjectWin(QMainWindow):
 
                 self.Database = Database()
                 QMainWindow.__init__(self)
-#                 resource.setrlimit(resource.RLIMIT_NOFILE, (1000,-1))
-#                 pureResponseNames = ['f'+str(i) for i in range(434)]
 
                 Debuging.tureDebugerOn()
                 Debuging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
