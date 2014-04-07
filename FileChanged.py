@@ -8,6 +8,11 @@
 Created on Feb 4, 2014
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 
 
 import base64

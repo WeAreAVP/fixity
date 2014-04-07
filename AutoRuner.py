@@ -27,28 +27,31 @@ import FixityMail
 from Debuger import Debuger
 from Database import Database
 
-
+import datetime
+from os import getcwd ,path  
+import base64
 
 class AutoRuner(object):
     #Auto Scan Runner on Given Time or on Demand
     def runAutoFix(self , project , IsemailSet):
 
-        Text = ''
+        Text = '' 
         projectConfNotAvailable = True
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-
+            
         DB = Database()
-
+        
         Information = DB.getProjectInfo(str(project).replace('.fxy', ''))
         configuration =  DB.getConfiguration()
+        
         email = {}
         emailstr = ''
         if Information != None:
             if len(Information) > 0:
-
                 emailstr = str(Information[0]['emailAddress'])
-        email = emailstr.split(',')
-        if len(email) > 0:
+				
+        email = emailstr.split(',')        
+        if len(email) > 0: 
             if '' in email:
                 email.remove('')
         results = []
@@ -68,7 +71,7 @@ class AutoRuner(object):
             newConfiguration['smtp'] = self.DecodeInfo(configuration[0]['smtp'])
             newConfiguration['email'] = self.DecodeInfo(configuration[0]['email'])
             newConfiguration['pass'] = self.DecodeInfo(configuration[0]['pass'])
-
+        
             if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or IsemailSet =='Run':
                 if (len(configuration) > 0):
                     if ( configuration[0]['email'] !='') and (configuration[0]['pass'] !=''):
@@ -80,3 +83,4 @@ class AutoRuner(object):
 
     def DecodeInfo(self,stringToBeDecoded):
         return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
+             

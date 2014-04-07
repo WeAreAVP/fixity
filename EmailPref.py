@@ -9,7 +9,11 @@ Created on Dec 1, 2013
 @version: 0.4
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-
+# Fixity Scheduler
+# Version 0.3, Dec 1, 2013
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 #Built in Library
 from PySide.QtCore import *
 from PySide.QtGui import *

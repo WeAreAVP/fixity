@@ -7,6 +7,11 @@
 Created on Feb 4, 2014
 @author: Furqan Wasi  <furqan@geekschicago.com>
 '''
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 
 import logging
 import datetime
@@ -22,14 +27,14 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-
 ''' Class to manage all the the errors and warning loging'''
 class Debuger(object):
+
 
     # Constuctor
     def __init__(self):
 
-        self.configFilePath= getcwd()+'/bin/conf.txt'
+        self.configFilePath= getcwd()+ str(os.sep)+'bin' +str(os.sep)+'conf.txt'
         self.loger = logging
         if not path.isfile(self.configFilePath):
            file =  open(self.configFilePath,'w+')
@@ -37,7 +42,7 @@ class Debuger(object):
            file.close()
 
         if(OS_Info == 'Windows'):
-            self.loger.basicConfig(filename=getcwd() + '\\debug\\debug.log',level=logging.DEBUG)
+            self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
         else:
             self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
 
@@ -59,7 +64,6 @@ class Debuger(object):
 
 
 
-
     # Function to Log Information
     # @param msg Message to log
     def logInfo(self,msg,moreInformation = None):
@@ -77,6 +81,7 @@ class Debuger(object):
             if(moreInformation):
                 for key in moreInformation:
                     self.loger.warning(key + '::' + moreInformation[key]+"\n")
+
 
     # Function to turn debugging On
     def tureDebugerOn(self):
@@ -145,10 +150,3 @@ class Debuger(object):
             self.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
 
         return Information
-
-Deg = Debuger()
-Deg.tureDebugerOn()
-info = {'0':'testing debug','1':'checking Val'}
-Deg.logError('asdadasda', info)
-Deg.logInfo('asdadasda', info)
-Deg.logWarning('asdadasda', info)

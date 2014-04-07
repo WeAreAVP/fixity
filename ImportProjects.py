@@ -7,7 +7,11 @@
 Created on Dec 5, 2013
 @author: Furqan Wasi  <furqan@geekschicago.com>
 '''
-
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -15,10 +19,13 @@ import sys
 import time
 import re
 import hashlib
-import os
+
+
 #Custom Classes
-from EmailPref import EmailPref
 from Database import Database
+from EmailPref import EmailPref
+
+
 
 
 class ImportProjects(QDialog):
@@ -251,3 +258,15 @@ class ImportProjects(QDialog):
     def Cancel(self):
         self.destroyImportProjects()
         self.ImportProjectsWin.close()
+
+
+# app = QApplication('asdas')
+# w = ImportProjects()
+# w.CreateWindow()
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+# w.Cancel()         
+# app.exec_() 
+         
+

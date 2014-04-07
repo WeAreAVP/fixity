@@ -22,7 +22,7 @@ if OS_Info == 'linux':
     from os import path, listdir, remove, walk , getcwd , spawnl , system
 else:
     from os import path, listdir, remove, walk , getcwd , P_DETACH , spawnl , system
-#import pdb; pdb.set_trace()
+
 from collections import deque
 from genericpath import exists
 import re
@@ -105,6 +105,7 @@ class ProjectWin(QMainWindow):
                 self.f = menubar.addMenu('&File')
                 self.Preferences = menubar.addMenu('&Preferences')
                 newp = QAction('&New Project', self)
+
                 save = QAction('&Run Now', self)
                 usch = QAction('&Save Settings', self)
                 dlte = QAction('&Delete Project', self)
@@ -316,9 +317,16 @@ class ProjectWin(QMainWindow):
             self.FilterFiles = None
             self.FilterFiles = FilterFiles()
             self.FilterFiles.SetDesgin()
-            self.FilterFiles.ShowDialog()
-
-        # Pop up to set Filters
+            self.FilterFiles.ShowDialog()    
+        # Pop up to set Filters        
+        def ChangeNameBox(self):
+            self.ChangeName.Cancel()
+            self.ChangeName = None
+            self.ChangeName = ChangeName()
+            self.ChangeName.SetDesgin()
+            self.ChangeName.ShowDialog()
+            
+        # Pop up to set Filters        
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
@@ -329,25 +337,31 @@ class ProjectWin(QMainWindow):
         def switchDebugger(self,start= None):
             DB = Database()
             Information = {'debugger':0}
-            Information = Debuging.getDebugConfiguration()
+            info = DB.getConfiguration()
+            if info != None:
+                if(len(info)>0):
+                    Information = info[0]
 
             debugText = ''
             if start == None:
-                if Information != None:
-                    if len(Information) < 0:
+                if info != None:
+                    if len(info) < 0:
                             Information['debugger'] = 1
                     elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
                         Information['debugger'] = 1
                     else:
                         Information['debugger'] = 0
 
-                    if Information != None:
-                        Debuging.setDebugConfiguration(Information['debugger'])
+                    if info != None:
+                        if len(info) > 0:
+                            DB.update(DB._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
+                        else:
+                            DB.insert(DB._tableConfiguration,Information)
 
             if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
-                debugText = 'Turn Debuging On'
+                debugText = 'Turn Debugging On'
             else:
-                debugText = 'Turn Debuging Off'
+                debugText = 'Turn Debugging Off'
 
             self.Debuging.setText(debugText)
 
@@ -391,7 +405,7 @@ class ProjectWin(QMainWindow):
 
                 WindowsInformation['bitType'] = "Win{0}".format(bits)
             except Exception as e:
-
+                Debuging = Debuger()
                 moreInformation = {"moreInfo":'null'}
                 try:
                     if not e[0] == None:
@@ -412,52 +426,52 @@ class ProjectWin(QMainWindow):
         #Updates Fields When Project Is Selected In List
         @Slot(str)
         def update(self, new):
-            if self.unsaved:
-                    sbox = QMessageBox()
-                    sbox.setText("There are unsaved changes to this project.")
-                    sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
-                    sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
-                    sbox.setDefaultButton(QMessageBox.Ok)
-                    sval = sbox.exec_()
-                    if sval == QMessageBox.Ok:
-                            self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                            return
-            for n in range(0,7):
-                self.dtx[(n)].setText("")
-                self.mtx[(n)].setText("")
-            self.runOnlyOnACPower.setChecked(False)
-            self.StartWhenAvailable.setChecked(False)
-            self.EmailOnlyWhenSomethingChanged.setChecked(False)
+                if self.unsaved:
+                        sbox = QMessageBox()
+                        sbox.setText("There are unsaved changes to this project.")
+                        sbox.setInformativeText("These will be discarded when opening a new project.\nWould you like to stay on this project?")
+                        sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Discard)
+                        sbox.setDefaultButton(QMessageBox.Ok)
+                        sval = sbox.exec_()
+                        if sval == QMessageBox.Ok:
+                                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                                return
+                for n in range(0,7):
+                    self.dtx[(n)].setText("")
+                    self.mtx[(n)].setText("")
+                self.runOnlyOnACPower.setChecked(False)
+                self.StartWhenAvailable.setChecked(False)
+                self.EmailOnlyWhenSomethingChanged.setChecked(False)
 
-            information = {}
-            projectName = self.projects.currentItem().text()
-            projectInfo = self.Database.getProjectInfo(projectName)
-            pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
-            emails = str(projectInfo[0]['emailAddress'])
-            emails = emails.split(',')
-            rlabel = projectInfo[0]['lastRan']
-            countEmail = 0
-            for email in emails:
-                try:
-                    self.mtx[(countEmail)].setText(str(email).strip())
-                except:
-                    pass
-                countEmail = countEmail + 1
-
-            n = 0
-            for n in pathInfo:
-                if n != None :
+                information = {}
+                projectName = self.projects.currentItem().text()
+                projectInfo = self.Database.getProjectInfo(projectName)
+                pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
+                emails = str(projectInfo[0]['emailAddress'])
+                emails = emails.split(',')
+                rlabel = projectInfo[0]['lastRan']
+                countEmail = 0
+                for email in emails:
                     try:
-                        self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
+                        self.mtx[(countEmail)].setText(str(email).strip())
                     except:
-                        self.dtx[(n)].setText("")
+                        pass
+                    countEmail = countEmail + 1
 
-            for n in pathInfo:
-                if n != None :
-                    try:
-                        self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
-                    except:
-                        self.dtx[(n)].setText("")
+                n = 0
+                for n in pathInfo:
+                    if n != None :
+                        try:
+                            self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
+                        except:
+                            self.dtx[(n)].setText("")
+
+                for n in pathInfo:
+                    if n != None :
+                        try:
+                            self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
+                        except:
+                            self.dtx[(n)].setText("")
 
             if int(projectInfo[0]['emailOnlyUponWarning']) == 1:
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)

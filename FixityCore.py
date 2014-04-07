@@ -1,4 +1,4 @@
-# -*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-  
 
 # Fixity Core module
 # Version 0.3, 2013-10-28
@@ -13,8 +13,10 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
+	
 #Built in Library
 import hashlib
+
 from os import chdir, walk, path, stat, getcwd, O_RDWR, O_CREAT
 from sys import argv ,exit
 from collections import defaultdict
@@ -47,7 +49,6 @@ from FileLock import FileLock
 # Input: Filepath, algorithm
 # Output: Hexadecimal value of hashed file
 def fixity(f, Algorithm , projectName= None):
-    #print('fixity')
     moreInformation= {}
 
     try:
@@ -131,10 +132,58 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
 
         return Information
 
+
 # File ID for NTFS
 # Returns the complete file ID as a single long string
 # (volume number, high index, low index)
-def ntfsID(f):
+def ntfsIDForWindows(f):
+	id = '';
+	try:
+		target = open(f, 'rb')
+	except Exception as e:
+		moreInformation = {"moreInfo":'none'}
+		try:
+			if not e[0] == None:
+				moreInformation['LogsMore'] =str(e[0])
+		except:
+			pass
+		try:	
+			if not e[1] == None:
+				moreInformation['LogsMore1'] =str(e[1])
+		except:
+			pass
+		Debugging = Debuger()
+		Debugging.tureDebugerOn()	
+		Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+		pass
+	try:
+		id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
+			str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
+			str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
+		return id
+	except Exception as e:
+
+
+			moreInformation = {"moreInfo":'none'}
+			try:
+				if not e[0] == None:
+					moreInformation['LogsMore'] =str(e[0])
+			except:
+				pass
+			try:	
+				if not e[1] == None:
+					moreInformation['LogsMore1'] =str(e[1])
+			except:
+				pass
+			Debugging = Debuger()
+			Debugging.tureDebugerOn()	
+			Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+			pass
+	return id
+# File ID for NTFS
+# Returns the complete file ID as a single long string
+# (volume number, high index, low index)
+def ntfsIDForMac(f):
     id=''
     #print('ntfsID')
     try:
@@ -236,7 +285,10 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
-            i = ntfsID(p)
+			if(OS_Info == 'Windows'):
+	            i = ntfsIDForWindows(p)
+			else:
+				i = ntfsIDForMac(p)
 
             listOfValues.append((h, u''+givenPath, i))
 
@@ -434,15 +486,14 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                 verifiedFiles.append(line[1])
                 return line, "Confirmed File :\t" + str(line[1])
 
-            if isHashSame and (not isFilePathSame):
-                verifiedFiles.append(line[1])
-                verifiedFiles.append(CurrentDirectory[0])
-                return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
-
-                verifiedFiles.append(line[1])
-            if (not isHashSame) and isFilePathSame:
-                verifiedFiles.append(line[1])
-                return line, "Changed File :\t" + str(line[1])
+			if isHashSame and (not isFilePathSame):
+				verifiedFiles.append(line[1])
+				verifiedFiles.append(CurrentDirectory[0])
+				
+				return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
+			if (not isHashSame) and isFilePathSame:
+				verifiedFiles.append(line[1])
+				return line, "Changed File :\t" + str(line[1])
 
             if (not isHashSame) and (not isFilePathSame):
                 verifiedFiles.append(line[1])
@@ -853,7 +904,8 @@ def getDirectoryDetail(projectName ,fullpath = False):
     #print('closing '+fullpath+' File')
     return DirectoryDetail
 
-
+# Fetch information related to email configuration    
+# Triggers     
 def EncodeInfo(stringToBeEncoded):
     stringToBeEncoded = str(stringToBeEncoded).strip()
     return base64.b16encode(base64.b16encode(stringToBeEncoded))
@@ -862,3 +914,7 @@ def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
+## To test Main Functionality  
+#projects_path = getcwd()+'\\projects\\'
+#run(projects_path+'New_Project.fxy','','New_Project')
+# exit()

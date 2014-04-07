@@ -7,7 +7,11 @@
 Created on Dec 5, 2013
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -37,7 +41,7 @@ class DecryptionManager(QDialog):
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
 
         self.DecryptionManagerLayout = QVBoxLayout()
-
+        
         self.isMethodChanged = False
         self.isAllfilesConfirmed = False
     # Distructor
