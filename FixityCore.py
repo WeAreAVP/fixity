@@ -761,10 +761,20 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 lastIndexName = PathExploded[len(PathExploded) - 1]
                 
                 if fnmatch.fnmatch(lastIndexName, '.*'):
-                    flag =False
+                    flag = False
                     
             except:
                 pass
+            
+            try:        
+                PathExploded = str(e[1]).split(str(os.sep))
+                for SingleDirtory in PathExploded:
+                    if fnmatch.fnmatch(SingleDirtory, '.*'):
+                        flag = False
+                        break;
+            except:
+                pass
+            
             if flag:
                 check+= 1
                 try:
