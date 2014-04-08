@@ -26,6 +26,7 @@ import time
 from glob import glob
 from os import path, makedirs, remove
 from re import sub, compile
+import fnmatch
 
 if(OS_Info == 'Windows'):
     import win32file
@@ -258,6 +259,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
     try:
         for root, subFolders, files in walk(u''+r):
             for Singlefile in files:
+                print(files)
                 fls.append(path.join(root, u''+Singlefile))
 
     except Exception as e:
@@ -452,8 +454,10 @@ def getDirectory(directory,inode,filePath,dicty):
 
 #Verify File Changes
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
-
+    
     global verifiedFiles
+    print(str(line[1]))
+
     try:
         CurrentDirectory = dicty.get(line[2])
     except Exception as e:
@@ -548,9 +552,9 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
         report += "New Files\t" + str(news) + "\n"
         report += "Changed Files\t" + str(fail) + "\n"
         report += "Removed Files\t" + str(dels) + "\n"
-
+        
         report += str(out)
-
+        print(report)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
@@ -752,7 +756,15 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             for Filter in FiltersArray:
                 if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
                     flag =False
-
+            try:        
+                PathExploded = str(e[1]).split(str(os.sep))
+                lastIndexName = PathExploded[len(PathExploded) - 1]
+                
+                if fnmatch.fnmatch(lastIndexName, '.*'):
+                    flag =False
+                    
+            except:
+                pass
             if flag:
                 check+= 1
                 try:
@@ -935,6 +947,6 @@ def DecodeInfo(stringToBeDecoded):
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
 ## To test Main Functionality  
-projects_path = getcwd()+'\\projects\\'
-run(projects_path+'New_Project.fxy','','New_Project')
+# projects_path = getcwd()+'\\projects\\'
+# run(projects_path+'Hopla.fxy','','Hopla')
 # exit()
