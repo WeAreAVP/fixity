@@ -259,7 +259,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
     try:
         for root, subFolders, files in walk(u''+r):
             for Singlefile in files:
-                print(files)
+                print('scanning:::'+str(files))
                 fls.append(path.join(root, u''+Singlefile))
 
     except Exception as e:
@@ -283,7 +283,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
 
     try:
         for f in xrange(len(fls)):
-
+            print('Listing:::'+str(fls[f]))
             p = path.abspath(u''+fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
@@ -456,7 +456,7 @@ def getDirectory(directory,inode,filePath,dicty):
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
     
     global verifiedFiles
-    print(str(line[1]))
+    print('verifying:::'+str(line[1]))
 
     try:
         CurrentDirectory = dicty.get(line[2])
@@ -539,7 +539,12 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 # Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
 # Output: All this, written nicely to a tab-delimited file, with the filepath returned
 def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
-    #print('writer')
+    print('')
+    print('')
+    print('writer')
+    
+    print('')
+    print('')
     rn = ''
     try:
         report = "Fixity report\n"
@@ -604,6 +609,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
     
     global verfiedFiels
+    print('Started:::'+projectName)
     try:
         processID = os.getpid()
     except:
