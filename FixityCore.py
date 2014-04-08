@@ -259,7 +259,7 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
     try:
         for root, subFolders, files in walk(u''+r):
             for Singlefile in files:
-                print('scanning:::'+str(files))
+                print('scanning:::'+str(Singlefile))
                 fls.append(path.join(root, u''+Singlefile))
 
     except Exception as e:
@@ -281,9 +281,12 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
             Debugging.logError('Error Reporting Line 140-143 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
             pass
 
+
     try:
         for f in xrange(len(fls)):
+            
             print('Listing:::'+str(fls[f]))
+            
             p = path.abspath(u''+fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
@@ -615,19 +618,23 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         processID = None 
         
-  
-    lock = FileLock(getcwd()+str(os.sep)+'bin'+str(os.sep)+'dblocker.log',processID, timeout=20)
-        
-    IsDeadLock = lock.isProcessLockFileIsDead()
-    print(IsDeadLock)
-    if(IsDeadLock):
-        print('i am in')
-        lock.is_locked = True
-        lock.release()
-        
-        
-        
-    lock.acquire()
+    try:
+        lock = FileLock(getcwd()+str(os.sep)+'bin'+str(os.sep)+'dblocker.log',processID, timeout=20)
+            
+        IsDeadLock = lock.isProcessLockFileIsDead()
+    except:
+        pass
+    try: 
+        if(IsDeadLock):
+            lock.is_locked = True
+            lock.release()
+    except:
+        pass        
+            
+    try:        
+        lock.acquire()
+    except:
+        pass
     
     verfiedFiels = []
     DB = Database()
@@ -635,12 +642,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     missingFile = ('','')
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
-    print('1')
+    
     if len(projectInformation) <=0:
         return
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
     projectDetailInformation = DB.getVersionDetails( projectInformation[0]['id'] , projectInformation[0]['versionCurrentID'] ,' id DESC')
-    print('2')
+    
     if(projectDetailInformation != None):
         if (len(projectDetailInformation)<=0):
             if(len(projectInformation) > 0):
@@ -652,24 +659,25 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
     FileChangedList = ""
     InfReplacementArray = {}
-    print('3')
+    
     historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     #print('Open '+historyFile+' File')
     HistoryFile = open(historyFile , 'w+')
+    print('writing ::: History File')
     #print('closing '+historyFile+'File')
     first = ''
     for singlePathDF in projectPathInformation:
         first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
-    print('4')
+    
     ToBeScannedDirectoriesInProjectFile = []
-    print('5')
+    
     for pathInfo in projectPathInformation:
         ToBeScannedDirectoriesInProjectFile.append(str(projectPathInformation[pathInfo]['path']))
         IdInfo =str(projectPathInformation[pathInfo]['pathID']).split('-')
         InfReplacementArray[projectPathInformation[pathInfo]['path'].strip()]= {'path':str(projectPathInformation[pathInfo]['path']),'code':str(projectPathInformation[pathInfo]['pathID']) ,'number': str(IdInfo[1]),'id':projectPathInformation[pathInfo]['id']}
-    print('6')
+    
     mails = str(projectInformation[0]['emailAddress']).split(',')
-
+    print('writing ::: Stared Worked')
     check = 0
     for l in projectDetailInformation:
 
@@ -777,7 +785,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 for SingleDirtory in PathExploded:
                     if fnmatch.fnmatch(SingleDirtory, '.*'):
                         flag = False
-                        break;
             except:
                 pass
             
@@ -868,7 +875,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         del cpyProjectPathInformation[PDI]['id']
         cpyProjectPathInformation[PDI]['versionID'] = versionID['id']
         DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
-
+    
     HistoryFile.close()
     #print('closing '+historyFile+' File')
 
