@@ -34,7 +34,7 @@ import base64
 class AutoRuner(object):
     #Auto Scan Runner on Given Time or on Demand
     def runAutoFix(self , project , IsemailSet):
-
+        
         Text = '' 
         projectConfNotAvailable = True
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")

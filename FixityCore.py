@@ -596,11 +596,29 @@ def missing(dict,file=''):
 # With on the given directory
 
 def run(file,filters='',projectName = '',checkForChanges = False):
+    
+    
+    
     global verfiedFiels
-
-    lock = FileLock(getcwd()+str(os.sep)+'bin'+str(os.sep)+'dblocker.log', timeout=20)
+    try:
+        processID = os.getpid()
+    except:
+        processID = None 
+        
+  
+    lock = FileLock(getcwd()+str(os.sep)+'bin'+str(os.sep)+'dblocker.log',processID, timeout=20)
+        
+    IsDeadLock = lock.isProcessLockFileIsDead()
+    print(IsDeadLock)
+    if(IsDeadLock):
+        print('i am in')
+        lock.is_locked = True
+        lock.release()
+        
+        
+        
     lock.acquire()
-
+    
     verfiedFiels = []
     DB = Database()
 
@@ -917,6 +935,6 @@ def DecodeInfo(stringToBeDecoded):
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
 ## To test Main Functionality  
-#projects_path = getcwd()+'\\projects\\'
-#run(projects_path+'New_Project.fxy','','New_Project')
+projects_path = getcwd()+'\\projects\\'
+run(projects_path+'New_Project.fxy','','New_Project')
 # exit()

@@ -11,7 +11,7 @@ class FileLock(object):
         compatible as it doesn't rely on msvcrt or fcntl for the locking.
     """
 
-    def __init__(self, file_name, timeout=10, delay=30):
+    def __init__(self, file_name, processID , timeout=10, delay=30):
         """ Prepare the file locker. Specify the file to lock and optionally
             the maximum timeout and the delay between each attempt to lock.
         """
@@ -20,6 +20,8 @@ class FileLock(object):
         self.file_name = file_name
         self.timeout = timeout
         self.delay = delay
+        self.processID = processID
+        
 
 
     def acquire(self):
@@ -32,6 +34,11 @@ class FileLock(object):
         while True:
             try:
                 self.fd = os.open(self.lockfile, os.O_CREAT|os.O_EXCL|os.O_RDWR)
+                if self.processID:
+                    os.write(self.fd, str(self.processID))
+                else:
+                    os.write(self.fd, str(''))
+                
                 break;
             except OSError as e:
                 if e.errno != errno.EEXIST:
@@ -50,6 +57,38 @@ class FileLock(object):
             called at the end.
         """
         if self.is_locked:
-            os.close(self.fd)
+            try:
+                os.close(self.fd)
+            except:
+                pass
+            
+            print(str(self.lockfile)+' process released')
             os.unlink(self.lockfile)
             self.is_locked = False
+            
+    #Check is process alive or dead
+    def isProcessLockFileIsDead(self):
+            if(os.path.isfile(self.lockfile)):
+                lockFile = open(self.lockfile,'r+')
+                oldProcessId = lockFile.readline()
+                lockFile.close()
+                
+                # If process Exists then returns False else True
+                if(oldProcessId !='' and oldProcessId != None ):
+                    return self.check_pid(oldProcessId)
+                else:
+                    os.remove(self.lockfile)
+                    return False
+            else:
+                return False
+            
+    # Check For the existence of a unix pid.     
+    def check_pid(self,pid):
+        try:
+            print(pid)
+            os.kill(int(pid), 0)
+        except OSError:
+            return True
+        else:
+            return False
+        
