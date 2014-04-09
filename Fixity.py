@@ -1100,9 +1100,13 @@ class ProjectWin(QMainWindow):
         def createSymbolicLinks(self):
             try:
                 print('setting paths')
-                pathForHistory = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'history'
-                pathForreprots = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'reports'
-                pathFordebug = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'debug'
+                
+                pathForHistory = str(getcwd()) +  str(os.sep) + 'history'
+                pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
+                pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
+                
+                pathForHistory = pathForHistory.replace('Fixity.app/','')
+                
                 print(pathForHistory)
                 print(pathForreprots)
                 print(pathFordebug)
@@ -1132,9 +1136,18 @@ class ProjectWin(QMainWindow):
                 pass
             
             try:
-                os.symlink(pathForHistory, str(getcwd()))
-                os.symlink(pathForreprots, str(getcwd()))
-                os.symlink(pathFordebug, str(getcwd()))
+                print('Creating Symbolick Path')
+                pathInfo = str(getcwd()).replace('Fixity.app'+str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+                
+                pathForSymblickHistory = pathInfo + str(os.sep) + 'history'
+                pathForSymblickReprots = pathInfo + str(os.sep) + 'reports'
+                pathForSymblickDebug = pathInfo + str(os.sep) + 'debug'
+                
+                
+                os.symlink(pathForHistory, pathForSymblickHistory)
+                os.symlink(pathForreprots, pathForSymblickReprots)
+                os.symlink(pathFordebug, pathForSymblickDebug)
+                
             except Exception as ex:
                 print(ex[0])
                 pass

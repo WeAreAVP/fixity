@@ -770,23 +770,25 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             for Filter in FiltersArray:
                 if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
                     flag =False
-            try:        
-                PathExploded = str(e[1]).split(str(os.sep))
-                lastIndexName = PathExploded[len(PathExploded) - 1]
-                
-                if fnmatch.fnmatch(lastIndexName, '.*'):
-                    flag = False
-                    
-            except:
-                pass
             
-            try:        
-                PathExploded = str(e[1]).split(str(os.sep))
-                for SingleDirtory in PathExploded:
-                    if fnmatch.fnmatch(SingleDirtory, '.*'):
+            if(projectInformation[0]['ignoreHiddenFiles'] == 1 or projectInformation[0]['ignoreHiddenFiles'] == '1'):
+                try:        
+                    PathExploded = str(e[1]).split(str(os.sep))
+                    lastIndexName = PathExploded[len(PathExploded) - 1]
+                    
+                    if fnmatch.fnmatch(lastIndexName, '.*'):
                         flag = False
-            except:
-                pass
+                        
+                except:
+                    pass
+                
+                try:        
+                    PathExploded = str(e[1]).split(str(os.sep))
+                    for SingleDirtory in PathExploded:
+                        if fnmatch.fnmatch(SingleDirtory, '.*'):
+                            flag = False
+                except:
+                    pass
             
             if flag:
                 check+= 1
