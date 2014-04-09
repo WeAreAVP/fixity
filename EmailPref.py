@@ -31,6 +31,7 @@ class EmailPref(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.EmailPrefWin = QDialog()
+        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
@@ -49,6 +50,7 @@ class EmailPref(QDialog):
     #Create Window
     def CreateWindow(self):
         self.EmailPrefWin = QDialog()
+        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
     #Get Window info
     def GetWindow(self):
         return self.EmailPrefWin

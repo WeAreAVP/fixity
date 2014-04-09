@@ -16,7 +16,7 @@ from Database import Database
 
 #Custom Classes
 from EmailPref import EmailPref
-
+DBObj = Database()
 
 class ChangeName(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -25,9 +25,11 @@ class ChangeName(QDialog):
         QDialog.__init__(self)
         self.EmailPref = EmailPref()
         self.ChangeNameWin = QDialog()
+        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.ChangeNameWin.setWindowTitle('Change Project Name')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
+        self.projectListWidget = None
         
     # Distructor        
     def destroyChangeName(self):
@@ -35,6 +37,7 @@ class ChangeName(QDialog):
         
     def CreateWindow(self):
         self.ChangeNameWin = QDialog()
+        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         
     def GetWindow(self):
         return self.ChangeNameWin 
@@ -71,9 +74,9 @@ class ChangeName(QDialog):
                                     
     # All design Management Done in Here            
     def SetDesgin(self):
-        DB = Database()
         
-        ProjectListArr = DB.getProjectInfo()
+        
+        ProjectListArr = DBObj.getProjectInfo()
         counter = 0 
         ProjectList = []
         for PLA in ProjectListArr:
@@ -115,23 +118,26 @@ class ChangeName(QDialog):
     # Update Filters information    
     def SetInformation(self):
         
-        DB = Database()
+        
         selectedProject = self.Porjects.currentText()
-        Information = DB.getProjectInfo(selectedProject)
+        Information = DBObj.getProjectInfo(selectedProject)
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
         else:
             Information[0]['title'] = u''+self.changeNameField.text()
         
-        DB1 = Database()
-        flag = DB.update(DB._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
+       
+        flag = DBObj.update(DBObj._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
+            self.refreshProjectSettings()
             QMessageBox.information(self, "Success", "Name have changed successfully!")
             self.Cancel()
+            
             return
         else:
             QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
+            self.refreshProjectSettings()
                 
         
     def Reset(self):
@@ -143,9 +149,33 @@ class ChangeName(QDialog):
         return
     # close the dailog box
     def Cancel(self):
+        self.refreshProjectSettings()
         self.destroyChangeName()
         self.ChangeNameWin.close()
-
+        
+    def refreshProjectSettings(self):
+            allProjects = DBObj.getProjectInfo()
+            try:
+                projectLists = []
+                if allProjects != None:
+                    if(len(allProjects) > 0):
+                        for p in allProjects:
+                            projectLists.append(str(allProjects[p]['title']))
+            except:
+                pass
+            
+            try:  
+                self.projectListWidget.clear()
+            except:
+                pass
+            
+            try:
+                if projectLists != None:
+                    if(len(projectLists) > 0):
+                        for p in projectLists:
+                            self.projectListWidget.addItem(p)
+            except:
+                pass
 # app = QApplication('asdas')
 # w = ChangeName()
 # w.CreateWindow()

@@ -34,6 +34,7 @@ class ImportProjects(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.ImportProjectsWin = QDialog()
+        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.ImportProjectsWin.setWindowTitle('Filter File')
         self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
@@ -44,6 +45,7 @@ class ImportProjects(QDialog):
 
     def CreateWindow(self):
         self.ImportProjectsWin = QDialog()
+        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     def GetWindow(self):
         return self.ImportProjectsWin

@@ -29,6 +29,7 @@ class FileChanged(QDialog):
     # Constuctor
     def __init__(self , orignalPathText ='', changePathText = '' ):
         self.FileChangedWin = QDialog()
+        self.FileChangedWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.FileChangedWin.setWindowTitle('Change Directory')
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
@@ -53,6 +54,7 @@ class FileChanged(QDialog):
     # Create Window
     def CreateWindow(self):
         self.FileChangedWin = QDialog()
+        self.FileChangedWin.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     # Get this Window
     def GetWindow(self):

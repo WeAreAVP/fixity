@@ -83,7 +83,9 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
                         Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
-
+                if OS_Info == '':
+                    self.createSymbolicLinks()
+                    
                 self.EP = EmailPref()
                 self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
@@ -125,11 +127,12 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(usch)
                 self.f.addAction(save)
                 self.f.addAction(dlte)
+                self.f.addAction(ChangeNameManu)
                 self.f.addAction(aboutFixity)
                 self.f.addAction(quit)
+                
 
                 self.Preferences.addAction(FilterFilesMane)
-                self.Preferences.addAction(ChangeNameManu)
                 
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
@@ -275,6 +278,7 @@ class ProjectWin(QMainWindow):
                         self.StartWhenAvailable.setDisabled(False)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(False)
                     else:
+                        
                         self.runOnlyOnACPower.setDisabled(True)
                         self.StartWhenAvailable.setDisabled(True)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(True)
@@ -324,9 +328,11 @@ class ProjectWin(QMainWindow):
             self.FilterFiles.ShowDialog()    
         # Pop up to set Filters        
         def ChangeNameBox(self):
+            
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName()
+            self.ChangeName.projectListWidget = self.projects
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
             
@@ -1091,6 +1097,48 @@ class ProjectWin(QMainWindow):
                             self.ChangeRootDirectoryInfor(DirectoryDetail[DD]['path'] , searchForPath )
             except:
                 pass
+        def createSymbolicLinks(self):
+            try:
+                print('setting paths')
+                pathForHistory = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'history'
+                pathForreprots = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'reports'
+                pathFordebug = str(getcwd()).replace(str(os.sep) + 'Contents' + str(os.sep) + 'Resources','') + str(os.sep) + 'debug'
+                print(pathForHistory)
+                print(pathForreprots)
+                print(pathFordebug)
+                print(str(getcwd()))
+            except Exception as ex:
+                print(ex[0])
+                
+                pass
+            
+            try:
+                print('removing old links')
+                os.remove(pathForHistory)
+            except Exception as ex:
+                print(ex[0])
+                pass
+            
+            try:
+                os.remove(pathForreprots)
+            except Exception as ex:
+                print(ex[0])
+                pass
+            
+            try:
+                os.remove(pathFordebug)
+            except Exception as ex:
+                print(ex[0])
+                pass
+            
+            try:
+                os.symlink(pathForHistory, str(getcwd()))
+                os.symlink(pathForreprots, str(getcwd()))
+                os.symlink(pathFordebug, str(getcwd()))
+            except Exception as ex:
+                print(ex[0])
+                pass
+            
 
 def auto_run(project):
     AR = AutoRuner()
@@ -1109,7 +1157,9 @@ if __name__ == '__main__':
 #        try:
             app = QApplication(sys.argv)
             w = ProjectWin(EmailPref , FilterFiles)
+            w.createSymbolicLinks()
             w.show()
+            
             sys.exit(app.exec_())
 #        except Exception as ex:
 #            print(ex[0])

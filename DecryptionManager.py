@@ -47,6 +47,7 @@ class DecryptionManager(QDialog):
         QDialog.__init__(self)
         self.EmailPref = EmailPref()
         self.DecryptionManagerWin = QDialog()
+        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.DecryptionManagerWin.setWindowTitle('Encryption Manager')
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
 
@@ -61,6 +62,7 @@ class DecryptionManager(QDialog):
     #Create Window
     def CreateWindow(self):
         self.DecryptionManagerWin = QDialog()
+        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     #Create Window info
     def GetWindow(self):

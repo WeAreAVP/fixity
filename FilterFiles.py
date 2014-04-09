@@ -14,6 +14,7 @@ Created on Dec 5, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -23,7 +24,7 @@ from Database import Database
 
 #Custom Classes
 from EmailPref import EmailPref
-
+DB = Database()
 
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -32,6 +33,7 @@ class FilterFiles(QDialog):
         QDialog.__init__(self)
         self.EmailPref = EmailPref()
         self.FilterFilesWin = QDialog()
+        self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         self.FilterFilesWin.setWindowTitle('Filter File')
         self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
@@ -43,6 +45,7 @@ class FilterFiles(QDialog):
     # Create Window For this
     def CreateWindow(self):
         self.FilterFilesWin = QDialog()
+        self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     # Get Window of this
     def GetWindow(self):
@@ -85,7 +88,7 @@ class FilterFiles(QDialog):
 
     # All design Management Done in Here
     def SetDesgin(self):
-        DB = Database()
+        
 
         ProjectListArr = DB.getProjectInfo()
         counter = 0
@@ -105,16 +108,20 @@ class FilterFiles(QDialog):
         self.cancel = QPushButton("Close")
 
         self.FilterField.setPlaceholderText("Add Filter")
-
+        
+        self.IgnoreHiddenFiles = QCheckBox("Ignore Hidden Files")
+        
         self.FilterField.setMaximumSize(200, 100)
         self.reset.setMaximumSize(200, 100)
         self.cancel.setMaximumSize(200, 100)
         self.setInformation.setMaximumSize(200, 100)
-
+        
+        self.GetLayout().addWidget(self.IgnoreHiddenFiles)
         self.GetLayout().addWidget(self.FilterField)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.reset)
         self.GetLayout().addWidget(self.cancel)
+        
 
         self.setInformation.clicked.connect(self.SetInformation)
         self.reset.clicked.connect(self.Reset)
@@ -127,12 +134,16 @@ class FilterFiles(QDialog):
     # Update Filters information
     def SetInformation(self):
 
-        DB = Database()
+        
         selectedProject = self.Porjects.currentText()
         Information = DB.getProjectInfo(selectedProject)
         Information[0]['filters'] = self.FilterField.text()
+        if(self.IgnoreHiddenFiles.isChecked()):
+            Information[0]['ignoreHiddenFiles'] = 1
+        else:
+            Information[0]['ignoreHiddenFiles'] = 0
 
-        DB1 = Database()
+        
         if selectedProject == '':
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
@@ -151,8 +162,9 @@ class FilterFiles(QDialog):
 
     # Triggers on project changed from drop down and sets related information in filters Field
     def projectChanged(self):
-        DB = Database()
+        
         filters = ''
+        ignoreHiddenFiles = 0
         selectedProject = self.Porjects.currentText()
         try:
             Information = DB.getProjectInfo(selectedProject)
@@ -163,11 +175,30 @@ class FilterFiles(QDialog):
             filters = str(Information[0]['filters']).replace('\n', '')
         except:
             pass
-
+        
+        try:
+            ignoreHiddenFiles = str(Information[0]['ignoreHiddenFiles']).replace('\n', '')
+        except:
+            pass
+        
         self.FilterField.setText(filters)
+        
+        if(ignoreHiddenFiles == 0 or ignoreHiddenFiles == '0'):
+            self.IgnoreHiddenFiles.setChecked(False)
+        else:
+            self.IgnoreHiddenFiles.setChecked(True)
+            
         return
 
     # close the dailog box
     def Cancel(self):
         self.destroyFilterFiles()
         self.FilterFilesWin.close()
+# app = QApplication('asdas')
+# w = FilterFiles()
+# w.CreateWindow()
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+#         
+# app.exec_()

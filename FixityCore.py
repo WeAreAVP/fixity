@@ -898,8 +898,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         #print('closing '+historyFile+' File')
     except:
         pass
-
-    repath = writer(Algorithm, file.replace('.fxy','').replace('projects\\',''), total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
+    ProjectName = file.replace('.fxy','').replace('projects\\','')
+    ProjectName = ProjectName.replace('.fxy','').replace('projects//','')
+    ProjectName = ProjectName.replace('.fxy','').replace('//','/')
+    ProjectName = ProjectName.replace('.fxy','').replace('projects/','')
+    ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
+    repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 
     lock.release()
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
