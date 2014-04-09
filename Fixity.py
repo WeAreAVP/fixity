@@ -1104,8 +1104,7 @@ class ProjectWin(QMainWindow):
                 pathForHistory = str(getcwd()) +  str(os.sep) + 'history'
                 pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
                 pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
-                
-                pathForHistory = pathForHistory.replace('Fixity.app/','')
+            
                 
                 print(pathForHistory)
                 print(pathForreprots)
