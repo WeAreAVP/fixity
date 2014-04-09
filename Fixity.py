@@ -83,7 +83,7 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
                         Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
-                if OS_Info == '':
+                if OS_Info == 'linux':
                     self.createSymbolicLinks()
                     
                 self.EP = EmailPref()
