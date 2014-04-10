@@ -145,16 +145,22 @@ class FilterFiles(QDialog):
 
         
         if selectedProject == '':
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
             return
         flag = DB.update(DB._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
 
         if flag != None:
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             QMessageBox.information(self, "Success", "Filter set successfully!")
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
             self.Cancel()
             return
         else:
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
+            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
 
     # Reset Text of Filters
     def Reset(self):

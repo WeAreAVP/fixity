@@ -134,9 +134,11 @@ class FileChanged(QDialog):
     #Points out to change the Path of Manifest or not
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
+            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             msgBox = QMessageBox();
             msgBox.setText(self.changePathText + ' does not exist.\nPlease provide a valid path and try again.')
             msgBox.exec_()
+            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
             self.changeThePathInformation = False
         else:
             if (self.orignalPathText != None and self.changePathText != None) and (self.orignalPathText != '' and self.changePathText != ''):

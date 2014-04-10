@@ -23,7 +23,7 @@ D = Debuger()
 
 # sends email
 # note that ADDRESS and PASSWORD should be set before use
-def send(recipients, text, attachment, information,projectName=''):
+def send(recipients, text, attachment, information,projectName='', EmailPref = None):
 
 	addr = str(information['email'])
 	pas = str(information['pass'])
@@ -83,9 +83,12 @@ def send(recipients, text, attachment, information,projectName=''):
 		D.tureDebugerOn()
 		D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		try:
+			if(EmailPref):
+				EmailPref.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
 			msgBox = QMessageBox();
 			msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
 			msgBox.exec_()
+			
 		except:
 			pass
 		return False

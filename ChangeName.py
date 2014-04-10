@@ -26,6 +26,7 @@ class ChangeName(QDialog):
         self.EmailPref = EmailPref()
         self.ChangeNameWin = QDialog()
         self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.ChangeNameWin.setWindowTitle('Change Project Name')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
@@ -114,15 +115,18 @@ class ChangeName(QDialog):
         self.SetWindowLayout()
         self.projectChanged()
         
-        
+    def projectChanged(self):
+        return
     # Update Filters information    
     def SetInformation(self):
         
-        
+        QMB = QMessageBox 
         selectedProject = self.Porjects.currentText()
         Information = DBObj.getProjectInfo(selectedProject)
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
-            QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
+            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            QMB.information(self, "Fixity", "No project selected - please select a project and try again.")
+            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
             return
         else:
             Information[0]['title'] = u''+self.changeNameField.text()
@@ -131,22 +135,32 @@ class ChangeName(QDialog):
         flag = DBObj.update(DBObj._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
             self.refreshProjectSettings()
-            QMessageBox.information(self, "Success", "Name have changed successfully!")
+            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            QMB.information(self, "Success", "Name have changed successfully!")
+            
             self.Cancel()
             
             return
         else:
-            QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
+            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            QMB.information(self, "Failure", "There was a problem setting the filter - please try again.")
             self.refreshProjectSettings()
+            self.reOpenChangeName()
                 
         
     def Reset(self):
         self.changeNameField.setText('')
         
-    # Triggers on project changed from drop down and sets related information in filters Field    
-    def projectChanged(self):
+    def reOpenChangeName(self):
+        self.Cancel()
+        self.EmailPref = EmailPref()
+        self.ChangeNameWin = QDialog()
+        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.ChangeNameWin.setWindowTitle('Change Project Name')
+        self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.ChangeNameLayout = QVBoxLayout()
+        self.projectListWidget = None
         
-        return
     # close the dailog box
     def Cancel(self):
         self.refreshProjectSettings()
@@ -176,12 +190,13 @@ class ChangeName(QDialog):
                             self.projectListWidget.addItem(p)
             except:
                 pass
+            
 # app = QApplication('asdas')
 # w = ChangeName()
 # w.CreateWindow()
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#        
+#         
 # app.exec_() 
          

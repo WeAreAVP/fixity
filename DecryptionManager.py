@@ -151,6 +151,7 @@ class DecryptionManager(QDialog):
         selectedProject = self.Porjects.currentText()
 
         if(selectedProject == None or selectedProject == ''):
+            self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             QMessageBox.information(self, "Warning", "Please Select a Project, and Try Again.")
             return
 
@@ -185,6 +186,7 @@ class DecryptionManager(QDialog):
         else:
             sameValueFlag = False
         if selectedProject == '':
+            self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
         DB  = Database()
@@ -196,12 +198,14 @@ class DecryptionManager(QDialog):
                         msgBox.close()
                     except:
                         pass
+                    self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
                     QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
 
                     self.Cancel()
                     return
             else:
                 if (not hasChanged) and (sameValueFlag):
+                    self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
                     QMessageBox.information(self, "Information", "Everything was not confirmed that is why algorithm change did not take place.")
         return
 
@@ -232,7 +236,9 @@ class DecryptionManager(QDialog):
 
     #Warning to change encryption value
     def slotWarning(self, projectName):
+        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
         reply = QMessageBox.warning(self, 'Confirmation',"Are you sure you want to change Algorithum for  ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         if reply == QMessageBox.Yes:
             return True
         else:

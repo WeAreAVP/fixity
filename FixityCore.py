@@ -765,7 +765,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             pathInfo = getCodePath(filePath[0], InfReplacementArray)
 
             valDecoded = pathInfo
-
+            print(projectInformation[0])
             e[1] = (str(valDecoded)+str(filePath[1]))
             for Filter in FiltersArray:
                 if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
