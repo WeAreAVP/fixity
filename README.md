@@ -1,4 +1,4 @@
-Created By Furqan Wasi <furqan@geekschicago.com>
+Created By Furqan Wasi <furqan@avpreserve.com>
 #Directory Structure
 
 ./bin (Contains Database and configuration files)
@@ -26,16 +26,17 @@ Created By Furqan Wasi <furqan@geekschicago.com>
 
 3) Download and install PySide (http://qt-project.org/wiki/PySide_Binaries_MacOSX)
 
-3) Download and install favorite IDE (PyCharm,Textmate,eclipse)
+4) Download and install favorite IDE (PyCharm,Textmate,eclipse)
 
-4) install from mac port or brew
-       install cmake
-       install qmake
+5) install from mac port or brew
+
+   install cmake
+   install qmake
 
 
-4) Install PySide using easyinstall:: sudo easy_install-2.7 PySide
+6) Install PySide using easyinstall:: sudo easy_install-2.7 PySide
 
-5) Upgrade PySide sudo easy_install-2.7 -U PySide
+7) Upgrade PySide sudo easy_install-2.7 -U PySide
 
 #For App Creation
 
