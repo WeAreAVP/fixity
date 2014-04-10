@@ -155,7 +155,7 @@ class ProjectWin(QMainWindow):
                 self.ImportProjectfxy.triggered.connect(self.importProjects)
 
                 self.widget = QWidget(self)
-
+                
                 self.pgroup = QGroupBox("Projects")
                 self.play = QVBoxLayout()
                 self.projects = QListWidget(self)
@@ -268,7 +268,7 @@ class ProjectWin(QMainWindow):
                 self.main.addWidget(self.sch)
                 self.main.addWidget(self.dirs)
                 self.main.addWidget(self.mail)
-
+                
                 self.widget.setLayout(self.main)
                 self.setCentralWidget(self.widget)
                 self.projects.itemClicked.connect(self.update)

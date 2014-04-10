@@ -46,6 +46,7 @@ class ChangeName(QDialog):
     def ShowDialog(self):     
         self.ChangeNameWin.show()
         self.ChangeNameWin.exec_()
+        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
         
         
     def SetLayout(self, layout):
