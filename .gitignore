@@ -1,0 +1,17 @@
+.settings
+.idea
+Fixity.db
+build/* 
+dist/*
+schedules/* 
+debug/* 
+history/* 
+reports/* 
+*.pyc
+*.tsv
+*.conf
+*.xml
+*.sch
+*.bat
+*.vb
+.dblocker.log.lock.swp
