@@ -21,10 +21,11 @@ DBObj = Database()
 class ChangeName(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
-    def __init__(self):
+    def __init__(self,parentWin):
         QDialog.__init__(self)
+        self.parentWin = parentWin
         self.EmailPref = EmailPref()
-        self.ChangeNameWin = QDialog()
+        self.ChangeNameWin = QDialog(self.parentWin)
 #         flags =  Qt.Window
         flags =  Qt.WindowTitleHint
 #         flags =  Qt.CustomizeWindowHint  

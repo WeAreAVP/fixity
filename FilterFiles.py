@@ -29,9 +29,9 @@ DB = Database()
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     # Constructor
-    def __init__(self,parent):
+    def __init__(self,parentWin):
         QDialog.__init__(self)
-        self.parentWin = parent
+        self.parentWin = parentWin
         self.EmailPref = EmailPref()
         self.FilterFilesWin = QDialog(self.parentWin)
         

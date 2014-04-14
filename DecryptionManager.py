@@ -43,10 +43,11 @@ Debugging = Debuger()
 class DecryptionManager(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     #Constructor
-    def __init__(self):
+    def __init__(self,parentWin):
         QDialog.__init__(self)
+        self.parentWin = parentWin
         self.EmailPref = EmailPref()
-        self.DecryptionManagerWin = QDialog()
+        self.DecryptionManagerWin = QDialog(self.parentWin)
         
         self.DecryptionManagerWin.setWindowTitle('Checksum Manager')
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))

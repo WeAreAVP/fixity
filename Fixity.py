@@ -90,10 +90,10 @@ class ProjectWin(QMainWindow):
                 self.EP = EmailPref()
                 self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
-                self.DecryptionManager = DecryptionManager()
+                self.DecryptionManager = DecryptionManager(self)
                 self.FileChanged = FileChanged()
-                self.ImportProjects = ImportProjects()
-                self.ChangeName = ChangeName()
+                self.ImportProjects = ImportProjects(self)
+                self.ChangeName = ChangeName(self)
                 
                 self.FileChanged.setVersion('0.4')
 
@@ -421,7 +421,7 @@ class ProjectWin(QMainWindow):
             
             self.ChangeName.Cancel()
             self.ChangeName = None
-            self.ChangeName = ChangeName()
+            self.ChangeName = ChangeName(self)
             self.ChangeName.projectListWidget = self.projects
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
@@ -430,7 +430,7 @@ class ProjectWin(QMainWindow):
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
-            self.DecryptionManager = DecryptionManager()
+            self.DecryptionManager = DecryptionManager(self)
             self.DecryptionManager.SetDesgin()
             self.DecryptionManager.ShowDialog()
 
@@ -1168,7 +1168,7 @@ class ProjectWin(QMainWindow):
         def importProjects(self):
             self.ImportProjects.destroyImportProjects()
             self.ImportProjects = None
-            self.ImportProjects = ImportProjects()
+            self.ImportProjects = ImportProjects(self)
             self.ImportProjects.CreateWindow()
             self.ImportProjects.SetWindowLayout()
             self.ImportProjects.SetDesgin()
