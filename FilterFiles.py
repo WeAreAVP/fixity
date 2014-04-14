@@ -32,9 +32,9 @@ class FilterFiles(QDialog):
     def __init__(self,parentWin):
         QDialog.__init__(self)
         self.parentWin = parentWin
-        self.EmailPref = EmailPref()
+        self.EmailPref = EmailPref(self)
         self.FilterFilesWin = QDialog(self.parentWin)
-        
+        self.FilterFilesWin.setWindowModality(Qt.WindowModal)
         self.FilterFilesWin.setWindowTitle('Filter File')
         self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
@@ -133,10 +133,10 @@ class FilterFiles(QDialog):
             self.setInformation.setDisabled(True)
             self.reset.setDisabled(True)
             self.Porjects.setDisabled(True)
-        else:
-            self.setInformation.clicked.connect(self.SetInformation)
-            self.reset.clicked.connect(self.Reset)
-            self.cancel.clicked.connect(self.Cancel)
+        
+        self.setInformation.clicked.connect(self.SetInformation)
+        self.reset.clicked.connect(self.Reset)
+        self.cancel.clicked.connect(self.Cancel)
         
         self.Porjects.currentIndexChanged .connect(self.projectChanged)
         self.SetWindowLayout()
@@ -210,6 +210,7 @@ class FilterFiles(QDialog):
 
     # close the dailog box
     def Cancel(self):
+        print('close bitch')
         self.destroyFilterFiles()
         self.FilterFilesWin.close()
 # app = QApplication('asdas')

@@ -46,8 +46,9 @@ class DecryptionManager(QDialog):
     def __init__(self,parentWin):
         QDialog.__init__(self)
         self.parentWin = parentWin
-        self.EmailPref = EmailPref()
+        self.EmailPref = EmailPref(self)
         self.DecryptionManagerWin = QDialog(self.parentWin)
+        self.DecryptionManagerWin.setWindowModality(Qt.WindowModal)
         
         self.DecryptionManagerWin.setWindowTitle('Checksum Manager')
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))

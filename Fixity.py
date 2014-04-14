@@ -87,7 +87,7 @@ class ProjectWin(QMainWindow):
                 if OS_Info == 'linux':
                     self.createSymbolicLinks()
                 
-                self.EP = EmailPref()
+                self.EP = EmailPref(self)
                 self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager(self)
@@ -388,7 +388,7 @@ class ProjectWin(QMainWindow):
         def ConfigEmailView(self):
             self.EP.CloseClick()
             self.EP = None
-            self.EP = EmailPref()
+            self.EP = EmailPref(self)
             self.EP.SetDesgin()
             self.EP.ShowDialog()
 
@@ -418,10 +418,11 @@ class ProjectWin(QMainWindow):
             self.FilterFiles.ShowDialog()    
         # Pop up to set Filters        
         def ChangeNameBox(self):
-            
+            print('testing')
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName(self)
+            print('testing1')
             self.ChangeName.projectListWidget = self.projects
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()

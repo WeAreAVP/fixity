@@ -83,7 +83,7 @@ def RunThisBatchFile(Command):
 # Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
 def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
 
-        EP = EmailPref()
+        EP = EmailPref(Debuger())
         VERSION = EP.getVersion()
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')

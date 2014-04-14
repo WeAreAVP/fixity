@@ -28,13 +28,15 @@ from Database import Database
 class EmailPref(QDialog):
     '''This class is created to handle all Email configurations and management'''
     # Constructor
-    def __init__(self):
+    def __init__(self,parentWin):
         QDialog.__init__(self)
-        self.EmailPrefWin = QDialog()
-        
+        self.parentWin = parentWin
+        self.EmailPrefWin = QDialog(self.parentWin)
+        self.EmailPrefWin.setWindowModality(Qt.WindowModal)
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
+        
         self.FM = FixityMail
         self.version = '0.4'
 
@@ -49,7 +51,7 @@ class EmailPref(QDialog):
         return self.version
     #Create Window
     def CreateWindow(self):
-        self.EmailPrefWin = QDialog()
+        self.EmailPrefWin = QDialog(self.parentWin)
         
     #Get Window info
     def GetWindow(self):

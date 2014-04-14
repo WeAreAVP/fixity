@@ -24,12 +24,9 @@ class ChangeName(QDialog):
     def __init__(self,parentWin):
         QDialog.__init__(self)
         self.parentWin = parentWin
-        self.EmailPref = EmailPref()
+        self.EmailPref = EmailPref(self)
         self.ChangeNameWin = QDialog(self.parentWin)
-#         flags =  Qt.Window
-        flags =  Qt.WindowTitleHint
-#         flags =  Qt.CustomizeWindowHint  
-        self.ChangeNameWin.setWindowFlags(flags)
+        self.ChangeNameWin.setWindowModality(Qt.WindowModal)
         
         self.ChangeNameWin.setWindowTitle('Change Project Name')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
@@ -82,7 +79,7 @@ class ChangeName(QDialog):
     # All design Management Done in Here            
     def SetDesgin(self):
         
-        
+        print('SetDesgin')
         ProjectListArr = DBObj.getProjectInfo()
         isEnable = True
         counter = 0 
@@ -169,7 +166,7 @@ class ChangeName(QDialog):
         
     def reOpenChangeName(self):
         self.Cancel()
-        self.EmailPref = EmailPref()
+        self.EmailPref = EmailPref(self)
         self.ChangeNameWin = QDialog()
         
         self.ChangeNameWin.setWindowTitle('Change Project Name')
@@ -208,11 +205,11 @@ class ChangeName(QDialog):
                 pass
             
 # app = QApplication('asdas')
-# w = ChangeName()
+# w = ChangeName(QDialog())
 # w.CreateWindow()
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#          
+#           
 # app.exec_() 
-         
+#          
