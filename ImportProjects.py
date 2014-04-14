@@ -34,7 +34,7 @@ class ImportProjects(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.ImportProjectsWin = QDialog()
-        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.ImportProjectsWin.setWindowTitle('Filter File')
         self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
@@ -45,7 +45,7 @@ class ImportProjects(QDialog):
 
     def CreateWindow(self):
         self.ImportProjectsWin = QDialog()
-        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
 
     def GetWindow(self):
         return self.ImportProjectsWin
@@ -112,9 +112,9 @@ class ImportProjects(QDialog):
         filePath = self.projectSelected.text()
 
         if(filePath == None or filePath == ''):
-            self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Error", "Please select valid Project/Manifest file path")
-            self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             return
         fileName = str(path.basename(filePath))
         fileName = fileName.replace('.fxy','')
@@ -122,9 +122,9 @@ class ImportProjects(QDialog):
         Project = DB.getProjectInfo(fileName)
 
         if(len(Project)>0):
-            self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Error", "A Project with this name already exists!")
-            self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             return
 
         fileToImportInfoOf =  open(filePath,'rb')
@@ -245,9 +245,9 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['path'] = FixInfo[1]
                                 inforVersionDetail['inode'] = FixInfo[2]
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
-        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+        
         QMessageBox.information(self, "Success", "Project importing completed ")
-        self.ImportProjectsWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         try:
             fileToImportInfoOf.close()
         except:

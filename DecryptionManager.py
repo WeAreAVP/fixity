@@ -47,8 +47,8 @@ class DecryptionManager(QDialog):
         QDialog.__init__(self)
         self.EmailPref = EmailPref()
         self.DecryptionManagerWin = QDialog()
-        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
-        self.DecryptionManagerWin.setWindowTitle('Encryption Manager')
+        
+        self.DecryptionManagerWin.setWindowTitle('Checksum Manager')
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
 
         self.DecryptionManagerLayout = QVBoxLayout()
@@ -62,7 +62,7 @@ class DecryptionManager(QDialog):
     #Create Window
     def CreateWindow(self):
         self.DecryptionManagerWin = QDialog()
-        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
 
     #Create Window info
     def GetWindow(self):
@@ -109,9 +109,16 @@ class DecryptionManager(QDialog):
 
 
         ProjectList = DB.getProjectInfo(None,False)
+        isEnable = True
         AllProjectList = []
-        for singleProj in ProjectList:
-            AllProjectList.append(ProjectList[singleProj]['title'])
+        if(len(ProjectList) > 0):
+            for singleProj in ProjectList:
+                AllProjectList.append(ProjectList[singleProj]['title'])
+            isEnable = True
+        else:
+            AllProjectList.append('Create & Save Project')
+            isEnable = False
+            
 
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
@@ -135,7 +142,11 @@ class DecryptionManager(QDialog):
         self.GetLayout().addWidget(self.cancel)
 
         self.setInformation.clicked.connect(self.SetInformation)
-
+        if not isEnable:
+            self.methods.setDisabled(True)
+            self.setInformation.setDisabled(True)
+            self.Porjects.setDisabled(True)
+            
         self.cancel.clicked.connect(self.Cancel)
         self.Porjects.currentIndexChanged.connect(self.projectChanged)
         self.SetWindowLayout()
@@ -151,7 +162,7 @@ class DecryptionManager(QDialog):
         selectedProject = self.Porjects.currentText()
 
         if(selectedProject == None or selectedProject == ''):
-            self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Warning", "Please Select a Project, and Try Again.")
             return
 
@@ -186,7 +197,7 @@ class DecryptionManager(QDialog):
         else:
             sameValueFlag = False
         if selectedProject == '':
-            self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
         DB  = Database()
@@ -198,14 +209,14 @@ class DecryptionManager(QDialog):
                         msgBox.close()
                     except:
                         pass
-                    self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+                    
                     QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
 
                     self.Cancel()
                     return
             else:
                 if (not hasChanged) and (sameValueFlag):
-                    self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+                    
                     QMessageBox.information(self, "Information", "Everything was not confirmed that is why algorithm change did not take place.")
         return
 
@@ -236,9 +247,9 @@ class DecryptionManager(QDialog):
 
     #Warning to change encryption value
     def slotWarning(self, projectName):
-        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+        
         reply = QMessageBox.warning(self, 'Confirmation',"Are you sure you want to change Algorithum for  ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        self.DecryptionManagerWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         if reply == QMessageBox.Yes:
             return True
         else:

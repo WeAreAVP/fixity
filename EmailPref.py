@@ -31,7 +31,7 @@ class EmailPref(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.EmailPrefWin = QDialog()
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
@@ -50,7 +50,7 @@ class EmailPref(QDialog):
     #Create Window
     def CreateWindow(self):
         self.EmailPrefWin = QDialog()
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
     #Get Window info
     def GetWindow(self):
         return self.EmailPrefWin
@@ -90,21 +90,21 @@ class EmailPref(QDialog):
         information['protocol'] = protocol
 
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             msgBox = QMessageBox();
             msgBox.setText("Invalid email address provided.\nPlease provide a valid address and try again.")
             msgBox.exec_()
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             self.loader.hide()
             return False
         text = 'Testing email access for Fixity reporting...'
         flag = self.FM.send(Email, text, None,information,'',self)
         if flag:
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             msgBox = QMessageBox();
             msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
             msgBox.exec_()
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
         else:
             self.ReOpenEmailPref()
             
@@ -231,7 +231,7 @@ class EmailPref(QDialog):
     def ReOpenEmailPref(self):
         self.CloseClick()
         self.EmailPrefWin = QDialog()
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.EmailPrefWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
@@ -242,7 +242,7 @@ class EmailPref(QDialog):
         self.SetDesgin()
         self.ShowDialog()
         self.EmailPrefWin.show()
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
           # Fetch information related to email configuration
     def getConfigInfo(self, project=None):
         self.Database = Database()
@@ -300,10 +300,10 @@ class EmailPref(QDialog):
 
         errorMsg = self.validateInformation(Email, Pass)
         if not str(errorMsg).strip() == 'None':
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QB = QMessageBox()
             errorMsg = QB.information(self, "Error", errorMsg)
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             return
 
         E_unbased = Email
@@ -322,9 +322,9 @@ class EmailPref(QDialog):
 
         self.Database.delete(self.Database._tableConfiguration, '1=1')
         self.Database.insert(self.Database._tableConfiguration, information)
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+        
         QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
-        self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.CloseClick()
 
     # Triggers

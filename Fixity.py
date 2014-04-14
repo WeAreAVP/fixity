@@ -52,6 +52,7 @@ from AutoRuner import AutoRuner
 Debuging = Debuger()
 
 class ProjectWin(QMainWindow):
+        
         def __init__(self, EmailPref , FilterFiles):
 
                 pathInfo = str(getcwd()).replace('\\schedules','')
@@ -85,7 +86,7 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
                 if OS_Info == 'linux':
                     self.createSymbolicLinks()
-                    
+                
                 self.EP = EmailPref()
                 self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
@@ -96,7 +97,7 @@ class ProjectWin(QMainWindow):
                 
                 self.FileChanged.setVersion('0.4')
 
-                self.FilterFiles = FilterFiles()
+                self.FilterFiles = FilterFiles(self)
                 self.Threading = Threading
 
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
@@ -289,11 +290,100 @@ class ProjectWin(QMainWindow):
                     self.old.setSelected(True)
                 except:
                     pass
-
+                
+                self.closeEvent(self.cleanObjects)
+                
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
                 self.show()
-
+                
+                
+    
+        def __del__(self):
+            del self
+        def cleanObjects(self):
+            print('------------------')
+            print('------------------')
+            print('closing windows')
+            print('------------------')
+            print('------------------')
+            #Closing opened Windows and database conactions 
+            try:
+                self.Database.closeConnection()
+            except:
+                pass
+            try:
+                self.EP.CloseClick()
+            except:
+                pass
+            try:
+                self.AF.Cancel()
+            except:
+                pass
+            try:
+                self.DecryptionManager.Cancel()
+            except:
+                pass
+            try:
+                self.FileChanged.CloseClick()
+            except:
+                pass
+            try:
+                self.ImportProjects.Cancel()
+            except:
+                pass
+            try:
+                self.ChangeName.Cancel()
+            except:
+                pass
+            try:
+                self.FilterFiles.Cancel()
+            except:
+                pass
+            try:
+                self.Threading = None
+            except:
+                pass
+            
+            #Releasing the Variables  
+            try:
+                self.Database = None
+            except:
+                pass
+            try:
+                self.EP = None
+            except:
+                pass
+            try:
+                self.AF = None
+            except:
+                pass
+            try:
+                self.DecryptionManager = None
+            except:
+                pass
+            try:
+                self.FileChanged = None
+            except:
+                pass
+            try:
+                self.ImportProjects = None
+            except:
+                pass
+            try:
+                self.ChangeName = None
+            except:
+                pass
+            try:
+                self.FilterFiles = None
+            except:
+                pass
+            try:
+                self.__del__()
+            except:
+                pass
+                
+         
         # Configure Email Address for the Tools
         def ConfigEmailView(self):
             self.EP.CloseClick()
@@ -323,7 +413,7 @@ class ProjectWin(QMainWindow):
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
             self.FilterFiles = None
-            self.FilterFiles = FilterFiles()
+            self.FilterFiles = FilterFiles(self)
             self.FilterFiles.SetDesgin()
             self.FilterFiles.ShowDialog()    
         # Pop up to set Filters        
@@ -1084,7 +1174,7 @@ class ProjectWin(QMainWindow):
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
             app.exec_()
-
+        
         def checkForChanges(self,projectName , searchForPath ,code):
             try:
                 DB = Database()
@@ -1168,11 +1258,17 @@ if __name__ == '__main__':
     if(args.autorun == None or args.autorun == ''):
 #        try:
             app = QApplication(sys.argv)
-            w = ProjectWin(EmailPref , FilterFiles)
-            w.createSymbolicLinks()
-            w.show()
+            app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
+            
+            app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
+            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
+            
+            app.MainFixityWindow.createSymbolicLinks()
+           
+            app.MainFixityWindow.show()
             
             sys.exit(app.exec_())
+            
 #        except Exception as ex:
 #            print(ex[0])
 #            print("Some thing have gone wrong , please try restarting Fixity")

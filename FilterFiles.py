@@ -29,11 +29,12 @@ DB = Database()
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     # Constructor
-    def __init__(self):
+    def __init__(self,parent):
         QDialog.__init__(self)
+        self.parentWin = parent
         self.EmailPref = EmailPref()
-        self.FilterFilesWin = QDialog()
-        self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.FilterFilesWin = QDialog(self.parentWin)
+        
         self.FilterFilesWin.setWindowTitle('Filter File')
         self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
@@ -44,8 +45,8 @@ class FilterFiles(QDialog):
 
     # Create Window For this
     def CreateWindow(self):
-        self.FilterFilesWin = QDialog()
-        self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        self.FilterFilesWin = QDialog(self.parentWin)
+        
 
     # Get Window of this
     def GetWindow(self):
@@ -92,11 +93,17 @@ class FilterFiles(QDialog):
 
         ProjectListArr = DB.getProjectInfo()
         counter = 0
+        isEnable = True
         ProjectList = []
-        for PLA in ProjectListArr:
-            counter = counter + 1
-            ProjectList.append(ProjectListArr[PLA]['title'])
-
+        if(len(ProjectListArr) > 0):
+            for PLA in ProjectListArr:
+                counter = counter + 1
+                ProjectList.append(ProjectListArr[PLA]['title'])
+            isEnable = True
+        else:
+            ProjectList.append('Create & Save Project')
+            isEnable = False
+        
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
         self.Porjects.addItems(ProjectList)
@@ -122,10 +129,15 @@ class FilterFiles(QDialog):
         self.GetLayout().addWidget(self.reset)
         self.GetLayout().addWidget(self.cancel)
         
-
-        self.setInformation.clicked.connect(self.SetInformation)
-        self.reset.clicked.connect(self.Reset)
-        self.cancel.clicked.connect(self.Cancel)
+        if not isEnable:
+            self.setInformation.setDisabled(True)
+            self.reset.setDisabled(True)
+            self.Porjects.setDisabled(True)
+        else:
+            self.setInformation.clicked.connect(self.SetInformation)
+            self.reset.clicked.connect(self.Reset)
+            self.cancel.clicked.connect(self.Cancel)
+        
         self.Porjects.currentIndexChanged .connect(self.projectChanged)
         self.SetWindowLayout()
         self.projectChanged()
@@ -145,22 +157,22 @@ class FilterFiles(QDialog):
 
         
         if selectedProject == '':
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             return
         flag = DB.update(DB._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
 
         if flag != None:
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Success", "Filter set successfully!")
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             self.Cancel()
             return
         else:
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
-            self.FilterFilesWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
 
     # Reset Text of Filters
     def Reset(self):
@@ -206,5 +218,5 @@ class FilterFiles(QDialog):
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#         
+#          
 # app.exec_()

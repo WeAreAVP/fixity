@@ -34,7 +34,7 @@ class AboutFixity(QDialog):
     def __init__(self):
         QDialog.__init__(self)
         self.AboutFixityWin = QDialog()
-        self.AboutFixityWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.AboutFixityWin.setWindowTitle('About Fixity')
         self.AboutFixityWin.setWindowIcon(QIcon(path.join(getcwd(), 'images' + str(os.sep) + 'logo_sign_small.png')))
         self.AboutFixityLayout = QVBoxLayout()
@@ -58,7 +58,7 @@ class AboutFixity(QDialog):
 
     def CreateWindow(self):
         self.AboutFixityWin = QDialog()
-        self.AboutFixityWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
 
     def GetWindow(self):
         return self.AboutFixityWin

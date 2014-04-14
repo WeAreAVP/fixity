@@ -29,7 +29,7 @@ class FileChanged(QDialog):
     # Constuctor
     def __init__(self , orignalPathText ='', changePathText = '' ):
         self.FileChangedWin = QDialog()
-        self.FileChangedWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.FileChangedWin.setWindowTitle('Change Directory')
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
@@ -54,7 +54,7 @@ class FileChanged(QDialog):
     # Create Window
     def CreateWindow(self):
         self.FileChangedWin = QDialog()
-        self.FileChangedWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
 
     # Get this Window
     def GetWindow(self):
@@ -134,11 +134,11 @@ class FileChanged(QDialog):
     #Points out to change the Path of Manifest or not
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             msgBox = QMessageBox();
             msgBox.setText(self.changePathText + ' does not exist.\nPlease provide a valid path and try again.')
             msgBox.exec_()
-            self.EmailPrefWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             self.changeThePathInformation = False
         else:
             if (self.orignalPathText != None and self.changePathText != None) and (self.orignalPathText != '' and self.changePathText != ''):

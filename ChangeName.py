@@ -25,11 +25,15 @@ class ChangeName(QDialog):
         QDialog.__init__(self)
         self.EmailPref = EmailPref()
         self.ChangeNameWin = QDialog()
-        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+#         flags =  Qt.Window
+        flags =  Qt.WindowTitleHint
+#         flags =  Qt.CustomizeWindowHint  
+        self.ChangeNameWin.setWindowFlags(flags)
         
         self.ChangeNameWin.setWindowTitle('Change Project Name')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
+         
         self.projectListWidget = None
         
     # Distructor        
@@ -38,7 +42,7 @@ class ChangeName(QDialog):
         
     def CreateWindow(self):
         self.ChangeNameWin = QDialog()
-        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         
     def GetWindow(self):
         return self.ChangeNameWin 
@@ -46,7 +50,7 @@ class ChangeName(QDialog):
     def ShowDialog(self):     
         self.ChangeNameWin.show()
         self.ChangeNameWin.exec_()
-        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         
         
     def SetLayout(self, layout):
@@ -79,12 +83,17 @@ class ChangeName(QDialog):
         
         
         ProjectListArr = DBObj.getProjectInfo()
+        isEnable = True
         counter = 0 
         ProjectList = []
-        for PLA in ProjectListArr:
-            counter = counter + 1
-            ProjectList.append(ProjectListArr[PLA]['title'])
-            
+        if(len(ProjectListArr) > 0):
+            for PLA in ProjectListArr:
+                counter = counter + 1
+                ProjectList.append(ProjectListArr[PLA]['title'])
+            isEnable = True
+        else:
+            ProjectList.append('Create & Save Project')
+            isEnable = False
         
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
@@ -113,6 +122,11 @@ class ChangeName(QDialog):
         
         self.cancel.clicked.connect(self.Cancel)
         self.Porjects.currentIndexChanged .connect(self.projectChanged)
+        if not isEnable:
+            self.setInformation.setDisabled(True)
+            self.changeNameField.setDisabled(True)
+            self.Porjects.setDisabled(True)
+            
         self.SetWindowLayout()
         self.projectChanged()
         
@@ -125,9 +139,9 @@ class ChangeName(QDialog):
         selectedProject = self.Porjects.currentText()
         Information = DBObj.getProjectInfo(selectedProject)
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
-            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMB.information(self, "Fixity", "No project selected - please select a project and try again.")
-            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+            
             return
         else:
             Information[0]['title'] = u''+self.changeNameField.text()
@@ -136,14 +150,14 @@ class ChangeName(QDialog):
         flag = DBObj.update(DBObj._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
             self.refreshProjectSettings()
-            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMB.information(self, "Success", "Name have changed successfully!")
             
             self.Cancel()
             
             return
         else:
-            self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnBottomHint)
+            
             QMB.information(self, "Failure", "There was a problem setting the filter - please try again.")
             self.refreshProjectSettings()
             self.reOpenChangeName()
@@ -156,7 +170,7 @@ class ChangeName(QDialog):
         self.Cancel()
         self.EmailPref = EmailPref()
         self.ChangeNameWin = QDialog()
-        self.ChangeNameWin.setWindowFlags(Qt.WindowStaysOnTopHint)
+        
         self.ChangeNameWin.setWindowTitle('Change Project Name')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
@@ -198,6 +212,6 @@ class ChangeName(QDialog):
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#         
+#          
 # app.exec_() 
          
