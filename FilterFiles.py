@@ -35,7 +35,7 @@ class FilterFiles(QDialog):
         self.EmailPref = EmailPref(self)
         self.FilterFilesWin = QDialog(self.parentWin)
         self.FilterFilesWin.setWindowModality(Qt.WindowModal)
-        self.FilterFilesWin.setWindowTitle('Filter File')
+        self.parentWin.setWindowTitle('Filter File')
         self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
 

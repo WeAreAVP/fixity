@@ -31,12 +31,12 @@ from EmailPref import EmailPref
 class ImportProjects(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
 
-    def __init__(self,parentWin):
+    def __init__(self ,parentWin):
         QDialog.__init__(self)
         self.parentWin = parentWin
         self.ImportProjectsWin = QDialog(self.parentWin)
         self.ImportProjectsWin.setWindowModality(Qt.WindowModal)
-        self.ImportProjectsWin.setWindowTitle('Filter File')
+        self.parentWin.setWindowTitle('Filter File')
         self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 

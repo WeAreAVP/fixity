@@ -51,6 +51,7 @@ class DecryptionManager(QDialog):
         self.DecryptionManagerWin.setWindowModality(Qt.WindowModal)
         
         self.DecryptionManagerWin.setWindowTitle('Checksum Manager')
+        self.parentWin.setWindowTitle('Checksum Manager')
         self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
 
         self.DecryptionManagerLayout = QVBoxLayout()

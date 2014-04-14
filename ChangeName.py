@@ -29,6 +29,7 @@ class ChangeName(QDialog):
         self.ChangeNameWin.setWindowModality(Qt.WindowModal)
         
         self.ChangeNameWin.setWindowTitle('Change Project Name')
+        self.parentWin.setWindowTitle('Checksum Manager')
         self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
          

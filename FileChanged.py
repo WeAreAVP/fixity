@@ -27,8 +27,9 @@ class FileChanged(QDialog):
 
 
     # Constuctor
-    def __init__(self , orignalPathText ='', changePathText = '' ):
-        self.FileChangedWin = QDialog()
+    def __init__(self,parentWin , orignalPathText ='', changePathText = '' ):
+        self.parentWin = parentWin
+        self.FileChangedWin = QDialog(self.parentWin)
         self.FileChangedWin.setWindowModality(Qt.WindowModal)
         self.FileChangedWin.setWindowTitle('Change Directory')
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))

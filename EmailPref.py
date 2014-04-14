@@ -33,7 +33,8 @@ class EmailPref(QDialog):
         self.parentWin = parentWin
         self.EmailPrefWin = QDialog(self.parentWin)
         self.EmailPrefWin.setWindowModality(Qt.WindowModal)
-        self.EmailPrefWin.setWindowTitle('Configure Sender Email')
+        
+        self.parentWin.setWindowTitle('Configure Sender Email')
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         

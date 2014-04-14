@@ -91,7 +91,7 @@ class ProjectWin(QMainWindow):
                 self.AF = AboutFixity()
                 self.EP.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager(self)
-                self.FileChanged = FileChanged()
+                self.FileChanged = FileChanged(self)
                 self.ImportProjects = ImportProjects(self)
                 self.ChangeName = ChangeName(self)
                 
@@ -391,7 +391,13 @@ class ProjectWin(QMainWindow):
             self.EP = EmailPref(self)
             self.EP.SetDesgin()
             self.EP.ShowDialog()
-
+        def importProjects(self):
+            self.ImportProjects.destroyImportProjects()
+            self.ImportProjects = None
+            self.ImportProjects = ImportProjects(self)
+            self.ImportProjects.SetDesgin()
+            self.ImportProjects.ShowDialog()
+        
         def AboutFixityView(self):
 
             self.AF.Cancel()
@@ -405,9 +411,10 @@ class ProjectWin(QMainWindow):
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
-            self.FileChanged = FileChanged(orignalPathText,changePathText)
+            self.FileChanged = FileChanged(self,orignalPathText,changePathText)
             self.FileChanged.SetDesgin()
             self.FileChanged.ShowDialog()
+            
 
         # Pop up to set Filters
         def FilterFilesBox(self):
@@ -614,13 +621,17 @@ class ProjectWin(QMainWindow):
 
         # New Project Creation
         def new(self):
-
-            name = QInputDialog.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
+            QID = QInputDialog(self)
+            QID.setWindowModality(Qt.WindowModal)
+            name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
+            
+            if not name[1]:
+                return 
             projectInfo =  self.Database.getProjectInfo(name[0])
-            if projectInfo:
-                if projectInfo[0]:
-                    QMessageBox.warning(self, "Fixity", "Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces\n*Project names must be legal filenames")
-                    return
+            
+            if len(projectInfo) > 0:
+                QMessageBox.warning(self, "Fixity", "Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces\n*Project names must be legal filenames")
+                return
 
             newitem = QListWidgetItem(name[0], self.projects)
             self.projects.setCurrentItem(newitem)
@@ -633,7 +644,7 @@ class ProjectWin(QMainWindow):
                 self.mtx[x].setText("")
 
             self.old = newitem
-            self.toggler(False)
+#             self.toggler(False)
 
         def process(self, shouldRun=True):
 
@@ -1166,15 +1177,8 @@ class ProjectWin(QMainWindow):
                         self.removeNotRequiredFiles()
                         event.accept()
 
-        def importProjects(self):
-            self.ImportProjects.destroyImportProjects()
-            self.ImportProjects = None
-            self.ImportProjects = ImportProjects(self)
-            self.ImportProjects.CreateWindow()
-            self.ImportProjects.SetWindowLayout()
-            self.ImportProjects.SetDesgin()
-            self.ImportProjects.ShowDialog()
-            app.exec_()
+        
+            
         
         def checkForChanges(self,projectName , searchForPath ,code):
             try:
