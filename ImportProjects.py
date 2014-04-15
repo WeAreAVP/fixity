@@ -36,7 +36,7 @@ class ImportProjects(QDialog):
         self.parentWin = parentWin
         self.ImportProjectsWin = QDialog(self.parentWin)
         self.ImportProjectsWin.setWindowModality(Qt.WindowModal)
-        self.parentWin.setWindowTitle('Checksum Manager')
+        self.parentWin.setWindowTitle('Import Project')
         self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 

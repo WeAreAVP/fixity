@@ -302,11 +302,7 @@ class ProjectWin(QMainWindow):
         def __del__(self):
             del self
         def cleanObjects(self):
-            print('------------------')
-            print('------------------')
-            print('closing windows')
-            print('------------------')
-            print('------------------')
+            
             #Closing opened Windows and database conactions 
             try:
                 self.Database.closeConnection()
@@ -425,11 +421,11 @@ class ProjectWin(QMainWindow):
             self.FilterFiles.ShowDialog()    
         # Pop up to set Filters        
         def ChangeNameBox(self):
-            print('testing')
+            
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName(self)
-            print('testing1')
+            
             self.ChangeName.projectListWidget = self.projects
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
@@ -681,7 +677,8 @@ class ProjectWin(QMainWindow):
                 projFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                 projFileText = projFile.readlines()
                 projFile.close()
-                print('closing projFile File')
+                
+                
                 if not projFileText :
                     isfileExists = False
 
@@ -800,7 +797,7 @@ class ProjectWin(QMainWindow):
                     projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                     projfileFileText = projfileFile.readlines()
                     projfileFile.close()
-                    print('closing projfileFile File')
+                    
                     configurations = {}
                     configurations['directories'] = ''
                     configurations['emails'] = ''
@@ -848,12 +845,12 @@ class ProjectWin(QMainWindow):
                     projfile.writelines(projfileFileText)
                     try:
                         projfileFile.close()
-                        print('closing projfileFile File')
+                        
                     except:
                         pass
                     try:
                         projfile.close()
-                        print('closing projfile File')
+                        
                     except:
                         pass
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
@@ -908,7 +905,7 @@ class ProjectWin(QMainWindow):
                 projFileChangePath.write(lineToWrite)
                 lineNumber = lineNumber+1
             currentProjFile.close()
-            print('closing currentProjFile File')
+            
             projFileChangePath.close()
 
             shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
@@ -1045,7 +1042,7 @@ class ProjectWin(QMainWindow):
                     progress.setValue(100 * float(f) / len(fls))
                     qApp.processEvents()
             progress.close()
-            print('closing progress File')
+            
             return list
 
         #Update Schedule information
@@ -1140,9 +1137,9 @@ class ProjectWin(QMainWindow):
                     projectFileLines = projectFile.readlines();
                     binFileLines = binFile.readlines();
                     projectFile.close()
-                    print('closing project File File')
+                    
                     binFile.close()
-                    print('closing bin File File')
+                    
                     if (not binFileLines) or (not projectFileLines):
                         remove('projects\\' + self.projects.currentItem().text() + '.fxy')
                         remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
@@ -1159,9 +1156,9 @@ class ProjectWin(QMainWindow):
                     if (not binFileLines) or (not projectFileLines):
                         self.unsaved = True
                     projectFile.close()
-                    print('closing project File File')
+                    
                     binFile.close()
-                    print('closing bin File File')
+                    
 
             if self.unsaved:
                     sbox = QMessageBox()
@@ -1194,24 +1191,21 @@ class ProjectWin(QMainWindow):
                 pass
         def createSymbolicLinks(self):
             try:
-                print('setting paths')
+                
                 
                 pathForHistory = str(getcwd()) +  str(os.sep) + 'history'
                 pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
                 pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
             
                 
-                print(pathForHistory)
-                print(pathForreprots)
-                print(pathFordebug)
-                print(str(getcwd()))
+                
             except Exception as ex:
                 print(ex[0])
                 
                 pass
             
             try:
-                print('removing old links')
+                
                 os.remove(pathForHistory)
             except Exception as ex:
                 print(ex[0])
@@ -1230,7 +1224,7 @@ class ProjectWin(QMainWindow):
                 pass
             
             try:
-                print('Creating Symbolick Path')
+                
                 pathInfo = str(getcwd()).replace('Fixity.app'+str(os.sep)+'Contents'+str(os.sep)+'Resources','')
                 
                 pathForSymblickHistory = pathInfo + str(os.sep) + 'history'
