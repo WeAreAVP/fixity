@@ -118,10 +118,7 @@ class FilterFiles(QDialog):
         
         self.IgnoreHiddenFiles = QCheckBox("Ignore Hidden Files")
         
-        self.FilterField.setMaximumSize(200, 100)
-        self.reset.setMaximumSize(200, 100)
-        self.cancel.setMaximumSize(200, 100)
-        self.setInformation.setMaximumSize(200, 100)
+        
         
         self.GetLayout().addWidget(self.IgnoreHiddenFiles)
         self.GetLayout().addWidget(self.FilterField)
@@ -210,7 +207,7 @@ class FilterFiles(QDialog):
 
     # close the dailog box
     def Cancel(self):
-        print('close bitch')
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyFilterFiles()
         self.FilterFilesWin.close()
 # app = QApplication('asdas')

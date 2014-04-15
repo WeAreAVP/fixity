@@ -107,10 +107,7 @@ class ChangeName(QDialog):
         
         self.changeNameField.setPlaceholderText("Add New Name")
         
-        self.changeNameField.setMaximumSize(200, 100)
-        
-        self.cancel.setMaximumSize(200, 100)
-        self.setInformation.setMaximumSize(200, 100)
+
         
         self.GetLayout().addWidget(self.changeNameField)
         self.GetLayout().addWidget(self.setInformation)
@@ -177,9 +174,11 @@ class ChangeName(QDialog):
         
     # close the dailog box
     def Cancel(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.refreshProjectSettings()
         self.destroyChangeName()
         self.ChangeNameWin.close()
+        
         
     def refreshProjectSettings(self):
             allProjects = DBObj.getProjectInfo()

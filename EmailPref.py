@@ -30,11 +30,15 @@ class EmailPref(QDialog):
     # Constructor
     def __init__(self,parentWin):
         QDialog.__init__(self)
-        self.parentWin = parentWin
-        self.EmailPrefWin = QDialog(self.parentWin)
-        self.EmailPrefWin.setWindowModality(Qt.WindowModal)
+        if parentWin:
+            self.parentWin = parentWin
+            self.EmailPrefWin = QDialog(self.parentWin)
+            self.EmailPrefWin.setWindowModality(Qt.WindowModal)
+            self.parentWin.setWindowTitle('Configure Sender Email')
+        else:
+            self.EmailPrefWin = QDialog()
         
-        self.parentWin.setWindowTitle('Configure Sender Email')
+        
         self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         
@@ -52,7 +56,11 @@ class EmailPref(QDialog):
         return self.version
     #Create Window
     def CreateWindow(self):
-        self.EmailPrefWin = QDialog(self.parentWin)
+        try:
+            if self.parentWin:
+                self.EmailPrefWin = QDialog(self.parentWin)
+        except:    
+            self.EmailPrefWin = QDialog()
         
     #Get Window info
     def GetWindow(self):
@@ -108,8 +116,8 @@ class EmailPref(QDialog):
             msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
             msgBox.exec_()
             
-        else:
-            self.ReOpenEmailPref()
+#         else:
+#             self.ReOpenEmailPref()
             
 
 
@@ -342,6 +350,10 @@ class EmailPref(QDialog):
 
     #Manage click on close
     def CloseClick(self):
+        try:
+            self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        except:
+            pass
         self.destroyEmailPref()
         self.EmailPrefWin.close()
 
@@ -387,10 +399,10 @@ class EmailPref(QDialog):
         else:
             self.port.setText('587')
 # app = QApplication('asdas')
-# w = EmailPref()
+# w = EmailPref(QDialog())
 # w.CreateWindow()
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#          
+#           
 # app.exec_()

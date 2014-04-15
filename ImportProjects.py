@@ -36,7 +36,7 @@ class ImportProjects(QDialog):
         self.parentWin = parentWin
         self.ImportProjectsWin = QDialog(self.parentWin)
         self.ImportProjectsWin.setWindowModality(Qt.WindowModal)
-        self.parentWin.setWindowTitle('Filter File')
+        self.parentWin.setWindowTitle('Checksum Manager')
         self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 
@@ -90,10 +90,7 @@ class ImportProjects(QDialog):
 
         self.projectSelected.setPlaceholderText("Project Path")
 
-        self.projectSelected.setMaximumSize(200, 100)
-
-        self.cancel.setMaximumSize(200, 100)
-        self.setInformation.setMaximumSize(200, 100)
+        
 
         self.GetLayout().addWidget(self.projectSelected)
         self.GetLayout().addWidget(self.setInformation)
@@ -264,6 +261,7 @@ class ImportProjects(QDialog):
 
     # close the dailog box
     def Cancel(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyImportProjects()
         self.ImportProjectsWin.close()
 

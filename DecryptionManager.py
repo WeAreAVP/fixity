@@ -136,9 +136,6 @@ class DecryptionManager(QDialog):
 
         self.cancel = QPushButton("Close")
 
-        self.methods.setMaximumSize(200, 100)
-        self.cancel.setMaximumSize(200, 100)
-        self.setInformation.setMaximumSize(200, 100)
 
         self.GetLayout().addWidget(self.methods)
         self.GetLayout().addWidget(self.setInformation)
@@ -245,6 +242,7 @@ class DecryptionManager(QDialog):
 
     #Close the dailog box
     def Cancel(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyDecryptionManager()
         self.DecryptionManagerWin.close()
 

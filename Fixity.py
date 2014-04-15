@@ -101,8 +101,8 @@ class ProjectWin(QMainWindow):
                 self.Threading = Threading
 
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
-                versoin = self.EP.getVersion()
-                self.setWindowTitle("Fixity "+versoin);
+                self.versoin = self.EP.getVersion()
+                self.setWindowTitle("Fixity "+self.versoin)
                 self.unsaved = False
                 menubar = self.menuBar()
                 self.f = menubar.addMenu('&File')
@@ -414,7 +414,7 @@ class ProjectWin(QMainWindow):
             self.FileChanged = FileChanged(self,orignalPathText,changePathText)
             self.FileChanged.SetDesgin()
             self.FileChanged.ShowDialog()
-            
+            self.setWindowTitle("Fixity "+self.versoin)
 
         # Pop up to set Filters
         def FilterFilesBox(self):

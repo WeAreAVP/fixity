@@ -81,6 +81,7 @@ class FileChanged(QDialog):
 
     # Close Click
     def CloseClick(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.changeThePathInformation = False
         self.FileChangedWin.close()
 
