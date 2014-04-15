@@ -44,15 +44,14 @@ class DecryptionManager(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     #Constructor
     def __init__(self,parentWin):
-        QDialog.__init__(self)
+        QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.EmailPref = EmailPref(self)
-        self.DecryptionManagerWin = QDialog(self.parentWin)
-        self.DecryptionManagerWin.setWindowModality(Qt.WindowModal)
+        self.setWindowModality(Qt.WindowModal)
         
-        self.DecryptionManagerWin.setWindowTitle('Checksum Manager')
+        self.setWindowTitle('Checksum Manager')
         self.parentWin.setWindowTitle('Checksum Manager')
-        self.DecryptionManagerWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
 
         self.DecryptionManagerLayout = QVBoxLayout()
         
@@ -61,27 +60,30 @@ class DecryptionManager(QDialog):
     # Distructor
     def destroyDecryptionManager(self):
         del self
-
+        
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(DecryptionManager,self).reject()
     #Create Window
     def CreateWindow(self):
-        self.DecryptionManagerWin = QDialog()
+        self = QDialog()
         
 
     #Create Window info
     def GetWindow(self):
-        return self.DecryptionManagerWin
+        return self
 
     #Create Show Window
     def ShowDialog(self):
-        self.DecryptionManagerWin.show()
-        self.DecryptionManagerWin.exec_()
+        self.show()
+        self.exec_()
 
     #Create Show Window
     def SetLayout(self, layout):
         self.DecryptionManagerLayout = layout
     #Set Layout for Windows
     def SetWindowLayout(self):
-        self.DecryptionManagerWin.setLayout(self.DecryptionManagerLayout)
+        self.setLayout(self.DecryptionManagerLayout)
     #Get Layout
     def GetLayout(self):
         return self.DecryptionManagerLayout
@@ -242,9 +244,9 @@ class DecryptionManager(QDialog):
 
     #Close the dailog box
     def Cancel(self):
-        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        self.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyDecryptionManager()
-        self.DecryptionManagerWin.close()
+        self.close()
 
     #Warning to change encryption value
     def slotWarning(self, projectName):

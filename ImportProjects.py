@@ -12,6 +12,7 @@ Created on Dec 5, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -25,19 +26,15 @@ import os
 from Database import Database
 from EmailPref import EmailPref
 
-
-
-
 class ImportProjects(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
 
     def __init__(self ,parentWin):
-        QDialog.__init__(self)
+        QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
-        self.ImportProjectsWin = QDialog(self.parentWin)
-        self.ImportProjectsWin.setWindowModality(Qt.WindowModal)
+        self.setWindowModality(Qt.WindowModal)
         self.parentWin.setWindowTitle('Import Project')
-        self.ImportProjectsWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 
     # Distructor
@@ -45,22 +42,22 @@ class ImportProjects(QDialog):
         del self
 
     def CreateWindow(self):
-        self.ImportProjectsWin = QDialog()
+        self = QDialog()
         
 
     def GetWindow(self):
-        return self.ImportProjectsWin
+        return self
 
     def ShowDialog(self):
-        self.ImportProjectsWin.show()
-        self.ImportProjectsWin.exec_()
+        self.show()
+        self.exec_()
 
 
     def SetLayout(self, layout):
         self.ImportProjectsLayout = layout
 
     def SetWindowLayout(self):
-        self.ImportProjectsWin.setLayout(self.ImportProjectsLayout)
+        self.setLayout(self.ImportProjectsLayout)
 
     def GetLayout(self):
         return self.ImportProjectsLayout
@@ -102,7 +99,10 @@ class ImportProjects(QDialog):
         self.cancel.clicked.connect(self.Cancel)
         self.projectSelected.setDisabled(True)
         self.SetWindowLayout()
-
+        
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(ImportProjects,self).reject()
     # Update Filters information
     def SetInformation(self):
         DB = Database()
@@ -263,7 +263,7 @@ class ImportProjects(QDialog):
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyImportProjects()
-        self.ImportProjectsWin.close()
+        self.close()
 
 
 # app = QApplication('asdas')

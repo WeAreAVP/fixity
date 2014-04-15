@@ -1267,7 +1267,6 @@ if __name__ == '__main__':
         pass
 
     if(args.autorun == None or args.autorun == ''):
-#        try:
             app = QApplication(sys.argv)
             app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
             
@@ -1280,9 +1279,6 @@ if __name__ == '__main__':
             
             sys.exit(app.exec_())
             
-#        except Exception as ex:
-#            print(ex[0])
-#            print("Some thing have gone wrong , please try restarting Fixity")
     else:
         try:
             print('Scanning is in progress!........')

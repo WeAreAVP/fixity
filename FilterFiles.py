@@ -33,7 +33,6 @@ class FilterFiles(QDialog):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.EmailPref = EmailPref(self)
-        #self.FilterFilesWin = QDialog()
         self.setWindowModality(Qt.WindowModal)
         self.parentWin.setWindowTitle('Filter File')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))

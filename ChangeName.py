@@ -22,15 +22,15 @@ class ChangeName(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
     def __init__(self,parentWin):
-        QDialog.__init__(self)
+        QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.EmailPref = EmailPref(self)
-        self.ChangeNameWin = QDialog(self.parentWin)
-        self.ChangeNameWin.setWindowModality(Qt.WindowModal)
         
-        self.ChangeNameWin.setWindowTitle('Change Project Name')
+        self.setWindowModality(Qt.WindowModal)
+        
+        self.setWindowTitle('Change Project Name')
         self.parentWin.setWindowTitle('Checksum Manager')
-        self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
          
         self.projectListWidget = None
@@ -39,16 +39,17 @@ class ChangeName(QDialog):
     def destroyChangeName(self):
         del self  
         
-    def CreateWindow(self):
-        self.ChangeNameWin = QDialog()
         
-        
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(ChangeName,self).reject()
+                
     def GetWindow(self):
-        return self.ChangeNameWin 
+        return self 
              
     def ShowDialog(self):     
-        self.ChangeNameWin.show()
-        self.ChangeNameWin.exec_()
+        self.show()
+        self.exec_()
         
         
         
@@ -56,7 +57,7 @@ class ChangeName(QDialog):
         self.ChangeNameLayout = layout
         
     def SetWindowLayout(self):
-        self.ChangeNameWin.setLayout(self.ChangeNameLayout)
+        self.setLayout(self.ChangeNameLayout)
         
     def GetLayout(self):
         return self.ChangeNameLayout
@@ -165,10 +166,10 @@ class ChangeName(QDialog):
     def reOpenChangeName(self):
         self.Cancel()
         self.EmailPref = EmailPref(self)
-        self.ChangeNameWin = QDialog()
+        self = QDialog()
         
-        self.ChangeNameWin.setWindowTitle('Change Project Name')
-        self.ChangeNameWin.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
+        self.setWindowTitle('Change Project Name')
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
         self.projectListWidget = None
         
@@ -177,7 +178,7 @@ class ChangeName(QDialog):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.refreshProjectSettings()
         self.destroyChangeName()
-        self.ChangeNameWin.close()
+        self.close()
         
         
     def refreshProjectSettings(self):

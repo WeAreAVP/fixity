@@ -28,23 +28,26 @@ from Database import Database
 class EmailPref(QDialog):
     '''This class is created to handle all Email configurations and management'''
     # Constructor
-    def __init__(self,parentWin):
-        QDialog.__init__(self)
+    def __init__(self,parentWin):        
+        QDialog.__init__(self,parentWin)
+        
         if parentWin:
             self.parentWin = parentWin
-            self.EmailPrefWin = QDialog(self.parentWin)
-            self.EmailPrefWin.setWindowModality(Qt.WindowModal)
-            self.parentWin.setWindowTitle('Configure Sender Email')
-        else:
-            self.EmailPrefWin = QDialog()
+            self.setWindowModality(Qt.WindowModal)
+            self.parentWin.setWindowTitle('Configure Sender Email')            
+        else:            
+            self = QDialog()
         
         
-        self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         
         self.FM = FixityMail
         self.version = '0.4'
-
+        
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(EmailPref,self).reject()
     #Distructor
     def destroyEmailPref(self):
         del self
@@ -58,23 +61,23 @@ class EmailPref(QDialog):
     def CreateWindow(self):
         try:
             if self.parentWin:
-                self.EmailPrefWin = QDialog(self.parentWin)
+                self = QDialog(self.parentWin)
         except:    
-            self.EmailPrefWin = QDialog()
+            self = QDialog()
         
     #Get Window info
     def GetWindow(self):
-        return self.EmailPrefWin
+        return self
     #Show Dialog
     def ShowDialog(self):
-        self.EmailPrefWin.show()
-        self.EmailPrefWin.exec_()
+        self.show()
+        self.exec_()
     #Set Layout
     def SetLayout(self, layout):
         self.EmailPrefLayout = layout
     #Set layout for windows
     def SetWindowLayout(self):
-        self.EmailPrefWin.setLayout(self.EmailPrefLayout)
+        self.setLayout(self.EmailPrefLayout)
 
 
     # Check is Email address and Password is valid by sending email on its own inbox
@@ -241,10 +244,10 @@ class EmailPref(QDialog):
         self.port.setText('')
     def ReOpenEmailPref(self):
         self.CloseClick()
-        self.EmailPrefWin = QDialog()
+        self = QDialog()
         
-        self.EmailPrefWin.setWindowTitle('Configure Sender Email')
-        self.EmailPrefWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+        self.setWindowTitle('Configure Sender Email')
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         self.FM = FixityMail
         self.version = '0.4'
@@ -252,7 +255,7 @@ class EmailPref(QDialog):
         self.SetWindowLayout()
         self.SetDesgin()
         self.ShowDialog()
-        self.EmailPrefWin.show()
+        self.show()
         
           # Fetch information related to email configuration
     def getConfigInfo(self, project=None):
@@ -355,7 +358,7 @@ class EmailPref(QDialog):
         except:
             pass
         self.destroyEmailPref()
-        self.EmailPrefWin.close()
+        self.close()
 
     #TSL configuration manager
     def TLSConif(self):
@@ -398,11 +401,12 @@ class EmailPref(QDialog):
             self.port.setText(port)
         else:
             self.port.setText('587')
+            
 # app = QApplication('asdas')
 # w = EmailPref(QDialog())
-# w.CreateWindow()
+# 
 # w.SetWindowLayout()
 # w.SetDesgin()
 # w.ShowDialog()
-#           
+#            
 # app.exec_()
