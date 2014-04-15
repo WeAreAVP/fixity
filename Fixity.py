@@ -290,6 +290,10 @@ class ProjectWin(QMainWindow):
                     self.old.setSelected(True)
                 except:
                     pass
+                if(len(allProjects) <= 0):
+                    self.runOnlyOnACPower.setDisabled(True)
+                    self.StartWhenAvailable.setDisabled(True)
+                    self.EmailOnlyWhenSomethingChanged.setDisabled(True)
                 
                 self.closeEvent(self.cleanObjects)
                 
@@ -638,9 +642,12 @@ class ProjectWin(QMainWindow):
             for x in xrange(0, 7):
                 self.dtx[x].setText("")
                 self.mtx[x].setText("")
-
+                
             self.old = newitem
-#             self.toggler(False)
+            self.toggler(False)
+            
+            
+                
 
         def process(self, shouldRun=True):
 
@@ -869,6 +876,18 @@ class ProjectWin(QMainWindow):
             self.timer.setDisabled(switch)
             self.dom.setDisabled(switch)
             self.dow.setDisabled(switch)
+            try:
+                self.runOnlyOnACPower.setDisabled(switch)
+            except:
+                pass
+            try:
+                self.StartWhenAvailable.setDisabled(switch)
+            except:
+                pass
+            try:
+                self.EmailOnlyWhenSomethingChanged.setDisabled(switch)
+            except:
+                pass
 
         def changed(self):
                 self.unsaved = True
@@ -1197,30 +1216,23 @@ class ProjectWin(QMainWindow):
                 pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
                 pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
             
-                
-                
             except Exception as ex:
-                print(ex[0])
-                
                 pass
             
             try:
                 
                 os.remove(pathForHistory)
             except Exception as ex:
-                print(ex[0])
                 pass
             
             try:
                 os.remove(pathForreprots)
             except Exception as ex:
-                print(ex[0])
                 pass
             
             try:
                 os.remove(pathFordebug)
             except Exception as ex:
-                print(ex[0])
                 pass
             
             try:
@@ -1239,7 +1251,7 @@ class ProjectWin(QMainWindow):
             except Exception as ex:
                 print(ex[0])
                 pass
-            
+        
 
 def auto_run(project):
     AR = AutoRuner()

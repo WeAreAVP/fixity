@@ -25,28 +25,33 @@ from Database import Database
 #Custom Classes
 from EmailPref import EmailPref
 DB = Database()
-
+    
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     # Constructor
     def __init__(self,parentWin):
-        QDialog.__init__(self)
+        QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.EmailPref = EmailPref(self)
-        self.FilterFilesWin = QDialog(self.parentWin)
-        self.FilterFilesWin.setWindowModality(Qt.WindowModal)
+        #self.FilterFilesWin = QDialog()
+        self.setWindowModality(Qt.WindowModal)
         self.parentWin.setWindowTitle('Filter File')
-        self.FilterFilesWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
-
+        
+    def keyPressEvent(self, event):
+        if type(event) == QKeyEvent:
+            print event.key()
+        super(FilterFiles,self).keyPressEvent(event)        
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(FilterFiles,self).reject()
+                
     # Distructor
     def destroyFilterFiles(self):
         del self
 
-    # Create Window For this
-    def CreateWindow(self):
-        self.FilterFilesWin = QDialog(self.parentWin)
-        
+    
 
     # Get Window of this
     def GetWindow(self):
@@ -54,8 +59,8 @@ class FilterFiles(QDialog):
 
     # Get Window of this
     def ShowDialog(self):
-        self.FilterFilesWin.show()
-        self.FilterFilesWin.exec_()
+        self.show()
+        self.exec_()
 
     # Set Layout
     def SetLayout(self, layout):
@@ -63,7 +68,7 @@ class FilterFiles(QDialog):
 
     # Set Window Layout
     def SetWindowLayout(self):
-        self.FilterFilesWin.setLayout(self.FilterFilesLayout)
+        self.setLayout(self.FilterFilesLayout)
 
     # Get Layout
     def GetLayout(self):
@@ -130,6 +135,8 @@ class FilterFiles(QDialog):
             self.setInformation.setDisabled(True)
             self.reset.setDisabled(True)
             self.Porjects.setDisabled(True)
+            self.FilterField.setDisabled(True)
+            self.IgnoreHiddenFiles.setDisabled(True)
         
         self.setInformation.clicked.connect(self.SetInformation)
         self.reset.clicked.connect(self.Reset)
@@ -208,13 +215,26 @@ class FilterFiles(QDialog):
     # close the dailog box
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        self.close()
         self.destroyFilterFiles()
-        self.FilterFilesWin.close()
-# app = QApplication('asdas')
-# w = FilterFiles()
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-#          
-# app.exec_()
+        
+  
+#     def keyPressEvent(self, event):
+#         if type(event) == QKeyEvent:
+#             print event.key()
+            
+# if __name__ == '__main__':  
+#        
+#     app = QApplication(sys.argv)
+#     w = FilterFiles(QDialog())
+#     #w.CreateWindow()
+#     w.SetWindowLayout()
+#     w.SetDesgin()
+#     w.ShowDialog()            
+#     sys.exit(app.exec_())
+
+# if __name__ == "__main__":
+#     app = QApplication(sys.argv)
+#     mainW = cheking()
+#     mainW.show()
+#     sys.exit(app.exec_())
