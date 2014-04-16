@@ -84,8 +84,8 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
                         Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
-                if OS_Info == 'linux':
-                    self.createSymbolicLinks()
+#                 if OS_Info == 'linux':
+#                     self.createSymbolicLinks()
                 
                 self.EP = EmailPref(self)
                 self.AF = AboutFixity()
@@ -1211,9 +1211,11 @@ class ProjectWin(QMainWindow):
                 pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
                 pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
             
+            
             except Exception as ex:
                 pass
-            
+                  
+                  
             try:
                 
                 os.remove(pathForHistory)
