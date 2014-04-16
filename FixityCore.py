@@ -138,49 +138,49 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
 # Returns the complete file ID as a single long string
 # (volume number, high index, low index)
 def ntfsIDForWindows(f):
-	id = '';
-	try:
-		target = open(f, 'rb')
-	except Exception as e:
-		moreInformation = {"moreInfo":'none'}
-		try:
-			if not e[0] == None:
-				moreInformation['LogsMore'] =str(e[0])
-		except:
-			pass
-		try:	
-			if not e[1] == None:
-				moreInformation['LogsMore1'] =str(e[1])
-		except:
-			pass
-		Debugging = Debuger()
-		Debugging.tureDebugerOn()	
-		Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
-		pass
-	try:
-		id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
-			str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
-			str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
-		return id
-	except Exception as e:
-
-
-			moreInformation = {"moreInfo":'none'}
-			try:
-				if not e[0] == None:
-					moreInformation['LogsMore'] =str(e[0])
-			except:
-				pass
-			try:	
-				if not e[1] == None:
-					moreInformation['LogsMore1'] =str(e[1])
-			except:
-				pass
-			Debugging = Debuger()
-			Debugging.tureDebugerOn()	
-			Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
-			pass
-	return id
+    id = '';
+    try:
+    	target = open(f, 'rb')
+    except Exception as e:
+    	moreInformation = {"moreInfo":'none'}
+    	try:
+    		if not e[0] == None:
+    			moreInformation['LogsMore'] =str(e[0])
+    	except:
+    		pass
+    	try:	
+    		if not e[1] == None:
+    			moreInformation['LogsMore1'] =str(e[1])
+    	except:
+    		pass
+    	Debugging = Debuger()
+    	Debugging.tureDebugerOn()	
+    	Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+    	pass
+    try:
+    	id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
+    		str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
+    		str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
+    	return id
+    except Exception as e:
+    
+    
+    		moreInformation = {"moreInfo":'none'}
+    		try:
+    			if not e[0] == None:
+    				moreInformation['LogsMore'] =str(e[0])
+    		except:
+    			pass
+    		try:	
+    			if not e[1] == None:
+    				moreInformation['LogsMore1'] =str(e[1])
+    		except:
+    			pass
+    		Debugging = Debuger()
+    		Debugging.tureDebugerOn()	
+    		Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+    		pass
+    return id
 # File ID for NTFS
 # Returns the complete file ID as a single long string
 # (volume number, high index, low index)
@@ -572,7 +572,13 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             NameOfFile = str(projectName[1]).split('/')
 
             NameOfFile[(len(NameOfFile)-1)]
-            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+            rn = str(pathInfo)+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            print('Path Info')
+            print(pathInfo)
+            print('Full Path')
+            print(rn)
+            
 
         r = open(rn, 'w+')
         #print('Open '+rn+' File')
@@ -659,8 +665,17 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
     FileChangedList = ""
     InfReplacementArray = {}
-    
-    historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+    if(OS_Info == 'Windows'):
+        historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+    else:
+        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+        historyFile = str(pathInfo) + str(os.sep) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        print('Path Info')
+        print(pathInfo)
+        print('History File')
+        print(historyFile)
+            
+
     #print('Open '+historyFile+' File')
     HistoryFile = open(historyFile , 'w+')
     print('writing ::: History File')

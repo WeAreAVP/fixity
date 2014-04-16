@@ -46,17 +46,29 @@ class EmailPref(QDialog):
         self.version = '0.4'
         
     def reject(self):
-        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
-        super(EmailPref,self).reject()
+        try:
+            self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        except:
+            pass
+        try:
+            super(EmailPref,self).reject()
+        except:
+            pass
     #Distructor
     def destroyEmailPref(self):
         del self
     #Get Version
     def getVersion(self):
-        return self.version
+        try:
+            return self.version
+        except:
+            pass
     #Set Version
     def setVersion(self,version):
-        return self.version
+        try:
+            return self.version
+        except:
+            pass
     #Create Window
     def CreateWindow(self):
         try:
@@ -244,7 +256,6 @@ class EmailPref(QDialog):
         self.port.setText('')
     def ReOpenEmailPref(self):
         self.CloseClick()
-        self = QDialog()
         
         self.setWindowTitle('Configure Sender Email')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
@@ -257,7 +268,7 @@ class EmailPref(QDialog):
         self.ShowDialog()
         self.show()
         
-          # Fetch information related to email configuration
+    # Fetch information related to email configuration
     def getConfigInfo(self, project=None):
         self.Database = Database()
 
@@ -404,9 +415,7 @@ class EmailPref(QDialog):
             
 # app = QApplication('asdas')
 # w = EmailPref(QDialog())
-# 
 # w.SetWindowLayout()
 # w.SetDesgin()
-# w.ShowDialog()
-#            
+# w.ShowDialog()            
 # app.exec_()

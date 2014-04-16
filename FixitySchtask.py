@@ -322,6 +322,7 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
                     xmlsch.write("                <" + Month + "/>\n")
                 xmlsch.write("                </Months>\n")
                 xmlsch.write("            </ScheduleByMonth>\n")
+                
             if interval == 2:
                 xmlsch.write("            <ScheduleByWeek>\n")
                 xmlsch.write("                <WeeksInterval >" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
@@ -329,6 +330,7 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
                 xmlsch.write("                    <" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n");
                 xmlsch.write("                </DaysOfWeek >\n")
                 xmlsch.write("            </ScheduleByWeek>\n")
+                
             if interval == 3:
                 xmlsch.write("            <ScheduleByDay>\n")
                 xmlsch.write("                <DaysInterval>" + str(Triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']) + "</DaysInterval>\n")
