@@ -56,12 +56,13 @@ class Debuger(object):
     # Function to Log Errors
     # @param msg Message to log
     def logError(self,msg,moreInformation = None):
+
         if(self.isdebugerOn):
             self.loger.debug(msg)
             if(moreInformation):
                 for key in moreInformation:
                     self.loger.debug(key + '::' + moreInformation[key]+"\n")
-
+        
 
 
     # Function to Log Information

@@ -126,13 +126,16 @@ class EmailPref(QDialog):
         text = 'Testing email access for Fixity reporting...'
         flag = self.FM.send(Email, text, None,information,'',self)
         if flag:
-            
             msgBox = QMessageBox();
             msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
             msgBox.exec_()
-            
-#         else:
-#             self.ReOpenEmailPref()
+        else:
+            try:
+                msgBox = QMessageBox();
+                msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
+                msgBox.exec_()            
+            except:
+                pass
             
 
 

@@ -78,19 +78,15 @@ def send(recipients, text, attachment, information,projectName='', EmailPref = N
 			print(moreInformation)
 		except:
 			pass
-
+		print(11)
 		try:
 			D.tureDebugerOn()
 			D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		except:
 			pass
-		try:
-			msgBox = QMessageBox();
-			msgBox.setText("Fixity was unable to send email.\n*Please ensure that you are connected to the Internet\n*Please ensure that your email credentials are correct")
-			msgBox.exec_()
-			
-		except:
-			pass
+		print(22)
+		
+		print(33)
 		return False
 
  
