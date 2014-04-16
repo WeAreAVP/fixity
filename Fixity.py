@@ -1268,7 +1268,7 @@ if __name__ == '__main__':
             app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
             app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
             
-            app.MainFixityWindow.createSymbolicLinks()
+#             app.MainFixityWindow.createSymbolicLinks()
            
             app.MainFixityWindow.show()
             

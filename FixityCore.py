@@ -579,11 +579,12 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             print('2')
             createPath = str(pathInfo).replace(' ', '\\ ')
             print(str(createPath)+'reports')
-            try:
-                if path.isdir( str(createPath) + 'reports' ):
+            
+            if not os.path.isdir( str(createPath) + 'reports' ):
+                try:
                     os.mkdir( str(createPath) + 'reports' )
-            except:
-                pass  
+                except:
+                    pass  
             print('3')  
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
@@ -694,7 +695,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         createPath = str(pathInfo).replace(' ', '\\ ')
         
         print(str(createPath)+'history')    
-        if os.path.isdir(str(createPath)+'history') :
+        if  not os.path.isdir(str(createPath)+'history') :
             try:
                 os.mkdir(str(createPath)+'history')
             except:
