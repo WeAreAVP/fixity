@@ -9,7 +9,7 @@ from setuptools import setup
 
 APP = ['Fixity.py']
 DATA_FILES = []
-OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PySide.QtCore','PySide.QtGui'], 'iconfile':'logo_sign_trans.icns','resources':'bin,schedules,reports,history,debug,images'}
+OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PySide.QtCore','PySide.QtGui'], 'iconfile':'images\logo_sign_trans.icns','resources':'bin,schedules,reports,history,debug,images'}
 setup(
     app=APP,
     data_files=DATA_FILES,
