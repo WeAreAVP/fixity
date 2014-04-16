@@ -1,1 +1,0 @@
-setWindowFlags(Qt.WindowStaysOnTopHint)
