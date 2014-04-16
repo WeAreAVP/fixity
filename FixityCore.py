@@ -578,6 +578,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             pathInfo = str(pathInfo).replace('Fixity.app', '')
             print('2')
             createPath = str(pathInfo).replace(' ', '\\ ')
+            print(str(createPath)+'reports')
             try:
                 if path.isdir( str(createPath) + 'reports' ):
                     os.mkdir( str(createPath) + 'reports' )
@@ -692,7 +693,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         
         createPath = str(pathInfo).replace(' ', '\\ ')
         
-            
+        print(str(createPath)+'history')    
         if os.path.isdir(str(createPath)+'history') :
             try:
                 os.mkdir(str(createPath)+'history')
