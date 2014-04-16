@@ -15,3 +15,5 @@ reports/*
 *.bat
 *.vb
 .dblocker.log.lock.swp
+.project
+.pyproject
