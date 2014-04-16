@@ -572,8 +572,15 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             NameOfFile = str(projectName[1]).split('/')
 
             NameOfFile[(len(NameOfFile)-1)]
+            
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+            pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
+            pathInfo = str(pathInfo).replace('Fixity.app', '')
+            if path.isdir(str(pathInfo)+str(os.sep)+'reports') :
+                os.mkdir(str(pathInfo)+str(os.sep)+'reports')
+                
             rn = str(pathInfo)+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            
             print('Path Info')
             print(pathInfo)
             print('Full Path')
@@ -581,10 +588,8 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             
 
         r = open(rn, 'w+')
-        #print('Open '+rn+' File')
         r.write(report)
         r.close()
-        #print('closing '+rn+' File')
     except Exception as e:
         print(e[0])
 
@@ -638,6 +643,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pass        
             
     try:        
+        print('acquire')
         lock.acquire()
     except:
         pass
@@ -648,6 +654,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     missingFile = ('','')
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
+    
     
     if len(projectInformation) <=0:
         return
@@ -668,15 +675,25 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     if(OS_Info == 'Windows'):
         historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
+        
         pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+        pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
+        pathInfo = str(pathInfo).replace('Fixity.app', '')
+        print('hello')
+        if os.path.isdir(str(pathInfo)+str(os.sep)+'history') :
+            try:
+                os.mkdir(str(pathInfo)+str(os.sep)+'history')
+            except:
+                pass
+                
         historyFile = str(pathInfo) + str(os.sep) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        
         print('Path Info')
         print(pathInfo)
         print('History File')
         print(historyFile)
-            
-
-    #print('Open '+historyFile+' File')
+        
+    
     HistoryFile = open(historyFile , 'w+')
     print('writing ::: History File')
     #print('closing '+historyFile+'File')
@@ -922,7 +939,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
     repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 
-    lock.release()
+    try:
+        lock.release()
+        print('relased the file')
+    except:
+        pass
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 #Path Encoding to a Code To Identify the Path of each file
