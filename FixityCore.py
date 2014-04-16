@@ -576,11 +576,12 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
-            
-            if path.isdir( str(pathInfo) + 'reports' ):
-                os.mkdir( str(pathInfo) + 'reports' )
+            createPath = str(pathInfo).replace(' ', '\\ ')
+            if path.isdir( str(createPath) + 'reports' ):
+                os.mkdir( str(createPath) + 'reports' )
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            rn = str(rn).replace(' ', '\\ ')
             print('Path Info')
             print(pathInfo)
             print('Full Path')
@@ -680,15 +681,17 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
-        print('hello')
-        if os.path.isdir(str(pathInfo)+str(os.sep)+'history') :
+        createPath = str(pathInfo).replace(' ', '\\ ')
+        
+            
+        if os.path.isdir(str(createPath)+str(os.sep)+'history') :
             try:
-                os.mkdir(str(pathInfo)+str(os.sep)+'history')
+                os.mkdir(str(createPath)+str(os.sep)+'history')
             except:
                 pass
                 
         historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
-        
+        historyFile = str(historyFile).replace(' ', '\\ ')
         print('Path Info')
         print(pathInfo)
         print('History File')
