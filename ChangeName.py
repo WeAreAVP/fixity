@@ -51,8 +51,6 @@ class ChangeName(QDialog):
         self.show()
         self.exec_()
         
-        
-        
     def SetLayout(self, layout):
         self.ChangeNameLayout = layout
         
