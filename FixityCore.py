@@ -576,8 +576,9 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
-            if path.isdir(str(pathInfo)+str(os.sep)+'reports') :
-                os.mkdir(str(pathInfo)+str(os.sep)+'reports')
+            
+            if path.isdir( str(pathInfo) + 'reports' ):
+                os.mkdir( str(pathInfo) + 'reports' )
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
             print('Path Info')

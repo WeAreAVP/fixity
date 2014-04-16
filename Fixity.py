@@ -681,7 +681,6 @@ class ProjectWin(QMainWindow):
                 projFileText = projFile.readlines()
                 projFile.close()
                 
-                
                 if not projFileText :
                     isfileExists = False
 
