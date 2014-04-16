@@ -1229,7 +1229,7 @@ class ProjectWin(QMainWindow):
                 os.remove(pathFordebug)
             except Exception as ex:
                 pass
-            
+            print('1')
             try:
                 
                 pathInfo = str(getcwd()).replace('Fixity.app'+str(os.sep)+'Contents'+str(os.sep)+'Resources','')

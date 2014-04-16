@@ -572,21 +572,30 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             NameOfFile = str(projectName[1]).split('/')
 
             NameOfFile[(len(NameOfFile)-1)]
-            
+            print('1')
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
+            print('2')
             createPath = str(pathInfo).replace(' ', '\\ ')
-            if path.isdir( str(createPath) + 'reports' ):
-                os.mkdir( str(createPath) + 'reports' )
+            try:
+                if path.isdir( str(createPath) + 'reports' ):
+                    os.mkdir( str(createPath) + 'reports' )
+            except:
+                pass  
+            print('3')  
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-            rn = str(rn).replace(' ', '\\ ')
+            try:
+                rn = str(rn).replace(' ', '\\ ')
+            except Exception as Ex:
+                print(Ex[0])
+            print('4')
             print('Path Info')
             print(pathInfo)
             print('Full Path')
             print(rn)
-            
+            print('5')
 
         r = open(rn, 'w+')
         r.write(report)
@@ -684,9 +693,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         createPath = str(pathInfo).replace(' ', '\\ ')
         
             
-        if os.path.isdir(str(createPath)+str(os.sep)+'history') :
+        if os.path.isdir(str(createPath)+'history') :
             try:
-                os.mkdir(str(createPath)+str(os.sep)+'history')
+                os.mkdir(str(createPath)+'history')
             except:
                 pass
                 
@@ -697,8 +706,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         print('History File')
         print(historyFile)
         
-    
-    HistoryFile = open(historyFile , 'w+')
+    try:
+        HistoryFile = open(historyFile , 'w+')
+    except:
+        pass
     print('writing ::: History File')
     #print('closing '+historyFile+'File')
     first = ''
@@ -716,7 +727,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     print('writing ::: Stared Worked')
     check = 0
     for l in projectDetailInformation:
-
+        print('1')
         try:
             x = toTuple(projectDetailInformation[l])
 
@@ -731,7 +742,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
                     dict_File[pathInfo['path']+pathInformation[1]].append([x[0], x[2], False])
-
+                    print('2')
         except Exception as ex :
 
             moreInformation = {"moreInfo":'null'}
@@ -761,7 +772,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     flagAnyChanges = False
-
+    print('3')
     Algorithm = str(projectInformation[0]['selectedAlgo'])
 
     counter = 0
@@ -772,22 +783,27 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     Information['name'] = EncodeInfo(str(CurrentDate))
     versionID  = DB.insert(DB._tableVersions, Information)
 
-    HistoryFile.write(str(first)+"\n")
-    HistoryFile.write(str(projectInformation[0]['emailAddress'])+"\n")
+    try:
+        HistoryFile.write(str(first)+"\n")
+        HistoryFile.write(str(projectInformation[0]['emailAddress'])+"\n")
+    except:
+        pass
     keeptime = ''
     keeptime += str(projectInformation[0]['durationType'])
     keeptime +=' ' + str(projectInformation[0]['lastRan'])
-
+    print('4')
     if int(projectInformation[0]['durationType']) == 3 :
         keeptime += ' 99 99'
     elif int(projectInformation[0]['durationType']) == 2 :
         keeptime += ' 99 '+str(projectInformation[0]['runDayOrMonth'])
     elif int(projectInformation[0]['durationType']) == 1 :
         keeptime += ' ' + str(projectInformation[0]['runDayOrMonth']) + ' 99'
-
-    HistoryFile.write(keeptime+"\n")
-    HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-
+    try:
+        HistoryFile.write(keeptime+"\n")
+        HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+    except:
+        pass
+    print('5')
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 
         DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
@@ -913,8 +929,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         del cpyProjectPathInformation[PDI]['id']
         cpyProjectPathInformation[PDI]['versionID'] = versionID['id']
         DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
-    
-    HistoryFile.close()
+    try:
+        HistoryFile.close()
+    except:
+        pass
     #print('closing '+historyFile+' File')
 
     information = str(file).split('\\')
@@ -936,11 +954,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         #print('closing '+historyFile+' File')
     except:
         pass
+    print('6')
     ProjectName = file.replace('.fxy','').replace('projects\\','')
     ProjectName = ProjectName.replace('.fxy','').replace('projects//','')
     ProjectName = ProjectName.replace('.fxy','').replace('//','/')
     ProjectName = ProjectName.replace('.fxy','').replace('projects/','')
     ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
+    print('asfdsfsd')
     repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 
     try:
@@ -1017,5 +1037,5 @@ def DecodeInfo(stringToBeDecoded):
 
 ## To test Main Functionality  
 # projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'Hopla.fxy','','Hopla')
+# run(projects_path+'New_Project.fxy','','New_Project')
 # exit()
