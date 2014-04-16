@@ -2,11 +2,17 @@
 .idea
 Fixity.db
 build/* 
+!build/cache/empty.txt
 dist/*
+!dist/cache/empty.txt
 schedules/* 
+!schedules/cache/empty.txt
 debug/* 
+!debug/cache/empty.txt
 history/* 
+!history/cache/empty.txt
 reports/* 
+!reports/cache/empty.txt
 *.pyc
 *.tsv
 *.conf
