@@ -1,6 +1,5 @@
 .settings
 .idea
-Fixity.db
 build/* 
 !build/cache/empty.txt
 dist/*
