@@ -84,8 +84,7 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('isWindows = '+str(self.SystemInformation['isWindows'])  , {} )
                         Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
-#                 if OS_Info == 'linux':
-#                     self.createSymbolicLinks()
+
                 
                 self.EP = EmailPref(self)
                 self.AF = AboutFixity()
@@ -1203,52 +1202,7 @@ class ProjectWin(QMainWindow):
                             self.ChangeRootDirectoryInfor(DirectoryDetail[DD]['path'] , searchForPath )
             except:
                 pass
-        def createSymbolicLinks(self):
-            try:
-                
-                
-                pathForHistory = str(getcwd()) +  str(os.sep) + 'history'
-                pathForreprots = str(getcwd()) + str(os.sep) + 'reports'
-                pathFordebug = str(getcwd()) + str(os.sep) + 'debug'
-            
-            
-            except Exception as ex:
-                pass
-                  
-                  
-            try:
-                
-                os.remove(pathForHistory)
-            except Exception as ex:
-                pass
-            
-            try:
-                os.remove(pathForreprots)
-            except Exception as ex:
-                pass
-            
-            try:
-                os.remove(pathFordebug)
-            except Exception as ex:
-                pass
-            print('1')
-            try:
-                
-                pathInfo = str(getcwd()).replace('Fixity.app'+str(os.sep)+'Contents'+str(os.sep)+'Resources','')
-                
-                pathForSymblickHistory = pathInfo + str(os.sep) + 'history'
-                pathForSymblickReprots = pathInfo + str(os.sep) + 'reports'
-                pathForSymblickDebug = pathInfo + str(os.sep) + 'debug'
-                
-                
-                os.symlink(pathForHistory, pathForSymblickHistory)
-                os.symlink(pathForreprots, pathForSymblickReprots)
-                os.symlink(pathFordebug, pathForSymblickDebug)
-                
-            except Exception as ex:
-                print(ex[0])
-                pass
-        
+      
 
 def auto_run(project):
     AR = AutoRuner()
@@ -1270,7 +1224,7 @@ if __name__ == '__main__':
             app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
             app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
             
-#             app.MainFixityWindow.createSymbolicLinks()
+
            
             app.MainFixityWindow.show()
             
