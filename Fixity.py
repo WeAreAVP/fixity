@@ -132,7 +132,6 @@ class ProjectWin(QMainWindow):
                 self.f.addAction(aboutFixity)
                 self.f.addAction(quit)
                 
-
                 self.Preferences.addAction(FilterFilesMane)
                 
                 self.Preferences.addAction(self.Debuging)
@@ -225,7 +224,6 @@ class ProjectWin(QMainWindow):
                     slay.addWidget(self.StartWhenAvailable)
                 slay.addWidget(self.EmailOnlyWhenSomethingChanged)
 
-
                 self.lastrun = QLabel("Last checked: ")
                 slay.addWidget(self.lastrun)
                 self.sch.setLayout(slay)
@@ -299,9 +297,7 @@ class ProjectWin(QMainWindow):
                 
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
-                self.show()
-                
-                
+                self.show()                
     
         def __del__(self):
             del self

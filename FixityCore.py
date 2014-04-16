@@ -579,8 +579,7 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             if path.isdir(str(pathInfo)+str(os.sep)+'reports') :
                 os.mkdir(str(pathInfo)+str(os.sep)+'reports')
                 
-            rn = str(pathInfo)+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-            
+            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
             print('Path Info')
             print(pathInfo)
             print('Full Path')
@@ -679,6 +678,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
         pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
         pathInfo = str(pathInfo).replace('Fixity.app', '')
+        
         print('hello')
         if os.path.isdir(str(pathInfo)+str(os.sep)+'history') :
             try:
@@ -686,7 +686,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             except:
                 pass
                 
-        historyFile = str(pathInfo) + str(os.sep) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         
         print('Path Info')
         print(pathInfo)
