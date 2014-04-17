@@ -493,9 +493,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
     if(OS_Info == 'Windows'):
-        pathOfEncryption = u''+line[1]
-    else:
         pathOfEncryption = line[1]
+    else:
+        pathOfEncryption = u''+line[1]
         
     if path.isfile(pathOfEncryption):
 

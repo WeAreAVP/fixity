@@ -1,9 +1,9 @@
-Created By Furqan Wasi <furqan@avpreserve.com> Create On <14/4/2014 Thursday,April>
+Created By Furqan Wasi <furqan@avpreserve.com> Create On 14/4/2014 Monday,April
 #Directory Structure
 
 ./bin (Contains Database and configuration files)
 
-./build (Stores file required to create standalone application)
+./build (Stores file required to create stand alone application)
 
 ./debug (Logging of errors and their details )
 
@@ -32,7 +32,6 @@ Created By Furqan Wasi <furqan@avpreserve.com> Create On <14/4/2014 Thursday,Apr
 
    install cmake
    install qmake
-
 
 6) Install PySide using easyinstall:: sudo easy_install-2.7 PySide
 
@@ -97,7 +96,3 @@ AutoFxity.py will be placed into schedules directory where from task scheduler w
 #scheduling Process
 
 For Scheduling process Fixity is using windows task scheduler , it triggers the scanning process on given time when saving the project , for each project one scheduler will be created in Task scheduler   
-
-
-
-
