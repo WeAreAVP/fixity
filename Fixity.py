@@ -400,6 +400,7 @@ class ProjectWin(QMainWindow):
             self.AF = AboutFixity()
             self.AF.SetDesgin()
             self.AF.ShowDialog()
+            
         # Pop Up to Change Root Directory If any change occured
         # orignalPathText:: Path In Manifest
         # changePathText:: New Path Given in Fixity Tool

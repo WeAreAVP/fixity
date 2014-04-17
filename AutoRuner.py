@@ -49,7 +49,7 @@ class AutoRuner(object):
         if Information != None:
             if len(Information) > 0:
                 emailstr = str(Information[0]['emailAddress'])
-				
+
         email = emailstr.split(',')        
         if len(email) > 0: 
             if '' in email:

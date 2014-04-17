@@ -177,12 +177,27 @@ class EmailPref(QDialog):
         self.outgoingMailServer.setMaximumSize(200, 100)
         self.port.setMaximumSize(200, 100)
         self.checkEmail.setMaximumSize(200, 100)
-
+        
+        self.SMTPServerLable = QLabel('SMTP Server (i.e: smtp.gmail.com)')
+        self.EmailAddressLable = QLabel('Email Address (i.e: user@domain.com)')
+        self.PasswordLable = QLabel('Password (i.e: 1234556)')
+        self.PortLable = QLabel('Port (i.e: 587, 465)')
+        self.EncryptionLable = QLabel('Encryption Method:')
+        
         self.GetLayout().addWidget(self.loader)
+        self.GetLayout().addWidget(self.SMTPServerLable)
         self.GetLayout().addWidget(self.outgoingMailServer)
+        
+        self.GetLayout().addWidget(self.EmailAddressLable)
         self.GetLayout().addWidget(self.EmailAddrBar)
+        
+        self.GetLayout().addWidget(self.PasswordLable)
         self.GetLayout().addWidget(self.Password)
+        
+        self.GetLayout().addWidget(self.PortLable)
         self.GetLayout().addWidget(self.port)
+        
+        self.GetLayout().addWidget(self.EncryptionLable)
         self.GetLayout().addWidget(self.SSL)
         self.GetLayout().addWidget(self.TLS)
         self.GetLayout().addWidget(self.none)
@@ -313,7 +328,8 @@ class EmailPref(QDialog):
     # Updating Configuration
     def SetInformation(self):
         self.Database = Database()
-
+       
+        
         Email = self.EmailAddrBar.text()
         Pass = self.Password.text()
         outgoingMailServer = self.outgoingMailServer.text()

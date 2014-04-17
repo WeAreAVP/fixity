@@ -188,7 +188,7 @@ def ntfsIDForMac(f):
     id=''
     #print('ntfsID')
     try:
-        target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
+        target = os.open(f , os.O_RDWR|os.O_CREAT )
         #print('Open '+f+' File')
         # Now get  the touple
         info = os.fstat(target)
@@ -253,15 +253,21 @@ def GetDirectoryInformationUsingInode(Path,Inode):
 # Input: root, output (boolean), hash algorithm, QApplication
 # Output: list of tuples of (hash, path, id)
 def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
-    #print('quietTable')
+    print('quietTable')
     listOfValues = []
     fls = []
+    print(r)
     try:
-        for root, subFolders, files in walk(u''+r):
-            for Singlefile in files:
-                print('scanning:::'+str(Singlefile))
-                fls.append(path.join(root, u''+Singlefile))
-
+        if(OS_Info == 'Windows'):
+            for root, subFolders, files in walk(r):
+                for Singlefile in files:
+                    print('scanning:::'+str(Singlefile))
+                    fls.append(path.join(root, Singlefile))
+        else:
+            for root, subFolders, files in walk(u''+r):
+                for Singlefile in files:
+                    print('scanning:::'+str(Singlefile))
+                    fls.append(path.join(root, u''+Singlefile))
     except Exception as e:
 
             moreInformation = {"moreInfo":'null'}
@@ -286,20 +292,27 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
         for f in xrange(len(fls)):
             
             print('Listing:::'+str(fls[f]))
-            
-            p = path.abspath(u''+fls[f])
+            if(OS_Info == 'Windows'):
+                p = path.abspath(fls[f])
+            else:
+                p = path.abspath(u''+fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
             #print('Getting File Information of File: '+str(p))
-            givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
+            if(OS_Info == 'Windows'):
+                givenPath = str(p).replace(r, EcodedBasePath + '||')
+            else:
+                givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
             if(OS_Info == 'Windows'):
                 i = ntfsIDForWindows(p)
             else:
                 i = ntfsIDForMac(p)
-
-            listOfValues.append((h, u''+givenPath, i))
+            if(OS_Info == 'Windows'):
+                listOfValues.append((h, givenPath, i))
+            else:
+                listOfValues.append((h, u''+givenPath, i))
 
 
     except Exception as e:
@@ -479,8 +492,12 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
-
-    if path.isfile(u''+line[1]):
+    if(OS_Info == 'Windows'):
+        pathOfEncryption = u''+line[1]
+    else:
+        pathOfEncryption = line[1]
+        
+    if path.isfile(pathOfEncryption):
 
         if CurrentDirectory != None :
 
@@ -542,12 +559,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 # Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
 # Output: All this, written nicely to a tab-delimited file, with the filepath returned
 def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
-    print('')
-    print('')
     print('writer')
-    
-    print('')
-    print('')
     rn = ''
     try:
         report = "Fixity report\n"
@@ -572,32 +584,24 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             NameOfFile = str(projectName[1]).split('/')
 
             NameOfFile[(len(NameOfFile)-1)]
-            print('1')
+            
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
-            print('2')
             createPath = str(pathInfo).replace(' ', '\\ ')
-            print(str(createPath)+'reports')
             
             if not os.path.isdir( str(createPath) + 'reports' ):
                 try:
                     os.mkdir( str(createPath) + 'reports' )
                 except:
                     pass  
-            print('3')  
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
             try:
                 rn = str(rn).replace(' ', '\\ ')
             except Exception as Ex:
                 print(Ex[0])
-            print('4')
-            print('Path Info')
-            print(pathInfo)
-            print('Full Path')
-            print(rn)
-            print('5')
+          
 
         r = open(rn, 'w+')
         r.write(report)
@@ -667,7 +671,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
     
-    
+    print(projectInformation)
     if len(projectInformation) <=0:
         return
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
@@ -703,10 +707,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 
         historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
-        print('Path Info')
-        print(pathInfo)
-        print('History File')
-        print(historyFile)
+      
         
     try:
         HistoryFile = open(historyFile , 'w+')
@@ -729,7 +730,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     print('writing ::: Stared Worked')
     check = 0
     for l in projectDetailInformation:
-        print('1')
+        
         try:
             x = toTuple(projectDetailInformation[l])
 
@@ -774,7 +775,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     flagAnyChanges = False
-    print('3')
+    
     Algorithm = str(projectInformation[0]['selectedAlgo'])
 
     counter = 0
@@ -793,7 +794,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     keeptime = ''
     keeptime += str(projectInformation[0]['durationType'])
     keeptime +=' ' + str(projectInformation[0]['lastRan'])
-    print('4')
+    
     if int(projectInformation[0]['durationType']) == 3 :
         keeptime += ' 99 99'
     elif int(projectInformation[0]['durationType']) == 2 :
@@ -805,11 +806,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     except:
         pass
-    print('5')
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 
         DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
-
+        print(DirectorysInsideDetails)
+        
         for e in DirectorysInsideDetails:
 
             thisnumber=thisnumber+1
@@ -824,30 +825,32 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             for Filter in FiltersArray:
                 if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
                     flag =False
-            
-            if(projectInformation[0]['ignoreHiddenFiles'] == 1 or projectInformation[0]['ignoreHiddenFiles'] == '1'):
-                try:        
-                    PathExploded = str(e[1]).split(str(os.sep))
-                    lastIndexName = PathExploded[len(PathExploded) - 1]
                     
-                    if fnmatch.fnmatch(lastIndexName, '.*'):
-                        flag = False
+            if OS_Info == 'linux':
+                    if(projectInformation[0]['ignoreHiddenFiles'] == 1 or projectInformation[0]['ignoreHiddenFiles'] == '1'):
+                        try:        
+                            PathExploded = str(e[1]).split(str(os.sep))
+                            lastIndexName = PathExploded[len(PathExploded) - 1]
+                            
+                            if fnmatch.fnmatch(lastIndexName, '.*'):
+                                flag = False
+                        except:
+                            pass
                         
-                except:
-                    pass
-                
-                try:        
-                    PathExploded = str(e[1]).split(str(os.sep))
-                    for SingleDirtory in PathExploded:
-                        if fnmatch.fnmatch(SingleDirtory, '.*'):
-                            flag = False
-                except:
-                    pass
-            
+                        try:        
+                            PathExploded = str(e[1]).split(str(os.sep))
+                            for SingleDirtory in PathExploded:
+                                if fnmatch.fnmatch(SingleDirtory, '.*'):
+                                    flag = False
+                        except:
+                            pass
+                        
+                    
             if flag:
                 check+= 1
                 try:
                     response = []
+                    print('verify_using_inode:::::'+file )
                     response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
 
                     if not response or len(response) < 1:
@@ -922,6 +925,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except Exception in e:
         print(e)
         pass
+    
     informationToUpate = {}
     informationToUpate['versionCurrentID'] = versionID['id']
     DB.update(DB._tableProject, informationToUpate, "id='" + str(projectInformation[0]['id']) + "'")
@@ -935,7 +939,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         HistoryFile.close()
     except:
         pass
-    #print('closing '+historyFile+' File')
+    
 
     information = str(file).split('\\')
     projectName = information[(len(information)-1)]
@@ -953,16 +957,16 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pass
     try:
         HistoryFile.close()
-        #print('closing '+historyFile+' File')
+    
     except:
         pass
-    print('6')
+    
     ProjectName = file.replace('.fxy','').replace('projects\\','')
     ProjectName = ProjectName.replace('.fxy','').replace('projects//','')
     ProjectName = ProjectName.replace('.fxy','').replace('//','/')
     ProjectName = ProjectName.replace('.fxy','').replace('projects/','')
     ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
-    print('asfdsfsd')
+    
     repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 
     try:
@@ -1037,7 +1041,7 @@ def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
-## To test Main Functionality  
+# To test Main Functionality  
 # projects_path = getcwd()+'\\projects\\'
 # run(projects_path+'New_Project.fxy','','New_Project')
 # exit()

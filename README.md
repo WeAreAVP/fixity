@@ -1,4 +1,4 @@
-Created By Furqan Wassi <furqan@avpreserve.com>
+Created By Furqan Wasi <furqan@avpreserve.com> Create On <14/4/2014 Thursday,April>
 #Directory Structure
 
 ./bin (Contains Database and configuration files)
@@ -52,7 +52,7 @@ For More Information Visist:https://pythonhosted.org/py2app/tutorial.html
 
 #scheduling Process
 
-Fixity is using launchd for scheduling , it save's plist for scheduling at "cd ~/Library/LaunchAgents/" , in this .plist file stores all scheduling information , for each project one , ".plist" will be created.
+Fixity is using launchd for scheduling , it save's plist for scheduling at "cd ~/Library/LaunchAgents/" , in this .plist file stores all scheduling information , for each project one .plist will be created.
 
 
 #Windows Configuration
@@ -61,15 +61,15 @@ Fixity is using launchd for scheduling , it save's plist for scheduling at "cd ~
 
 2) Download and install pyside1.2
 
-3) Download and install QT4.8
+2) Download and install QT4.8
 
-4) Download and install PyInstaller 2.1 for .exe file create as stand alone application
+3) Download and install PyInstaller 2.1 for .exe file create as stand alone application
 
-5) Download and install favourite IDE (PyCharm,Textmate,eclipse)
+4) Download and install favorite IDE (PyCharm,Textmate,eclipse)
 
 For eclipse from install new update , install pydev from python.org/updates and set interpreter as python from preferences  
 
-6) if having problem of missing library download and install them from python.org using python setup.py install (setup.py file will be provided in the given library package ) 
+5) if having problem of missing library download and install them from python.org using python setup.py install (setup.py file will be provided in the given library package ) 
 
 #App/Executable File Creation
 
@@ -81,14 +81,13 @@ python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\
 
 python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" AutoFixity.py
 
-These files are placed in "dist" directory after compilation of above commands 
+These files are placed in "dist" directory after complilation of above commands 
 
 
-Note: Turn on the debugging for app using --console 
+Note: to turn on the debugging for app using --console 
 
 
-when placing the file for the build 
-
+when placing the file for the build 
 
 Fixity.exe will be placed at the same level of all other directories for example (bin,schedules,history,etc) 
 

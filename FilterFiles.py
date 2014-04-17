@@ -15,17 +15,24 @@ Created on Dec 5, 2013
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
+import os
+OS_Info = ''
+if os.name == 'posix':
+    OS_Info = 'linux'
+elif os.name == 'nt':
+    OS_Info = 'Windows'
+elif os.name == 'os2':
+    OS_Info = 'check'
+
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
-import os
 from Database import Database
 
 #Custom Classes
 from EmailPref import EmailPref
 DB = Database()
-    
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     # Constructor
@@ -123,8 +130,8 @@ class FilterFiles(QDialog):
         self.IgnoreHiddenFiles = QCheckBox("Ignore Hidden Files")
         
         
-        
-        self.GetLayout().addWidget(self.IgnoreHiddenFiles)
+        if OS_Info == 'linux':
+                self.GetLayout().addWidget(self.IgnoreHiddenFiles)
         self.GetLayout().addWidget(self.FilterField)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.reset)
