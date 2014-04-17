@@ -84,8 +84,6 @@ def fixity(f, Algorithm , projectName= None):
             target.close()
             return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
     except Exception as e:
-
-
         moreInformation = {"moreInfo":'none'}
         try:
             if not e[0] == None:
@@ -264,10 +262,10 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
                     print('scanning:::'+str(Singlefile))
                     fls.append(path.join(root, Singlefile))
         else:
-            for root, subFolders, files in walk(u''+r):
+            for root, subFolders, files in walk(r):
                 for Singlefile in files:
                     print('scanning:::'+str(Singlefile))
-                    fls.append(path.join(root, u''+Singlefile))
+                    fls.append(path.join(root, Singlefile))
     except Exception as e:
 
             moreInformation = {"moreInfo":'null'}
@@ -292,27 +290,30 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
         for f in xrange(len(fls)):
             
             print('Listing:::'+str(fls[f]))
+            
             if(OS_Info == 'Windows'):
                 p = path.abspath(fls[f])
             else:
-                p = path.abspath(u''+fls[f])
+                p = path.abspath(fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
-            #print('Getting File Information of File: '+str(p))
+            
             if(OS_Info == 'Windows'):
                 givenPath = str(p).replace(r, EcodedBasePath + '||')
             else:
-                givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
+                givenPath = str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
+            
             if(OS_Info == 'Windows'):
                 i = ntfsIDForWindows(p)
             else:
                 i = ntfsIDForMac(p)
+                
             if(OS_Info == 'Windows'):
                 listOfValues.append((h, givenPath, i))
             else:
-                listOfValues.append((h, u''+givenPath, i))
+                listOfValues.append((h, givenPath, i))
 
 
     except Exception as e:
@@ -495,7 +496,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     if(OS_Info == 'Windows'):
         pathOfEncryption = line[1]
     else:
-        pathOfEncryption = u''+line[1]
+        pathOfEncryption = line[1]
         
     if path.isfile(pathOfEncryption):
 
@@ -909,6 +910,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 except:
                     print(e[0])
                     pass
+                
                 try:
                     if(Algorithm == 'md5'):
                         HistoryFile.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
