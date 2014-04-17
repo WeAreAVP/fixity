@@ -136,7 +136,7 @@ class ImportProjects(QDialog):
         if(pathInformation and  projectConfiguration):
             versionInformation ={}
             versionInformation['versionType'] = ''
-            EP = EmailPref()
+            EP = EmailPref(self)
             CurrentDate = time.strftime("%Y-%m-%d")
             versionInformation['name'] = EP.EncodeInfo(str(CurrentDate))
             VersionID = DB.insert(DB._tableVersions, versionInformation)
