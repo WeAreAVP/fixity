@@ -104,7 +104,7 @@ class ChangeName(QDialog):
         
         self.cancel = QPushButton("Close")
         
-        self.changeNameField.setPlaceholderText("Add New Name")
+        self.changeNameField.setPlaceholderText("Enter new name")
         
 
         
@@ -146,7 +146,7 @@ class ChangeName(QDialog):
         if flag != None:
             self.refreshProjectSettings()
             
-            QMB.information(self, "Success", "Name have changed successfully!")
+            QMB.information(self, "Success", "Name has changed successfully!")
             
             self.Cancel()
             
