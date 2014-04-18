@@ -100,8 +100,6 @@ class FilterFiles(QDialog):
 
     # All design Management Done in Here
     def SetDesgin(self):
-        
-
         ProjectListArr = DB.getProjectInfo()
         counter = 0
         isEnable = True

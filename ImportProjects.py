@@ -26,6 +26,7 @@ import os
 from Database import Database
 from EmailPref import EmailPref
 
+
 DB = Database()
 
 class ImportProjects(QDialog):
@@ -39,29 +40,29 @@ class ImportProjects(QDialog):
         self.setWindowTitle('Import Project')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
-
+        self.projectListWidget = None
     # Distructor
     def destroyImportProjects(self):
         del self
-
-    def CreateWindow(self):
-        self = QDialog()
+  
         
-
+    #Get Window
     def GetWindow(self):
         return self
-
+    #Show Dialog
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-
+    #Set Layout
     def SetLayout(self, layout):
         self.ImportProjectsLayout = layout
-
+        
+    #Set Window Layout
     def SetWindowLayout(self):
         self.setLayout(self.ImportProjectsLayout)
-
+    
+    #Get Layout
     def GetLayout(self):
         return self.ImportProjectsLayout
 
@@ -97,18 +98,21 @@ class ImportProjects(QDialog):
 
         self.GetLayout().addWidget(self.cancel)
 
-        self.setInformation.clicked.connect(self.SetInformation)
+        self.setInformation.clicked.connect(self.ImportProjectInformation)
 
         self.cancel.clicked.connect(self.Cancel)
         self.projectSelected.setDisabled(True)
         self.SetWindowLayout()
         
+    #Over ride reject QDialog Trigger
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(ImportProjects,self).reject()
-    # Update Filters information
-    def SetInformation(self):
         
+    # Import Project Information
+    def ImportProjectInformation(self):
+        
+
         filePath = self.projectSelected.text()
 
         if(filePath == None or filePath == ''):
@@ -126,7 +130,8 @@ class ImportProjects(QDialog):
             QMessageBox.information(self, "Error", "A Project with this name already exists!")
             
             return
-
+       
+        
         fileToImportInfoOf =  open(filePath,'rb')
 
         pathInformation = str(fileToImportInfoOf.readline())
@@ -254,15 +259,25 @@ class ImportProjects(QDialog):
         self.setWindowTitle('Import Project')
         self.parentWin.setWindowTitle('Import Project')
         try:
+                    self.parentWin.old = self.projects.itemAt(0, 0)
+                    self.parentWin.update(self.old)
+                    self.parentWin.old.setSelected(True)
+        except:
+            pass
+        
+        try:
             fileToImportInfoOf.close()
         except:
             pass
         return
         self.Cancel()
+        
+    #Pick Directory
     def pickdir(self):
         fileInformation  = list(QFileDialog.getOpenFileName())
         self.projectSelected.setText(str(fileInformation[0]))
-
+        
+    #reset form
     def Reset(self):
         self.projectSelected.setText('')
 
@@ -271,8 +286,10 @@ class ImportProjects(QDialog):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyImportProjects()
         self.close()
-        #Refresh Project Settings
+
+    #Refresh Project Settings
     def refreshProjectSettings(self):
+            allProjects = DB.getProjectInfo()
             try:
                 projectLists = []
                 if allProjects != None:
@@ -294,14 +311,4 @@ class ImportProjects(QDialog):
                             self.projectListWidget.addItem(p)
             except:
                 pass 
-
-# app = QApplication('asdas')
-# w = ImportProjects()
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-# w.Cancel()         
-# app.exec_() 
          
-

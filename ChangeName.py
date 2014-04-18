@@ -20,7 +20,7 @@ DBObj = Database()
 
 class ChangeName(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-    
+    #Constructor
     def __init__(self,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
@@ -39,24 +39,27 @@ class ChangeName(QDialog):
     def destroyChangeName(self):
         del self  
         
-        
+    #QDailog Reject Tigger over writen
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(ChangeName,self).reject()
-                
+    #Get  Window                
     def GetWindow(self):
         return self 
-             
+    
+    #Show this Dialog         
     def ShowDialog(self):     
         self.show()
         self.exec_()
         
+    #Set  Layout    
     def SetLayout(self, layout):
         self.ChangeNameLayout = layout
         
+    #Set Window Layout
     def SetWindowLayout(self):
         self.setLayout(self.ChangeNameLayout)
-        
+    #Get Layout    
     def GetLayout(self):
         return self.ChangeNameLayout
     
@@ -104,7 +107,7 @@ class ChangeName(QDialog):
         
         self.cancel = QPushButton("Close")
         
-        self.changeNameField.setPlaceholderText("Enter new name")
+        self.changeNameField.setPlaceholderText("Add New Name")
         
 
         
@@ -146,7 +149,7 @@ class ChangeName(QDialog):
         if flag != None:
             self.refreshProjectSettings()
             
-            QMB.information(self, "Success", "Name has changed successfully!")
+            QMB.information(self, "Success", "Name have changed successfully!")
             
             self.Cancel()
             
@@ -157,10 +160,11 @@ class ChangeName(QDialog):
             self.refreshProjectSettings()
             self.reOpenChangeName()
                 
-        
+    #Re Set the Text    
     def Reset(self):
         self.changeNameField.setText('')
-        
+    
+    #Re Open Change Name    
     def reOpenChangeName(self):
         self.Cancel()
         self.EmailPref = EmailPref(self)
@@ -178,7 +182,7 @@ class ChangeName(QDialog):
         self.destroyChangeName()
         self.close()
         
-        
+    #Refresh Project Settings
     def refreshProjectSettings(self):
             allProjects = DBObj.getProjectInfo()
             try:
@@ -202,13 +206,3 @@ class ChangeName(QDialog):
                             self.projectListWidget.addItem(p)
             except:
                 pass
-            
-# app = QApplication('asdas')
-# w = ChangeName(QDialog())
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-#           
-# app.exec_() 
-#          

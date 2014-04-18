@@ -62,7 +62,6 @@ class AutoRuner(object):
         if(OS_Info == 'Windows'):
             results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
         else:
-
             results = FixityCore.run(AutiFixPath+"/projects/" + project + ".fxy", Fitlers, project)
         msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
 
