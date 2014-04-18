@@ -26,6 +26,8 @@ import os
 from Database import Database
 from EmailPref import EmailPref
 
+DB = Database()
+
 class ImportProjects(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
 
@@ -34,6 +36,7 @@ class ImportProjects(QDialog):
         self.parentWin = parentWin
         self.setWindowModality(Qt.WindowModal)
         self.parentWin.setWindowTitle('Import Project')
+        self.setWindowTitle('Import Project')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
 
@@ -64,7 +67,7 @@ class ImportProjects(QDialog):
 
     # All design Management Done in Here
     def SetDesgin(self):
-        DB = Database()
+        
 
         ProjectListArr = DB.getProjectInfo()
         counter = 0
@@ -105,8 +108,7 @@ class ImportProjects(QDialog):
         super(ImportProjects,self).reject()
     # Update Filters information
     def SetInformation(self):
-        DB = Database()
-
+        
         filePath = self.projectSelected.text()
 
         if(filePath == None or filePath == ''):
@@ -137,6 +139,8 @@ class ImportProjects(QDialog):
             versionInformation ={}
             versionInformation['versionType'] = ''
             EP = EmailPref(self)
+            self.setWindowTitle('Importing Project....')
+            self.parentWin.setWindowTitle('Importing Project....')
             CurrentDate = time.strftime("%Y-%m-%d")
             versionInformation['name'] = EP.EncodeInfo(str(CurrentDate))
             VersionID = DB.insert(DB._tableVersions, versionInformation)
@@ -245,7 +249,10 @@ class ImportProjects(QDialog):
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
         
         QMessageBox.information(self, "Success", "Project importing completed ")
-        
+        self.refreshProjectSettings()
+        self.parentWin.toggler(False)
+        self.setWindowTitle('Import Project')
+        self.parentWin.setWindowTitle('Import Project')
         try:
             fileToImportInfoOf.close()
         except:
@@ -264,7 +271,29 @@ class ImportProjects(QDialog):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyImportProjects()
         self.close()
-
+        #Refresh Project Settings
+    def refreshProjectSettings(self):
+            try:
+                projectLists = []
+                if allProjects != None:
+                    if(len(allProjects) > 0):
+                        for p in allProjects:
+                            projectLists.append(str(allProjects[p]['title']))
+            except:
+                pass
+            
+            try:  
+                self.projectListWidget.clear()
+            except:
+                pass
+            
+            try:
+                if projectLists != None:
+                    if(len(projectLists) > 0):
+                        for p in projectLists:
+                            self.projectListWidget.addItem(p)
+            except:
+                pass 
 
 # app = QApplication('asdas')
 # w = ImportProjects()

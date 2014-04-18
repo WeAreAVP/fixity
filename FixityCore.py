@@ -624,6 +624,7 @@ def missing(dict,file=''):
                 if not obj[0] in verifiedFiles:
                     verifiedFiles.append(obj[0])
                     msg += "Removed Files\t" + obj[0] +"\n"
+                    count = count + 1
 
     return msg, count
 
@@ -634,7 +635,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
     
     
-    global verfiedFiels
+    global verifiedFiles
     print('Started:::'+projectName)
     try:
         processID = os.getpid()
@@ -660,7 +661,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     
-    verfiedFiels = []
+    verifiedFiles = []
     DB = Database()
 
     missingFile = ('','')

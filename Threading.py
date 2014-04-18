@@ -24,7 +24,7 @@ from AutoRuner import AutoRuner
 
 exitFlag = 0
 Debuging = Debuger()
-
+global verifiedFiles
 
 # Custom class to run the scanning process using Multi-Threading
 class Threading (threading.Thread):
@@ -44,6 +44,7 @@ class Threading (threading.Thread):
         command = command + 'fixity-'+self.name+'.vbs'
 
         try:
+            verifiedFiles = []
             IsemailSet = ''
             AR = AutoRuner()
             AR.runAutoFix(self.name, IsemailSet)
