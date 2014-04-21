@@ -228,8 +228,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
             else:
                 Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
-        print(Command)
-        
+
+   
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
 
         Information = {}

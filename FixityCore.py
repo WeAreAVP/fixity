@@ -191,7 +191,6 @@ def ntfsIDForMac(f):
     id=''
     #print('ntfsID')
     try:
-        print('')
         target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
         #print('Open '+f+' File')
         # Now get  the touple
@@ -609,7 +608,7 @@ def missing(dict,file=''):
     #print('missing')
     msg = ""
     count = 0
-
+    global verifiedFiles
     # walks through the dict and returns all False flags
     for keys in dict:
         for obj in dict[keys]:
@@ -664,7 +663,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
     
-    print(projectInformation)
+   
     if len(projectInformation) <=0:
         return
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
@@ -802,8 +801,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 
         DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
-        print(DirectorysInsideDetails)
-        
+
         for e in DirectorysInsideDetails:
 
             thisnumber=thisnumber+1
