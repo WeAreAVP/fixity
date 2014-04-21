@@ -35,7 +35,7 @@ class MsgBox(QDialog):
         QDialog.__init__(self)
 
 class Database(object):
-    #Constructor
+    '''Constructor'''
     def __init__(self):
 
         self._tableConfiguration = 'configuration'
@@ -47,7 +47,7 @@ class Database(object):
         self.cursor = None
         self.timeSpan = 1
 
-    #Connect to Database
+    '''Connect to Database'''
     def connect(self):
 
         pathInfo = str(getcwd()).replace('\\schedules','')
@@ -114,8 +114,42 @@ class Database(object):
                 self.closeConnection()
                 self = None
                 exit()
+    def getOne(self,query):
+        
+        try:
+            try:
+                self.connect()
+            except:
+                pass
 
-    #SQL Query Runner
+            response = self.cursor.execute(query)
+            
+            try:
+                self.commit()
+            except:
+                pass
+            Row= self.cursor.fetchone()
+            try:
+                self.closeConnection()
+            except:
+                pass
+
+            self.closeConnection()
+            return Row
+
+        except Exception as e:
+            try:
+                self.closeConnection()
+                self.connect()
+                response = self.cursor.execute(query)
+                try:
+                    self.closeConnection()
+                except:
+                    pass
+                return response
+            except:
+                pass
+    '''SQL Query Runner'''
     def sqlQuery(self, query):
 
         try:
@@ -152,7 +186,9 @@ class Database(object):
             except:
                 pass
 
-    #SQL Select Query
+    '''
+    SQL Select Query
+    '''
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
             query= ''
@@ -232,7 +268,9 @@ class Database(object):
             self.closeConnection()
             pass
 
-    #Query Result to list converter
+    '''
+    Query Result to list converter
+    '''
     def dict_gen(self,curs):
         ''' From Python Essential Reference by David Beazley
         '''
@@ -244,7 +282,9 @@ class Database(object):
             for row in rows:
                 yield dict(itertools.izip(field_names, row))
 
-    #SQL Insert Query
+    '''
+    SQL Insert Query
+    '''
     def insert(self, tableName, information):
 
             query = 'INSERT INTO '+str(tableName)
@@ -359,7 +399,9 @@ class Database(object):
                     pass
             return {'id':self.cursor.lastrowid}
 
-    #SQL Delete Query
+    '''
+    SQL Delete Query
+    '''
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
@@ -381,15 +423,14 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 324- 330 File Database While executing Query information'+"\n", moreInformation)
-                print(moreInformation)
-                print('Error Reporting 324- 330 File Database While executing Query information')
+                
                 try:
                     self.closeConnection()
                 except:
                     pass
                 return None
 
-    #SQL Update Query
+    '''SQL Update Query'''
     def update(self,tableName , information,condition):
         try:
             query = 'UPDATE '+str(tableName) +' SET '
@@ -460,14 +501,14 @@ class Database(object):
 
                 debuger.tureDebugerOn()
                 debuger.logError('Error Reporting 250- 255 File Database While executing Query information'+"\n", moreInformation)
-                print(moreInformation)
+               
                 try:
                     self.closeConnection()
                 except:
                     pass
                 return None
 
-    #Columns and records Implode for query
+    '''Columns and records Implode for query'''
     def implode(self,information , glue , isColumn = True):
 
             counter = 0
@@ -492,19 +533,22 @@ class Database(object):
 
             return stringGlued
 
-    #Commit Query
+    '''Commit Query'''
     def commit(self):
         if(self.con and self.con != None):
             self.con.commit()
 
-    #Close connection safely
+    '''Close connection safely
+    '''
     def closeConnection(self):
         if(self.con and self.con != None):
             self.con.close()
             self.con = None
             self = None
 
-    #Get Project Information
+    '''
+    Get Project Information
+    '''
     def getProjectInfo(self,projectName = None ,limit = True):
         response = {}
         try:
@@ -528,7 +572,9 @@ class Database(object):
         self.closeConnection()
         return response
 
-    #Get Projects paths Information
+    '''
+    Get Projects paths Information
+    '''
     def getProjectPathInfo(self,projectID,versionID):
         self.connect()
         information = {}
@@ -537,19 +583,19 @@ class Database(object):
         self.closeConnection()
         return response
 
-    #Get Configuration
+    '''Get Configuration'''
     def getConfiguration(self):
         response = self.select(self._tableConfiguration, '*')
         self.closeConnection()
         return response
 
-    #Get Given Version Details
+    '''Get Given Version Details'''
     def getVersionDetails(self,projectID,versionID,OrderBy=None):
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
     
-     # Fetch information related to email configuration
+    ''' Fetch information related to email configuration'''
     def getConfigInfo(self, project=None):
         
 
@@ -572,7 +618,7 @@ class Database(object):
             pass
         return {}
     
-    #Get Last Inserted Version of given project
+    '''Get Last Inserted Version of given project'''
     def getVersionDetailsLast(self,projectID):
         response = {}
         resultOfLastVersion = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"'", ' versionID DESC LIMIT 1')
@@ -581,7 +627,7 @@ class Database(object):
             response = self.getVersionDetails(projectID,resultOfLastVersion[0]['versionID'],' id DESC')
         return response
 
-    #Convert List to Tuple Data type
+    '''Convert List to Tuple Data type'''
     def listToTuple(self,provededList):
 
         NewList = []

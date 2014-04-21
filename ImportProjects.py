@@ -28,10 +28,13 @@ from EmailPref import EmailPref
 
 
 DB = Database()
-
+''' Class to manage the Filter to be implemented for the files with specific extensions '''
 class ImportProjects(QDialog):
-    ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-
+    
+    '''
+    Constuctor
+    @param parentWin: Parent Window of Import Ppojects
+    '''
     def __init__(self ,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
@@ -41,32 +44,46 @@ class ImportProjects(QDialog):
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.ImportProjectsLayout = QVBoxLayout()
         self.projectListWidget = None
-    # Distructor
+    '''
+    Distructor
+    '''
     def destroyImportProjects(self):
         del self
   
         
-    #Get Window
+    '''
+    Get Window
+    '''
     def GetWindow(self):
         return self
-    #Show Dialog
+    '''
+    Show Dialog
+    '''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-    #Set Layout
+    '''
+    Set Layout
+    '''
     def SetLayout(self, layout):
         self.ImportProjectsLayout = layout
         
-    #Set Window Layout
+    '''
+    Set Window Layout
+    '''
     def SetWindowLayout(self):
         self.setLayout(self.ImportProjectsLayout)
     
-    #Get Layout
+    '''
+    Get Layout
+    '''
     def GetLayout(self):
         return self.ImportProjectsLayout
 
-    # All design Management Done in Here
+    '''
+    All design Management Done in Here
+    '''
     def SetDesgin(self):
         
 
@@ -104,12 +121,16 @@ class ImportProjects(QDialog):
         self.projectSelected.setDisabled(True)
         self.SetWindowLayout()
         
-    #Over ride reject QDialog Trigger
+    '''
+    Over ride reject QDialog Trigger
+    '''
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(ImportProjects,self).reject()
         
-    # Import Project Information
+    '''
+    Import Project Information
+    '''
     def ImportProjectInformation(self):
         
 
@@ -272,22 +293,30 @@ class ImportProjects(QDialog):
         return
         self.Cancel()
         
-    #Pick Directory
+    '''
+    Pick Directory
+    '''
     def pickdir(self):
         fileInformation  = list(QFileDialog.getOpenFileName())
         self.projectSelected.setText(str(fileInformation[0]))
         
-    #reset form
+    '''
+    reset form
+    '''
     def Reset(self):
         self.projectSelected.setText('')
 
-    # close the dailog box
+    '''
+    close the dailog box
+    '''
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyImportProjects()
         self.close()
 
-    #Refresh Project Settings
+    '''
+    Refresh Project Settings
+    '''
     def refreshProjectSettings(self):
             allProjects = DB.getProjectInfo()
             try:

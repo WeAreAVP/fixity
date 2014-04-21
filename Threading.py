@@ -21,13 +21,19 @@ import subprocess
 #Custom Libraries
 from Debuger import Debuger
 from AutoRuner import AutoRuner
+
 global verifiedFiles
 exitFlag = 0
 Debuging = Debuger()
 
 
-# Custom class to run the scanning process using Multi-Threading
+'''
+Custom class to run the scanning process using Multi-Threading
+'''
 class Threading (threading.Thread):
+    '''
+    Constructor
+    '''
     def __init__(self, threadID, name, counter,FileName,FilePath,params):
         threading.Thread.__init__(self)
         self.threadID = threadID
@@ -37,7 +43,9 @@ class Threading (threading.Thread):
         self.FilePath = FilePath
         self.params = params
 
-    # Run thread to scan the given Given file path using given command
+    '''
+    Run thread to scan the given Given file path using given command
+    '''
     def run(self):
 
         command = str(self.FilePath)
@@ -49,25 +57,28 @@ class Threading (threading.Thread):
             AR = AutoRuner()
             AR.runAutoFix(self.name, IsemailSet)
 
-        except Exception as e:
+        except Exception as exep:
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
+                if not exep[0] == None:
+                    moreInformation['LogsMore'] =str(exep[0])
             except:
                 pass
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
+                if not exep[1] == None:
+                    moreInformation['LogsMore1'] =str(exep[1])
             except:
                 pass
 
             Debuging.tureDebugerOn()
             Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
             pass
-        TriggerThred(self.name, self.counter, 5,self , command)
-
-def TriggerThred(threadName, delay, counter,thread,command):
+        TriggerThread(self.name, self.counter, 5,self , command)
+        
+'''
+Manage Thread Run Time
+'''
+def TriggerThread(threadName, delay, counter,thread,command):
     while counter:
         if exitFlag:
             thread.exit()

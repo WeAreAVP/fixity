@@ -25,9 +25,11 @@ import re
 import FixityMail
 from Database import Database
 
+'''This class is created to handle all Email configurations and management'''
 class EmailPref(QDialog):
-    '''This class is created to handle all Email configurations and management'''
-    # Constructor
+    '''
+    Constructor
+    '''
     def __init__(self,parentWin):        
         QDialog.__init__(self,parentWin)
         
@@ -42,7 +44,7 @@ class EmailPref(QDialog):
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
         
-        self.FM = FixityMail
+        self.FixityMailSender = FixityMail
         self.version = '0.4'
         
     def reject(self):
@@ -54,22 +56,39 @@ class EmailPref(QDialog):
             super(EmailPref,self).reject()
         except:
             pass
-    #Distructor
+        
+    '''
+    Distructor
+    '''
     def destroyEmailPref(self):
         del self
-    #Get Version
+        
+    '''
+    Get Version
+    
+    @return: string
+    '''   
     def getVersion(self):
         try:
             return self.version
         except:
             pass
-    #Set Version
+    '''
+    Set Version 
+    @param version: current version of fixity 
+    @return: string
+    '''
+        
     def setVersion(self,version):
         try:
             return self.version
         except:
             pass
-    #Create Window
+    '''
+    Create Window
+    @return: None
+    '''
+        
     def CreateWindow(self):
         try:
             if self.parentWin:
@@ -77,22 +96,43 @@ class EmailPref(QDialog):
         except:    
             self = QDialog()
         
-    #Get Window info
+    '''
+    Get Window info
+    
+    @return: None
+    '''
     def GetWindow(self):
         return self
-    #Show Dialog
+    '''
+    Show Dialog
+    
+    @return: None
+    '''
     def ShowDialog(self):
         self.show()
         self.exec_()
-    #Set Layout
+    '''
+    Set Layout
+    
+    @return: None
+    '''
     def SetLayout(self, layout):
         self.EmailPrefLayout = layout
-    #Set layout for windows
+    '''
+    Set layout for windows
+    
+    @return: None
+    '''
     def SetWindowLayout(self):
         self.setLayout(self.EmailPrefLayout)
 
 
-    # Check is Email address and Password is valid by sending email on its own inbox
+     
+    ''' 
+    Check is Email address and Password is valid by sending email on its own inbox
+    
+    @return: None
+    '''
     def checkIsEmailValid(self):
         self.loader.show()
         QCoreApplication.processEvents()
@@ -101,9 +141,9 @@ class EmailPref(QDialog):
         port = self.port.text()
 
         outgoingMailServer = self.outgoingMailServer.text()
-        if(self.SSL.isChecked()):
+        if(self.SSLProtocol.isChecked()):
             protocol = 'SSL'
-        elif(self.TLS.isChecked()):
+        elif(self.TLSProtocol.isChecked()):
             protocol = 'TLS'
         else:
             protocol = 'NONE'
@@ -124,7 +164,7 @@ class EmailPref(QDialog):
             self.loader.hide()
             return False
         text = 'Testing email access for Fixity reporting...'
-        flag = self.FM.send(Email, text, None,information,'',self)
+        flag = self.FixityMailSender.send(Email, text, None,information,'',self)
         if flag:
             msgBox = QMessageBox();
             msgBox.setText("Please check the provided email account's inbox.\nIf there is a message from Fixity, then reporting is enabled.")
@@ -145,7 +185,12 @@ class EmailPref(QDialog):
     def GetLayout(self):
         return self.EmailPrefLayout
 
-    # All design Management Done in Here
+     
+    ''' 
+    All design Management Done in Here
+    
+    @return: None
+    '''
     def SetDesgin(self):
         self.GetLayout().addStrut(200)
 
@@ -153,9 +198,9 @@ class EmailPref(QDialog):
         self.outgoingMailServer = QLineEdit()
         self.port = QLineEdit()
         self.Password = QLineEdit()
-        self.SSL = QRadioButton("SSL Protocols")
-        self.TLS = QRadioButton("TLS Protocols")
-        self.none = QRadioButton("None")
+        self.SSLProtocol = QRadioButton("SSL Protocols")
+        self.TLSProtocol = QRadioButton("TLS Protocols")
+        self.noneProtocol = QRadioButton("None")
 
         self.Password.setEchoMode(QLineEdit.Password)
         self.setInformation = QPushButton("Set Information")
@@ -198,9 +243,9 @@ class EmailPref(QDialog):
         self.GetLayout().addWidget(self.port)
         
         self.GetLayout().addWidget(self.EncryptionLable)
-        self.GetLayout().addWidget(self.SSL)
-        self.GetLayout().addWidget(self.TLS)
-        self.GetLayout().addWidget(self.none)
+        self.GetLayout().addWidget(self.SSLProtocol)
+        self.GetLayout().addWidget(self.TLSProtocol)
+        self.GetLayout().addWidget(self.noneProtocol)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.checkEmail)
         self.GetLayout().addWidget(self.reset)
@@ -212,9 +257,9 @@ class EmailPref(QDialog):
         self.setInformation.clicked.connect(self.SetInformation)
         self.cancel.clicked.connect(self.CloseClick)
         self.checkEmail.clicked.connect(self.checkIsEmailValid)
-        self.SSL.clicked.connect(self.SSLConif)
-        self.TLS.clicked.connect(self.TLSConif)
-        self.none.clicked.connect(self.NoneConif)
+        self.SSLProtocol.clicked.connect(self.SSLProtocolConif)
+        self.TLSProtocol.clicked.connect(self.TLSProtocolConif)
+        self.noneProtocol.clicked.connect(self.noneProtocolConif)
 
 
         self.SetWindowLayout()
@@ -240,9 +285,9 @@ class EmailPref(QDialog):
             self.outgoingMailServer.setText('smtp.gmail.com')
 
         if protocol == 'SSL':
-            self.SSL.setChecked(True)
-            self.TLS.setChecked(False)
-            self.none.setChecked(False)
+            self.SSLProtocol.setChecked(True)
+            self.TLSProtocol.setChecked(False)
+            self.noneProtocol.setChecked(False)
 
             if(port != None and port !='' ):
                 self.port.setText(port)
@@ -250,35 +295,46 @@ class EmailPref(QDialog):
                 self.port.setText('465')
 
         elif protocol == 'TLS':
-            self.TLS.setChecked(True)
-            self.SSL.setChecked(False)
-            self.none.setChecked(False)
+            self.TLSProtocol.setChecked(True)
+            self.SSLProtocol.setChecked(False)
+            self.noneProtocol.setChecked(False)
             if(port != None and port !='' ):
                 self.port.setText(port)
             else:
                 self.port.setText('587')
         else:
-            self.none.setChecked(True)
-            self.TLS.setChecked(False)
-            self.SSL.setChecked(False)
+            self.noneProtocol.setChecked(True)
+            self.TLSProtocol.setChecked(False)
+            self.SSLProtocol.setChecked(False)
             if(port != None and port !='' ):
                 self.port.setText(port)
             else:
                 self.port.setText('25')
 
-    # Reset Form information
+    
+    ''' 
+    Function to Reset Form information
+    @return: None
+    '''
     def ResetForm(self):
         self.EmailAddrBar.setText('')
         self.Password.setText('')
         self.outgoingMailServer.setText('')
         self.port.setText('')
+        
+    
+    ''' 
+    Function to reopen Email Pref Dialog Box
+    
+    @return: None
+    ''' 
     def ReOpenEmailPref(self):
         self.CloseClick()
         
         self.setWindowTitle('Configure Sender Email')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.EmailPrefLayout = QVBoxLayout()
-        self.FM = FixityMail
+        self.FixityMailSender = FixityMail
         self.version = '0.4'
         self.CreateWindow()
         self.SetWindowLayout()
@@ -286,12 +342,18 @@ class EmailPref(QDialog):
         self.ShowDialog()
         self.show()
         
-    # Fetch information related to email configuration
+    
+    ''' 
+    Fetch information related to email configuration
+    @param project: Project Name (Optional) 
+    
+    @return: Tuple Project Information in found else empty Truple
+    ''' 
     def getConfigInfo(self, project=None):
-        self.Database = Database()
+        self.SqlLiteDataBase = Database()
 
 
-        queryResult = self.Database.select(self.Database._tableConfiguration)
+        queryResult = self.SqlLiteDataBase.select(self.SqlLiteDataBase._tableConfiguration)
 
         try:
             if len(queryResult)>0 :
@@ -309,25 +371,43 @@ class EmailPref(QDialog):
         except:
             pass
         return {}
-    #Validate given email address
+    
+    ''' 
+    Validate given email address
+    @param Email: Email Address
+   
+    @return: String Message of failure
+    ''' 
     def ValidateEmail(self, Email):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid email address provided.  Please provide a valid address and try again."
-            return msg
-
-    # Validation Configuration provided
+            msgEmailValidation = "Invalid email address provided.  Please provide a valid address and try again."
+            return msgEmailValidation
+    
+    ''' 
+    Validation Configuration provided
+    @param Email: Email Address
+    @param Pass: Password to check
+    
+    @return: String Message of success or failure
+    ''' 
     def validateInformation(self, Email, Pass):
-        msg = None
+        msgEmailValidation = None
         if Pass == '':
-            msg = "Please provide a password to access the reporting email account."
-            return msg
+            msgEmailValidation = "Please provide a password to access the reporting email account."
+            return msgEmailValidation
         if not re.match(r"[^@]+@[^@]+\.[^@]+", Email):
-            msg = "Invalid email address provided.  Please provide a valid address and try again"
-            return msg
+            msgEmailValidation = "Invalid email address provided.  Please provide a valid address and try again"
+            return msgEmailValidation
 
-    # Updating Configuration
+     
+
+    ''' 
+    Updating Configuration
+    
+    @return: None  
+    ''' 
     def SetInformation(self):
-        self.Database = Database()
+        self.SqlLiteDataBase = Database()
        
         
         Email = self.EmailAddrBar.text()
@@ -335,9 +415,9 @@ class EmailPref(QDialog):
         outgoingMailServer = self.outgoingMailServer.text()
         port = self.port.text()
 
-        if(self.SSL.isChecked()):
+        if(self.SSLProtocol.isChecked()):
             protocol = 'SSL'
-        elif(self.TLS.isChecked()):
+        elif(self.TLSProtocol.isChecked()):
             protocol = 'TLS'
         else:
             protocol = 'NONE'
@@ -364,24 +444,41 @@ class EmailPref(QDialog):
         information['smtp'] = self.EncodeInfo(smtp_unbased)
         information['protocol'] = protocol_unbased
 
-        self.Database.delete(self.Database._tableConfiguration, '1=1')
-        self.Database.insert(self.Database._tableConfiguration, information)
+        self.SqlLiteDataBase.delete(self.SqlLiteDataBase._tableConfiguration, '1=1')
+        self.SqlLiteDataBase.insert(self.SqlLiteDataBase._tableConfiguration, information)
         
         QMessageBox.information(self, "Fixity", "Credentials successfully saved!")
         
         self.CloseClick()
 
-    # Triggers
+     
+    ''' 
+    Encoding Given String to base 64
+    @param stringToBeEncoded string To BeEncoded.
+    
+    @return: string  
+    ''' 
     def EncodeInfo(self, stringToBeEncoded):
         stringToBeEncoded = str(stringToBeEncoded).strip()
         return base64.b16encode(base64.b16encode(stringToBeEncoded))
 
-    #Decode Information of path
+    
+    ''' 
+    Decode Information of path
+    @param stringToBeDecoded string To Be Decoded.
+    
+    @return: string  
+    ''' 
     def DecodeInfo(self, stringToBeDecoded):
         stringToBeDecoded = str(stringToBeDecoded).strip()
         return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
-    #Manage click on close
+    
+    ''' 
+    Manage click on close
+    
+    @return: None  
+    ''' 
     def CloseClick(self):
         try:
             self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
@@ -390,8 +487,13 @@ class EmailPref(QDialog):
         self.destroyEmailPref()
         self.close()
 
-    #TSL configuration manager
-    def TLSConif(self):
+    
+    ''' 
+    TSL configuration manager
+    
+    @return: None  
+    ''' 
+    def TLSProtocolConif(self):
         information = self.getConfigInfo()
         try:
             port = str(information['port'])
@@ -404,8 +506,13 @@ class EmailPref(QDialog):
         else:
             self.port.setText('587')
 
-    #SSL configuration manager
-    def SSLConif(self):
+    
+    ''' 
+    SSL configuration manager
+    
+    @return: None  
+    ''' 
+    def SSLProtocolConif(self):
         information = self.getConfigInfo()
         try:
             port = str(information['port'])
@@ -418,8 +525,13 @@ class EmailPref(QDialog):
         else:
             self.port.setText('465')
 
-    #No Encryption Manager
-    def NoneConif(self):
+    #
+    ''' 
+    No Encryption Manager
+    
+    @return: None  
+    ''' 
+    def noneProtocolConif(self):
         information = self.getConfigInfo()
         try:
             port = str(information['port'])

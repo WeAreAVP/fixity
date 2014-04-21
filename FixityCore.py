@@ -14,7 +14,9 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
     
-#Built in Library
+'''
+Built in Library
+'''
 import hashlib
 
 from os import chdir, walk, path, stat, getcwd, O_RDWR, O_CREAT
@@ -35,7 +37,9 @@ import shutil
 import base64
 import unicodedata
 
-#Custom Library
+'''
+Custom Library
+'''
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
@@ -49,10 +53,14 @@ except:
 Debugging = Debuger()
 from FileLock import FileLock
 
-# Checksum generation method
-# Input: Filepath, algorithm
-# Output: Hexadecimal value of hashed file
-def fixity(f, Algorithm , projectName= None):
+'''
+Checksum generation method
+Input: Filepath, algorithm
+Output: Hexadecimal value of hashed file
+
+
+'''
+def fixity(filePath, Algorithm , projectName= None):
     moreInformation= {}
 
     try:
@@ -78,12 +86,12 @@ def fixity(f, Algorithm , projectName= None):
 
         pass
     try:
-        with open(f, 'rb') as target:
-            #print('Open '+f+' File')
+        with open(filePath, 'rb') as target:
+            
             for piece in iter(lambda: target.read(4096), b''):
                 fixmd5.update(piece)
                 fixsha256.update(piece)
-            #print('closing '+f+' File')
+            
             target.close()
             return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
     except Exception as e:
@@ -106,18 +114,25 @@ def fixity(f, Algorithm , projectName= None):
         pass
 
 
-# Get information from Project File matched with given information
-# ProjectPath: Project File path to be scaned
-# hash: search this hash from given Project File
-# path: search this path from given Project File
-# inode: search this inode from given Project File
+
+
+'''
+Get information from Project File matched with given information
+
+@param ProjectPath: Project File path to be scaned
+@param hash: search this hash from given Project File
+@param path: search this path from given Project File
+@param inode: search this inode from given Project File
+
+@return: Tuple file information matching the given conditions
+
+'''
 def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
 
     Information=[]
     try:
         editedPadth = path.replace('\\\\','\\')
         f = open(ProjectPath)
-        #print('Open '+ProjectPath+' File')
         try:
             content = f.readlines()
             for singleLine in content:
@@ -127,7 +142,6 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
             pass
         try:
             f.close()
-            #print('closing '+ProjectPath+' File')
         except:
             pass
         return Information
@@ -137,13 +151,16 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
         return Information
 
 
-# File ID for NTFS
-# Returns the complete file ID as a single long string
-# (volume number, high index, low index)
-def ntfsIDForWindows(f):
+
+'''
+File ID for NTFS
+Returns the complete file ID as a single long string
+(volume number, high index, low index)
+'''
+def ntfsIDForWindows(filePath):
     id = '';
     try:
-        target = open(f, 'rb')
+        target = open(filePath, 'rb')
     except Exception as e:
         moreInformation = {"moreInfo":'none'}
         try:
@@ -158,7 +175,7 @@ def ntfsIDForWindows(f):
             pass
         Debugging = Debuger()
         Debugging.tureDebugerOn()    
-        Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+        Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(filePath)  +" File FixtyCore\n", moreInformation)
         pass
     try:
         id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
@@ -181,25 +198,27 @@ def ntfsIDForWindows(f):
                 pass
             Debugging = Debuger()
             Debugging.tureDebugerOn()    
-            Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+            Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(filePath)  +" File FixtyCore\n", moreInformation)
             pass
     return id
-# File ID for NTFS
-# Returns the complete file ID as a single long string
-# (volume number, high index, low index)
+
+
+
+'''
+File ID for NTFS
+Returns the complete file ID as a single long string
+(volume number, high index, low index)
+'''
+
 def ntfsIDForMac(f):
     id=''
-    #print('ntfsID')
     try:
         target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
-        #print('Open '+f+' File')
         # Now get  the touple
-        info = os.fstat(target)
-        # Now get uid of the file
+        info = os.fstat(target)        
         id = str(info.st_ino)
 
-        os.close(target)
-        #print('closing '+f+' File')
+        os.close(target)        
         return id
 
     except Exception as e:
@@ -215,10 +234,9 @@ def ntfsIDForMac(f):
                 moreInformation['LogsMore1'] =str(e[1])
         except:
             pass
-        #print(moreInformation)
+        
         try:
             target.close()
-            #print('closing '+f+' File')
         except:
             pass
         Debugging.tureDebugerOn()
@@ -227,15 +245,18 @@ def ntfsIDForMac(f):
         pass
     return id
 
-# Params:
-# Path : Path of the Directory
-# Inode: Inode To Be Searched
-#
-# Description:
-# scan given path and searches for the File which have this given Inode
+
+
+'''
+Get Directory Information Using Inode from the given directory (scan given path and searches for the File which have this given Inode)
+
+@param Path : Path of the Directory
+@param Inode: Inode To Be Searched
+
+@return:  Boolean 
+'''
 
 def GetDirectoryInformationUsingInode(Path,Inode):
-    #print('GetDirectoryInformationUsingInode')
     try:
         if Path and Inode:
             for root, subFolders, files in walk(Path):
@@ -252,19 +273,24 @@ def GetDirectoryInformationUsingInode(Path,Inode):
     except:
         return True
 
-# Method to create (hash, path, id) tables from file root
-# Input: root, output (boolean), hash algorithm, QApplication
-# Output: list of tuples of (hash, path, id)
-def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
-    print('quietTable')
+
+'''
+Method to create (hash, path, id) tables from file root
+
+@param Input: root, output (boolean), hash algorithm, QApplication
+@param Output: list of tuples of (hash, path, id)
+
+@return:  List - List of scanned Directory 
+'''
+def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfReplacementArray = {} , projectName = ''):
+    
     listOfValues = []
     fls = []
-    print('quietTable->walk:U')
+    
     try:
-        for root, subFolders, files in walk(u''+r):
+        for root, subFolders, files in walk(u''+DirectortPathToBeScanned):
             for Singlefile in files:
                 print('scanning:::'+str(Singlefile))
-                print('quietTable->fls.append:U')
                 fls.append(path.join(root, u''+Singlefile))
 
     except Exception as e:
@@ -291,20 +317,18 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
         for f in xrange(len(fls)):
             
             print('Listing:::'+str(fls[f]))
-            print('quietTable:U')
-            p = path.abspath(u''+fls[f])
+            
+            pathOftheFile = path.abspath(u''+fls[f])
 
-            EcodedBasePath = InfReplacementArray[r]['code']
-            #print('Getting File Information of File: '+str(p))
-            print('quietTable->givenPath:U')
-            givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
+            EcodedBasePath = InfReplacementArray[DirectortPathToBeScanned]['code']
+            
+            givenPath = u''+str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')
 
-            h = fixity(p, a , projectName)
+            h = fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
             if(OS_Info == 'Windows'):
-                i = ntfsIDForWindows(p)
+                i = ntfsIDForWindows(pathOftheFile)
             else:
-                i = ntfsIDForMac(p)
-            print('quietTable->listOfValues:U')
+                i = ntfsIDForMac(pathOftheFile)
             listOfValues.append((h, u''+givenPath, i))
 
 
@@ -330,9 +354,14 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
 
     return listOfValues
 
-# Method to convert database line into tuple
-# Input: tab-delimited line from database file
-# Output: tuple: (hash, abspath, id)
+
+
+'''
+Method to convert database line into tuple
+@param line: Information of a single File
+ 
+@return tuple: (hash, abspath, id)
+'''
 def toTuple(line):
 
     try:
@@ -356,16 +385,19 @@ def toTuple(line):
 
         return None
 
-# Method to generate a dictionary, keyed to file hashes
-# This is done to greatly speed up the eventual fixity checks
-# Input: Database file
-# Output: defaultdict keyed to hash values
+
+
+'''
+Method to generate a dictionary, keyed to file hashes
+This is done to greatly speed up the eventual fixity checks
+@param file: Database file
+@return : defaultdict keyed to hash values
+'''
 def buildDict(file):
-    #print('buildDict')
+    
     try:
 
         table = open(file, 'r')
-        #print('Open '+file+' File')
         db = defaultdict(list)
 
         for line in table.readlines():
@@ -376,7 +408,6 @@ def buildDict(file):
                 pass
         try:
             table.close()
-            #print('closing '+file+' File')
         except:
             pass
         return db
@@ -392,7 +423,7 @@ def buildDict(file):
         try:
             if not e[1] == None:
                 table.close()
-                print('closing '+file+' File')
+                
                 moreInformation['LogsMore1'] =str(e[1])
         except:
             pass
@@ -401,39 +432,68 @@ def buildDict(file):
 
         return None
 
-# Writes table to file
-# Input: filepath, table (list of tuples from toTuple)
-# Output: A nicely written file
+
+
+
+'''
+Writes table to file
+@param path: filepath, table (list of tuples from toTuple)
+@param listOfValue: All File scanned in last scan
+ 
+@return Output: A nicely written file
+'''
 def tableToFile(path, listOfValue):
-    #print('tableToFile')
     f = open(path, 'w')
-    #print('Open '+path+' File')
     for item in listOfValue:
         x = str(item[0]) + "\t" + str(item[1]) + "\t" + str(item[2])
         f.write("%s\n" % x)
     f.close()
-    #print('closing '+path+' File')
     return
 
-# Writes one tuple to file
+
+
+
+
+'''
+Writes one tuple to file
 # Input: filepath, tuple (hash, path, id)
 # Output: file has one new line
-def tupleToFile(path, t):
-    #print('tupleToFile')
-    #print('Open '+path+' File')
+'''
+def tupleToFile(path, InformationOfFileToBeWriten):
+    
     f = open(path, 'a')
-    #print('Open '+path+' File')
-    x = str(t[0]) + "\t" + str(t[1]) + "\t" + str(t[2])
+    x = str(InformationOfFileToBeWriten[0]) + "\t" + str(InformationOfFileToBeWriten[1]) + "\t" + str(InformationOfFileToBeWriten[2])
     f.write("%s\n" % x)
     f.close()
-    #print('closing '+path+' File')
     return
-#Get hash from list
+
+
+
+
+'''
+Get hash from list
+@param String:
+
+@return: String 
+'''
 def getHash(string):
     newString = str(string)[2:66]
     return newString
 
-#Get Directory information
+
+
+
+
+'''
+Get Directory information
+@param directory: directory path
+@param inode: inode of File
+@param filePath: File Path
+@param dicty: List of all directory with inode , hash and path information
+
+@return:  List - list of match directory 
+
+'''
 def getDirectory(directory,inode,filePath,dicty):
 
     mainDirectory = ''
@@ -461,7 +521,30 @@ def getDirectory(directory,inode,filePath,dicty):
         mainDirectory = directory[1]
     return mainDirectory
 
-#Verify File Changes
+
+
+
+
+
+'''
+Verify File Changes when scanning
+Method to verify a tuple against the dictionary
+Input: defaultDict (from buildDict), tuple
+Output: Message based on whether the file was good or not
+
+
+@param dicty: List of all directory with inode , hash and path information  with indexed using Inode
+@param dictHash: List of all directory with inode , hash and path information with indexed using hash
+@param dictFile: List of all directory with inode , hash and path information
+@param line: lsit of file to be scanned in this run
+@param fileNamePath: File Path with file name to be scanned in this run
+@param dctValue: Index of dict to be scanned
+@param Algorithm: Algo set be the user for this project to be used for file formation to be stored
+
+@return: List - list of result of scanning occurred in this file for a single file  
+
+'''
+
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
     
     global verifiedFiles
@@ -485,7 +568,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
-    print('verify_using_inode->path.isfile:U')
+    
     if path.isfile(u''+line[1]):
 
         if CurrentDirectory != None :
@@ -540,29 +623,45 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         verifiedFiles.append(line[1])
         return line, 'New File :\t' + str(line[1])
 
-# Method to verify a tuple against the dictionary
-# Input: defaultDict (from buildDict), tuple
-# Output: Message based on whether the file was good or not
 
-# Writes report about the most recent fixity check
-# Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
-# Output: All this, written nicely to a tab-delimited file, with the filepath returned
-def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
+
+
+
+'''
+Writes report about the most recent fixity check
+Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
+Output: All this, written nicely to a tab-delimited file, with the filepath returned
+
+@param algoUsed: Algorithum used for the project to record changes
+@param projectPath: Project Name With Path
+@param TotalFilesScanned: Total number of File Scanned
+@param confirmedFileScanned: confirmed File Scanned
+@param movedFileScanned: moved File Scanned
+@param newFileScanned: new File Scanned
+@param failedFileScanned: failed File Scanned
+@param deletedFileScanned: deleted File Scanned
+@param DetailOutputOfAllFilesChanges: Detail Output Of All FilesChanges
+@param projectName: List of all directory with inode , hash and path information  with indexed using Inode
+
+@return: String-File Path of the report writen
+
+'''
+def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , movedFileScanned, newFileScanned, failedFileScanned, deletedFileScanned, DetailOutputOfAllFilesChanges, projectName=''):
     print('writer')
     rn = ''
     try:
         report = "Fixity report\n"
-        report += "Project name\t" + proj + "\n"
-        report += "Algorithm used\t" + alg + "\n"
+        report += "Project name\t" + projectPath + "\n"
+        report += "Algorithm used\t" + algoUsed + "\n"
         report += "Date\t" + str(datetime.date.today()) + "\n"
-        report += "Total Files\t" + str(num) + "\n"
-        report += "Confirmed Files\t" + str(conf) + "\n"
-        report += "Moved or Renamed Files\t" + str(moves) + "\n"
-        report += "New Files\t" + str(news) + "\n"
-        report += "Changed Files\t" + str(fail) + "\n"
-        report += "Removed Files\t" + str(dels) + "\n"
+        report += "Total Files\t" + str(TotalFilesScanned) + "\n"
+        report += "Confirmed Files\t" + str(confirmedFileScanned) + "\n"
+        report += "Moved or Renamed Files\t" + str(movedFileScanned) + "\n"
+        report += "New Files\t" + str(newFileScanned) + "\n"
+        report += "Changed Files\t" + str(failedFileScanned) + "\n"
+        report += "Removed Files\t" + str(deletedFileScanned) + "\n"
         
-        report += str(out)
+        report += str(DetailOutputOfAllFilesChanges)
         print(report)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
@@ -601,18 +700,28 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
     return rn
 
 
-# Method to find which files are missing in the scanned directory
-# Input: defaultdict (from buildDict)
-# Output: warning messages about missing files (one long string and printing to stdout)
+
+
+'''
+Method to find which files are missing in the scanned directory
+Input: defaultdict (from buildDict)
+Output: warning messages about missing files (one long string and printing to stdout)
+
+@param dict: Directory of all file exists in the scanned folder
+@param file: List of all directory with inode , hash and path information  with indexed using Inode
+
+@return: removed Messgae if removed and count of removed file
+
+'''
 def missing(dict,file=''):
-    #print('missing')
+    
     msg = ""
     count = 0
     global verifiedFiles
     # walks through the dict and returns all False flags
     for keys in dict:
         for obj in dict[keys]:
-            print(obj[0])
+            
             if not path.isfile(obj[0]):
                 #check if file already exists in the manifest
                 if not obj[0] in verifiedFiles:
@@ -622,9 +731,21 @@ def missing(dict,file=''):
 
     return msg, count
 
-# Updating/Creating Manifest
-# With on the given directory
 
+
+'''
+Updating/Creating Manifest
+With on the given directory
+
+@param file: project Name with path to be scanned
+@param filters: Filters Will be applied on the given project by the user
+@param projectName: project Name to be scanned
+@param checkForChanges: check For Changes  
+
+
+@return: removed Messgae if removed and count of removed file
+
+'''
 def run(file,filters='',projectName = '',checkForChanges = False):
     
     
@@ -689,8 +810,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
         createPath = str(pathInfo).replace(' ', '\\ ')
-        
-        print(str(createPath)+'history')    
+            
         if  not os.path.isdir(str(createPath)+'history') :
             try:
                 os.mkdir(str(createPath)+'history')
@@ -706,7 +826,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     print('writing ::: History File')
-    #print('closing '+historyFile+'File')
+    
     first = ''
     for singlePathDF in projectPathInformation:
         first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
@@ -737,7 +857,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
                     dict_File[pathInfo['path']+pathInformation[1]].append([x[0], x[2], False])
-                    print('2')
+                    
         except Exception as ex :
 
             moreInformation = {"moreInfo":'null'}
@@ -798,8 +918,18 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     except Exception as ex:
                 print(ex[0])
+                
+                
+                
+                
+    '''
+    Running Scrpit against all given directory in given project
+    '''
+                    
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
-
+        '''
+        Getting all files and directory  in side "SingleDirectory" with detail information (inode, path and file hash)
+        '''
         DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
 
         for e in DirectorysInsideDetails:
@@ -811,7 +941,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             pathInfo = getCodePath(filePath[0], InfReplacementArray)
 
             valDecoded = pathInfo
-            print(projectInformation[0])
+            
             e[1] = (str(valDecoded)+str(filePath[1]))
             for Filter in FiltersArray:
                 if Filter !='' and e[1].find(str(Filter).strip()) >= 0:
@@ -841,7 +971,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 check+= 1
                 try:
                     response = []
-                    print('verify_using_inode:::::'+file )
+                    print('Verify Using Inode:::::'+file )
                     response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
                     
                     if not response or len(response) < 1:
@@ -864,8 +994,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     Debugging.tureDebugerOn()
                     Debugging.logError('Error Reporting Line 500 FixityCore While Verfiying file status' +str(file)+' '+'||'+str(e[0])+'||'+'||'+str(e[1])+' '+'||'+str(e[2])+'||'+"\n", moreInformation)
                     pass
+                
                 try:
-
                     FileChangedList += response[1] + "\n"
                     if response[1].startswith('Confirmed'):
                         confirmed += 1
@@ -969,49 +1099,71 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             print(ex[0])
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
-#Path Encoding to a Code To Identify the Path of each file
+
+
+'''
+Path Encoding to a Code To Identify the Path of each file
+'''
 def pathCodeEncode(pathStr):
     return 'Fixity-'+str(pathStr)
 
-#Path decoding to a Path From Encoded Code To Identify the Path of each file
+
+
+
+'''
+Path decoding to a Path From Encoded Code To Identify the Path of each file
+'''
 def pathCodedecode(code):
     return base64.b64decode(code)
 
-#Verify File Changes
+
+'''
+Verify File Changes
+'''
 def getCodePath(code , InfReplacementArray):
     for single in InfReplacementArray:
         if InfReplacementArray[single]['code'] == code:
             return single
 
-#Get Code using Path
+'''
+Get Code using Path
+'''
 def getPathCode(path , InfReplacementArray):
     for single in InfReplacementArray:
         if InfReplacementArray[single]['path'] == path:
             return InfReplacementArray[single]['code']
 
-#Get Path Id using path
+
+'''
+Get Path Id using path
+'''
 def getPathId(path , InfReplacementArray):
     for single in InfReplacementArray:
         if InfReplacementArray[single]['path'] == path:
             return InfReplacementArray[single]['id']
 
-#Get Path Id using path
+
+'''
+Get Path Id using path
+'''
 def getCodePathMore(code , InfReplacementArray):
     for single in InfReplacementArray:
         if InfReplacementArray[single]['code'] and InfReplacementArray[single]['code'] != None and InfReplacementArray[single]['code'] == code:
             return InfReplacementArray[single]
 
-#Get Directory Detail
+
+'''
+Get Directory Detail
+'''
 def getDirectoryDetail(projectName ,fullpath = False):
-    #print('getDirectoryDetail')
+    
     DirectoryDetail = [[],[],[],[],[],[],[],[]]
     if fullpath:
         projfile = open(fullpath, 'rb')
-        #print('Open '+fullpath+' File')
+        
     else:
         projfile = open('projects\\' + projectName + '.fxy', 'rb')
-        #print('Open '+'projects\\' + projectName + '.fxy'+' File')
-
+        
     allProjectDirectoryList = projfile.readline()
     projectDirectoryList = allProjectDirectoryList.split(';')
     for  SigleDir in projectDirectoryList:
@@ -1021,11 +1173,10 @@ def getDirectoryDetail(projectName ,fullpath = False):
                 indexOfDet = int(detialInformation[2])
                 DirectoryDetail[indexOfDet] = detialInformation
     projfile.close()
-    #print('closing '+fullpath+' File')
+    
     return DirectoryDetail
 
-# Fetch information related to email configuration    
-# Triggers     
+     
 def EncodeInfo(stringToBeEncoded):
     stringToBeEncoded = str(stringToBeEncoded).strip()
     return base64.b16encode(base64.b16encode(stringToBeEncoded))
@@ -1033,7 +1184,3 @@ def EncodeInfo(stringToBeEncoded):
 def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
-
-# To test Main Functionality  
-# projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy','','New_Project')

@@ -3,10 +3,12 @@
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
 '''
 Created on Dec 5, 2013
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
+    
 # Fixity Scheduler
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -31,7 +33,8 @@ import shutil
 import datetime
 
 
-#Custom Classes
+'''Custom Classes'''
+    
 from EmailPref import EmailPref
 import FixityCore
 import FixitySchtask
@@ -39,10 +42,11 @@ from Debuger import Debuger
 from Database import Database
 
 Debugging = Debuger()
-
+''' Class to manage the Filter to be implemented for the files with specific extensions '''
 class DecryptionManager(QDialog):
-    ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-    #Constructor
+    
+    '''Constructor'''
+    
     def __init__(self,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
@@ -57,44 +61,48 @@ class DecryptionManager(QDialog):
         
         self.isMethodChanged = False
         self.isAllfilesConfirmed = False
-    # Distructor
+    '''
+    Distructor
+    '''
     def destroyDecryptionManager(self):
         del self
         
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(DecryptionManager,self).reject()
-    #Create Window
+    '''Create Window'''
     def CreateWindow(self):
         self = QDialog()
         
 
-    #Create Window info
+    '''Create Window info'''
     def GetWindow(self):
         return self
 
-    #Create Show Window
+    '''Create Show Window'''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-    #Create Show Window
+    '''Create Show Window'''
     def SetLayout(self, layout):
         self.DecryptionManagerLayout = layout
-    #Set Layout for Windows
+        
+    '''Set Layout for Windows'''
     def SetWindowLayout(self):
         self.setLayout(self.DecryptionManagerLayout)
-    #Get Layout
+        
+    '''Get Layout'''
     def GetLayout(self):
         return self.DecryptionManagerLayout
 
-    # Reset Form information
+    ''' Reset Form information'''
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
         self.Project.setText('For the Project')
 
-    # Get array of all projects currently working
+    ''' Get array of all projects currently working'''
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
@@ -108,12 +116,12 @@ class DecryptionManager(QDialog):
 
 
 
-    # All design Management Done in Here
+    ''' All design Management Done in Here'''
     def SetDesgin(self):
-        DB = Database()
+        SqlLiteDataBase = Database()
 
 
-        ProjectList = DB.getProjectInfo(None,False)
+        ProjectList = SqlLiteDataBase.getProjectInfo(None,False)
         isEnable = True
         AllProjectList = []
         if(len(ProjectList) > 0):
@@ -155,7 +163,7 @@ class DecryptionManager(QDialog):
         self.projectChanged()
 
 
-    # Update Filters information
+    ''' Update Filters information'''
     def SetInformation(self):
 
         msgBox = QLabel('Loading')
@@ -169,8 +177,8 @@ class DecryptionManager(QDialog):
             return
 
         projects_path = getcwd()+'\\projects\\'
-        DB  = Database()
-        info = DB.getProjectInfo(selectedProject)
+        SqlLiteDataBase  = Database()
+        info = SqlLiteDataBase.getProjectInfo(selectedProject)
         Information= {}
 
         if(len(info) > 0):
@@ -202,8 +210,8 @@ class DecryptionManager(QDialog):
             
             QMessageBox.information(self, "Failure", "No Project Selected")
             return
-        DB  = Database()
-        flag = DB.update(DB._tableProject, Information, "id='" + str(Information['id']) + "'")
+        SqlLiteDataBase  = Database()
+        flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information, "id='" + str(Information['id']) + "'")
 
         if response:
             if flag :
@@ -222,12 +230,12 @@ class DecryptionManager(QDialog):
                     QMessageBox.information(self, "Information", "Everything was not confirmed that is why algorithm change did not take place.")
         return
 
-    # Triggers on project changed from drop down and sets related information in filters Field
+    ''' Triggers on project changed from drop down and sets related information in filters Field'''
     def projectChanged(self):
         Algorithm = ''
         selectedProject = self.Porjects.currentText()
-        DB  = Database()
-        info = DB.getProjectInfo(selectedProject)
+        SqlLiteDataBase  = Database()
+        info = SqlLiteDataBase.getProjectInfo(selectedProject)
         Information= {}
         Information['selectedAlgo'] = 'sha256'
         if(len(info) > 0):
@@ -242,13 +250,13 @@ class DecryptionManager(QDialog):
             self.methods.setCurrentIndex(0)
         return
 
-    #Close the dailog box
+    '''Close the dailog box'''
     def Cancel(self):
         self.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyDecryptionManager()
         self.close()
 
-    #Warning to change encryption value
+    '''Warning to change encryption value'''
     def slotWarning(self, projectName):
         
         reply = QMessageBox.warning(self, 'Confirmation',"Are you sure you want to change Algorithum for  ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
@@ -262,9 +270,12 @@ class DecryptionManager(QDialog):
 
 
 
-# Method to create (hash, path, id) tables from file root
-# Input: root, output (boolean), hash algorithm, QApplication
-# Output: list of tuples of (hash, path, id)
+    ''' 
+    Method to create (hash, path, id) tables from file root
+    Input: root, output (boolean), hash algorithm, QApplication
+    Output: list of tuples of (hash, path, id)
+    '''
+    
     def quietTable(self,r, a , InfReplacementArray = {} , projectName = '' , counter=0):
 
         listOfValues = []

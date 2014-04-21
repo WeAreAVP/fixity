@@ -49,15 +49,28 @@ from ChangeName import ChangeName
 from AutoRuner import AutoRuner
 
 Debuging = Debuger()
-#Main Class to show all meun and options of fixity
+'''Main Class to handle all menu and options of Fixity'''
+
 class ProjectWin(QMainWindow):
     
-        #Constructor
+        '''
+        Constructor
+        '''
         def __init__(self, EmailPref , FilterFiles):
-
+                
+                if(OS_Info == 'Windows'):
+                    self.CreateAllRequiredFileAndDirectoriesForWindows()
+                else: 
+                    self.CreateAllRequiredFileAndDirectoriesForMac()
+                    
+                self.Database = Database()
+                
+                self.createDatabaseTables()
+                
                 pathInfo = str(getcwd()).replace('\\schedules','')
 
                 pathInfo = pathInfo.replace('schedules','')
+                
                 if(OS_Info == 'Windows'):
                     databasePath = pathInfo+"\\bin\\Fixity.db-journal"
                 else:
@@ -66,7 +79,7 @@ class ProjectWin(QMainWindow):
                 if path.isfile(databasePath):
                     remove(databasePath)
 
-                self.Database = Database()
+                
                 QMainWindow.__init__(self)
 
                 Debuging.tureDebugerOn()
@@ -298,14 +311,19 @@ class ProjectWin(QMainWindow):
                 self.toggler((self.projects.count() == 0))
                 self.show()
                                 
-        #Distructor
+        '''
+        Distructor
+        '''
         def __del__(self):
             del self
             
-        #Clean All Objects Existed
+        '''
+        Clean All Objects Existed
+        Closing opened Windows and database conactions and Releasing the Variables
+        '''
         def cleanObjects(self):
             
-            #Closing opened Windows and database conactions 
+            #Closing opened Windows and database connections 
             try:
                 self.Database.closeConnection()
             except:
@@ -382,7 +400,9 @@ class ProjectWin(QMainWindow):
                 pass
                 
          
-        # Configure Email Address for the Tools
+        '''
+        Configure Email Address for the Tools
+        '''
         def ConfigEmailView(self):
             self.EmailPrefManager.CloseClick()
             self.EmailPrefManager = None
@@ -390,7 +410,9 @@ class ProjectWin(QMainWindow):
             self.EmailPrefManager.SetDesgin()
             self.EmailPrefManager.ShowDialog()
             
-        #PopUp to Import Project
+        '''
+        PopUp to Import Project
+        '''
         def importProjects(self):
             self.ImportProjects.destroyImportProjects()
             self.ImportProjects = None
@@ -400,7 +422,10 @@ class ProjectWin(QMainWindow):
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
             
-        #Pop up to Show About Fixity Infotmation
+        
+        '''
+        Pop up to Show About Fixity Information
+        '''
         def AboutFixityView(self):
 
             self.AboutFixityManager.Cancel()
@@ -409,9 +434,12 @@ class ProjectWin(QMainWindow):
             self.AboutFixityManager.SetDesgin()
             self.AboutFixityManager.ShowDialog()
             
-        # Pop Up to Change Root Directory If any change occured
-        # orignalPathText:: Path In Manifest
-        # changePathText:: New Path Given in Fixity Tool
+        '''
+        Pop Up to Change Root Directory If any change occured
+        orignalPathText:: Path In Manifest
+        changePathText:: New Path Given in Fixity Tool
+        '''
+            
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
@@ -420,7 +448,9 @@ class ProjectWin(QMainWindow):
             self.FileChanged.ShowDialog()
             self.setWindowTitle("Fixity "+self.versoin)
 
-        # Pop up to set Filters
+        '''
+        Pop up to set Filters
+        '''
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
             self.FilterFiles = None
@@ -428,7 +458,9 @@ class ProjectWin(QMainWindow):
             self.FilterFiles.SetDesgin()
             self.FilterFiles.ShowDialog()    
             
-        # Pop up to Change Project Name        
+        '''
+        Pop up to Change Project Name
+        '''        
         def ChangeNameBox(self):
             
             self.ChangeName.Cancel()
@@ -449,7 +481,9 @@ class ProjectWin(QMainWindow):
                 except Exception as ex:
                     print(ex[0])
             
-        # Pop up to set Encryption Method
+        '''
+        Pop up to set Encryption Method
+        '''
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
@@ -457,11 +491,13 @@ class ProjectWin(QMainWindow):
             self.DecryptionManager.SetDesgin()
             self.DecryptionManager.ShowDialog()
             
-        #Trigger to switch debugger on or off
+        '''
+        Trigger to switch debugger on or off
+        '''
         def switchDebugger(self,start= None):
-            DB = Database()
+            SqlLiteDataBase = Database()
             Information = {'debugger':0}
-            info = DB.getConfiguration()
+            info = SqlLiteDataBase.getConfiguration()
             if info != None:
                 if(len(info)>0):
                     Information = info[0]
@@ -478,9 +514,9 @@ class ProjectWin(QMainWindow):
 
                     if info != None:
                         if len(info) > 0:
-                            DB.update(DB._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
+                            SqlLiteDataBase.update(SqlLiteDataBase._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
                         else:
-                            DB.insert(DB._tableConfiguration,Information)
+                            SqlLiteDataBase.insert(SqlLiteDataBase._tableConfiguration,Information)
 
             if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
                 debugText = 'Turn Debugging On'
@@ -489,13 +525,17 @@ class ProjectWin(QMainWindow):
 
             self.Debuging.setText(debugText)
             
-        #Create New Fixity Again
+        '''
+        Create New Fixity Again
+        '''
         def newWindow(self):
             self = ProjectWin()
             self.show()
             sys.exit(app.exec_())
             
-        #Gets Detail information of Windows 
+        '''
+        Gets Detail information of Windows
+        ''' 
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
@@ -549,8 +589,12 @@ class ProjectWin(QMainWindow):
                 pass
             return WindowsInformation
 
-        #Updates Fields When Project Is Selected In List
+
+
+        '''
+        Updates Fields When Project Is Selected In List
         @Slot(str)
+        '''
         def update(self, new):
             
             if self.unsaved:
@@ -639,7 +683,12 @@ class ProjectWin(QMainWindow):
             self.unsaved = False
             self.old = new
 
-        # New Project Creation
+
+
+
+        '''
+        New Project Creation
+        '''
         def new(self):
             QID = QInputDialog(self)
             QID.setWindowModality(Qt.WindowModal)
@@ -668,7 +717,11 @@ class ProjectWin(QMainWindow):
             
             
                 
-        #Process the changes made in Fixity 
+                
+                
+        '''
+        Process the changes made in Fixity
+        ''' 
         def process(self, shouldRun=True):
 
             if all(d.text() == "" for d in self.dtx):
@@ -789,7 +842,6 @@ class ProjectWin(QMainWindow):
                 Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
                 Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
                 Configurations['RunInitialScan'] = False
-#                     FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), projectInformation,self.SystemInformation , pathsInfoChanges)
                 ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                 FiltersArray = {}
 
@@ -881,7 +933,10 @@ class ProjectWin(QMainWindow):
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
             return
 
-        # Toggles fields on/off
+        
+        '''
+        Toggles fields on/off
+        '''
         def toggler(self, switch):
             for n in xrange(len(self.mtx)):
                 self.mtx[n].setDisabled(switch)
@@ -907,34 +962,59 @@ class ProjectWin(QMainWindow):
             except:
                 pass
             
-        #returns If anything changed
+            
+            
+        '''
+        returns If anything changed
+        '''
         def changed(self):
                 self.unsaved = True
+              
+              
                 
-        #Day check box Click Trigger
+        '''
+        Day check box Click Trigger
+        '''
         def dayclick(self):
             self.dom.hide()
             self.dow.hide()
             self.spacer.changeSize(30, 25)
             
-        #Month check box Click Trigger
+            
+            
+        '''
+        Month check box Click Trigger
+        '''
         def weekclick(self):
             self.spacer.changeSize(0, 0)
             self.dom.hide()
             self.dow.show()
             
-        #Month check box Click Trigger 
+            
+            
+            
+        '''
+        Month check box Click Trigger
+        ''' 
         def monthclick(self):
             self.spacer.changeSize(0, 0)
             self.dow.hide()
             self.dom.show()
             
-        #Pick Directory 
+            
+            
+        '''
+        Pick Directory
+        ''' 
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
+              
+              
                 
-        #Provides Replace Path Information Array
+        '''
+        Provides Replace Path Information Array
+        '''
         def replacePathInformation(self):
             projFileChangePath = open('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'wb')
             currentProjFile = open('projects\\' + self.projects.currentItem().text()+ '.fxy', 'rb')
@@ -954,7 +1034,11 @@ class ProjectWin(QMainWindow):
             shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
             remove('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy')
 
-        #Saves And Runs
+
+
+        '''
+        Saves And Runs
+        '''
         def run(self):
 
             if all(d.text() == "" for d in self.dtx):
@@ -976,8 +1060,8 @@ class ProjectWin(QMainWindow):
 
             Configurations = {}
 
-            DB = Database()
-            Configurations = DB.getProjectInfo(self.projects.currentItem().text())
+            SqlLiteDataBase = Database()
+            Configurations = SqlLiteDataBase.getProjectInfo(self.projects.currentItem().text())
             if (len(Configurations)>0):
                 if self.runOnlyOnACPower.isChecked():
                     Configurations[0]['runWhenOnBattery'] = 1
@@ -1013,7 +1097,11 @@ class ProjectWin(QMainWindow):
             else:
                 QMessageBox.information(self, "Fixity", "Project Configuration Not Found,Please Save the project and Try Again")
 
-        #DELETE Given PROJECT
+
+
+        '''
+        DELETE Given PROJECT
+        '''
         def deleteproject(self):
             sbox = QMessageBox()
             try:
@@ -1027,15 +1115,15 @@ class ProjectWin(QMainWindow):
             if sval == QMessageBox.Cancel:
                 return
             try:
-                DB = Database()
-                projInfo = DB.getProjectInfo(self.projects.currentItem().text())
+                SqlLiteDataBase = Database()
+                projInfo = SqlLiteDataBase.getProjectInfo(self.projects.currentItem().text())
 
                 if len(projInfo) > 0:
 
-                    DB.delete(DB._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
-                    DB.delete(DB._tableProjectPath, "`projectID` = '"+str(projInfo[0]['id'])+"'")
-                    DB.delete(DB._tableVersions, "`id` = '"+str(projInfo[0]['versionCurrentID'])+"'")
-                    DB.delete(DB._tableProject, "title like '"+self.projects.currentItem().text()+"'")
+                    SqlLiteDataBase.delete(SqlLiteDataBase._tableVersionDetail, "`projectID` = '"+str(projInfo[0]['id'])+"'")
+                    SqlLiteDataBase.delete(SqlLiteDataBase._tableProjectPath, "`projectID` = '"+str(projInfo[0]['id'])+"'")
+                    SqlLiteDataBase.delete(SqlLiteDataBase._tableVersions, "`id` = '"+str(projInfo[0]['versionCurrentID'])+"'")
+                    SqlLiteDataBase.delete(SqlLiteDataBase._tableProject, "title like '"+self.projects.currentItem().text()+"'")
             except:
                 pass
 
@@ -1056,7 +1144,11 @@ class ProjectWin(QMainWindow):
             self.toggler((self.projects.count() == 0))
             self.unsaved = False
 
-        #Fetch All Directory with in this directory
+
+
+        '''
+        Fetch All Directory with in this directory
+        '''
         def buildTable(self, r, a):
 
             list = []
@@ -1088,7 +1180,11 @@ class ProjectWin(QMainWindow):
             
             return list
 
-        #Update Schedule information
+
+
+        '''
+        Update Schedule information
+        '''
         def updateschedule(self,customPojectUpdate = None):
             
             flagInitialScanUponSaving = False
@@ -1121,9 +1217,8 @@ class ProjectWin(QMainWindow):
                     dweek = int(self.dow.currentIndex())
             elif self.daily.isChecked():
                     interval = 3
-            print('self.projects.currentItem().text()')
-            print(self.projects.currentItem().text())
-            print('self.projects.currentItem().text()')
+            
+
             projectInformation = {}
             projectInformation['title'] = self.projects.currentItem().text()
             projectInformation['durationType'] = interval
@@ -1169,11 +1264,15 @@ class ProjectWin(QMainWindow):
             Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
             Configurations['RunInitialScan'] = False
             self.unsaved = False
-            print('schedule')
+            
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
 
-        #Remove the file which are not required
+
+
+        '''
+        Remove the file which are not required
+        '''
         def removeNotRequiredFiles(self):
 
             if not str(self.projects.currentItem()) == 'None':
@@ -1191,7 +1290,11 @@ class ProjectWin(QMainWindow):
                         remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
             return
 
-        #Window close Event
+
+
+        '''
+        Window close Event
+        '''
         def closeEvent(self, event):
             if not str(self.projects.currentItem()) == 'None':
                 if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
@@ -1222,26 +1325,227 @@ class ProjectWin(QMainWindow):
 
        
             
-        #Check For Changes In the provided path
+            
+        '''
+        Check For Changes In the provided base  path and old given base path the given project name  
+        @param projectName: Project Name
+        @param searchForPath: Path of a given base Dire
+        @param code: Code of that specific path
+        
+        @return: None
+        '''
         def checkForChanges(self,projectName , searchForPath ,code):
             try:
-                DB = Database()
-                info = DB.getProjectInfo(projectName)
+                SqlLiteDataBase = Database()
+                info = SqlLiteDataBase.getProjectInfo(projectName)
                 information = info[0]
-                DirectoryDetail = DB.getProjectPathInfo(information['id'], information['versionCurrentID'])
-                for  DD in DirectoryDetail:
-                    if (str(DirectoryDetail[DD]['pathID']).strip() == str(code).strip()):
-                        if(DirectoryDetail[DD]['path'] != searchForPath):
-                            self.ChangeRootDirectoryInfor(DirectoryDetail[DD]['path'] , searchForPath )
+                DirectoryDetail = SqlLiteDataBase.getProjectPathInfo(information['id'], information['versionCurrentID'])
+                for  DirectoryDetailSingle in DirectoryDetail:
+                    if (str(DirectoryDetail[DirectoryDetailSingle]['pathID']).strip() == str(code).strip()):
+                        if(DirectoryDetail[DirectoryDetailSingle]['path'] != searchForPath):
+                            self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] , searchForPath )
             except:
                 pass
-      
+            
+            
+            
+        '''
+        Get Project Index in projects listing of a given name
+        
+        @param projectName: Project Name
+        @return: index
+        '''
         def getProjectIndex(self,projectName):
              
             for index in xrange(self.projects.count()): 
                 if projectName in str(self.projects.item(index).text()):
                     return index
                 
+                
+        '''
+        Create All Required File And Directories For Windows
+        
+        @return: None
+        '''
+        def CreateAllRequiredFileAndDirectoriesForWindows(self):
+            
+            FixityResourcesBasePath = getcwd()
+            ''' Create bin Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'bin')
+            except:
+                pass
+            
+            
+            DatabasePath = FixityResourcesBasePath+str(os.sep)+'bin'+str(os.sep)+'Fixity.db'
+            ''' Create Database File '''
+            self.CreateDatabaseFile(DatabasePath)
+            
+            
+            
+            
+            
+            ''' Create history Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'history')
+            except:
+                pass
+                
+                
+                
+            ''' Create history Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'reports')
+            except:
+                pass
+            
+            
+    
+            ''' Create schedules Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'schedules')
+            except:
+                pass
+
+
+            ''' Create debug Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'debug')
+            except:
+                pass
+                
+                    
+        '''
+        Create All Required File And Directories For Mac
+        
+        @return: None
+        '''
+        def CreateAllRequiredFileAndDirectoriesForMac(self):
+            FixityResourcesBasePath = getcwd()
+            
+            pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+            pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
+            pathInfo = str(pathInfo).replace('Fixity.app', '')
+            DatabasePath = FixityResourcesBasePath+str(os.sep)+'bin'+str(os.sep)+'Fixity.db'
+            
+            
+            ''' Create Database File '''
+            self.CreateDatabaseFile(DatabasePath)
+            
+            ''' Create Schedules Folder '''
+            schedulesPathOfFixiry = FixityResourcesBasePath+'schedules'
+            
+            try:
+                self.createDirectory(schedulesPathOfFixiry)
+            except:
+                pass
+        
+            
+            ''' Create Bin Folder '''
+            try:
+                self.createDirectory(str(FixityResourcesBasePath)+'bin')
+            except:
+                pass
+            
+            
+            FixityPublicBasePath = str(pathInfo).replace(' ', '\\ ')
+            
+            ''' Create History Folder '''
+            try:
+                self.createDirectory(str(FixityPublicBasePath)+'history')
+            except:
+                pass
+                
+                
+            ''' Create reports Folder '''
+            try:
+                self.createDirectory(str(FixityPublicBasePath)+'reports')
+            except:
+                pass
+           
+        '''
+        Create Directory given in the path if dose not exists
+        @param directoryPath: Directory Path to be created
+         
+        @return: None
+        '''        
+        def createDirectory(self,directoryPath):
+            if  not os.path.isdir(str(directoryPath)) :
+                try:
+                    os.mkdir(str(directoryPath))
+                except:
+                    pass
+        ''' 
+        Create Database File that Fixity Uses
+        @param DatabasePath:Database File Path To be created
+         
+        '''
+        def CreateDatabaseFile(self,DatabasePath):
+            if DatabasePath:
+                if not os.path.isfile(DatabasePath):
+                    try:
+                        DatabaseFile = open(str(DatabasePath),'w+')
+                        DatabaseFile.close()
+                    except:
+                        pass
+                    
+        ''' create Database Tables '''
+        def createDatabaseTables(self):
+            
+                try:
+                    self.Database
+                except:
+                    self.Database = Database()
+                    pass
+                
+                
+                
+                if not self.checkIfTableExistsInDatabase('configuration'):
+                    ''' Create configuration Table'''
+                    try:
+                        self.Database.sqlQuery('CREATE TABLE "configuration" ( id INTEGER NOT NULL,  smtp TEXT,  email TEXT,  pass TEXT,  port INTEGER,  protocol TEXT,  debugger SMALLINT,  "updatedAt" DATETIME,  "createdAt" DATETIME,  PRIMARY KEY (id) );')
+                    except:
+                        pass
+                
+                
+                if not self.checkIfTableExistsInDatabase('project'):
+                    ''' Create project Table'''
+                    try:
+                        self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
+                    except:
+                        pass
+                
+                
+                
+                if not self.checkIfTableExistsInDatabase('projectPath'):
+                    ''' Create projectPath Table'''
+                    try:
+                        self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL,  "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
+                    except:
+                        pass
+                
+                
+                if not self.checkIfTableExistsInDatabase('versionDetail'):
+                    ''' Create versionDetail Table'''
+                    try:
+                        self.Database.sqlQuery('CREATE TABLE "versionDetail" (id INTEGER NOT NULL, "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "projectPathID" INTEGER NOT NULL, md5_hash TEXT NOT NULL, ssh256_hash TEXT NOT NULL, path TEXT NOT NULL, inode TEXT NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id), FOREIGN KEY("versionID") REFERENCES versions (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("projectPathID") REFERENCES "projectPath" (id));')
+                    except:
+                        pass
+                    
+                    
+                if not self.checkIfTableExistsInDatabase('versions'):
+                    ''' Create versions Table'''
+                    try:
+                        self.Database.sqlQuery('CREATE TABLE "versions" (id INTEGER NOT NULL, "versionType" VARCHAR(10) NOT NULL, name VARCHAR(255) NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id));')
+                    except:
+                        pass
+                    
+        
+        def checkIfTableExistsInDatabase(self,tableName):
+            return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='"+tableName+"'");
+'''    
+Auto Scan running handler
+'''                
 def auto_run(project):
     AR = AutoRuner()
     IsemailSet = ''
@@ -1272,4 +1576,7 @@ if __name__ == '__main__':
             sys.exit()
         except:
             print("Could not run this Project ")
+
+
+
 

@@ -14,7 +14,9 @@ Created on Dec 5, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+"""
+    Builtin library
+"""
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -28,15 +30,27 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
+
+"""
+    Custom Library
+"""
 from Database import Database
 
-#Custom Classes
 
-DB = Database()
+
+SqlLiteDataBase = Database()
+
+
+'''
+Class to manage the Filter to be implemented for the files with specific extensions 
+'''
 class FilterFiles(QDialog):
-    ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-    # Constructor
+    
+    """
+            Constructor  
+    """
     def __init__(self,parentWin):
+        
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.setWindowModality(Qt.WindowModal)
@@ -45,48 +59,73 @@ class FilterFiles(QDialog):
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
         
+    """
+        Grab Key Press Events
+    """    
     def keyPressEvent(self, event):
+        
         if type(event) == QKeyEvent:
             print event.key()
-        super(FilterFiles,self).keyPressEvent(event)        
+        super(FilterFiles,self).keyPressEvent(event)
+        
+    """
+        catch Reject even of the Dialog box
+    """            
     def reject(self):
+        
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(FilterFiles,self).reject()
-                
-    # Distructor
+    """
+        Distructor
+    """            
     def destroyFilterFiles(self):
+        
         del self
 
     
 
-    # Get Window of this
+    '''
+    Get Window of this
+    '''
     def GetWindow(self):
         return self.FilterFilesWin
 
-    # Get Window of this
+    '''
+    Get Window of this
+    '''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-    # Set Layout
+    '''
+    Set Layout
+    '''
     def SetLayout(self, layout):
         self.FilterFilesLayout = layout
 
-    # Set Window Layout
+    '''
+    Set Window Layout
+    '''
     def SetWindowLayout(self):
         self.setLayout(self.FilterFilesLayout)
 
-    # Get Layout
+    '''
+    Get Layout
+    '''
     def GetLayout(self):
         return self.FilterFilesLayout
 
-    # Reset Form information
+    '''
+    Reset Form information
+    '''
     def ResetForm(self):
         self.EmailAddrBar.setText('Email')
         self.Password.setText('Password')
         self.Project.setText('Project')
 
-    # Get array of all projects currently working
+    '''
+    Get array of all projects currently working
+    '''
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
@@ -98,9 +137,11 @@ class FilterFiles(QDialog):
                         ProjectsList.append(str(file).replace('.fxy', ''))
         return ProjectsList
 
-    # All design Management Done in Here
+    '''
+     All design Management Done in Here
+    '''
     def SetDesgin(self):
-        ProjectListArr = DB.getProjectInfo()
+        ProjectListArr = SqlLiteDataBase.getProjectInfo()
         counter = 0
         isEnable = True
         ProjectList = []
@@ -151,12 +192,14 @@ class FilterFiles(QDialog):
         self.projectChanged()
 
 
-    # Update Filters information
+    ''' 
+    Update Filters information 
+    '''
     def SetInformation(self):
 
         
         selectedProject = self.Porjects.currentText()
-        Information = DB.getProjectInfo(selectedProject)
+        Information = SqlLiteDataBase.getProjectInfo(selectedProject)
         Information[0]['filters'] = self.FilterField.text()
         if(self.IgnoreHiddenFiles.isChecked()):
             Information[0]['ignoreHiddenFiles'] = 1
@@ -169,7 +212,7 @@ class FilterFiles(QDialog):
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
             
             return
-        flag = DB.update(DB._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
+        flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
 
         if flag != None:
             
@@ -182,18 +225,20 @@ class FilterFiles(QDialog):
             QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
             
 
-    # Reset Text of Filters
+    ''' Reset Text of Filters '''
     def Reset(self):
         self.FilterField.setText('')
 
-    # Triggers on project changed from drop down and sets related information in filters Field
+    ''' 
+    Triggers on project changed from drop down and sets related information in filters Field
+    '''
     def projectChanged(self):
         
         filters = ''
         ignoreHiddenFiles = 0
         selectedProject = self.Porjects.currentText()
         try:
-            Information = DB.getProjectInfo(selectedProject)
+            Information = SqlLiteDataBase.getProjectInfo(selectedProject)
         except:
             pass
 
@@ -216,29 +261,11 @@ class FilterFiles(QDialog):
             
         return
 
-    # close the dailog box
+    ''' 
+    Close the Dialog Box
+    '''
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.close()
         self.destroyFilterFiles()
         
-  
-#     def keyPressEvent(self, event):
-#         if type(event) == QKeyEvent:
-#             print event.key()
-            
-# if __name__ == '__main__':  
-#        
-#     app = QApplication(sys.argv)
-#     w = FilterFiles(QDialog())
-#     #w.CreateWindow()
-#     w.SetWindowLayout()
-#     w.SetDesgin()
-#     w.ShowDialog()            
-#     sys.exit(app.exec_())
-
-# if __name__ == "__main__":
-#     app = QApplication(sys.argv)
-#     mainW = cheking()
-#     mainW.show()
-#     sys.exit(app.exec_())

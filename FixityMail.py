@@ -19,10 +19,25 @@ import base64
 #Custom Library
 from Debuger import Debuger
 
-D = Debuger()
+DebuggerObj = Debuger()
 
-# sends email
-# note that ADDRESS and PASSWORD should be set before use
+'''
+Sends Email
+Note that ADDRESS and PASSWORD should be set before use
+
+Input: root, output (boolean), hash algorithm, QApplication
+Output: list of tuples of (hash, path, id)
+
+
+@param recipients: All Recipients Address
+@param text: Message To be sent in this Email
+@param attachment: attachment To be sent in this Email
+@param information: Information About Email Configuration
+@param projectName: project Name
+@param EmailPref: Email Preferences
+  
+@return:  Boolean True If Email Send other wise False 
+'''
 def send(recipients, text, attachment, information,projectName='', EmailPref = None):
 
 	addr = str(information['email'])
@@ -49,6 +64,7 @@ def send(recipients, text, attachment, information,projectName='', EmailPref = N
 	protocol = str(information['protocol'])
 	port = int(str(information['port']).strip())
 
+
 	try:
 		if(protocol == 'SSL' or protocol == 'ssl'):
 			server = SMTP_SSL(str(information['smtp']), port)
@@ -71,15 +87,17 @@ def send(recipients, text, attachment, information,projectName='', EmailPref = N
 			print('sending email')
 			return True
 
+
 	except (SMTPException ,SMTPServerDisconnected , SMTPResponseException , SMTPSenderRefused , SMTPRecipientsRefused , SMTPDataError , SMTPConnectError , SMTPHeloError , SMTPAuthenticationError , Exception ) as e:
+        
 		moreInformation= {}
 		try:
 			moreInformation ={'SenderEmailAddress::':addr ,'RecipientsEmailAddress':recipients , '::More Detail':'' ,'ErrorCode':str(e[0]) , 'ErrorMsg':str(e[1]) }
 		except:
 			pass
 		try:
-			D.tureDebugerOn()
-			D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
+			DebuggerObj.tureDebugerOn()
+			DebuggerObj.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		except:
 			pass
 		

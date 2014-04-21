@@ -7,10 +7,7 @@
 Created on Mar 10, 2014
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-#build in Library
-import datetime
-from os import getcwd ,path
-import base64
+
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -20,40 +17,46 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-
-#Custome Library
-import FixityCore
-import FixityMail
-from Debuger import Debuger
-from Database import Database
-
+#build in Library
 import datetime
 from os import getcwd ,path  
 import base64
 
+
+#Custom Library
+from Debuger import Debuger
+from Database import Database
+import FixityCore
+import FixityMail
+'''
+Auto Scan Runner on Given Time or on Demand
+'''
+
 class AutoRuner(object):
-    #Auto Scan Runner on Given Time or on Demand
-    def runAutoFix(self , project , IsemailSet):
+    '''
+    Auto Scan Runner on Given Time or on Demand
+    '''
+    def runAutoFix(self , project , isEmailSendingSet):
         
-        Text = '' 
-        projectConfNotAvailable = True
+         
+        
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             
         DB = Database()
         
         Information = DB.getProjectInfo(str(project).replace('.fxy', ''))
         configuration =  DB.getConfiguration()
-        
-        email = {}
-        emailstr = ''
+         
+        emailOfReciverUsers = {}
+        emailOfReciverUsersStr = ''
         if Information != None:
             if len(Information) > 0:
-                emailstr = str(Information[0]['emailAddress'])
+                emailOfReciverUsersStr = str(Information[0]['emailAddress'])
 
-        email = emailstr.split(',')        
-        if len(email) > 0: 
-            if '' in email:
-                email.remove('')
+        emailOfReciverUsers = emailOfReciverUsersStr.split(',')        
+        if len(emailOfReciverUsers) > 0: 
+            if '' in emailOfReciverUsers:
+                emailOfReciverUsers.remove('')
         results = []
         Fitlers =''
         if Information != None:
@@ -63,7 +66,7 @@ class AutoRuner(object):
             results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
         else:
             results = FixityCore.run(AutiFixPath+"/projects/" + project + ".fxy", Fitlers, project)
-        msg = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
+        reportGeneratedForEmail = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
 
         if(len(configuration) > 0):
             newConfiguration = configuration[0]
@@ -71,11 +74,11 @@ class AutoRuner(object):
             newConfiguration['email'] = self.DecodeInfo(configuration[0]['email'])
             newConfiguration['pass'] = self.DecodeInfo(configuration[0]['pass'])
         
-            if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or IsemailSet =='Run':
+            if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or isEmailSendingSet =='Run':
                 if (len(configuration) > 0):
                     if ( configuration[0]['email'] !='') and (configuration[0]['pass'] !=''):
-                        for e in email:
-                            FixityMail.send(e, msg, results[5], newConfiguration,project)
+                        for e in emailOfReciverUsers:
+                            FixityMail.send(e, reportGeneratedForEmail, results[5], newConfiguration,project)
 
     def EncodeInfo(self,stringToBeEncoded):
         return base64.b16encode(base64.b16encode(stringToBeEncoded))

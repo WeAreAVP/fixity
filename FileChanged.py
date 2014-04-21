@@ -14,7 +14,7 @@ Created on Feb 4, 2014
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-
+#Custom Library
 import base64
 from os import getcwd  , path
 from PySide.QtCore import *
@@ -22,11 +22,15 @@ from PySide.QtGui import *
 
 import os
 
-''' Class to manage all the the errors and warning loging'''
+''' Class to manage if any Change in Base path of any given project, the action occurs when saving the project information'''
 class FileChanged(QDialog):
 
 
-    # Constuctor
+    '''
+    Constuctor
+    
+    @return: None  
+    ''' 
     def __init__(self,parentWin , orignalPathText ='', changePathText = '' ):
         self.parentWin = parentWin
         self.FileChangedWin = QDialog(self.parentWin)
@@ -41,59 +45,106 @@ class FileChanged(QDialog):
         self.ReplacementArray ={}
         
 
-    # Distructor
+    '''
+    Distructor
+    
+    @return: None  
+    ''' 
     def destroyFileChanged(self):
         del self
 
-    # Get Version
+    ''''
+    Get Version
+    
+    @return: None  
+    ''' 
     def getVersion(self):
         return self.version
 
-    # Set Version
+    '''
+    Set Version
+    
+    @return: None  
+    ''' 
     def setVersion(self,version):
         return self.version
 
-    # Create Window
+    '''
+    Create Window
+    
+    @return: None  
+    ''' 
     def CreateWindow(self):
         self.FileChangedWin = QDialog()
         
 
-    # Get this Window
+    '''
+    Get this Window
+    
+    @return: None  
+    ''' 
     def GetWindow(self):
         return self.FileChangedWin
 
-    # Show Dialog
+    '''
+    Show Dialog
+    
+    @return: None  
+    ''' 
     def ShowDialog(self):
         self.FileChangedWin.show()
         self.FileChangedWin.exec_()
-
-    # Set Layout
+    '''
+    Set Layout
+    
+    @return: None  
+    ''' 
     def SetLayout(self, layout):
         self.FileChangedLayout = layout
-
-    # Get Layout
+        
+    '''
+    Get Layout
+    
+    @return: None  
+    ''' 
     def GetLayout(self):
         return self.FileChangedLayout
 
-    # Set Window Layout
+    '''
+    Set Window Layout
+    
+    @return: None  
+    ''' 
     def SetWindowLayout(self):
         self.FileChangedWin.setLayout(self.FileChangedLayout)
 
-    # Close Click
+    '''
+    Close Click
+    
+    @return: None  
+    ''' 
     def CloseClick(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.changeThePathInformation = False
         self.FileChangedWin.close()
-
-    # Destroy window Information
+    
+    '''
+    Destroy window Information
+    
+    @return: None
+    ''' 
     def DestroyEveryThing(self):
         self.destroyFileChanged()
         self.FileChangedWin.close()
 
-    # All design Management Done in Here
+
+    '''
+    All design Management Done in Here
+    
+    @return: None
+    ''' 
+        
     def SetDesgin(self):
-
-
 
         self.GetLayout().addStrut(400)
 
@@ -133,8 +184,13 @@ class FileChanged(QDialog):
         self.setInformation.clicked.connect(self.changeRootDirInfo)
         self.cancel.clicked.connect(self.CloseClick)
         self.SetWindowLayout()
+        
 
-    #Points out to change the Path of Manifest or not
+    '''
+    Points out to change the Path of Manifest or not
+    
+    @return: None  
+    ''' 
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
             

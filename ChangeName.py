@@ -12,15 +12,20 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
+
+'''Custom Classes'''
+from EmailPref import EmailPref
 from Database import Database
 import FixitySchtask
-#Custom Classes
-from EmailPref import EmailPref
-DBObj = Database()
+
+SqlLiteDataBase = Database()
+
+''' Class to manage the the Name of the project , ChangeName class manages the action of name changing and also updating the scheduler and other information changed '''
 
 class ChangeName(QDialog):
-    ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-    #Constructor
+    
+    
+    '''Constructor'''
     def __init__(self,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
@@ -34,37 +39,44 @@ class ChangeName(QDialog):
         self.ChangeNameLayout = QVBoxLayout()
          
        
-    # Distructor        
+    ''' Distructor'''        
     def destroyChangeName(self):
         del self  
         
-    #QDailog Reject Tigger over writen
+        
+    '''QDailog Reject Tigger over writen'''
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(ChangeName,self).reject()
-    #Get  Window                
+        
+        
+    '''Get  Window'''                
     def GetWindow(self):
         return self 
     
-    #Show this Dialog         
+    
+    '''Show this Dialog'''         
     def ShowDialog(self):     
         self.show()
         self.exec_()
         
-    #Set  Layout    
+        
+    '''Set  Layout '''   
     def SetLayout(self, layout):
         self.ChangeNameLayout = layout
         
-    #Set Window Layout
+        
+    '''Set Window Layout'''
     def SetWindowLayout(self):
         self.setLayout(self.ChangeNameLayout)
-    #Get Layout    
+        
+        
+    '''Get Layout '''
     def GetLayout(self):
         return self.ChangeNameLayout
-    
 
-        
-    # Get array of all projects currently working     
+
+    ''' Get array of all projects currently working   '''  
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
@@ -76,13 +88,12 @@ class ChangeName(QDialog):
                         ProjectsList.append(str(file).replace('.fxy', ''))
         return ProjectsList        
                                 
-
-                                    
-    # All design Management Done in Here            
+        
+    ''' All design Management Done in here  got the Change Name'''
     def SetDesgin(self):
         
-        print('SetDesgin')
-        ProjectListArr = DBObj.getProjectInfo()
+        
+        ProjectListArr = SqlLiteDataBase.getProjectInfo()
         isEnable = True
         counter = 0 
         ProjectList = []
@@ -108,8 +119,6 @@ class ChangeName(QDialog):
         
         self.changeNameField.setPlaceholderText("Add New Name")
         
-
-        
         self.GetLayout().addWidget(self.changeNameField)
         self.GetLayout().addWidget(self.setInformation)
         
@@ -129,30 +138,30 @@ class ChangeName(QDialog):
         
     def projectChanged(self):
         return
-    # Update Filters information    
+    
+    
+    ''' Update Name Of the Project and also Updating the scheduler and other information related to the Project'''
     def SetInformation(self):
-        
-        QMB = QMessageBox 
+        MessageBoxForChangeName = QMessageBox 
         selectedProject = self.Porjects.currentText()
-        Information = DBObj.getProjectInfo(selectedProject)
+        Information = SqlLiteDataBase.getProjectInfo(selectedProject)
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
             
-            QMB.information(self, "Fixity", "No project selected - please select a project and try again.")
-            
+            MessageBoxForChangeName.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
         else:
             Information[0]['title'] = u''+self.changeNameField.text()
         
-        isThisNameAlreadyTaken = DBObj.getProjectInfo(Information[0]['title'])
+        isThisNameAlreadyTaken = SqlLiteDataBase.getProjectInfo(Information[0]['title'])
         if len(isThisNameAlreadyTaken) > 0:
-            QMB.information(self, "Fixity", "Project With this Name already Exists, please select a different Name.")
+            MessageBoxForChangeName.information(self, "Fixity", "Project With this Name already Exists, please select a different Name.")
             return
-        flag = DBObj.update(DBObj._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
+        flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
             self.refreshProjectSettings()
             thisItemIndex = self.parentWin.getProjectIndex(str(Information[0]['title']))
 
-            QMB.information(self, "Success", "Name have changed successfully!")
+            MessageBoxForChangeName.information(self, "Success", "Name have changed successfully!")
             self.parentWin.projects.item(thisItemIndex).setSelected(True)
             self.parentWin.changedNameIndex = thisItemIndex
             self.parentWin.changedNameName = Information[0]['title']
@@ -160,15 +169,20 @@ class ChangeName(QDialog):
             return
         else:
             
-            QMB.information(self, "Failure", "There was a problem setting the filter - please try again.")
+            MessageBoxForChangeName.information(self, "Failure", "There was a problem setting the filter - please try again.")
             self.refreshProjectSettings()
             self.reOpenChangeName()
                 
-    #Re Set the Text    
+                
+                
+    '''Reset the Text'''
     def Reset(self):
         self.changeNameField.setText('')
     
-    #Re Open Change Name    
+    
+    
+    
+    '''Re Open Change Name'''
     def reOpenChangeName(self):
         self.Cancel()
         self.EmailPref = EmailPref(self)
@@ -179,16 +193,19 @@ class ChangeName(QDialog):
         self.ChangeNameLayout = QVBoxLayout()
         
         
-    # close the dailog box
+        
+    ''' close the dailog box'''
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.refreshProjectSettings()
         self.destroyChangeName()
         self.close()
         
-    #Refresh Project Settings
+        
+        
+    '''Refresh Project Settings on the main Window'''
     def refreshProjectSettings(self):
-            allProjects = DBObj.getProjectInfo()
+            allProjects = SqlLiteDataBase.getProjectInfo()
             try:
                 projectLists = []
                 if allProjects != None:

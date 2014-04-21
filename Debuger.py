@@ -12,7 +12,9 @@ Created on Feb 4, 2014
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+''' 
+    Built-in Libraries
+'''
 import logging
 import datetime
 import base64
@@ -29,18 +31,29 @@ elif os.name == 'os2':
 
 ''' Class to manage all the the errors and warning loging'''
 class Debuger(object):
-
-
-    # Constuctor
+ 
+    ''' 
+        Constuctor
+    '''
     def __init__(self):
 
-        self.configFilePath= getcwd()+ str(os.sep)+'bin' +str(os.sep)+'conf.txt'
+        self.configFilePath= os.path.abspath(getcwd()+ str(os.sep)+'bin' +str(os.sep)+'conf.txt')
         self.loger = logging
+        if  not os.path.isdir(str(getcwd() +str(os.sep)+'debug')):
+            try:
+                os.mkdir(str(getcwd() +str(os.sep)+'debug'))
+            except:
+                pass
+        self.configFilePath = self.configFilePath
+        
         if not path.isfile(self.configFilePath):
-           file =  open(self.configFilePath,'w+')
-           file.write('debugger:0')
-           file.close()
-
+            try:
+                file =  open(str('"'+self.configFilePath+'"'),'w+')
+                file.write('debugger:0')
+                file.close()
+            except:
+                pass
+                
         if(OS_Info == 'Windows'):
             self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
         else:
@@ -52,55 +65,86 @@ class Debuger(object):
 
         self.Information = self.getDebugConfiguration()
 
-
-    # Function to Log Errors
-    # @param msg Message to log
+    ''' 
+        Function to Log Errors
+        @param msg Message to log
+        @param moreInformation More information For Loggin
+    '''
     def logError(self,msg,moreInformation = None):
-
-        if(self.isdebugerOn):
-            self.loger.debug(msg)
-            if(moreInformation):
-                for key in moreInformation:
-                    self.loger.debug(key + '::' + moreInformation[key]+"\n")
         
-
-
-    # Function to Log Information
-    # @param msg Message to log
-    def logInfo(self,msg,moreInformation = None):
-        if(self.isdebugerOn):
-            self.loger.info(msg)
-            if(moreInformation):
-                for key in moreInformation:
-                    self.loger.info(key + '::' + moreInformation[key]+"\n")
-
-    # Function to Log Warning
-    # @param msg Message to log
-    def logWarning(self,msg,moreInformation = None):
-        if(self.isdebugerOn):
-            self.loger.warning(msg)
-            if(moreInformation):
-                for key in moreInformation:
-                    self.loger.warning(key + '::' + moreInformation[key]+"\n")
-
-
-    # Function to turn debugging On
-    def tureDebugerOn(self):
-        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
-        if self.Information['debugger'] == 1:
-            self.isdebugerOn = True
-        else:
+        try:
+            if(self.isdebugerOn):
+                self.loger.debug(msg)
+                if(moreInformation):
+                    for key in moreInformation:
+                        self.loger.debug(key + '::' + moreInformation[key]+"\n")
+        except:
             self.isdebugerOn = False
 
-    # Function to turn debugging of
+
+    ''' 
+      Function to Log Information
+      @param msg Message to log
+      @param moreInformation More information For Loggin
+    '''
+    def logInfo(self,msg,moreInformation = None):
+        try:
+            if(self.isdebugerOn):
+                self.loger.info(msg)
+                if(moreInformation):
+                    for key in moreInformation:
+                        self.loger.info(key + '::' + moreInformation[key]+"\n")
+        except:
+            self.isdebugerOn = False
+    ''' 
+       Function to Log Warning
+       @param msg Message to log
+       @param moreInformation More information For Logging
+    '''
+    def logWarning(self,msg,moreInformation = None):
+        try:
+            if(self.isdebugerOn):
+                self.loger.warning(msg)
+                if(moreInformation):
+                    for key in moreInformation:
+                        self.loger.warning(key + '::' + moreInformation[key]+"\n")
+                     
+        except:
+            self.isdebugerOn = False
+       
+
+     
+    ''' 
+       Function to turn debugging On
+    '''
+    def tureDebugerOn(self):
+        self.loger.info('Logging for Date '+ str(datetime.datetime.now()).rpartition('.')[0] +"\n")
+        try:
+            if self.Information['debugger'] == 1:
+                self.isdebugerOn = True
+            else:
+                self.isdebugerOn = False
+                
+        except:
+            self.isdebugerOn = False
+                
+    
+    ''' 
+       Function to turn debugging off
+    '''
     def tureDebugerOff(self):
         self.isdebugerOn = False
 
-    # Function to Get Current Time
+    ''' 
+       Function to Get Current Time
+    '''
     def getCurrentTime(self):
         if(self.isdebugerOn):
             return str(datetime.datetime.now()).rpartition('.')[0]
-    #Set Debug On or Off information
+        
+    ''' 
+       Set Debug On or Off information
+    '''    
     def setDebugConfiguration(self,flagOfDebug):
         try:
             ConfigFile = open(self.configFilePath, 'w+')
@@ -122,7 +166,10 @@ class Debuger(object):
 
             self.tureDebugerOn()
             self.logError('Error Reporting 36 - 42 File Database While Connecting for database information'+"\n", moreInformation)
-    #Get Debug On or Off information
+            
+    ''' 
+       Get Debug On or Off information
+    ''' 
     def getDebugConfiguration(self):
         Information = {}
         Information['debugger'] = 0

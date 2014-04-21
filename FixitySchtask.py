@@ -7,6 +7,10 @@
 Updated on Feb 4, 2014
 @author: Furqan Wasi  <furqan@geekschicago.com>
 '''
+
+'''
+built-in Library
+'''
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -23,17 +27,30 @@ from os.path import expanduser
 import sys
 import time
 
+
+'''
+Custom Library
+'''
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
-DB = Database()
+SqlLiteDataBase = Database()
 
 Debuging = Debuger()
 
-# Deletes the SCHTASK entry and its corresponding files
+
+
+'''
+Deletes the SCHTASK entry and its corresponding files
+@param project: project Name
+
+@return: None 
+'''
 def deltask(project):
     print('deleting task')
+    
     if OS_Info == 'Windows':
+        
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
         subprocess.call("schtasks /Delete /F /TN \"Fixity-" + project.replace(' ', '_') + "\"", startupinfo=startupinfo)
@@ -42,12 +59,16 @@ def deltask(project):
         try:
             remove("schedules\\fixity-" + project + ".bat")
         except Exception as e:
+            
+            
             moreInformation = {"moreInfo":'null'}
             try:
                 if not e[0] == None:
                     moreInformation['LogsMore'] =str(e[0])
             except Exception as ex:
                 print(ex[0])
+                
+                
             try:
                 if not e[1] == None:
                     moreInformation['LogsMore1'] =str(e[1])
@@ -57,6 +78,20 @@ def deltask(project):
             Debuging.tureDebugerOn()
             Debuging.logError('Could Not Remove File Line 22 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".bat", moreInformation)
             pass
+        
+      
+        try:
+                remove("schedules\\fixity-" + project + ".bat")
+        except:
+            pass
+        
+        
+        try:
+                remove("schedules\\fixity-" + project + "-sch.xml")
+        except:
+            pass
+        
+        
         try:
                 remove("schedules\\fixity-" + project + ".vbs")
         except Exception as e:
@@ -76,12 +111,67 @@ def deltask(project):
             Debuging.tureDebugerOn()
             Debuging.logError('Count not Remove File ,  Line 35 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".vbs", moreInformation)
             pass
-#Runs Given Batch File
+        
+    else:
+        
+        try:
+            homePath = expanduser("~")
+            LibPath = homePath+str(os.sep)+"Library"
+            AgentPath = homePath+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
+    
+            if(not os.path.isdir(LibPath)) or (not os.path.isdir(AgentPath)):
+                    os.makedirs(AgentPath)
+    
+            pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
+            lunchAject= AgentPath +str(os.sep)+ "Com.fixity."+str(project) + ".demon.plist"
+    
+            lunchAject =str(lunchAject).replace(' ','\\ ')
+        except:
+            pass
+        
+        try:
+            p = subprocess.Popen(["launchctl", "unload", "-w", lunchAject], stdout=subprocess.PIPE)
+            output, err = p.communicate()
+        except Exception as ex:
+            print(ex[0])
+            pass
+        try:
+            os.remove(lunchAject)
+        except:
+            pass
+        
+    print('Deleted Project Information')
+        
+        
+        
+'''
+Runs Given Batch File
+
+@param project: project Name
+
+@return: None 
+'''
 def RunThisBatchFile(Command):
     if OS_Info == 'Windows':
         subprocess.call(Command, shell=True)
 
-# Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
+
+
+'''
+Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
+
+@param interval: Interval
+@param dow: List of all Directory
+@param dom: List of all Email's
+@param timeSch: time of Scheduler
+@param project: Project
+@param Configurations:  Configurations
+@param SystemInformation: System Information
+@param dirInfo: Directory Information
+
+
+@return: None 
+'''
 def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
 
         EP = EmailPref(None)
@@ -132,6 +222,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
             pathCommand = "\"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\""
+
 
         ############################################################################################################################
 
@@ -208,7 +299,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
 
         E_text = text
 
-        information = DB.getConfigInfo(prj)
+        information = SqlLiteDataBase.getConfigInfo(prj)
 
         information['emailUponWarning'] = E_text
         information['ifMissedRunUponRestart'] = IfMissedRunUponAvailable
@@ -219,6 +310,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             XMLFileNameWithDirName = CreateXML(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval)
         else:
             XMLFileNameWithDirName = CreateXMLOfMac(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval)
+            
+            
         ############################################################################################################################
 
         XMLFilePath = "\"" + getcwd() + "\\" + XMLFileNameWithDirName + "\""
@@ -230,24 +323,24 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
 
    
-        isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
+        isProjectExists = SqlLiteDataBase.select(SqlLiteDataBase._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
 
         Information = {}
         Information['versionType'] = 'save'
         CurrentDate = time.strftime("%Y-%m-%d")
         Information['name'] = EP.EncodeInfo(str(CurrentDate))
 
-        versionID  = DB.insert(DB._tableVersions, Information)
+        versionID  = SqlLiteDataBase.insert(SqlLiteDataBase._tableVersions, Information)
 
         projectID = 0
         if (len(isProjectExists) <= 0):
             Configurations['versionCurrentID'] = versionID['id']
-            projectID = DB.insert(DB._tableProject, Configurations)
+            projectID = SqlLiteDataBase.insert(SqlLiteDataBase._tableProject, Configurations)
             projectID = projectID['id']
         else:
             projectID = isProjectExists[0]['id']
             Configurations['versionCurrentID'] = versionID['id']
-            DB.update(DB._tableProject, Configurations,"id = '" + str(projectID) + "'")
+            SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Configurations,"id = '" + str(projectID) + "'")
 
         counter = 1
         for ms in dirInfo:
@@ -258,7 +351,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 PathsInfo['path'] = str(dirInfo[ms]).strip()
                 PathsInfo['pathID'] = 'Fixity-' + str(counter)
 
-                DB.insert(DB._tableProjectPath, PathsInfo)
+                SqlLiteDataBase.insert(SqlLiteDataBase._tableProjectPath, PathsInfo)
 
                 counter = counter + 1
         try:
@@ -296,10 +389,23 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
             pass
 
-#Create XML for Window 7 task schedules
+
+
+
+
+'''
+Create XML for Window 7 task schedules
+
+Input: Information of all scheduler information wit project information
+Output : XML for Window 7 scheduler
+  
+'''
+
 def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
+    
         Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         xmlsch = open("schedules\\fixity-" + ProjectName + "-sch.xml", "w")
+        
         try:
             xmlsch.write("<?xml version=\"1.0\" ?>\n")
             xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
@@ -360,7 +466,14 @@ def CreateXML(ProjectName , Version , RegistrationInfo  , Triggers , Principals 
 
         return "schedules\\fixity-" + ProjectName + "-sch.xml"
 
-#Create XML for Mac launchd process
+
+'''
+Create XML for Mac launchd process
+
+Input: Information of all scheduler information with project information
+Output : XML for Mac launhd scheduling
+  
+'''
 def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval):
 
         Months = {1:"January", 2:"February", 3:"March", 4:"April", 5:"May", 6:"June", 7:"July", 8:"August", 9:"September", 10:"October", 11:"November", 12:"December"}
