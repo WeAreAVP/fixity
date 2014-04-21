@@ -30,13 +30,13 @@ import hashlib
 
 class AboutFixity(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-
+    #Contstructor
     def __init__(self):
         QDialog.__init__(self)
-        self.AboutFixityWin = QDialog()
         
-        self.AboutFixityWin.setWindowTitle('About Fixity')
-        self.AboutFixityWin.setWindowIcon(QIcon(path.join(getcwd(), 'images' + str(os.sep) + 'logo_sign_small.png')))
+        
+        self.setWindowTitle('About Fixity')
+        self.setWindowIcon(QIcon(path.join(getcwd(), 'images' + str(os.sep) + 'logo_sign_small.png')))
         self.AboutFixityLayout = QVBoxLayout()
 
         self.widget = QWidget(self)
@@ -47,6 +47,7 @@ class AboutFixity(QDialog):
         self.AuthorandLicenseBtn = QPushButton('Author and License')
         self.ContactBtn = QPushButton('Contact')
         self.CloseBtn = QPushButton('Close')
+        
         self.sch = QGroupBox()
         self.monthly = QTextEdit()
         self.weekly = QTextEdit()
@@ -55,26 +56,28 @@ class AboutFixity(QDialog):
     # Distructor
     def destroyAboutFixity(self):
         del self
-
+    #Create Window
     def CreateWindow(self):
-        self.AboutFixityWin = QDialog()
+        self = QDialog()
         
-
+    #Get Window
     def GetWindow(self):
-        return self.AboutFixityWin
-
+        return self
+    
+    #Show Dialog
     def ShowDialog(self):
-        self.AboutFixityWin.show()
-        self.AboutFixityWin.exec_()
+        self.show()
+        self.exec_()
 
-
+    #Set Layout
     def SetLayout(self, layout):
         self.AboutFixityLayout = layout
 
-
+    #Get Layout
     def GetLayout(self):
         return self.AboutFixityLayout
-
+    
+    #Show Description
     def showDescription(self):
         self.monthly.setText('<h1>DESCRIPTION</h1>')
         decriptionText = '<p>AVPreserve Fixity 0.4</p>'
@@ -86,9 +89,9 @@ class AboutFixity(QDialog):
         self.AuthorandLicenseBtn.setDisabled(False)
         self.ContactBtn.setDisabled(False)
 
-
+    #Show Description
     def showLicense(self):
-        #header
+                #header
         self.monthly.setText('<h1>Author and License </h1>')
         #header Detail
         LicenseText = '<p>Fixity Copyright and License</p>'
@@ -104,9 +107,9 @@ class AboutFixity(QDialog):
         #Definitions
         LicenseText += '<ol>'
         LicenseText += '    <li>'
-        LicenseText += '        <p> "License" shall mean the terms and conditions for use, reproduction,and distribution as defined by Sections 1 through 9 of this document.</p>'
+        LicenseText += '        <p> "License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.</p>'
         LicenseText += '        <p> "Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.</p>'
-        LicenseText += '        <p> "Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition,"control" means (i) the power, direct or indirect, to cause thedirection or management of such entity, whether by contract orotherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.</p>'
+        LicenseText += '        <p> "Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.</p>'
         LicenseText += '        <p> "You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.</p>'
         LicenseText += '        <p> "Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.</p>'
         LicenseText += '        <p> "Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.</p>'
@@ -188,7 +191,8 @@ class AboutFixity(QDialog):
         self.DescriptionBtn.setDisabled(False)
         self.AuthorandLicenseBtn.setDisabled(True)
         self.ContactBtn.setDisabled(False)
-    
+        
+    #Trigger The Show Contact
     def showContact(self):
         self.monthly.setText('<h1>Contact</h1>')
 
@@ -202,12 +206,19 @@ class AboutFixity(QDialog):
 
     # All design Management Done in Here
     def SetDesgin(self):
+        try:
+            self.DescriptionBtn.setFixedSize(210, 30)
+            self.AuthorandLicenseBtn.setFixedSize(210, 30)
+            self.ContactBtn.setFixedSize(210, 30)
+        except:
+            self.DescriptionBtn = QPushButton('Description')
+            self.AuthorandLicenseBtn = QPushButton('Author and License')
+            self.ContactBtn = QPushButton('Contact')
+            self.CloseBtn = QPushButton('Close')
+            
+    
 
-        self.DescriptionBtn.setFixedSize(210, 30)
-        self.AuthorandLicenseBtn.setFixedSize(210, 30)
-        self.ContactBtn.setFixedSize(210, 30)
-
-        pic = QLabel(self.AboutFixityWin)
+        pic = QLabel(self)
         pic.setGeometry(30, 30, 500, 600)
         pic.setFixedSize(400,400)
         #use full ABSOLUTE path to the image, not relative
@@ -232,29 +243,17 @@ class AboutFixity(QDialog):
         self.CloseBtn.setFixedSize(200,30)
         slay.addWidget(self.CloseBtn)
 
-
-
         self.sch.setFixedSize(600, 600)
         self.pgroup.setFixedSize(255, 600)
         self.main.addWidget(self.pgroup)
         self.main.addWidget(self.sch)
 
         self.sch.setLayout(slay)
-        self.AboutFixityWin.setLayout(self.main)
+        self.setLayout(self.main)
         self.showDescription()
 
 
     # close the dailog box
     def Cancel(self):
         self.destroyAboutFixity()
-        self.AboutFixityWin.close()
-
-# Main Code
-
-# app = QApplication(sys.argv)
-# w = FilterFiles(QDialog())
-# #w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()            
-# sys.exit(app.exec_())
+        self.close()

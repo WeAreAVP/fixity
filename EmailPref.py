@@ -164,10 +164,10 @@ class EmailPref(QDialog):
         self.cancel = QPushButton("Close")
         self.loader = QLabel("Sending Email...")
 
-        self.EmailAddrBar.setPlaceholderText("Email")
+        self.EmailAddrBar.setPlaceholderText("email: user@domain.com")
         self.Password.setPlaceholderText("Password")
-        self.outgoingMailServer.setPlaceholderText("outgoing mail server")
-        self.port.setPlaceholderText("Port ")
+        self.outgoingMailServer.setPlaceholderText("smtp.gmail.com")
+        self.port.setPlaceholderText("Port")
 
         self.EmailAddrBar.setMaximumSize(200, 100)
         self.Password.setMaximumSize(200, 100)
@@ -178,11 +178,11 @@ class EmailPref(QDialog):
         self.port.setMaximumSize(200, 100)
         self.checkEmail.setMaximumSize(200, 100)
         
-        self.SMTPServerLable = QLabel('SMTP Server (i.e: smtp.gmail.com)')
-        self.EmailAddressLable = QLabel('Email Address (i.e: user@domain.com)')
-        self.PasswordLable = QLabel('Password (i.e: 1234556)')
-        self.PortLable = QLabel('Port (i.e: 587, 465)')
-        self.EncryptionLable = QLabel('Encryption Method:')
+        self.SMTPServerLable = QLabel('SMTP Server')
+        self.EmailAddressLable = QLabel('Email Address')
+        self.PasswordLable = QLabel('Password')
+        self.PortLable = QLabel('Port')
+        self.EncryptionLable = QLabel('Encryption Method')
         
         self.GetLayout().addWidget(self.loader)
         self.GetLayout().addWidget(self.SMTPServerLable)

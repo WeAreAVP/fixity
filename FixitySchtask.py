@@ -26,12 +26,13 @@ import time
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
-
+DB = Database()
 
 Debuging = Debuger()
 
 # Deletes the SCHTASK entry and its corresponding files
 def deltask(project):
+    print('deleting task')
     if OS_Info == 'Windows':
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -45,13 +46,13 @@ def deltask(project):
             try:
                 if not e[0] == None:
                     moreInformation['LogsMore'] =str(e[0])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             try:
                 if not e[1] == None:
                     moreInformation['LogsMore1'] =str(e[1])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Could Not Remove File Line 22 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".bat", moreInformation)
@@ -64,13 +65,13 @@ def deltask(project):
             try:
                 if not e[0] == None:
                     moreInformation['LogsMore'] =str(e[0])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             try:
                 if not e[1] == None:
                     moreInformation['LogsMore1'] =str(e[1])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Count not Remove File ,  Line 35 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".vbs", moreInformation)
@@ -84,7 +85,7 @@ def RunThisBatchFile(Command):
 def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
 
         EP = EmailPref(None)
-        VERSION = EP.getVersion()
+        VERSION = '0.4'
         USERNAME = environ.get("USERNAME")
         prj = project.replace(' ', '_')
 
@@ -110,8 +111,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 f.write("cd /d %~dp0\n")
                 f.write("cd ..\n")
                 f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             f.close()
 
             x = open("schedules\\fixity-" + prj + ".vbs", "w")
@@ -123,8 +124,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 x.write('WinScriptHost.Run("""" & p & """")')
                 x.write("\n")
                 x.write("Set WinScriptHost = Nothing")
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             x.close()
         pathCommand= ''
         if OS_Info == 'Windows':
@@ -207,7 +208,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
 
         E_text = text
 
-        information = EP.getConfigInfo(prj)
+        information = DB.getConfigInfo(prj)
 
         information['emailUponWarning'] = E_text
         information['ifMissedRunUponRestart'] = IfMissedRunUponAvailable
@@ -227,8 +228,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 Command = "schtasks /Create /TN \"Fixity-" + prj + "\"  /xml " + XMLFilePath
             else:
                 Command = "schtasks /Create /tn \"Fixity-" + prj + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + getcwd() + "\\schedules\\fixity-" + prj + ".vbs\" /RU SYSTEM"
-
-        DB = Database()
+        print(Command)
+        
         isProjectExists = DB.select(DB._tableProject,'id',"title like '"+str(Configurations['title'])+"'")
 
         Information = {}
@@ -268,14 +269,14 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 try:
                     p = subprocess.Popen(["launchctl", "unload", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
-                except:
-                    pass
+                except Exception as ex:
+                    print(ex[0])
 
                 try:
                     p = subprocess.Popen(["launchctl", "load", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
-                except:
-                    pass
+                except Exception as ex:
+                    print(ex[0])
 
         except Exception as e:
 
@@ -283,13 +284,13 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             try:
                 if not e[0] == None:
                     moreInformation['LogsMore'] =str(e[0])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             try:
                 if not e[1] == None:
                     moreInformation['LogsMore1'] =str(e[1])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)

@@ -548,7 +548,30 @@ class Database(object):
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()
         return response
+    
+     # Fetch information related to email configuration
+    def getConfigInfo(self, project=None):
+        
 
+        queryResult = self.select(self._tableConfiguration)
+
+        try:
+            if len(queryResult)>0 :
+                information = {}
+                for  result in queryResult:
+                    information['id'] = queryResult[result]['id']
+                    information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
+                    information['email'] = self.DecodeInfo(queryResult[result]['email'])
+                    information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
+                    information['port'] = queryResult[result]['port']
+                    information['protocol'] = queryResult[result]['protocol']
+                    information['debugger'] = queryResult[result]['debugger']
+                    break;
+                return information
+        except:
+            pass
+        return {}
+    
     #Get Last Inserted Version of given project
     def getVersionDetailsLast(self,projectID):
         response = {}

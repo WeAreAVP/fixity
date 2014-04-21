@@ -13,7 +13,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
-# import resource
+
 
 #Bultin Libraries
 from PySide.QtCore import *
@@ -33,7 +33,6 @@ import argparse
 import platform
 import os
 
-
 #Custom Libraries
 import FixityCore
 import FixitySchtask
@@ -50,9 +49,10 @@ from ChangeName import ChangeName
 from AutoRuner import AutoRuner
 
 Debuging = Debuger()
-
+#Main Class to show all meun and options of fixity
 class ProjectWin(QMainWindow):
-        
+    
+        #Constructor
         def __init__(self, EmailPref , FilterFiles):
 
                 pathInfo = str(getcwd()).replace('\\schedules','')
@@ -85,26 +85,26 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('WindowsType = '+str(self.SystemInformation['WindowsType'])  , {} )
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
-                
-                self.EP = EmailPref(self)
-                self.AF = AboutFixity()
-                self.EP.setVersion('0.4')
+                self.EmailPrefManager = EmailPref(self)
+                self.AboutFixityManager = AboutFixity()
+                self.EmailPrefManager.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager(self)
                 self.FileChanged = FileChanged(self)
                 self.ImportProjects = ImportProjects(self)
                 self.ChangeName = ChangeName(self)
-                
+                self.changedNameIndex = None
+                self.changedNameName = None
                 self.FileChanged.setVersion('0.4')
 
                 self.FilterFiles = FilterFiles(self)
                 self.Threading = Threading
 
                 self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
-                self.versoin = self.EP.getVersion()
+                self.versoin = self.EmailPrefManager.getVersion()
                 self.setWindowTitle("Fixity "+self.versoin)
                 self.unsaved = False
                 menubar = self.menuBar()
-                self.f = menubar.addMenu('&File')
+                self.FileManuFixity = menubar.addMenu('&File')
                 self.Preferences = menubar.addMenu('&Preferences')
                 newp = QAction('&New Project', self)
 
@@ -123,13 +123,13 @@ class ProjectWin(QMainWindow):
                 self.ImportProjectfxy = QAction('&Import Project', self)
                 self.switchDebugger('start')
 
-                self.f.addAction(newp)
-                self.f.addAction(usch)
-                self.f.addAction(save)
-                self.f.addAction(dlte)
-                self.f.addAction(ChangeNameManu)
-                self.f.addAction(aboutFixity)
-                self.f.addAction(quit)
+                self.FileManuFixity.addAction(newp)
+                self.FileManuFixity.addAction(usch)
+                self.FileManuFixity.addAction(save)
+                self.FileManuFixity.addAction(dlte)
+                self.FileManuFixity.addAction(ChangeNameManu)
+                self.FileManuFixity.addAction(aboutFixity)
+                self.FileManuFixity.addAction(quit)
                 
                 self.Preferences.addAction(FilterFilesMane)
                 
@@ -296,10 +296,13 @@ class ProjectWin(QMainWindow):
                 
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
-                self.show()                
-    
+                self.show()
+                                
+        #Distructor
         def __del__(self):
             del self
+            
+        #Clean All Objects Existed
         def cleanObjects(self):
             
             #Closing opened Windows and database conactions 
@@ -308,11 +311,11 @@ class ProjectWin(QMainWindow):
             except:
                 pass
             try:
-                self.EP.CloseClick()
+                self.EmailPrefManager.CloseClick()
             except:
                 pass
             try:
-                self.AF.Cancel()
+                self.AboutFixityManager.Cancel()
             except:
                 pass
             try:
@@ -346,11 +349,11 @@ class ProjectWin(QMainWindow):
             except:
                 pass
             try:
-                self.EP = None
+                self.EmailPrefManager = None
             except:
                 pass
             try:
-                self.AF = None
+                self.AboutFixityManager = None
             except:
                 pass
             try:
@@ -381,25 +384,30 @@ class ProjectWin(QMainWindow):
          
         # Configure Email Address for the Tools
         def ConfigEmailView(self):
-            self.EP.CloseClick()
-            self.EP = None
-            self.EP = EmailPref(self)
-            self.EP.SetDesgin()
-            self.EP.ShowDialog()
+            self.EmailPrefManager.CloseClick()
+            self.EmailPrefManager = None
+            self.EmailPrefManager = EmailPref(self)
+            self.EmailPrefManager.SetDesgin()
+            self.EmailPrefManager.ShowDialog()
+            
+        #PopUp to Import Project
         def importProjects(self):
             self.ImportProjects.destroyImportProjects()
             self.ImportProjects = None
             self.ImportProjects = ImportProjects(self)
+            self.ImportProjects.projectListWidget = self.projects
+            
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
-        
+            
+        #Pop up to Show About Fixity Infotmation
         def AboutFixityView(self):
 
-            self.AF.Cancel()
-            self.AF = None
-            self.AF = AboutFixity()
-            self.AF.SetDesgin()
-            self.AF.ShowDialog()
+            self.AboutFixityManager.Cancel()
+            self.AboutFixityManager = None
+            self.AboutFixityManager = AboutFixity()
+            self.AboutFixityManager.SetDesgin()
+            self.AboutFixityManager.ShowDialog()
             
         # Pop Up to Change Root Directory If any change occured
         # orignalPathText:: Path In Manifest
@@ -419,25 +427,37 @@ class ProjectWin(QMainWindow):
             self.FilterFiles = FilterFiles(self)
             self.FilterFiles.SetDesgin()
             self.FilterFiles.ShowDialog()    
-        # Pop up to set Filters        
+            
+        # Pop up to Change Project Name        
         def ChangeNameBox(self):
             
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName(self)
-            
-            self.ChangeName.projectListWidget = self.projects
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
             
-        # Pop up to set Filters        
+            if self.changedNameIndex != None:
+                try:
+                    self.projects.item(int(self.changedNameIndex)).setSelected(True)
+                    self.projects.setCurrentRow(int(self.changedNameIndex))
+                    self.unsaved = False
+                    self.update(self.changedNameName)
+                    self.unsaved = True
+                    self.updateschedule()
+                    self.unsaved = False
+                except Exception as ex:
+                    print(ex[0])
+            
+        # Pop up to set Encryption Method
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
             self.DecryptionManager = DecryptionManager(self)
             self.DecryptionManager.SetDesgin()
             self.DecryptionManager.ShowDialog()
-
+            
+        #Trigger to switch debugger on or off
         def switchDebugger(self,start= None):
             DB = Database()
             Information = {'debugger':0}
@@ -468,12 +488,14 @@ class ProjectWin(QMainWindow):
                 debugText = 'Turn Debugging Off'
 
             self.Debuging.setText(debugText)
-
+            
+        #Create New Fixity Again
         def newWindow(self):
             self = ProjectWin()
             self.show()
             sys.exit(app.exec_())
-
+            
+        #Gets Detail information of Windows 
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
@@ -530,6 +552,7 @@ class ProjectWin(QMainWindow):
         #Updates Fields When Project Is Selected In List
         @Slot(str)
         def update(self, new):
+            
             if self.unsaved:
                     sbox = QMessageBox()
                     sbox.setText("There are unsaved changes to this project.")
@@ -549,6 +572,7 @@ class ProjectWin(QMainWindow):
 
             information = {}
             projectName = self.projects.currentItem().text()
+            
             projectInfo = self.Database.getProjectInfo(projectName)
             pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
             emails = str(projectInfo[0]['emailAddress'])
@@ -644,7 +668,7 @@ class ProjectWin(QMainWindow):
             
             
                 
-
+        #Process the changes made in Fixity 
         def process(self, shouldRun=True):
 
             if all(d.text() == "" for d in self.dtx):
@@ -666,7 +690,7 @@ class ProjectWin(QMainWindow):
             for ms in self.mtx:
                     SingleEmail = ms.text().strip()
                     if  SingleEmail != "":
-                        errorMsg = self.EP.ValidateEmail(SingleEmail)
+                        errorMsg = self.EmailPrefManager.ValidateEmail(SingleEmail)
                         if not str(errorMsg).strip() == 'None':
                             QB = QMessageBox()
                             errorMsg = QB.information(self, "Error", errorMsg)
@@ -783,7 +807,6 @@ class ProjectWin(QMainWindow):
                             if FiltersArray:
                                 for FA in FiltersArray :
                                     if FA == '' or l[n][1].find(FA) < 0:
-#                                             projfile.write(l[n][0] + "\t" + l[n][1] + "\t" + l[n][2] + "\n")
                                         total += 1
 
                 if shouldRun:
@@ -883,29 +906,35 @@ class ProjectWin(QMainWindow):
                 self.EmailOnlyWhenSomethingChanged.setDisabled(switch)
             except:
                 pass
-
+            
+        #returns If anything changed
         def changed(self):
                 self.unsaved = True
-
+                
+        #Day check box Click Trigger
         def dayclick(self):
             self.dom.hide()
             self.dow.hide()
             self.spacer.changeSize(30, 25)
-
+            
+        #Month check box Click Trigger
         def weekclick(self):
             self.spacer.changeSize(0, 0)
             self.dom.hide()
             self.dow.show()
-
+            
+        #Month check box Click Trigger 
         def monthclick(self):
             self.spacer.changeSize(0, 0)
             self.dow.hide()
             self.dom.show()
-
+            
+        #Pick Directory 
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
-
+                
+        #Provides Replace Path Information Array
         def replacePathInformation(self):
             projFileChangePath = open('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'wb')
             currentProjFile = open('projects\\' + self.projects.currentItem().text()+ '.fxy', 'rb')
@@ -1060,7 +1089,8 @@ class ProjectWin(QMainWindow):
             return list
 
         #Update Schedule information
-        def updateschedule(self):
+        def updateschedule(self,customPojectUpdate = None):
+            
             flagInitialScanUponSaving = False
             isRcipentEmailAddressSet = False
             allEmailAddres = ''
@@ -1069,14 +1099,14 @@ class ProjectWin(QMainWindow):
                     if  SingleEmail != "":
                         allEmailAddres = allEmailAddres + str(SingleEmail) +','
                         isRcipentEmailAddressSet = True
-                        errorMsg = self.EP.ValidateEmail(SingleEmail)
+                        errorMsg = self.EmailPrefManager.ValidateEmail(SingleEmail)
                         if not str(errorMsg).strip() == 'None':
                             QB = QMessageBox()
                             errorMsg = QB.information(self, "Error", errorMsg)
                             return
 
             if isRcipentEmailAddressSet:
-                EmailInfo = self.EP.getConfigInfo()
+                EmailInfo = self.EmailPrefManager.getConfigInfo()
                 if len(EmailInfo) <= 0:
                     QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
                     return
@@ -1091,7 +1121,9 @@ class ProjectWin(QMainWindow):
                     dweek = int(self.dow.currentIndex())
             elif self.daily.isChecked():
                     interval = 3
-
+            print('self.projects.currentItem().text()')
+            print(self.projects.currentItem().text())
+            print('self.projects.currentItem().text()')
             projectInformation = {}
             projectInformation['title'] = self.projects.currentItem().text()
             projectInformation['durationType'] = interval
@@ -1131,13 +1163,13 @@ class ProjectWin(QMainWindow):
             projectInformation['lastRan'] = data[0]
 
             Configurations = {}
-            Configurations = self.EP.getConfigInfo(self.projects.currentItem().text())
+            Configurations = self.EmailPrefManager.getConfigInfo(self.projects.currentItem().text())
             Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked()
             Configurations['IfMissedRunUponAvailable'] = self.StartWhenAvailable.isChecked()
             Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
             Configurations['RunInitialScan'] = False
             self.unsaved = False
-
+            print('schedule')
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
 
@@ -1188,9 +1220,9 @@ class ProjectWin(QMainWindow):
                         self.removeNotRequiredFiles()
                         event.accept()
 
-        
+       
             
-        
+        #Check For Changes In the provided path
         def checkForChanges(self,projectName , searchForPath ,code):
             try:
                 DB = Database()
@@ -1204,7 +1236,12 @@ class ProjectWin(QMainWindow):
             except:
                 pass
       
-
+        def getProjectIndex(self,projectName):
+             
+            for index in xrange(self.projects.count()): 
+                if projectName in str(self.projects.item(index).text()):
+                    return index
+                
 def auto_run(project):
     AR = AutoRuner()
     IsemailSet = ''
@@ -1223,10 +1260,7 @@ if __name__ == '__main__':
             app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
             
             app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
-            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
-            
-
-           
+            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)           
             app.MainFixityWindow.show()
             
             sys.exit(app.exec_())

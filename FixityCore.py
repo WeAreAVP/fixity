@@ -13,7 +13,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
-	
+    
 #Built in Library
 import hashlib
 
@@ -41,7 +41,10 @@ from EmailPref import EmailPref
 from Database import Database
 from AboutFixity import AboutFixity
 global verifiedFiles
-verifiedFiles = []
+try:
+    verifiedFiles =[]
+except:
+    verifiedFiles =[]
 
 Debugging = Debuger()
 from FileLock import FileLock
@@ -140,46 +143,46 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
 def ntfsIDForWindows(f):
     id = '';
     try:
-    	target = open(f, 'rb')
+        target = open(f, 'rb')
     except Exception as e:
-    	moreInformation = {"moreInfo":'none'}
-    	try:
-    		if not e[0] == None:
-    			moreInformation['LogsMore'] =str(e[0])
-    	except:
-    		pass
-    	try:	
-    		if not e[1] == None:
-    			moreInformation['LogsMore1'] =str(e[1])
-    	except:
-    		pass
-    	Debugging = Debuger()
-    	Debugging.tureDebugerOn()	
-    	Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
-    	pass
+        moreInformation = {"moreInfo":'none'}
+        try:
+            if not e[0] == None:
+                moreInformation['LogsMore'] =str(e[0])
+        except:
+            pass
+        try:    
+            if not e[1] == None:
+                moreInformation['LogsMore1'] =str(e[1])
+        except:
+            pass
+        Debugging = Debuger()
+        Debugging.tureDebugerOn()    
+        Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+        pass
     try:
-    	id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
-    		str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
-    		str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
-    	return id
+        id = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
+            str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
+            str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
+        return id
     except Exception as e:
     
     
-    		moreInformation = {"moreInfo":'none'}
-    		try:
-    			if not e[0] == None:
-    				moreInformation['LogsMore'] =str(e[0])
-    		except:
-    			pass
-    		try:	
-    			if not e[1] == None:
-    				moreInformation['LogsMore1'] =str(e[1])
-    		except:
-    			pass
-    		Debugging = Debuger()
-    		Debugging.tureDebugerOn()	
-    		Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
-    		pass
+            moreInformation = {"moreInfo":'none'}
+            try:
+                if not e[0] == None:
+                    moreInformation['LogsMore'] =str(e[0])
+            except:
+                pass
+            try:    
+                if not e[1] == None:
+                    moreInformation['LogsMore1'] =str(e[1])
+            except:
+                pass
+            Debugging = Debuger()
+            Debugging.tureDebugerOn()    
+            Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
+            pass
     return id
 # File ID for NTFS
 # Returns the complete file ID as a single long string
@@ -188,7 +191,8 @@ def ntfsIDForMac(f):
     id=''
     #print('ntfsID')
     try:
-        target = os.open(f , os.O_RDWR|os.O_CREAT )
+        print('')
+        target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
         #print('Open '+f+' File')
         # Now get  the touple
         info = os.fstat(target)
@@ -256,18 +260,14 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
     print('quietTable')
     listOfValues = []
     fls = []
-    print(r)
+    print('quietTable->walk:U')
     try:
-        if(OS_Info == 'Windows'):
-            for root, subFolders, files in walk(r):
-                for Singlefile in files:
-                    print('scanning:::'+str(Singlefile))
-                    fls.append(path.join(root, Singlefile))
-        else:
-            for root, subFolders, files in walk(u''+r):
-                for Singlefile in files:
-                    print('scanning:::'+str(Singlefile))
-                    fls.append(path.join(root, u''+Singlefile))
+        for root, subFolders, files in walk(u''+r):
+            for Singlefile in files:
+                print('scanning:::'+str(Singlefile))
+                print('quietTable->fls.append:U')
+                fls.append(path.join(root, u''+Singlefile))
+
     except Exception as e:
 
             moreInformation = {"moreInfo":'null'}
@@ -292,27 +292,21 @@ def quietTable(r, a , InfReplacementArray = {} , projectName = ''):
         for f in xrange(len(fls)):
             
             print('Listing:::'+str(fls[f]))
-            if(OS_Info == 'Windows'):
-                p = path.abspath(fls[f])
-            else:
-                p = path.abspath(u''+fls[f])
+            print('quietTable:U')
+            p = path.abspath(u''+fls[f])
 
             EcodedBasePath = InfReplacementArray[r]['code']
             #print('Getting File Information of File: '+str(p))
-            if(OS_Info == 'Windows'):
-                givenPath = str(p).replace(r, EcodedBasePath + '||')
-            else:
-                givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
+            print('quietTable->givenPath:U')
+            givenPath = u''+str(p).replace(r, EcodedBasePath + '||')
 
             h = fixity(p, a , projectName)
             if(OS_Info == 'Windows'):
                 i = ntfsIDForWindows(p)
             else:
                 i = ntfsIDForMac(p)
-            if(OS_Info == 'Windows'):
-                listOfValues.append((h, givenPath, i))
-            else:
-                listOfValues.append((h, u''+givenPath, i))
+            print('quietTable->listOfValues:U')
+            listOfValues.append((h, u''+givenPath, i))
 
 
     except Exception as e:
@@ -492,12 +486,8 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
-    if(OS_Info == 'Windows'):
-        pathOfEncryption = line[1]
-    else:
-        pathOfEncryption = u''+line[1]
-        
-    if path.isfile(pathOfEncryption):
+    print('verify_using_inode->path.isfile:U')
+    if path.isfile(u''+line[1]):
 
         if CurrentDirectory != None :
 
@@ -593,8 +583,8 @@ def writer(alg, proj, num, conf, moves, news, fail, dels, out,projectName=''):
             if not os.path.isdir( str(createPath) + 'reports' ):
                 try:
                     os.mkdir( str(createPath) + 'reports' )
-                except:
-                    pass  
+                except Exception as ex:
+                    print(ex[0])  
                 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
             try:
@@ -619,15 +609,17 @@ def missing(dict,file=''):
     #print('missing')
     msg = ""
     count = 0
-    global verifiedFiles
+
     # walks through the dict and returns all False flags
     for keys in dict:
         for obj in dict[keys]:
+            print(obj[0])
             if not path.isfile(obj[0]):
                 #check if file already exists in the manifest
                 if not obj[0] in verifiedFiles:
                     verifiedFiles.append(obj[0])
                     msg += "Removed Files\t" + obj[0] +"\n"
+                    count = count + 1
 
     return msg, count
 
@@ -638,7 +630,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
     
     
-    global verfiedFiels
+    global verifiedFiles
+    
     print('Started:::'+projectName)
     try:
         processID = os.getpid()
@@ -655,16 +648,16 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         if(IsDeadLock):
             lock.is_locked = True
             lock.release()
-    except:
-        pass        
+    except Exception as ex:
+            print(ex[0])       
             
     try:        
         print('acquire')
         lock.acquire()
-    except:
-        pass
+    except Exception as ex:
+        print(ex[0])
     
-    verfiedFiels = []
+    verifiedFiles = list()
     DB = Database()
 
     missingFile = ('','')
@@ -752,13 +745,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             try:
                 if not ex[0] == None:
                     moreInformation['LogsMore'] =str(ex[0])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             try:
                 if not ex[1] == None:
                     moreInformation['LogsMore1'] =str(ex[1])
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             try:
                 moreInformation['directoryScanning']
             except:
@@ -772,8 +765,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
     try:
         ToBeScannedDirectoriesInProjectFile.remove('\n')
-    except:
-        pass
+    except Exception as ex:
+                print(ex[0])
     flagAnyChanges = False
     
     Algorithm = str(projectInformation[0]['selectedAlgo'])
@@ -804,8 +797,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         HistoryFile.write(keeptime+"\n")
         HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
-    except:
-        pass
+    except Exception as ex:
+                print(ex[0])
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
 
         DirectorysInsideDetails = quietTable(SingleDirectory, Algorithm,InfReplacementArray , projectName)
@@ -834,16 +827,16 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                             
                             if fnmatch.fnmatch(lastIndexName, '.*'):
                                 flag = False
-                        except:
-                            pass
+                        except Exception as ex:
+                            print(ex[0])
                         
                         try:        
                             PathExploded = str(e[1]).split(str(os.sep))
                             for SingleDirtory in PathExploded:
                                 if fnmatch.fnmatch(SingleDirtory, '.*'):
                                     flag = False
-                        except:
-                            pass
+                        except Exception as ex:
+                            print(ex[0])
                         
                     
             if flag:
@@ -852,7 +845,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     response = []
                     print('verify_using_inode:::::'+file )
                     response = verify_using_inode(dict,dict_Hash,dict_File, e , file , Algorithm)
-
+                    
                     if not response or len(response) < 1:
                             continue
 
@@ -861,13 +854,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     try:
                         if not ex[0] == None:
                             moreInformation['LogsMore'] =str(ex[0])
-                    except:
-                        pass
+                    except Exception as ex:
+                        print(ex[0])
                     try:
                         if not ex[1] == None:
                             moreInformation['LogsMore1'] =str(ex[1])
-                    except:
-                        pass
+                    except Exception as ex:
+                        print(ex[0])
 
 
                     Debugging.tureDebugerOn()
@@ -888,13 +881,15 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                         flagAnyChanges = True
                         corruptedOrChanged += 1
 
-                except:
-                    pass
+                except Exception as ex:
+                    print(ex[0])
 
                 pathCode = getPathCode(str(SingleDirectory),InfReplacementArray)
                 pathID = getPathId(str(SingleDirectory),InfReplacementArray)
-
-                newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
+                try:
+                    newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
+                except Exception as ex:
+                    print(ex[0])
 
                 versionDetailOptions = {}
                 try:
@@ -937,8 +932,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
     try:
         HistoryFile.close()
-    except:
-        pass
+    except Exception as ex:
+            print(ex[0])
     
 
     information = str(file).split('\\')
@@ -951,15 +946,15 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     total +=corruptedOrChanged
 
     try:
-        total +=missingFile[1]
+        total += missingFile[1]
     except:
         missingFile = ('','')
         pass
     try:
         HistoryFile.close()
     
-    except:
-        pass
+    except Exception as ex:
+            print(ex[0])
     
     ProjectName = file.replace('.fxy','').replace('projects\\','')
     ProjectName = ProjectName.replace('.fxy','').replace('projects//','')
@@ -972,8 +967,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         lock.release()
         print('relased the file')
-    except:
-        pass
+    except Exception as ex:
+            print(ex[0])
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 #Path Encoding to a Code To Identify the Path of each file
@@ -1044,4 +1039,3 @@ def DecodeInfo(stringToBeDecoded):
 # To test Main Functionality  
 # projects_path = getcwd()+'\\projects\\'
 # run(projects_path+'New_Project.fxy','','New_Project')
-# exit()

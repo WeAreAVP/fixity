@@ -21,7 +21,7 @@ import subprocess
 #Custom Libraries
 from Debuger import Debuger
 from AutoRuner import AutoRuner
-
+global verifiedFiles
 exitFlag = 0
 Debuging = Debuger()
 
@@ -45,6 +45,7 @@ class Threading (threading.Thread):
 
         try:
             IsemailSet = ''
+            verifiedFiles = []
             AR = AutoRuner()
             AR.runAutoFix(self.name, IsemailSet)
 
@@ -64,18 +65,11 @@ class Threading (threading.Thread):
             Debuging.tureDebugerOn()
             Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
             pass
-        print_time(self.name, self.counter, 5,self , command)
+        TriggerThred(self.name, self.counter, 5,self , command)
 
-def print_time(threadName, delay, counter,thread,command):
+def TriggerThred(threadName, delay, counter,thread,command):
     while counter:
         if exitFlag:
             thread.exit()
         time.sleep(delay)
         counter -= 1
-# "D:\python\Fixity Project\schedules\AutoFixity.exe" "New_Project" "Run"
-# params = 'New_Project' +' '+'Run'
-# FileName = 'AutoFixity.exe';
-# FilePath = 'D:\\python\\Fixity Project\\schedules\\'
-# t = Threading('New_Project', 'New_Project', 1,FileName,FilePath , params)
-# #  
-# t.start()     

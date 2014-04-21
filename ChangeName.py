@@ -13,14 +13,14 @@ from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
 from Database import Database
-
+import FixitySchtask
 #Custom Classes
 from EmailPref import EmailPref
 DBObj = Database()
 
 class ChangeName(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
-    
+    #Constructor
     def __init__(self,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
@@ -33,30 +33,32 @@ class ChangeName(QDialog):
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
          
-        self.projectListWidget = None
-        
+       
     # Distructor        
     def destroyChangeName(self):
         del self  
         
-        
+    #QDailog Reject Tigger over writen
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(ChangeName,self).reject()
-                
+    #Get  Window                
     def GetWindow(self):
         return self 
-             
+    
+    #Show this Dialog         
     def ShowDialog(self):     
         self.show()
         self.exec_()
         
+    #Set  Layout    
     def SetLayout(self, layout):
         self.ChangeNameLayout = layout
         
+    #Set Window Layout
     def SetWindowLayout(self):
         self.setLayout(self.ChangeNameLayout)
-        
+    #Get Layout    
     def GetLayout(self):
         return self.ChangeNameLayout
     
@@ -141,15 +143,20 @@ class ChangeName(QDialog):
         else:
             Information[0]['title'] = u''+self.changeNameField.text()
         
-       
+        isThisNameAlreadyTaken = DBObj.getProjectInfo(Information[0]['title'])
+        if len(isThisNameAlreadyTaken) > 0:
+            QMB.information(self, "Fixity", "Project With this Name already Exists, please select a different Name.")
+            return
         flag = DBObj.update(DBObj._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
             self.refreshProjectSettings()
-            
+            thisItemIndex = self.parentWin.getProjectIndex(str(Information[0]['title']))
+
             QMB.information(self, "Success", "Name have changed successfully!")
-            
+            self.parentWin.projects.item(thisItemIndex).setSelected(True)
+            self.parentWin.changedNameIndex = thisItemIndex
+            self.parentWin.changedNameName = Information[0]['title']
             self.Cancel()
-            
             return
         else:
             
@@ -157,10 +164,11 @@ class ChangeName(QDialog):
             self.refreshProjectSettings()
             self.reOpenChangeName()
                 
-        
+    #Re Set the Text    
     def Reset(self):
         self.changeNameField.setText('')
-        
+    
+    #Re Open Change Name    
     def reOpenChangeName(self):
         self.Cancel()
         self.EmailPref = EmailPref(self)
@@ -169,7 +177,7 @@ class ChangeName(QDialog):
         self.setWindowTitle('Change Project Name')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images\\logo_sign_small.png')))
         self.ChangeNameLayout = QVBoxLayout()
-        self.projectListWidget = None
+        
         
     # close the dailog box
     def Cancel(self):
@@ -178,7 +186,7 @@ class ChangeName(QDialog):
         self.destroyChangeName()
         self.close()
         
-        
+    #Refresh Project Settings
     def refreshProjectSettings(self):
             allProjects = DBObj.getProjectInfo()
             try:
@@ -187,28 +195,18 @@ class ChangeName(QDialog):
                     if(len(allProjects) > 0):
                         for p in allProjects:
                             projectLists.append(str(allProjects[p]['title']))
-            except:
-                pass
+            except Exception as ex:
+                print(ex[0])
             
             try:  
-                self.projectListWidget.clear()
-            except:
-                pass
+                self.parentWin.projects.clear()
+            except Exception as ex:
+                print(ex[0])
             
             try:
                 if projectLists != None:
                     if(len(projectLists) > 0):
                         for p in projectLists:
-                            self.projectListWidget.addItem(p)
-            except:
-                pass
-            
-# app = QApplication('asdas')
-# w = ChangeName(QDialog())
-# w.CreateWindow()
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-#           
-# app.exec_() 
-#          
+                            self.parentWin.projects.addItem(p)
+            except Exception as ex:
+                print(ex[0])

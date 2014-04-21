@@ -75,18 +75,14 @@ def send(recipients, text, attachment, information,projectName='', EmailPref = N
 		moreInformation= {}
 		try:
 			moreInformation ={'SenderEmailAddress::':addr ,'RecipientsEmailAddress':recipients , '::More Detail':'' ,'ErrorCode':str(e[0]) , 'ErrorMsg':str(e[1]) }
-			print(moreInformation)
 		except:
 			pass
-		print(11)
 		try:
 			D.tureDebugerOn()
 			D.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		except:
 			pass
-		print(22)
 		
-		print(33)
 		return False
 
  

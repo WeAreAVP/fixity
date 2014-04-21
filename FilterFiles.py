@@ -31,7 +31,7 @@ import sys
 from Database import Database
 
 #Custom Classes
-from EmailPref import EmailPref
+
 DB = Database()
 class FilterFiles(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -39,9 +39,9 @@ class FilterFiles(QDialog):
     def __init__(self,parentWin):
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
-        self.EmailPref = EmailPref(self)
         self.setWindowModality(Qt.WindowModal)
         self.parentWin.setWindowTitle('Filter File')
+        self.setWindowTitle('Filter File')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
         
@@ -100,8 +100,6 @@ class FilterFiles(QDialog):
 
     # All design Management Done in Here
     def SetDesgin(self):
-        
-
         ProjectListArr = DB.getProjectInfo()
         counter = 0
         isEnable = True
