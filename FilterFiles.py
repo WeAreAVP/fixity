@@ -75,13 +75,14 @@ class FilterFiles(QDialog):
         
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(FilterFiles,self).reject()
+        
+        
     """
         Distructor
     """            
     def destroyFilterFiles(self):
         
         del self
-
     
 
     '''
@@ -268,4 +269,9 @@ class FilterFiles(QDialog):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.close()
         self.destroyFilterFiles()
-        
+# app = QApplication(sys.argv)
+# w = FilterFiles(QDialog())
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()            
+# sys.exit(app.exec_())        

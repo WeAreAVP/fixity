@@ -145,6 +145,8 @@ class ChangeName(QDialog):
         MessageBoxForChangeName = QMessageBox 
         selectedProject = self.Porjects.currentText()
         Information = SqlLiteDataBase.getProjectInfo(selectedProject)
+        FixitySchtask.deltask(str(selectedProject))
+        FixitySchtask.deltask(str(self.changeNameField.text()))
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
             
             MessageBoxForChangeName.information(self, "Fixity", "No project selected - please select a project and try again.")

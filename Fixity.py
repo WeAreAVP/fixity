@@ -49,6 +49,7 @@ from ChangeName import ChangeName
 from AutoRuner import AutoRuner
 
 Debuging = Debuger()
+
 '''Main Class to handle all menu and options of Fixity'''
 
 class ProjectWin(QMainWindow):
@@ -474,6 +475,7 @@ class ProjectWin(QMainWindow):
                     self.projects.item(int(self.changedNameIndex)).setSelected(True)
                     self.projects.setCurrentRow(int(self.changedNameIndex))
                     self.unsaved = False
+                    
                     self.update(self.changedNameName)
                     self.unsaved = True
                     self.updateschedule()
@@ -717,8 +719,6 @@ class ProjectWin(QMainWindow):
             
             
                 
-                
-                
         '''
         Process the changes made in Fixity
         ''' 
@@ -935,7 +935,9 @@ class ProjectWin(QMainWindow):
 
         
         '''
-        Toggles fields on/off
+        Toggles all option fields on/off
+        @param switch: switch could be True or False
+        @return: None
         '''
         def toggler(self, switch):
             for n in xrange(len(self.mtx)):
@@ -965,7 +967,7 @@ class ProjectWin(QMainWindow):
             
             
         '''
-        returns If anything changed
+        turn True to anything change related to selected project
         '''
         def changed(self):
                 self.unsaved = True
@@ -974,6 +976,9 @@ class ProjectWin(QMainWindow):
                 
         '''
         Day check box Click Trigger
+        (Trigger on day Check box click)
+        
+        @return: None
         '''
         def dayclick(self):
             self.dom.hide()
@@ -984,6 +989,9 @@ class ProjectWin(QMainWindow):
             
         '''
         Month check box Click Trigger
+        (Trigger on week Check box click)
+        
+        @return: None
         '''
         def weekclick(self):
             self.spacer.changeSize(0, 0)
@@ -995,7 +1003,10 @@ class ProjectWin(QMainWindow):
             
         '''
         Month check box Click Trigger
-        ''' 
+        (Trigger on Month Check box click)
+        
+        @return: None
+        '''
         def monthclick(self):
             self.spacer.changeSize(0, 0)
             self.dow.hide()
@@ -1005,7 +1016,10 @@ class ProjectWin(QMainWindow):
             
         '''
         Pick Directory
-        ''' 
+        (Trigger on Pick Directory Button Menu)
+        
+        @return: None
+        '''
         def pickdir(self):
                 n = self.but.index(self.sender())
                 self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
@@ -1014,6 +1028,9 @@ class ProjectWin(QMainWindow):
                 
         '''
         Provides Replace Path Information Array
+        
+        
+        @return: None
         '''
         def replacePathInformation(self):
             projFileChangePath = open('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'wb')
@@ -1038,6 +1055,9 @@ class ProjectWin(QMainWindow):
 
         '''
         Saves And Runs
+        (Trigger on Run Menu)
+        
+        @return: None
         '''
         def run(self):
 
@@ -1101,6 +1121,9 @@ class ProjectWin(QMainWindow):
 
         '''
         DELETE Given PROJECT
+        (Trigger on Delete Menu)
+        
+        @return: None
         '''
         def deleteproject(self):
             sbox = QMessageBox()
@@ -1184,6 +1207,8 @@ class ProjectWin(QMainWindow):
 
         '''
         Update Schedule information
+        
+        @return: None
         '''
         def updateschedule(self,customPojectUpdate = None):
             
@@ -1272,6 +1297,8 @@ class ProjectWin(QMainWindow):
 
         '''
         Remove the file which are not required
+        
+        @return: None
         '''
         def removeNotRequiredFiles(self):
 
@@ -1294,6 +1321,8 @@ class ProjectWin(QMainWindow):
 
         '''
         Window close Event
+        
+        @return: None
         '''
         def closeEvent(self, event):
             if not str(self.projects.currentItem()) == 'None':
@@ -1383,8 +1412,6 @@ class ProjectWin(QMainWindow):
             
             
             
-            
-            
             ''' Create history Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'history')
@@ -1414,6 +1441,7 @@ class ProjectWin(QMainWindow):
             except:
                 pass
                 
+                  
                     
         '''
         Create All Required File And Directories For Mac
@@ -1463,6 +1491,8 @@ class ProjectWin(QMainWindow):
             except:
                 pass
            
+           
+           
         '''
         Create Directory given in the path if dose not exists
         @param directoryPath: Directory Path to be created
@@ -1478,7 +1508,8 @@ class ProjectWin(QMainWindow):
         ''' 
         Create Database File that Fixity Uses
         @param DatabasePath:Database File Path To be created
-         
+        
+        @return: None
         '''
         def CreateDatabaseFile(self,DatabasePath):
             if DatabasePath:
@@ -1540,7 +1571,13 @@ class ProjectWin(QMainWindow):
                     except:
                         pass
                     
-        
+                    
+        '''
+            Check If Table Exists In Database
+            @param tableName: Table Name
+            
+            @return List-list Of Result If Found Some
+        '''
         def checkIfTableExistsInDatabase(self,tableName):
             return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='"+tableName+"'");
 '''    

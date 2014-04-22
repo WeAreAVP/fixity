@@ -590,11 +590,15 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                 verifiedFiles.append(CurrentDirectory[0])
                 return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
             if (not isHashSame) and isFilePathSame:
+                
                 verifiedFiles.append(line[1])
                 return line, "Changed File :\t" + str(line[1])
 
             if (not isHashSame) and (not isFilePathSame):
+                print(line)
+                print(CurrentDirectory)
                 verifiedFiles.append(line[1])
+                verifiedFiles.append(CurrentDirectory[0])
                 return line, "Changed File :\t" + str(line[1])
 
         else :
@@ -604,15 +608,15 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             for dictionarySingle in dictHash:
                 allInforHashRelated = dictHash[dictionarySingle]
                 for singleInforHashRelated in allInforHashRelated:
-                    # Y     Y    Y N    Confirmed File
+                    # Y     Y    Y     N    Confirmed File
                     if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0][Algorithm]:
                         verifiedFiles.append(line[1])
                         return line, "Confirmed File :\t" + str(line[1])
 
-                    # Y     N    Y N    Changed File
+                    # Y     N    Y    N    Changed File
                     elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0][Algorithm]:
                         verifiedFiles.append(line[1])
-                        return line, 'File Changed :\t' + str(line[1])
+                        return line, 'Changed File :\t' + str(line[1])
 
             for dictionarySingle1 in dictHash:
                 allInforHashRelated1 = dictHash[dictionarySingle1]
@@ -794,6 +798,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         if (len(projectDetailInformation)<=0):
             if(len(projectInformation) > 0):
                 projectDetailInformation = DB.getVersionDetailsLast(projectInformation[0]['id'])
+                
     FiltersArray = filters.split(',')
     dict = defaultdict(list)
     dict_Hash = defaultdict(list)
@@ -802,6 +807,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     FileChangedList = ""
     InfReplacementArray = {}
     if(OS_Info == 'Windows'):
+        
         historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
         
@@ -853,7 +859,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     CodeInfoormation = pathInformation[0]
 
                     pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
-
                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
                     dict_File[pathInfo['path']+pathInformation[1]].append([x[0], x[2], False])
@@ -917,7 +922,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         HistoryFile.write(keeptime+"\n")
         HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     except Exception as ex:
-                print(ex[0])
+            print(ex[0])
                 
                 
                 
@@ -1172,8 +1177,8 @@ def getDirectoryDetail(projectName ,fullpath = False):
             if detialInformation[2] != None and detialInformation[2] !='' :
                 indexOfDet = int(detialInformation[2])
                 DirectoryDetail[indexOfDet] = detialInformation
+                
     projfile.close()
-    
     return DirectoryDetail
 
      
@@ -1184,3 +1189,6 @@ def EncodeInfo(stringToBeEncoded):
 def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
+
+projects_path = getcwd()+'\\projects\\'
+run(projects_path+'New_Project.fxy','','New_Project')
