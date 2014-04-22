@@ -42,15 +42,15 @@ SqlLiteDataBase = Database()
 
 
 '''
-Class to manage the Filter to be implemented for the files with specific extensions 
+Class to manage the Filter to be implemented for the files with specific extensions
 '''
 class FilterFiles(QDialog):
-    
+
     """
-            Constructor  
+            Constructor
     """
     def __init__(self,parentWin):
-        
+
         QDialog.__init__(self,parentWin)
         self.parentWin = parentWin
         self.setWindowModality(Qt.WindowModal)
@@ -58,32 +58,32 @@ class FilterFiles(QDialog):
         self.setWindowTitle('Filter File')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
-        
+
     """
         Grab Key Press Events
-    """    
+    """
     def keyPressEvent(self, event):
-        
+
         if type(event) == QKeyEvent:
             print event.key()
         super(FilterFiles,self).keyPressEvent(event)
-        
+
     """
         catch Reject even of the Dialog box
-    """            
+    """
     def reject(self):
-        
+
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(FilterFiles,self).reject()
-        
-        
+
+
     """
         Distructor
-    """            
+    """
     def destroyFilterFiles(self):
-        
+
         del self
-    
+
 
     '''
     Get Window of this
@@ -154,7 +154,7 @@ class FilterFiles(QDialog):
         else:
             ProjectList.append('Create & Save Project')
             isEnable = False
-        
+
         self.GetLayout().addStrut(200)
         self.Porjects = QComboBox()
         self.Porjects.addItems(ProjectList)
@@ -166,39 +166,39 @@ class FilterFiles(QDialog):
         self.cancel = QPushButton("Close")
 
         self.FilterField.setPlaceholderText("Add Filter")
-        
+
         self.IgnoreHiddenFiles = QCheckBox("Ignore Hidden Files")
-        
-        
+
+
         if OS_Info == 'linux':
                 self.GetLayout().addWidget(self.IgnoreHiddenFiles)
         self.GetLayout().addWidget(self.FilterField)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.reset)
         self.GetLayout().addWidget(self.cancel)
-        
+
         if not isEnable:
             self.setInformation.setDisabled(True)
             self.reset.setDisabled(True)
             self.Porjects.setDisabled(True)
             self.FilterField.setDisabled(True)
             self.IgnoreHiddenFiles.setDisabled(True)
-        
+
         self.setInformation.clicked.connect(self.SetInformation)
         self.reset.clicked.connect(self.Reset)
         self.cancel.clicked.connect(self.Cancel)
-        
+
         self.Porjects.currentIndexChanged .connect(self.projectChanged)
         self.SetWindowLayout()
         self.projectChanged()
 
 
-    ''' 
-    Update Filters information 
+    '''
+    Update Filters information
     '''
     def SetInformation(self):
 
-        
+
         selectedProject = self.Porjects.currentText()
         Information = SqlLiteDataBase.getProjectInfo(selectedProject)
         Information[0]['filters'] = self.FilterField.text()
@@ -207,34 +207,34 @@ class FilterFiles(QDialog):
         else:
             Information[0]['ignoreHiddenFiles'] = 0
 
-        
+
         if selectedProject == '':
-            
+
             QMessageBox.information(self, "Fixity", "No project selected - please select a project and try again.")
-            
+
             return
         flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
 
         if flag != None:
-            
+
             QMessageBox.information(self, "Success", "Filter set successfully!")
-            
+
             self.Cancel()
             return
         else:
-            
+
             QMessageBox.information(self, "Failure", "There was a problem setting the filter - please try again.")
-            
+
 
     ''' Reset Text of Filters '''
     def Reset(self):
         self.FilterField.setText('')
 
-    ''' 
+    '''
     Triggers on project changed from drop down and sets related information in filters Field
     '''
     def projectChanged(self):
-        
+
         filters = ''
         ignoreHiddenFiles = 0
         selectedProject = self.Porjects.currentText()
@@ -247,22 +247,22 @@ class FilterFiles(QDialog):
             filters = str(Information[0]['filters']).replace('\n', '')
         except:
             pass
-        
+
         try:
             ignoreHiddenFiles = str(Information[0]['ignoreHiddenFiles']).replace('\n', '')
         except:
             pass
-        
+
         self.FilterField.setText(filters)
-        
-        if(ignoreHiddenFiles == 0 or ignoreHiddenFiles == '0'):
-            self.IgnoreHiddenFiles.setChecked(False)
-        else:
+
+        if(ignoreHiddenFiles == 1 or ignoreHiddenFiles == '1'):
             self.IgnoreHiddenFiles.setChecked(True)
-            
+        else:
+            self.IgnoreHiddenFiles.setChecked(False)
+
         return
 
-    ''' 
+    '''
     Close the Dialog Box
     '''
     def Cancel(self):
@@ -273,5 +273,5 @@ class FilterFiles(QDialog):
 # w = FilterFiles(QDialog())
 # w.SetWindowLayout()
 # w.SetDesgin()
-# w.ShowDialog()            
-# sys.exit(app.exec_())        
+# w.ShowDialog()
+# sys.exit(app.exec_())
