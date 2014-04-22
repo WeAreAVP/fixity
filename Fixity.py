@@ -53,25 +53,25 @@ Debuging = Debuger()
 '''Main Class to handle all menu and options of Fixity'''
 
 class ProjectWin(QMainWindow):
-    
+
         '''
         Constructor
         '''
         def __init__(self, EmailPref , FilterFiles):
-                
+
                 if(OS_Info == 'Windows'):
                     self.CreateAllRequiredFileAndDirectoriesForWindows()
-                else: 
+                else:
                     self.CreateAllRequiredFileAndDirectoriesForMac()
-                    
+
                 self.Database = Database()
-                
+
                 self.createDatabaseTables()
-                
+
                 pathInfo = str(getcwd()).replace('\\schedules','')
 
                 pathInfo = pathInfo.replace('schedules','')
-                
+
                 if(OS_Info == 'Windows'):
                     databasePath = pathInfo+"\\bin\\Fixity.db-journal"
                 else:
@@ -80,7 +80,7 @@ class ProjectWin(QMainWindow):
                 if path.isfile(databasePath):
                     remove(databasePath)
 
-                
+
                 QMainWindow.__init__(self)
 
                 Debuging.tureDebugerOn()
@@ -144,9 +144,9 @@ class ProjectWin(QMainWindow):
                 self.FileManuFixity.addAction(ChangeNameManu)
                 self.FileManuFixity.addAction(aboutFixity)
                 self.FileManuFixity.addAction(quit)
-                
+
                 self.Preferences.addAction(FilterFilesMane)
-                
+
                 self.Preferences.addAction(self.Debuging)
                 self.Preferences.addAction(DecryptionManagerMenu)
                 self.Preferences.addAction(self.ImportProjectfxy)
@@ -162,13 +162,13 @@ class ProjectWin(QMainWindow):
 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
                 ChangeNameManu.triggered.connect(self.ChangeNameBox)
-                
+
                 DecryptionManagerMenu.triggered.connect(self.DecryptionManagerBox)
                 self.Debuging.triggered.connect(self.switchDebugger)
                 self.ImportProjectfxy.triggered.connect(self.importProjects)
 
                 self.widget = QWidget(self)
-                
+
                 self.pgroup = QGroupBox("Projects")
                 self.play = QVBoxLayout()
                 self.projects = QListWidget(self)
@@ -280,7 +280,7 @@ class ProjectWin(QMainWindow):
                 self.main.addWidget(self.sch)
                 self.main.addWidget(self.dirs)
                 self.main.addWidget(self.mail)
-                
+
                 self.widget.setLayout(self.main)
                 self.setCentralWidget(self.widget)
                 self.projects.itemClicked.connect(self.update)
@@ -290,7 +290,7 @@ class ProjectWin(QMainWindow):
                         self.StartWhenAvailable.setDisabled(False)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(False)
                     else:
-                        
+
                         self.runOnlyOnACPower.setDisabled(True)
                         self.StartWhenAvailable.setDisabled(True)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(True)
@@ -305,26 +305,26 @@ class ProjectWin(QMainWindow):
                     self.runOnlyOnACPower.setDisabled(True)
                     self.StartWhenAvailable.setDisabled(True)
                     self.EmailOnlyWhenSomethingChanged.setDisabled(True)
-                
+
                 self.closeEvent(self.cleanObjects)
-                
+
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
                 self.show()
-                                
+
         '''
         Distructor
         '''
         def __del__(self):
             del self
-            
+
         '''
         Clean All Objects Existed
         Closing opened Windows and database conactions and Releasing the Variables
         '''
         def cleanObjects(self):
-            
-            #Closing opened Windows and database connections 
+
+            #Closing opened Windows and database connections
             try:
                 self.Database.closeConnection()
             except:
@@ -361,8 +361,8 @@ class ProjectWin(QMainWindow):
                 self.Threading = None
             except:
                 pass
-            
-            #Releasing the Variables  
+
+            #Releasing the Variables
             try:
                 self.Database = None
             except:
@@ -399,8 +399,8 @@ class ProjectWin(QMainWindow):
                 self.__del__()
             except:
                 pass
-                
-         
+
+
         '''
         Configure Email Address for the Tools
         '''
@@ -410,7 +410,7 @@ class ProjectWin(QMainWindow):
             self.EmailPrefManager = EmailPref(self)
             self.EmailPrefManager.SetDesgin()
             self.EmailPrefManager.ShowDialog()
-            
+
         '''
         PopUp to Import Project
         '''
@@ -419,11 +419,11 @@ class ProjectWin(QMainWindow):
             self.ImportProjects = None
             self.ImportProjects = ImportProjects(self)
             self.ImportProjects.projectListWidget = self.projects
-            
+
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
-            
-        
+
+
         '''
         Pop up to Show About Fixity Information
         '''
@@ -434,13 +434,13 @@ class ProjectWin(QMainWindow):
             self.AboutFixityManager = AboutFixity()
             self.AboutFixityManager.SetDesgin()
             self.AboutFixityManager.ShowDialog()
-            
+
         '''
         Pop Up to Change Root Directory If any change occured
         orignalPathText:: Path In Manifest
         changePathText:: New Path Given in Fixity Tool
         '''
-            
+
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
@@ -457,32 +457,33 @@ class ProjectWin(QMainWindow):
             self.FilterFiles = None
             self.FilterFiles = FilterFiles(self)
             self.FilterFiles.SetDesgin()
-            self.FilterFiles.ShowDialog()    
-            
+            self.FilterFiles.ShowDialog()
+
         '''
         Pop up to Change Project Name
-        '''        
+        '''
         def ChangeNameBox(self):
-            
+
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName(self)
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
-            
+
             if self.changedNameIndex != None:
                 try:
                     self.projects.item(int(self.changedNameIndex)).setSelected(True)
                     self.projects.setCurrentRow(int(self.changedNameIndex))
                     self.unsaved = False
-                    
+
                     self.update(self.changedNameName)
                     self.unsaved = True
                     self.updateschedule()
                     self.unsaved = False
                 except Exception as ex:
                     print(ex[0])
-            
+
+
         '''
         Pop up to set Encryption Method
         '''
@@ -492,7 +493,8 @@ class ProjectWin(QMainWindow):
             self.DecryptionManager = DecryptionManager(self)
             self.DecryptionManager.SetDesgin()
             self.DecryptionManager.ShowDialog()
-            
+
+
         '''
         Trigger to switch debugger on or off
         '''
@@ -526,7 +528,7 @@ class ProjectWin(QMainWindow):
                 debugText = 'Turn Debugging Off'
 
             self.Debuging.setText(debugText)
-            
+
         '''
         Create New Fixity Again
         '''
@@ -534,10 +536,10 @@ class ProjectWin(QMainWindow):
             self = ProjectWin()
             self.show()
             sys.exit(app.exec_())
-            
+
         '''
         Gets Detail information of Windows
-        ''' 
+        '''
         def getWindowsInformation(self):
             WindowsInformation = {};
             try:
@@ -598,7 +600,7 @@ class ProjectWin(QMainWindow):
         @Slot(str)
         '''
         def update(self, new):
-            
+
             if self.unsaved:
                     sbox = QMessageBox()
                     sbox.setText("There are unsaved changes to this project.")
@@ -618,7 +620,7 @@ class ProjectWin(QMainWindow):
 
             information = {}
             projectName = self.projects.currentItem().text()
-            
+
             projectInfo = self.Database.getProjectInfo(projectName)
             pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
             emails = str(projectInfo[0]['emailAddress'])
@@ -687,7 +689,6 @@ class ProjectWin(QMainWindow):
 
 
 
-
         '''
         New Project Creation
         '''
@@ -695,11 +696,11 @@ class ProjectWin(QMainWindow):
             QID = QInputDialog(self)
             QID.setWindowModality(Qt.WindowModal)
             name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
-            
+
             if not name[1]:
-                return 
+                return
             projectInfo =  self.Database.getProjectInfo(name[0])
-            
+
             if len(projectInfo) > 0:
                 QMessageBox.warning(self, "Fixity", "Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces\n*Project names must be legal filenames")
                 return
@@ -713,15 +714,14 @@ class ProjectWin(QMainWindow):
             for x in xrange(0, 7):
                 self.dtx[x].setText("")
                 self.mtx[x].setText("")
-                
+
             self.old = newitem
             self.toggler(False)
-            
-            
-                
+
+
         '''
         Process the changes made in Fixity
-        ''' 
+        '''
         def process(self, shouldRun=True):
 
             if all(d.text() == "" for d in self.dtx):
@@ -757,7 +757,7 @@ class ProjectWin(QMainWindow):
                 projFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                 projFileText = projFile.readlines()
                 projFile.close()
-                
+
                 if not projFileText :
                     isfileExists = False
 
@@ -874,7 +874,7 @@ class ProjectWin(QMainWindow):
                     projfileFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                     projfileFileText = projfileFile.readlines()
                     projfileFile.close()
-                    
+
                     configurations = {}
                     configurations['directories'] = ''
                     configurations['emails'] = ''
@@ -922,18 +922,18 @@ class ProjectWin(QMainWindow):
                     projfile.writelines(projfileFileText)
                     try:
                         projfileFile.close()
-                        
+
                     except:
                         pass
                     try:
                         projfile.close()
-                        
+
                     except:
                         pass
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
             return
 
-        
+
         '''
         Toggles all option fields on/off
         @param switch: switch could be True or False
@@ -963,73 +963,75 @@ class ProjectWin(QMainWindow):
                 self.EmailOnlyWhenSomethingChanged.setDisabled(switch)
             except:
                 pass
-            
-            
-            
+
+
+
         '''
         turn True to anything change related to selected project
         '''
         def changed(self):
                 self.unsaved = True
-              
-              
-                
+
+
+
         '''
         Day check box Click Trigger
         (Trigger on day Check box click)
-        
+
         @return: None
         '''
         def dayclick(self):
             self.dom.hide()
             self.dow.hide()
             self.spacer.changeSize(30, 25)
-            
-            
-            
+
+
+
         '''
         Month check box Click Trigger
         (Trigger on week Check box click)
-        
+
         @return: None
         '''
         def weekclick(self):
             self.spacer.changeSize(0, 0)
             self.dom.hide()
             self.dow.show()
-            
-            
-            
-            
+
+
+
+
         '''
         Month check box Click Trigger
         (Trigger on Month Check box click)
-        
+
         @return: None
         '''
         def monthclick(self):
             self.spacer.changeSize(0, 0)
             self.dow.hide()
             self.dom.show()
-            
-            
-            
+
+
+
         '''
         Pick Directory
         (Trigger on Pick Directory Button Menu)
-        
+
         @return: None
         '''
         def pickdir(self):
                 n = self.but.index(self.sender())
-                self.dtx[n].setText(QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\'))
-              
-              
-                
+                PathSelectedForthiDirectory = QFileDialog.getExistingDirectory(dir=path.expanduser('~') + '\\Desktop\\')
+                if PathSelectedForthiDirectory and PathSelectedForthiDirectory !='':
+                    self.dtx[n].setText(PathSelectedForthiDirectory)
+
+
+
         '''
         Provides Replace Path Information Array
-        
-        
+
+
         @return: None
         '''
         def replacePathInformation(self):
@@ -1045,7 +1047,7 @@ class ProjectWin(QMainWindow):
                 projFileChangePath.write(lineToWrite)
                 lineNumber = lineNumber+1
             currentProjFile.close()
-            
+
             projFileChangePath.close()
 
             shutil.copy('projects\\' + self.projects.currentItem().text()+ 'ChangingPath' + '.fxy', 'projects\\' + self.projects.currentItem().text()+ '.fxy')
@@ -1056,7 +1058,7 @@ class ProjectWin(QMainWindow):
         '''
         Saves And Runs
         (Trigger on Run Menu)
-        
+
         @return: None
         '''
         def run(self):
@@ -1122,7 +1124,7 @@ class ProjectWin(QMainWindow):
         '''
         DELETE Given PROJECT
         (Trigger on Delete Menu)
-        
+
         @return: None
         '''
         def deleteproject(self):
@@ -1190,28 +1192,28 @@ class ProjectWin(QMainWindow):
                     progress.setLabelText(txt.ljust(43))
                     p = path.abspath(fls[f])
                     h = FixityCore.fixity(p, a)
-                    
+
                     if(OS_Info == 'Windows'):
                         i = FixityCore.ntfsIDForWindows(p)
                     else:
                         i = FixityCore.ntfsIDForMac(p)
-                        
+
                     list.append((h, p, i))
                     progress.setValue(100 * float(f) / len(fls))
                     qApp.processEvents()
             progress.close()
-            
+
             return list
 
 
 
         '''
         Update Schedule information
-        
+
         @return: None
         '''
         def updateschedule(self,customPojectUpdate = None):
-            
+
             flagInitialScanUponSaving = False
             isRcipentEmailAddressSet = False
             allEmailAddres = ''
@@ -1242,7 +1244,7 @@ class ProjectWin(QMainWindow):
                     dweek = int(self.dow.currentIndex())
             elif self.daily.isChecked():
                     interval = 3
-            
+
 
             projectInformation = {}
             projectInformation['title'] = self.projects.currentItem().text()
@@ -1289,7 +1291,7 @@ class ProjectWin(QMainWindow):
             Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
             Configurations['RunInitialScan'] = False
             self.unsaved = False
-            
+
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
 
@@ -1297,7 +1299,7 @@ class ProjectWin(QMainWindow):
 
         '''
         Remove the file which are not required
-        
+
         @return: None
         '''
         def removeNotRequiredFiles(self):
@@ -1309,9 +1311,9 @@ class ProjectWin(QMainWindow):
                     projectFileLines = projectFile.readlines();
                     binFileLines = binFile.readlines();
                     projectFile.close()
-                    
+
                     binFile.close()
-                    
+
                     if (not binFileLines) or (not projectFileLines):
                         remove('projects\\' + self.projects.currentItem().text() + '.fxy')
                         remove('bin\\' + self.projects.currentItem().text() + '-conf.txt')
@@ -1321,7 +1323,7 @@ class ProjectWin(QMainWindow):
 
         '''
         Window close Event
-        
+
         @return: None
         '''
         def closeEvent(self, event):
@@ -1334,9 +1336,9 @@ class ProjectWin(QMainWindow):
                     if (not binFileLines) or (not projectFileLines):
                         self.unsaved = True
                     projectFile.close()
-                    
+
                     binFile.close()
-                    
+
 
             if self.unsaved:
                     sbox = QMessageBox()
@@ -1352,15 +1354,15 @@ class ProjectWin(QMainWindow):
                         self.removeNotRequiredFiles()
                         event.accept()
 
-       
-            
-            
+
+
+
         '''
-        Check For Changes In the provided base  path and old given base path the given project name  
+        Check For Changes In the provided base  path and old given base path the given project name
         @param projectName: Project Name
         @param searchForPath: Path of a given base Dire
         @param code: Code of that specific path
-        
+
         @return: None
         '''
         def checkForChanges(self,projectName , searchForPath ,code):
@@ -1375,59 +1377,59 @@ class ProjectWin(QMainWindow):
                             self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] , searchForPath )
             except:
                 pass
-            
-            
-            
+
+
+
         '''
         Get Project Index in projects listing of a given name
-        
+
         @param projectName: Project Name
         @return: index
         '''
         def getProjectIndex(self,projectName):
-             
-            for index in xrange(self.projects.count()): 
+
+            for index in xrange(self.projects.count()):
                 if projectName in str(self.projects.item(index).text()):
                     return index
-                
-                
+
+
         '''
         Create All Required File And Directories For Windows
-        
+
         @return: None
         '''
         def CreateAllRequiredFileAndDirectoriesForWindows(self):
-            
+
             FixityResourcesBasePath = getcwd()
             ''' Create bin Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'bin')
             except:
                 pass
-            
-            
+
+
             DatabasePath = FixityResourcesBasePath+str(os.sep)+'bin'+str(os.sep)+'Fixity.db'
             ''' Create Database File '''
             self.CreateDatabaseFile(DatabasePath)
-            
-            
-            
+
+
+
             ''' Create history Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'history')
             except:
                 pass
-                
-                
-                
+
+
+
             ''' Create history Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'reports')
             except:
                 pass
-            
-            
-    
+
+
+
             ''' Create schedules Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'schedules')
@@ -1440,75 +1442,75 @@ class ProjectWin(QMainWindow):
                 self.createDirectory(str(FixityResourcesBasePath)+str(os.sep)+'debug')
             except:
                 pass
-                
-                  
-                    
+
+
+
         '''
         Create All Required File And Directories For Mac
-        
+
         @return: None
         '''
         def CreateAllRequiredFileAndDirectoriesForMac(self):
             FixityResourcesBasePath = getcwd()
-            
+
             pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
             DatabasePath = FixityResourcesBasePath+str(os.sep)+'bin'+str(os.sep)+'Fixity.db'
-            
-            
+
+
             ''' Create Database File '''
             self.CreateDatabaseFile(DatabasePath)
-            
+
             ''' Create Schedules Folder '''
             schedulesPathOfFixiry = FixityResourcesBasePath+'schedules'
-            
+
             try:
                 self.createDirectory(schedulesPathOfFixiry)
             except:
                 pass
-        
-            
+
+
             ''' Create Bin Folder '''
             try:
                 self.createDirectory(str(FixityResourcesBasePath)+'bin')
             except:
                 pass
-            
-            
+
+
             FixityPublicBasePath = str(pathInfo).replace(' ', '\\ ')
-            
+
             ''' Create History Folder '''
             try:
                 self.createDirectory(str(FixityPublicBasePath)+'history')
             except:
                 pass
-                
-                
+
+
             ''' Create reports Folder '''
             try:
                 self.createDirectory(str(FixityPublicBasePath)+'reports')
             except:
                 pass
-           
-           
-           
+
+
+
         '''
         Create Directory given in the path if dose not exists
         @param directoryPath: Directory Path to be created
-         
+
         @return: None
-        '''        
+        '''
         def createDirectory(self,directoryPath):
             if  not os.path.isdir(str(directoryPath)) :
                 try:
                     os.mkdir(str(directoryPath))
                 except:
                     pass
-        ''' 
+        '''
         Create Database File that Fixity Uses
         @param DatabasePath:Database File Path To be created
-        
+
         @return: None
         '''
         def CreateDatabaseFile(self,DatabasePath):
@@ -1519,70 +1521,70 @@ class ProjectWin(QMainWindow):
                         DatabaseFile.close()
                     except:
                         pass
-                    
+
         ''' create Database Tables '''
         def createDatabaseTables(self):
-            
+
                 try:
                     self.Database
                 except:
                     self.Database = Database()
                     pass
-                
-                
-                
+
+
+
                 if not self.checkIfTableExistsInDatabase('configuration'):
                     ''' Create configuration Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "configuration" ( id INTEGER NOT NULL,  smtp TEXT,  email TEXT,  pass TEXT,  port INTEGER,  protocol TEXT,  debugger SMALLINT,  "updatedAt" DATETIME,  "createdAt" DATETIME,  PRIMARY KEY (id) );')
                     except:
                         pass
-                
-                
+
+
                 if not self.checkIfTableExistsInDatabase('project'):
                     ''' Create project Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
                     except:
                         pass
-                
-                
-                
+
+
+
                 if not self.checkIfTableExistsInDatabase('projectPath'):
                     ''' Create projectPath Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL,  "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
                     except:
                         pass
-                
-                
+
+
                 if not self.checkIfTableExistsInDatabase('versionDetail'):
                     ''' Create versionDetail Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "versionDetail" (id INTEGER NOT NULL, "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "projectPathID" INTEGER NOT NULL, md5_hash TEXT NOT NULL, ssh256_hash TEXT NOT NULL, path TEXT NOT NULL, inode TEXT NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id), FOREIGN KEY("versionID") REFERENCES versions (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("projectPathID") REFERENCES "projectPath" (id));')
                     except:
                         pass
-                    
-                    
+
+
                 if not self.checkIfTableExistsInDatabase('versions'):
                     ''' Create versions Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "versions" (id INTEGER NOT NULL, "versionType" VARCHAR(10) NOT NULL, name VARCHAR(255) NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id));')
                     except:
                         pass
-                    
-                    
+
+
         '''
             Check If Table Exists In Database
             @param tableName: Table Name
-            
+
             @return List-list Of Result If Found Some
         '''
         def checkIfTableExistsInDatabase(self,tableName):
             return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='"+tableName+"'");
-'''    
+'''
 Auto Scan running handler
-'''                
+'''
 def auto_run(project):
     AR = AutoRuner()
     IsemailSet = ''
@@ -1599,13 +1601,13 @@ if __name__ == '__main__':
     if(args.autorun == None or args.autorun == ''):
             app = QApplication(sys.argv)
             app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
-            
+
             app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
-            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)           
+            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
             app.MainFixityWindow.show()
-            
+
             sys.exit(app.exec_())
-            
+
     else:
         try:
             print('Scanning is in progress!........')
