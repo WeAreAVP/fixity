@@ -798,7 +798,7 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
-                #D:\python\Fixity Project\history
+                
                 currentProject = self.projects.currentItem().text()
 
                 projectInformation = {}

@@ -13,7 +13,15 @@ Created on Dec 5, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
-
+import os
+OS_Info = ''
+if os.name == 'posix':
+    OS_Info = 'linux'
+elif os.name == 'nt':
+    OS_Info = 'Windows'
+elif os.name == 'os2':
+    OS_Info = 'check'
+    
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -21,7 +29,8 @@ import sys
 import time
 import re
 import hashlib
-import os
+
+
 
 #Custom Classes
 from Database import Database
@@ -299,7 +308,13 @@ class ImportProjects(QDialog):
     Pick Directory
     '''
     def pickdir(self):
-        fileInformation  = list(QFileDialog.getOpenFileName(self,"Select File",str(self.getFixityHomePath())))
+        if OS_Info =='Windows':
+            path = self.getFixityHomePath()
+        else:
+            path = str(self.getFixityHomePath())
+            path = str(path).replace(' ', '\\ ')
+            
+        fileInformation  = list(QFileDialog.getOpenFileName(self,"Select File",str(path)))
         self.projectSelected.setText(str(fileInformation[0]))
         
     '''
@@ -348,7 +363,7 @@ class ImportProjects(QDialog):
         pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
-        return pathInfo
+        return str(pathInfo)
 # app = QApplication(sys.argv)
 # w = ImportProjects(QDialog())
 # w.SetWindowLayout()
