@@ -102,7 +102,7 @@ def fixity(filePath, Algorithm , projectName= None):
        
         
         
-        with open(filePath.decode('utf-8'), 'r') as target:
+        with open(filePath, 'r') as target:
             for piece in iter(lambda: target.read(4096), b''):
                 
                 fixmd5.update(piece)
@@ -123,7 +123,7 @@ def fixity(filePath, Algorithm , projectName= None):
                 moreInformation['LogsMore1'] =str(e[1])
         except:
             pass
-        
+        print(moreInformation)
         
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
@@ -235,12 +235,13 @@ Returns the complete file ID as a single long string
 def ntfsIDForMac(f):
     id=''
     try:
-        target = os.open(u''+f , os.O_RDWR|os.O_CREAT )
+        target = os.open(f , os.O_RDWR|os.O_CREAT )
         # Now get  the touple
         info = os.fstat(target)
         id = str(info.st_ino)
 
         os.close(target)
+        
         return id
 
     except Exception as e:
@@ -261,6 +262,8 @@ def ntfsIDForMac(f):
             target.close()
         except:
             pass
+        print(moreInformation)
+        
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
 
@@ -337,9 +340,8 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             for Singlefile in files :
                 
                 print('Getting File :::'+str(Singlefile))
-                Singlefile = scpecialCharacterHandler(Singlefile)
-                
-                
+                if OS_Info == 'Windows':
+                    Singlefile = scpecialCharacterHandler(Singlefile)
                 fls.append(path.join(root, Singlefile))
     
     except Exception as e:
@@ -628,10 +630,13 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             print('if')
             CurrentDirectory = CurrentDirectory[0]
             isHashSame , isFilePathSame = '' , ''
-
+            print(CurrentDirectory)
+            print(line)
             # Check For File Hash Change
             isHashSame = (CurrentDirectory[1] == line[0][Algorithm])
-
+            print(CurrentDirectory[1])
+            print(line[0][Algorithm])
+            
             # Check For File Path Change
             isFilePathSame = (CurrentDirectory[0] == line[1])
 
@@ -930,16 +935,14 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         try:
             x = toTuple(projectDetailInformation[l])
             
+            
             if x != None and x:
                 pathInformation = str(x[1]).split('||')
-                print('pathInformation')
-                print(pathInformation)
-                print('pathInformation')
                 
                 if pathInformation:
                     CodeInfoormation=''
                     CodeInfoormation = pathInformation[0]
-
+                    
                     pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
@@ -1283,5 +1286,5 @@ def getFixityHomePath():
     pathInfo = str(pathInfo).replace('Fixity.app', '')
     
     return pathInfo
-# projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy','','New_Project')
+projects_path = getcwd()+'\\projects\\'
+run(projects_path+'New_Project.fxy','','New_Project')
