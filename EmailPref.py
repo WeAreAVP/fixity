@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Email Prefercences
 # Version 0.4, Dec 1, 2013
 # Copyright (c) 2013 AudioVisual Preservation Solutions

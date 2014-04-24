@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Encryption and decryption manager of files hashes
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions

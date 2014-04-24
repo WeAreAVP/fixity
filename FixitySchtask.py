@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Fixity Scheduler
 # Version 0.3, 2013-12-16
 # Copyright (c) 2013 AudioVisual Preservation Solutions

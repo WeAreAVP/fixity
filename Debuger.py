@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Manage Debugging of Fixity
 # Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions

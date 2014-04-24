@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Fixity Mailing Module
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions

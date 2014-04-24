@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 # Email Preferences Setting to send eamil
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -143,6 +144,7 @@ class ImportProjects(QDialog):
             return
         fileName = str(path.basename(filePath))
         fileName = fileName.replace('.fxy','')
+        fileName = fileName.replace('.tsv','')
 
         Project = DB.getProjectInfo(fileName)
 
@@ -184,7 +186,7 @@ class ImportProjects(QDialog):
                 runTime = str(information[1])
                 dweek = information[2]
                 dmonth = str(information[3]).replace('\\r\n','')
-
+                
                 if(int(dmonth) == 99 and int(dweek) == 99):
                     durationType = 3
                     runDayOrMonth = '-'
@@ -340,4 +342,9 @@ class ImportProjects(QDialog):
                             self.projectListWidget.addItem(p)
             except:
                 pass 
-         
+# app = QApplication(sys.argv)
+# w = ImportProjects(QDialog())
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+# sys.exit(app.exec_())

@@ -1,3 +1,4 @@
+# -- coding: utf-8 --
 '''
 Created on Dec 5, 2013
 @version: 0.3
@@ -229,3 +230,9 @@ class ChangeName(QDialog):
                             self.parentWin.projects.addItem(p)
             except Exception as ex:
                 print(ex[0])
+# app = QApplication(sys.argv)
+# w = FilterFiles(QDialog())
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+# sys.exit(app.exec_())

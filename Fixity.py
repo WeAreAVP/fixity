@@ -1,3 +1,4 @@
+
 # Fixity GUI
 # Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -797,7 +798,7 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
-
+                #D:\python\Fixity Project\history
                 currentProject = self.projects.currentItem().text()
 
                 projectInformation = {}
@@ -807,8 +808,10 @@ class ProjectWin(QMainWindow):
 
                 if(dmonth == 99 and dweek == 99):
                     durationType = 2
+                    
                 elif (dmonth == 99 and dweek != 99):
                     durationType = 1
+                    
                 elif(dmonth != 99 and dweek == 99):
                     durationType = 0
 
@@ -857,8 +860,8 @@ class ProjectWin(QMainWindow):
                         l = self.buildTable(src, 'sha256')
                         for n in xrange(len(l)):
                             if FiltersArray:
-                                for FA in FiltersArray :
-                                    if FA == '' or l[n][1].find(FA) < 0:
+                                for SingleFilter in FiltersArray :
+                                    if SingleFilter == '' or l[n][1].find(SingleFilter) < 0:
                                         total += 1
 
                 if shouldRun:
@@ -1062,7 +1065,7 @@ class ProjectWin(QMainWindow):
         @return: None
         '''
         def run(self):
-
+            
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
@@ -1236,6 +1239,8 @@ class ProjectWin(QMainWindow):
 
             pathsInfoChanges = self.process(flagInitialScanUponSaving)
             dmonth, dweek = 99, 99
+            
+            
             if self.monthly.isChecked():
                     interval = 1
                     dmonth = int(self.dom.value())
@@ -1283,7 +1288,7 @@ class ProjectWin(QMainWindow):
             projectInformation['extraConf'] = ''
             data = str(datetime.datetime.now()).split('.')
             projectInformation['lastRan'] = data[0]
-
+            
             Configurations = {}
             Configurations = self.EmailPrefManager.getConfigInfo(self.projects.currentItem().text())
             Configurations['RunWhenOnBatteryPower'] = self.runOnlyOnACPower.isChecked()
@@ -1597,7 +1602,7 @@ if __name__ == '__main__':
         args = parser.parse_args()
     except:
         pass
-
+    ''' If Received argument (project name and run command), it with run the scheduler other wise it will open Fixity Front end View)'''
     if(args.autorun == None or args.autorun == ''):
             app = QApplication(sys.argv)
             app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
