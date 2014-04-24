@@ -45,14 +45,7 @@ reload(sys)
 
 
 
-'''
-If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly(day of month to run on if none 99)  |  Result
-======================================================================================================================================
-     99           ----    00:00:00    ----         99            ----        99                                              |  Daily
-     1            ----    00:00:00    ----         1             ----        99                                              |  weekly
-     99           ----    00:00:00    ----         99             ----        2                                              |  Monthly
-          
-'''
+
 
 '''
 Custom Library
@@ -79,7 +72,7 @@ Output: Hexadecimal Value Of Hashed File.
 '''
 def fixity(filePath, Algorithm , projectName= None):
     moreInformation= {}
-   
+    
     try:
         fixmd5 = hashlib.md5()
         fixsha256 = hashlib.sha256()
@@ -106,21 +99,17 @@ def fixity(filePath, Algorithm , projectName= None):
         if OS_Info == 'Windows':
             filePath = str(filePath).replace('\\\\','\\')
             filePath = str(filePath).replace('\\',str(os.sep)+str(os.sep))
-            
-        
-        checkingFile = open('test.txt','w+')
-        checkingFile.write(filePath)
-        checkingFile.close()
+       
         
         
-        with open(u''+filePath, 'rb') as target:
-            
+        with open(filePath.decode('utf-8'), 'r') as target:
             for piece in iter(lambda: target.read(4096), b''):
                 
                 fixmd5.update(piece)
                 fixsha256.update(piece)
                 
             target.close()
+            
             return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
     except Exception as e:
         moreInformation = {"moreInfo":'none'}
@@ -139,6 +128,7 @@ def fixity(filePath, Algorithm , projectName= None):
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
         pass
+    
 
 
 '''
@@ -187,7 +177,7 @@ def ntfsIDForWindows(filePath):
     try:
         
         
-        target = open(filePath, 'rb')
+        target = open(filePath.decode('utf-8'), 'rb')
     except Exception as e:
         moreInformation = {"moreInfo":'none'}
         try:
@@ -425,7 +415,7 @@ Method to convert database line into tuple
 def toTuple(line):
 
     try:
-        return [line['ssh256_hash'], line['path'].strip(), line['inode']]
+        return [line['ssh256_hash'], str(line['path'].encode('utf-8')).strip(), line['inode']]
     except Exception as e:
 
         Debugging.tureDebugerOn();
@@ -609,8 +599,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 
     global verifiedFiles
     print('verifying:::'+str(line[1]))
-    
-    
+    print('=======Dicty=======')
+    print(dicty)
+    print('=======Dicty=======')
     try:
         CurrentDirectory = dicty.get(line[2])
     except Exception as e:
@@ -631,10 +622,10 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
     
-    if path.isfile(u''+line[1]):
+    if path.isfile(line[1].decode('utf-8')):
         
         if CurrentDirectory != None :
-        
+            print('if')
             CurrentDirectory = CurrentDirectory[0]
             isHashSame , isFilePathSame = '' , ''
 
@@ -664,7 +655,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                 return line, "Changed File :\t" + str(line[1])
 
         else :
-
+            print('else')
             CurrentDirectory = []
 
             for dictionarySingle in dictHash:
@@ -733,7 +724,7 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
 
         report += str(DetailOutputOfAllFilesChanges)
-
+        print(report)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
@@ -803,6 +794,24 @@ def missing(dict,file=''):
 
 
 
+
+'''
+---------------------------------------------------------------------------------------------------------
+Logic For Selection of Scheduler time In History or Depreciated Manifest Functionality
+---------------------------------------------------------------------------------------------------------
+If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly     |  Result
+(day of week to                                                        (day of month to 
+run on if none 99)                                                     run on if none 99)
+==========================================================================================================
+==========================================================================================================
+     99           ----    00:00:00    ----         99            ----        99              |  Daily
+     1            ----    00:00:00    ----         1             ----        99              |  weekly
+     99           ----    00:00:00    ----         99             ----        2              |  Monthly
+----------------------------------------------------------------------------------------------------------
+          
+'''
+
+
 '''
 Updating/Creating Manifest
 With on the given directory
@@ -849,7 +858,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
     verifiedFiles = list()
     DB = Database()
-    print(1)
+    
     missingFile = ('','')
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
@@ -915,13 +924,18 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     mails = str(projectInformation[0]['emailAddress']).split(',')
     print('writing ::: Stared Worked')
     check = 0
+    
     for l in projectDetailInformation:
         
         try:
             x = toTuple(projectDetailInformation[l])
-
+            
             if x != None and x:
                 pathInformation = str(x[1]).split('||')
+                print('pathInformation')
+                print(pathInformation)
+                print('pathInformation')
+                
                 if pathInformation:
                     CodeInfoormation=''
                     CodeInfoormation = pathInformation[0]
@@ -948,10 +962,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 moreInformation['directoryScanning']
             except:
                 moreInformation['directoryScanning'] = ''
+            
             for SingleVal in ToBeScannedDirectoriesInProjectFile:
                 moreInformation['directoryScanning']= str(moreInformation['directoryScanning']) + "\t \t"+str(SingleVal)
 
-
+            print(moreInformation)
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)
     
@@ -1048,7 +1063,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     response = []
                     print('Verify Using Inode:::::'+file )
                     response = verify_using_inode(dict,dict_Hash,dict_File, DirectorysInsideDetailsSingle , file , Algorithm)
-
+                    
                     if not response or len(response) < 1:
                             continue
 
@@ -1086,16 +1101,19 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
                 except Exception as ex:
                     print(ex[0])
-
+                
                 pathCode = getPathCode(str(SingleDirectory),InfReplacementArray)
                 pathID = getPathId(str(SingleDirectory),InfReplacementArray)
                 try:
                     newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
+                    
                 except Exception as ex:
+                    newCodedPath = ' '
                     print(ex[0])
 
                 versionDetailOptions = {}
                 try:
+                    print('----Saving Details For :' + str(newCodedPath))
                     versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
                     versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
                     versionDetailOptions['path'] = newCodedPath
@@ -1115,7 +1133,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 except:
                     print(excp[0])
                     pass
-
+            print('')
+            print('================================================================================')
+            print('')
     try:
         missingFile = missing(dict_Hash,SingleDirectory)
         FileChangedList += missingFile[0]
@@ -1162,7 +1182,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     ProjectName = ProjectName.replace('.fxy','').replace('//','/')
     ProjectName = ProjectName.replace('.fxy','').replace('projects/','')
     ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
-
+    
     repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
 
     try:

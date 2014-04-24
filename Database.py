@@ -286,7 +286,8 @@ class Database(object):
     SQL Insert Query
     '''
     def insert(self, tableName, information):
-
+            
+            
             query = 'INSERT INTO '+str(tableName)
             values = {}
             columnName = {}
@@ -295,11 +296,13 @@ class Database(object):
                 try:
                     columnName[str(counter)] = index
                     values[str(counter)]  = str(information[index])
+                    
                     counter = counter + 1
                 except:
                     pass
 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
+            
 
             try:
                 self.connect()
@@ -523,9 +526,9 @@ class Database(object):
 
                     else:
                         if(counter == 0):
-                            stringGlued = stringGlued + ' "'+ str(information[info]).encode('utf-8') + '" '
+                            stringGlued = stringGlued + ' "'+ str(information[info])+ '" '
                         else:
-                            stringGlued =  stringGlued +' , "'    + information[info].encode('utf-8') + '" '
+                            stringGlued =  stringGlued +' , "'    + information[info]+ '" '
                     counter = counter + 1
                 except Exception as e:
                     self.closeConnection()
