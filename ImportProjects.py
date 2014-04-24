@@ -299,7 +299,7 @@ class ImportProjects(QDialog):
     Pick Directory
     '''
     def pickdir(self):
-        fileInformation  = list(QFileDialog.getOpenFileName())
+        fileInformation  = list(QFileDialog.getOpenFileName(self,"Select File",str(self.getFixityHomePath())))
         self.projectSelected.setText(str(fileInformation[0]))
         
     '''
@@ -342,6 +342,13 @@ class ImportProjects(QDialog):
                             self.projectListWidget.addItem(p)
             except:
                 pass 
+    '''Get Fixity Home Path'''
+    def getFixityHomePath(self):
+        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+        pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
+        pathInfo = str(pathInfo).replace('Fixity.app', '')
+        
+        return pathInfo
 # app = QApplication(sys.argv)
 # w = ImportProjects(QDialog())
 # w.SetWindowLayout()

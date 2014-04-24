@@ -13,7 +13,7 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-import pefile
+
 
 '''
 Built in Library
@@ -744,9 +744,8 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
 
             NameOfFile[(len(NameOfFile)-1)]
 
-            pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
-            pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
-            pathInfo = str(pathInfo).replace('Fixity.app', '')
+            
+            pathInfo = getFixityHomePath()
             createPath = str(pathInfo).replace(' ', '\\ ')
 
             if not os.path.isdir( str(createPath) + 'reports' ):
@@ -879,9 +878,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
 
-        pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
-        pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
-        pathInfo = str(pathInfo).replace('Fixity.app', '')
+        
+        pathInfo = pathInfo = getFixityHomePath()
 
         createPath = str(pathInfo).replace(' ', '\\ ')
 
@@ -980,10 +978,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         pass
     keeptime = ''
 
-    print(projectInformation[0])
-    print(keeptime)
-    print(projectInformation[0]['durationType'])
-    
+  
 #     1 = Monthly
 #     2 = Week
 #     3 = Daily 
@@ -1261,5 +1256,12 @@ def DecodeInfo(stringToBeDecoded):
     stringToBeDecoded = str(stringToBeDecoded).strip()
     return base64.b16decode(base64.b16decode(stringToBeDecoded))
 
+'''Get Fixity Home Path'''
+def getFixityHomePath():
+    pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
+    pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
+    pathInfo = str(pathInfo).replace('Fixity.app', '')
+    
+    return pathInfo
 # projects_path = getcwd()+'\\projects\\'
 # run(projects_path+'New_Project.fxy','','New_Project')
