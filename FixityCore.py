@@ -1165,7 +1165,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     total +=moved
     total +=created
     total +=corruptedOrChanged
-
+    print('checking for missing files')
     try:
         total += missingFile[1]
     except:
