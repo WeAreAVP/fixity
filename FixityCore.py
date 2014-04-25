@@ -933,9 +933,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     CodeInfoormation = pathInformation[0]
                     print('adding File to Dictionary')
                     pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
-                    dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
-                    dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
-                    dict_File[pathInfo['path']+pathInformation[1]].append([x[0], x[2], False])
+#                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
+#                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
+#                     dict_File[pathInfo['path']+pathInformation[1]].append([x[0], x[2], False])
+                    dict[str(x[2]).replace('\r\n','')].append([str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n',''), str(x[0]).replace('\r\n',''), False])
+                    dict_Hash[x[0]].append([str(pathInfo['path']) + str(pathInformation[1]).replace('\r\n',''), str(x[2]).replace('\r\n',''), False])
+                    dict_File[str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n','')].append([str(x[0]).replace('\r\n',''),str( x[2]).replace('\r\n',''), False])
 
         except Exception as ex :
 
