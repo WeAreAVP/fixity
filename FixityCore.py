@@ -1286,5 +1286,5 @@ def getFixityHomePath():
     pathInfo = str(pathInfo).replace('Fixity.app', '')
     
     return pathInfo
-projects_path = getcwd()+'\\projects\\'
-run(projects_path+'New_Project.fxy','','New_Project')
+# projects_path = getcwd()+'\\projects\\'
+# run(projects_path+'New_Project.fxy','','New_Project')
