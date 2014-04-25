@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Fixity Core module
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -601,9 +602,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 
     global verifiedFiles
     print('verifying:::'+str(line[1]))
-    print('=======Dicty=======')
-    print(dicty)
-    print('=======Dicty=======')
+
     try:
         CurrentDirectory = dicty.get(line[2])
     except Exception as e:
@@ -868,7 +867,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
     projectInformation = DB.getProjectInfo(str(projectName).replace('.fxy', ''))
 
-
     if len(projectInformation) <=0:
         return
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
@@ -891,12 +889,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
         historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
-
-        
         pathInfo = pathInfo = getFixityHomePath()
-
         createPath = str(pathInfo).replace(' ', '\\ ')
-
         if  not os.path.isdir(str(createPath)+'history') :
             try:
                 os.mkdir(str(createPath)+'history')
@@ -905,8 +899,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
         historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
-
-    
     try:
         HistoryFile = open(historyFile , 'w+')
     except:
@@ -918,9 +910,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         first = str(first) + str(projectPathInformation[singlePathDF]['path'])+';'
     
     ToBeScannedDirectoriesInProjectFile = []
-
     for pathInfo in projectPathInformation:
-        
         IdInfo = str(projectPathInformation[pathInfo]['pathID']).split('-')
         indexPathInfor = r''+str(str(projectPathInformation[pathInfo]['path']).strip())
         ToBeScannedDirectoriesInProjectFile.append(indexPathInfor)
@@ -934,7 +924,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         
         try:
             x = toTuple(projectDetailInformation[l])
-            
             
             if x != None and x:
                 pathInformation = str(x[1]).split('||')
@@ -972,11 +961,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             print(moreInformation)
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)
+            
+    print(dict)
     
     try:
         ToBeScannedDirectoriesInProjectFile.remove('\n')
     except Exception as ex:
-                print(ex[0])
+            print(ex[0])
     flagAnyChanges = False
 
     Algorithm = str(projectInformation[0]['selectedAlgo'])
@@ -995,11 +986,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     keeptime = ''
-
   
-#     1 = Monthly
-#     2 = Week
-#     3 = Daily 
+    #     1 = Monthly
+    #     2 = Week
+    #     3 = Daily 
+
     if int(projectInformation[0]['durationType']) == 3 :
         keeptime += '99 ' + str(projectInformation[0]['runTime']) + ' 99 99'
     elif int(projectInformation[0]['durationType']) == 2 :
@@ -1107,14 +1098,15 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 
                 pathCode = getPathCode(str(SingleDirectory),InfReplacementArray)
                 pathID = getPathId(str(SingleDirectory),InfReplacementArray)
+                
                 try:
                     newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
-                    
                 except Exception as ex:
                     newCodedPath = ' '
                     print(ex[0])
 
                 versionDetailOptions = {}
+                
                 try:
                     print('----Saving Details For :' + str(newCodedPath))
                     versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
@@ -1128,6 +1120,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 except Exception as excp:
                     print(excp[0])
                     pass
+                
                 try:
                     if(Algorithm == 'md5'):
                         HistoryFile.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
@@ -1136,6 +1129,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 except:
                     print(excp[0])
                     pass
+                
             print('')
             print('================================================================================')
             print('')
