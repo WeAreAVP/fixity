@@ -931,7 +931,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 if pathInformation:
                     CodeInfoormation=''
                     CodeInfoormation = pathInformation[0]
-                    
+                    print('adding File to Dictionary')
                     pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
                     dict[x[2]].append([pathInfo['path']+pathInformation[1], x[0], False])
                     dict_Hash[x[0]].append([pathInfo['path']+pathInformation[1], x[2], False])
@@ -962,8 +962,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)
             
-    print(dict)
     
+    print('added all files to dictionary')
     try:
         ToBeScannedDirectoriesInProjectFile.remove('\n')
     except Exception as ex:
@@ -971,7 +971,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     flagAnyChanges = False
 
     Algorithm = str(projectInformation[0]['selectedAlgo'])
-
+    
     counter = 0
     thisnumber = 0
     CurrentDate = time.strftime("%Y-%m-%d")
@@ -979,7 +979,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     Information['versionType'] = 'save'
     Information['name'] = EncodeInfo(str(CurrentDate))
     versionID  = DB.insert(DB._tableVersions, Information)
-    
+    print('Create Version')
     try:
         HistoryFile.write(str(first)+"\n")
         HistoryFile.write(str(projectInformation[0]['emailAddress'])+"\n")
@@ -1005,7 +1005,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
 
 
-
+    
     '''
     Running Scrpit against all given directory in given project
     '''
@@ -1023,7 +1023,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             DirectorysInsideDetailsSingle = list(DirectorysInsideDetailsSingle)
             filePath = str(DirectorysInsideDetailsSingle[1]).split('||')
             pathInfo = getCodePath(filePath[0], InfReplacementArray)
-
+            
+            print('Fetched File information============')
+            
             valDecoded = pathInfo
 
             DirectorysInsideDetailsSingle[1] = (str(valDecoded)+str(filePath[1]))
@@ -1060,7 +1062,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     
                     if not response or len(response) < 1:
                             continue
-
+                    print('Response from Verification=====')
                 except Exception as ex :
                     moreInformation = {"moreInfo":'null'}
                     try:
@@ -1143,6 +1145,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     informationToUpate = {}
     informationToUpate['versionCurrentID'] = versionID['id']
     DB.update(DB._tableProject, informationToUpate, "id='" + str(projectInformation[0]['id']) + "'")
+    print('Updating Project Information=====')
     cpyProjectPathInformation  = projectPathInformation
     for PDI in cpyProjectPathInformation:
         del cpyProjectPathInformation[PDI]['id']
