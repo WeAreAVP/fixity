@@ -1190,9 +1190,9 @@ class ProjectWin(QMainWindow):
                     progress.setLabelText(txt.ljust(43))
                     p = path.abspath(fls[f])
                     if(OS_Info == 'Windows'):
-                        h = FixityCore.FixityCoreMac.fixity(p, a)
+                        h = FixityCore.fixity(p, a)
                     else:
-                        h = FixityCore.FixityCoreMac.fixity(p, a)
+                        h = FixityCore.fixity(p, a)
 
                     if(OS_Info == 'Windows'):
                         i = FixityCore.FixityCoreWin.ntfsIDForWindows(p)

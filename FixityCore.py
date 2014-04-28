@@ -434,7 +434,7 @@ Output: Message based on whether the file was good or not
 '''
 
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
-
+    
     global verifiedFiles
     print('verifying:::'+str(line[1]))
     print('=======Dicty=======')
@@ -459,7 +459,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         pass
     
     if path.isfile(line[1].decode('utf-8')):
-        
+        print(dicty)
         if CurrentDirectory != None :
             print('if')
             CurrentDirectory = CurrentDirectory[0]
@@ -477,14 +477,13 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             if isHashSame and (not isFilePathSame):
                 verifiedFiles.append(line[1])
                 verifiedFiles.append(CurrentDirectory[0])
-                return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
+                return line, "Moved or Renamed File1 :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
             if (not isHashSame) and isFilePathSame:
 
                 verifiedFiles.append(line[1])
                 return line, "Changed File :\t" + str(line[1])
 
             if (not isHashSame) and (not isFilePathSame):
-                
                 
                 verifiedFiles.append(line[1])
                 verifiedFiles.append(CurrentDirectory[0])
@@ -512,7 +511,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                         verifiedFiles.append(line[1])
                         verifiedFiles.append(singleInforHashRelated[0])
                         
-                        return line, "Moved or Renamed :\t" + line[1]
+                        return line, "Moved or Renamed2 :\t" + line[1]
 #             for dictionarySingle1 in dictHash:
 #                 allInforHashRelated1 = dictHash[dictionarySingle1]
 #                 for singleInforHashRelated1 in allInforHashRelated1:

@@ -231,7 +231,7 @@ class ImportProjects(QDialog):
                 Config['runWhenOnBattery'] = 1
                 Config['extraConf'] = ''
                 Config['selectedAlgo'] = 'sha256'
-                Config['emailAddress'] = str(emailAddress).replace(';','')
+                Config['emailAddress'] = self.CleanStringForDictionary(str(emailAddress).replace(';',''))
 
                 projectID = DB.insert(DB._tableProject, Config)
                 AllProjectPaths = []
@@ -291,10 +291,10 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['projectID'] = projectID['id']
                                 inforVersionDetail['versionID'] = VersionID['id']
                                 inforVersionDetail['projectPathID'] = InforOfPathID[0]
-                                inforVersionDetail['md5_hash'] = md5_hash
-                                inforVersionDetail['ssh256_hash'] = ssh256_hash
-                                inforVersionDetail['path'] = FixInfo[1]
-                                inforVersionDetail['inode'] = FixInfo[2]
+                                inforVersionDetail['md5_hash'] = self.CleanStringForDictionary(md5_hash)
+                                inforVersionDetail['ssh256_hash'] = self.CleanStringForDictionary(ssh256_hash)
+                                inforVersionDetail['path'] = self.CleanStringForDictionary(FixInfo[1])
+                                inforVersionDetail['inode'] = self.CleanStringForDictionary(FixInfo[2])
                                 
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
         
@@ -378,7 +378,23 @@ class ImportProjects(QDialog):
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
         return str(pathInfo)
+    ''' 
+    CleanStringForDictionary
+    @param StringToBeCleaned: String To Be Cleaned
     
+    @return: CleanString  
+    '''
+    def CleanStringForDictionary(self,StringToBeCleaned):
+        CleanString = str(StringToBeCleaned).strip()
+        try:
+            CleanString = CleanString.replace('\r\n', '')
+            CleanString = CleanString.replace('\n', '')
+            CleanString = CleanString.replace('\r', '')
+        except:
+            pass
+        
+        return CleanString
+     
 # app = QApplication(sys.argv)
 # w = ImportProjects(QDialog())
 # w.SetWindowLayout()
