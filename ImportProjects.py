@@ -29,6 +29,8 @@ import sys
 import time
 import re
 import hashlib
+import datetime
+import time
 
 
 
@@ -154,7 +156,16 @@ class ImportProjects(QDialog):
         fileName = str(path.basename(filePath))
         fileName = fileName.replace('.fxy','')
         fileName = fileName.replace('.tsv','')
-
+        
+        if '_-_-_' in fileName:
+            NameOfFile =  fileName.split('_-_-_')
+            if '__' in fileName:
+                NameOfFileArr =  str(NameOfFile[0]).split('__')
+                fileName = NameOfFileArr[0]+'__'+str(int(time.time()))
+            else:
+                fileName = NameOfFile[0]+'__'+str(int(time.time()))
+                
+        
         Project = DB.getProjectInfo(fileName)
 
         if(len(Project)>0):
@@ -367,3 +378,10 @@ class ImportProjects(QDialog):
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
         return str(pathInfo)
+    
+# app = QApplication(sys.argv)
+# w = ImportProjects(QDialog())
+# w.SetWindowLayout()
+# w.SetDesgin()
+# w.ShowDialog()
+# sys.exit(app.exec_())

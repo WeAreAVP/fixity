@@ -34,7 +34,6 @@ import os
 
 #Custom Libraries
 import FixityCore
-    
 import FixitySchtask
 from Threading import Threading
 from EmailPref import EmailPref
