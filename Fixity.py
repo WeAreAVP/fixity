@@ -1602,14 +1602,14 @@ if __name__ == '__main__':
         pass
     ''' If Received argument (project name and run command), it with run the scheduler other wise it will open Fixity Front end View)'''
     if(args.autorun == None or args.autorun == ''):
-            app = QApplication(sys.argv)
-            app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
+        app = QApplication(sys.argv)
+        app.MainFixityWindow = ProjectWin(EmailPref , FilterFiles)
 
-            app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
-            app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
-            app.MainFixityWindow.show()
+        app.connect(app, SIGNAL('quit()'), app.MainFixityWindow.cleanObjects)
+        app.connect(app, SIGNAL('destroyed()'), app.MainFixityWindow.cleanObjects)
+        app.MainFixityWindow.show()
 
-            sys.exit(app.exec_())
+        sys.exit(app.exec_())
 
     else:
         try:

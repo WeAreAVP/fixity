@@ -1178,10 +1178,9 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             EcodedBasePath = InfReplacementArray[DirectortPathToBeScanned]['code']
 
             givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')
-            if(OS_Info == 'Windows'):
-                hashOfThisFileContent = FixityCoreWin.fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
-            else:
-                hashOfThisFileContent = FixityCoreMac.fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
+            
+            hashOfThisFileContent = fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
+            
             
             if(OS_Info == 'Windows'):
                 i = FixityCoreWin.ntfsIDForWindows(pathOftheFile)
