@@ -69,6 +69,87 @@ from FileLock import FileLock
 
 
 '''
+Checksum Generation Method.
+Input: File Path, Algorithm.
+Output: Hexadecimal Value Of Hashed File.
+
+'''
+def fixity(filePath, Algorithm , projectName= None):
+    moreInformation= {}
+    
+    try:
+        fixmd5 = hashlib.md5()
+        fixsha256 = hashlib.sha256()
+        
+    except Exception as e:
+
+        moreInformation = {"moreInfo":'null'}
+        try:
+            if not e[0] == None:
+                moreInformation['LogsMore'] =str(e[0])
+        except:
+            pass
+        try:
+            if not e[1] == None:
+                moreInformation['LogsMore1'] =str(e[1])
+        except:
+            pass
+
+        Debugging.tureDebugerOn()
+        Debugging.logError('Error Reporting Line 36 - 40 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
+
+        pass
+    try:
+        if OS_Info == 'Windows':
+            filePath = str(filePath).replace('\\\\','\\')
+            filePath = str(filePath).replace('\\',str(os.sep)+str(os.sep))
+       
+        
+        if OS_Info == 'Windows':
+            with open(filePath.decode('utf-8'), 'r') as target:
+                for piece in iter(lambda: target.read(4096), b''):
+                    
+                    fixmd5.update(piece)
+                    fixsha256.update(piece)
+                    
+                target.close()
+                
+                return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
+        else:
+            
+            with open(filePath, 'r') as target:
+                for piece in iter(lambda: target.read(4096), b''):
+                    
+                    fixmd5.update(piece)
+                    fixsha256.update(piece)
+                    
+                target.close()
+                
+                return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
+    except Exception as e:
+        moreInformation = {"moreInfo":'none'}
+        try:
+            if not e[0] == None:
+                moreInformation['LogsMore'] =str(e[0])
+        except:
+            pass
+        try:
+            if not e[1] == None:
+                moreInformation['LogsMore1'] =str(e[1])
+        except:
+            pass
+        
+        
+        Debugging.tureDebugerOn()
+        Debugging.logError('Error Reporting Line 59 - 63 While encrypting File into hashes using Algo:' + str(Algorithm)  +" File FixtyCore\n", moreInformation)
+        pass
+    
+
+
+
+
+
+'''
 Get information from Project File matched with given information
 
 @param ProjectPath: Project File path to be scaned
