@@ -477,7 +477,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             if isHashSame and (not isFilePathSame):
                 verifiedFiles.append(line[1])
                 verifiedFiles.append(CurrentDirectory[0])
-                return line, "Moved or Renamed File1 :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
+                return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
             if (not isHashSame) and isFilePathSame:
 
                 verifiedFiles.append(line[1])
@@ -511,7 +511,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                         verifiedFiles.append(line[1])
                         verifiedFiles.append(singleInforHashRelated[0])
                         
-                        return line, "Moved or Renamed2 :\t" + line[1]
+                        return line, "Moved or Renamed :\t" + line[1]
 #             for dictionarySingle1 in dictHash:
 #                 allInforHashRelated1 = dictHash[dictionarySingle1]
 #                 for singleInforHashRelated1 in allInforHashRelated1:
