@@ -46,6 +46,14 @@ reload(sys)
 '''
 Custom Library
 '''
+
+if OS_Info == 'Windows':
+    import FixityCoreWin
+    
+else:
+    import FixityCoreMac
+    
+    
 from Debuger import Debuger
 from EmailPref import EmailPref
 from Database import Database
@@ -95,8 +103,6 @@ def getFileInformationConditional(ProjectPath ,hashVal='',path='',inode=''):
         return Information
 
 
-		
-		
 
 '''
 Get Directory Information Using Inode from the given directory (scan given path and searches for the File which have this given Inode)
@@ -115,9 +121,9 @@ def GetDirectoryInformationUsingInode(Path,Inode):
                     path.join(root, SingleFile)
 
                     if(OS_Info == 'Windows'):
-                        ThisInode = str(ntfsIDForWindows(path.join(root, SingleFile)))
+                        ThisInode = str(FixityCoreWin.ntfsIDForWindows(path.join(root, SingleFile)))
                     else:
-                        ThisInode = str(ntfsIDForMac(path.join(root, SingleFile)))
+                        ThisInode = str(FixityCoreMac.ntfsIDForMac(path.join(root, SingleFile)))
                     if  ThisInode == Inode:
                         return Inode
         return True
@@ -1091,13 +1097,15 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             EcodedBasePath = InfReplacementArray[DirectortPathToBeScanned]['code']
 
             givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')
-            
-            hashOfThisFileContent = fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
+            if(OS_Info == 'Windows'):
+                hashOfThisFileContent = FixityCoreWin.fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
+            else:
+                hashOfThisFileContent = FixityCoreMac.fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
             
             if(OS_Info == 'Windows'):
-                i = ntfsIDForWindows(pathOftheFile)
+                i = FixityCoreWin.ntfsIDForWindows(pathOftheFile)
             else:
-                i = ntfsIDForMac(pathOftheFile)
+                i = FixityCoreMac.ntfsIDForMac(pathOftheFile)
             listOfValues.append((hashOfThisFileContent, givenPath, i))
         
 

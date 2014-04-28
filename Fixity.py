@@ -33,12 +33,7 @@ import platform
 import os
 
 #Custom Libraries
-if OS_Info == 'Windows':
-    import FixityCoreWin
-    FixityCore = FixityCoreWin
-else:
-    import FixityCoreMac
-    FixityCore = FixityCoreMac
+import FixityCore
     
 import FixitySchtask
 from Threading import Threading
@@ -1070,7 +1065,7 @@ class ProjectWin(QMainWindow):
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
-
+            print('asdasdas')
             dmonth, dweek = 99, 99
             if self.monthly.isChecked():
                 interval = 1
@@ -1195,12 +1190,15 @@ class ProjectWin(QMainWindow):
                             txt = txt[:20] + '...' + txt[-20:]
                     progress.setLabelText(txt.ljust(43))
                     p = path.abspath(fls[f])
-                    h = FixityCore.fixity(p, a)
+                    if(OS_Info == 'Windows'):
+                        h = FixityCore.FixityCoreMac.fixity(p, a)
+                    else:
+                        h = FixityCore.FixityCoreMac.fixity(p, a)
 
                     if(OS_Info == 'Windows'):
-                        i = FixityCore.ntfsIDForWindows(p)
+                        i = FixityCore.FixityCoreWin.ntfsIDForWindows(p)
                     else:
-                        i = FixityCore.ntfsIDForMac(p)
+                        i = FixityCore.FixityCoreMac.ntfsIDForMac(p)
 
                     list.append((h, p, i))
                     progress.setValue(100 * float(f) / len(fls))

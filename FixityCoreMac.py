@@ -106,7 +106,7 @@ def ntfsIDForMac(f):
             target.close()
         except:
             pass
-        print(moreInformation)
+        
         
         FixityCore.Debugging.tureDebugerOn()
         FixityCore.Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)

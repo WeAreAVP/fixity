@@ -51,11 +51,12 @@ class Threading (threading.Thread):
 
         command = str(self.FilePath)
         command = command + 'fixity-'+self.name+'.vbs'
-
+        
         try:
             IsemailSet = ''
             verifiedFiles = []
             AR = AutoRuner()
+            print('asdasdas')
             AR.runAutoFix(self.name, IsemailSet)
 
         except Exception as exep:
@@ -70,7 +71,7 @@ class Threading (threading.Thread):
                     moreInformation['LogsMore1'] =str(exep[1])
             except:
                 pass
-
+            print(moreInformation)
             Debuging.tureDebugerOn()
             Debuging.logError('Configuration File Dose not exist  Line range 48 - 51 File Threading ', moreInformation)
             pass

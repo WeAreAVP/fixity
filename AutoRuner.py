@@ -27,12 +27,9 @@ import base64
 #Custom Library
 from Debuger import Debuger
 from Database import Database
-if OS_Info == 'Windows':
-    import FixityCoreWin
-    FixityCore = FixityCoreWin
-else:
-    import FixityCoreMac
-    FixityCore = FixityCoreMac
+
+import FixityCore
+    
     
 import FixityMail
 '''
