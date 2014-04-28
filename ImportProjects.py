@@ -244,6 +244,7 @@ class ImportProjects(QDialog):
                             AllProjectPaths.append(listing)
                             counter = counter + 1
                 if projectID:
+                    
                     for informPath in AllProjectPaths:
                         inforProjectPath = {}
                         inforProjectPath['projectID'] = projectID['id']
@@ -283,6 +284,7 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['ssh256_hash'] = ssh256_hash
                                 inforVersionDetail['path'] = FixInfo[1]
                                 inforVersionDetail['inode'] = FixInfo[2]
+                                
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
         
         QMessageBox.information(self, "Success", "Project importing completed ")
@@ -301,8 +303,8 @@ class ImportProjects(QDialog):
             fileToImportInfoOf.close()
         except:
             pass
-        return
         self.Cancel()
+        return
         
     '''
     Pick Directory
@@ -356,7 +358,8 @@ class ImportProjects(QDialog):
                         for p in projectLists:
                             self.projectListWidget.addItem(p)
             except:
-                pass 
+                pass
+             
     '''Get Fixity Home Path'''
     def getFixityHomePath(self):
         pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
@@ -364,9 +367,3 @@ class ImportProjects(QDialog):
         pathInfo = str(pathInfo).replace('Fixity.app', '')
         
         return str(pathInfo)
-# app = QApplication(sys.argv)
-# w = ImportProjects(QDialog())
-# w.SetWindowLayout()
-# w.SetDesgin()
-# w.ShowDialog()
-# sys.exit(app.exec_())

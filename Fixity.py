@@ -5,7 +5,6 @@
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -14,7 +13,6 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
-
 
 #Bultin Libraries
 from PySide.QtCore import *
@@ -35,7 +33,13 @@ import platform
 import os
 
 #Custom Libraries
-import FixityCore
+if OS_Info == 'Windows':
+    import FixityCoreWin
+    FixityCore = FixityCoreWin
+else:
+    import FixityCoreMac
+    FixityCore = FixityCoreMac
+    
 import FixitySchtask
 from Threading import Threading
 from EmailPref import EmailPref
@@ -50,6 +54,7 @@ from ChangeName import ChangeName
 from AutoRuner import AutoRuner
 
 Debuging = Debuger()
+
 
 '''Main Class to handle all menu and options of Fixity'''
 

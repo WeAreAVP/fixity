@@ -37,7 +37,13 @@ import datetime
 '''Custom Classes'''
     
 from EmailPref import EmailPref
-import FixityCore
+if OS_Info == 'Windows':
+    import FixityCoreWin
+    FixityCore = FixityCoreWin
+else:
+    import FixityCoreMac
+    FixityCore = FixityCoreMac
+    
 import FixitySchtask
 from Debuger import Debuger
 from Database import Database
