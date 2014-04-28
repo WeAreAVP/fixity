@@ -459,7 +459,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         pass
     
     if path.isfile(line[1].decode('utf-8')):
-        print(dicty)
+        
         if CurrentDirectory != None :
             print('if')
             CurrentDirectory = CurrentDirectory[0]
