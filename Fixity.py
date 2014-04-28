@@ -55,7 +55,6 @@ from AutoRuner import AutoRuner
 
 Debuging = Debuger()
 
-
 '''Main Class to handle all menu and options of Fixity'''
 
 class ProjectWin(QMainWindow):
@@ -86,9 +85,7 @@ class ProjectWin(QMainWindow):
                 if path.isfile(databasePath):
                     remove(databasePath)
 
-
                 QMainWindow.__init__(self)
-
                 Debuging.tureDebugerOn()
                 Debuging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
 
@@ -296,7 +293,6 @@ class ProjectWin(QMainWindow):
                         self.StartWhenAvailable.setDisabled(False)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(False)
                     else:
-
                         self.runOnlyOnACPower.setDisabled(True)
                         self.StartWhenAvailable.setDisabled(True)
                         self.EmailOnlyWhenSomethingChanged.setDisabled(True)
