@@ -87,7 +87,7 @@ class Database(object):
 
                 try:
                     self.QMWait = QMessageBox()
-                    self.QMWait.information(MsgBox(), "Information", "Please wait, Some the Database recourses are in use, Fixity will continue this process as soon as Database is released ,this may take several ")
+                    self.QMWait.information(MsgBox(), "Information", "Fixity is currently writing to its database.\nPlease wait until Fixity has finished its current operation.")
                 except Exception as ex:
 
                     pass
