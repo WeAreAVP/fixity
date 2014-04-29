@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
-# Email Prefercences
-# Version 0.4, Dec 1, 2013
+# Email Preferences
+# Version 0.4, Apr 1, 2014
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -10,12 +10,8 @@ Created on Dec 1, 2013
 @version: 0.4
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-# Fixity Scheduler
-# Version 0.3, Dec 1, 2013
-# Copyright (c) 2013 AudioVisual Preservation Solutions
-# All rights reserved.
-# Released under the Apache license, v. 2.0
-#Built in Library
+
+# Built in Library
 from PySide.QtCore import *
 from PySide.QtGui import *
 import base64
@@ -280,7 +276,7 @@ class EmailPref(QDialog):
 
         self.EmailAddrBar.setText(EmailAddr)
         self.Password.setText(Pass)
-        if(smtp != None and smtp !='' ):
+        if(smtp is not None and smtp !='' ):
             self.outgoingMailServer.setText(smtp)
         else:
             self.outgoingMailServer.setText('smtp.gmail.com')
@@ -290,7 +286,7 @@ class EmailPref(QDialog):
             self.TLSProtocol.setChecked(False)
             self.noneProtocol.setChecked(False)
 
-            if(port != None and port !='' ):
+            if(port is not None and port !='' ):
                 self.port.setText(port)
             else:
                 self.port.setText('465')
@@ -299,7 +295,7 @@ class EmailPref(QDialog):
             self.TLSProtocol.setChecked(True)
             self.SSLProtocol.setChecked(False)
             self.noneProtocol.setChecked(False)
-            if(port != None and port !='' ):
+            if(port is not None and port !='' ):
                 self.port.setText(port)
             else:
                 self.port.setText('587')
@@ -307,7 +303,7 @@ class EmailPref(QDialog):
             self.noneProtocol.setChecked(True)
             self.TLSProtocol.setChecked(False)
             self.SSLProtocol.setChecked(False)
-            if(port != None and port !='' ):
+            if(port is not None and port !='' ):
                 self.port.setText(port)
             else:
                 self.port.setText('25')
@@ -352,26 +348,12 @@ class EmailPref(QDialog):
     ''' 
     def getConfigInfo(self, project=None):
         self.SqlLiteDataBase = Database()
-
-
-        queryResult = self.SqlLiteDataBase.select(self.SqlLiteDataBase._tableConfiguration)
-
         try:
-            if len(queryResult)>0 :
-                information = {}
-                for  result in queryResult:
-                    information['id'] = queryResult[result]['id']
-                    information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
-                    information['email'] = self.DecodeInfo(queryResult[result]['email'])
-                    information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
-                    information['port'] = queryResult[result]['port']
-                    information['protocol'] = queryResult[result]['protocol']
-                    information['debugger'] = queryResult[result]['debugger']
-                    break;
-                return information
+            return self.SqlLiteDataBase.getConfigInfo(project)
         except:
             pass
         return {}
+    
     
     ''' 
     Validate given email address
@@ -502,7 +484,7 @@ class EmailPref(QDialog):
             port = ''
             pass
 
-        if(port != None and port !='' ):
+        if(port is not None and port !='' ):
             self.port.setText(port)
         else:
             self.port.setText('587')
@@ -521,7 +503,7 @@ class EmailPref(QDialog):
             port = ''
             pass
 
-        if(port != None and port !='' ):
+        if(port is not None and port !='' ):
             self.port.setText(port)
         else:
             self.port.setText('465')
@@ -540,7 +522,7 @@ class EmailPref(QDialog):
             port = ''
             pass
 
-        if(port != None and port !='' ):
+        if(port is not None and port !='' ):
             self.port.setText(port)
         else:
             self.port.setText('587')

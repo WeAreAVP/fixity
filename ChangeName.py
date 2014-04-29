@@ -1,14 +1,15 @@
 # -- coding: utf-8 --
-'''
-Created on Dec 5, 2013
-@version: 0.3
-@author: Furqan Wasi
-'''
-# Fixity Scheduler
-# Version 0.3, 2013-10-28
+# Change Project Name Module
+# Version 0.4, Apr 1, 2014
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
+'''
+Created on Dec 5, 2013
+@version: 0.3
+@author: Furqan Wasi <furqan@avpreserve.com>
+'''
 from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
@@ -81,12 +82,12 @@ class ChangeName(QDialog):
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
-            for file in files:
-                    projectFile = open(src + "\\" + file, 'rb')
+            for filePath in files:
+                    projectFile = open(src + "\\" + filePath, 'rb')
                     projectFileLines = projectFile.readlines()
                     projectFile.close()
                     if (projectFileLines):
-                        ProjectsList.append(str(file).replace('.fxy', ''))
+                        ProjectsList.append(str(filePath).replace('.fxy', ''))
         return ProjectsList        
                                 
         

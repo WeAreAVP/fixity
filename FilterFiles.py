@@ -1,5 +1,4 @@
 # -- coding: utf-8 --
-# -- coding: utf-8 --
 # Fixity Filters (File Not to Scan)
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
@@ -11,11 +10,6 @@ Created on Dec 5, 2013
 @version: 0.3
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-# Fixity Scheduler
-# Version 0.3, 2013-10-28
-# Copyright (c) 2013 AudioVisual Preservation Solutions
-# All rights reserved.
-# Released under the Apache license, v. 2.0
 """
     Builtin library
 """
@@ -48,9 +42,9 @@ Class to manage the Filter to be implemented for the files with specific extensi
 '''
 class FilterFiles(QDialog):
 
-    """
+    '''
             Constructor
-    """
+    '''
     def __init__(self,parentWin):
 
         QDialog.__init__(self,parentWin)
@@ -61,27 +55,27 @@ class FilterFiles(QDialog):
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FilterFilesLayout = QVBoxLayout()
 
-    """
+    '''
         Grab Key Press Events
-    """
+    '''
     def keyPressEvent(self, event):
 
         if type(event) == QKeyEvent:
             print event.key()
         super(FilterFiles,self).keyPressEvent(event)
 
-    """
+    '''
         catch Reject even of the Dialog box
-    """
+    '''
     def reject(self):
 
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(FilterFiles,self).reject()
 
 
-    """
+    '''
         Distructor
-    """
+    '''
     def destroyFilterFiles(self):
 
         del self
@@ -132,12 +126,12 @@ class FilterFiles(QDialog):
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
-            for file in files:
-                    projectFile = open(src + "\\" + file, 'rb')
+            for filePath in files:
+                    projectFile = open(src + "\\" + filePath, 'rb')
                     projectFileLines = projectFile.readlines()
                     projectFile.close()
                     if (projectFileLines):
-                        ProjectsList.append(str(file).replace('.fxy', ''))
+                        ProjectsList.append(str(filePath).replace('.fxy', ''))
         return ProjectsList
 
     '''
@@ -217,7 +211,7 @@ class FilterFiles(QDialog):
             return
         flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
 
-        if flag != None:
+        if flag is not None:
 
             QMessageBox.information(self, "Success", "Filter set successfully!")
 
@@ -231,6 +225,7 @@ class FilterFiles(QDialog):
     ''' Reset Text of Filters '''
     def Reset(self):
         self.FilterField.setText('')
+
 
     '''
     Triggers on project changed from drop down and sets related information in filters Field
@@ -263,6 +258,7 @@ class FilterFiles(QDialog):
             self.IgnoreHiddenFiles.setChecked(False)
 
         return
+
 
     '''
     Close the Dialog Box

@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
 # Fixity command line application
-# Version 0.3, 2013-10-28
+#  Version 0.4, Apr 1, 2014
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -23,7 +23,6 @@ try:
 except:
     pass
 AR = AutoRuner()
-
 
 isEmailSendingSet = 'Run'
 AR.runAutoFix(projectName , isEmailSendingSet)
