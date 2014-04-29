@@ -87,7 +87,7 @@ class FileLock(object):
                 lockFile.close()
                 
                 # If process Exists then returns False else True
-                if(oldProcessId !='' and oldProcessId != None ):
+                if(oldProcessId !='' and oldProcessId is not None ):
                     return self.check_pid(oldProcessId)
                 else:
                     os.remove(self.lockfile)

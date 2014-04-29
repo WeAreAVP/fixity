@@ -114,6 +114,13 @@ class Database(object):
                 self.closeConnection()
                 self = None
                 exit()
+                
+    ''' 
+    Get one record using given sql query
+    @param query: SQL Raw Query
+    
+    @return: One sQuery Result 
+    '''             
     def getOne(self,query):
         
         try:
@@ -149,7 +156,11 @@ class Database(object):
                 return response
             except:
                 pass
-    '''SQL Query Runner'''
+    '''SQL Query Runner
+    @param query: SQL Raw Query
+    
+    @return: Query Result 
+    '''  
     def sqlQuery(self, query):
 
         try:
@@ -188,6 +199,12 @@ class Database(object):
 
     '''
     SQL Select Query
+    @param tableName: Table Name
+    @param select: Column To Select
+    @param condition: Conditions as String
+    @param orderBy: order By Columns
+    
+    @return: Query Result
     '''
     def select(self,tableName , select  = '*' ,condition=None,orderBy = None):
         try:
@@ -284,7 +301,12 @@ class Database(object):
 
     '''
     SQL Insert Query
+    @param tableName: Table Name
+    @param information: List of columns with Values (index as Column and Value as Column Value)
+    
+    @return: Insert Id of this record
     '''
+    
     def insert(self, tableName, information):
             
             
@@ -404,7 +426,12 @@ class Database(object):
 
     '''
     SQL Delete Query
+    @param tableName: Table Name
+    @param condition: Condition of which row will deleted
+    
+    @return: Response of Query Result
     '''
+    
     def delete(self,tableName , condition):
         try:
             query = 'DELETE FROM '+str(tableName) + ' WHERE '+ condition
@@ -433,7 +460,13 @@ class Database(object):
                     pass
                 return None
 
-    '''SQL Update Query'''
+    '''SQL Update Query
+      @param tableName: Table Name
+      @param information: List of columns with Values (index as Column and Value as Column Value)
+      @param condition: Condition of which row will deleted
+    
+      @return: Response of Query Result
+    '''
     def update(self,tableName , information,condition):
         try:
             query = 'UPDATE '+str(tableName) +' SET '
@@ -511,7 +544,14 @@ class Database(object):
                     pass
                 return None
 
-    '''Columns and records Implode for query'''
+    '''Columns and records Implode for query
+      @param information: Array of Value to be imploded
+      @param glue: glue with values will be glued
+      @param isColumn: Given Information is of tables columns or Row
+       
+      @return: Response of Query Result
+    '''
+        
     def implode(self,information , glue , isColumn = True):
 
             counter = 0
@@ -551,6 +591,10 @@ class Database(object):
 
     '''
     Get Project Information
+    @param projectName: Project Name to be searched in database
+    @param limit: If Ture 1 limit with be applied
+    
+    @return project information 
     '''
     def getProjectInfo(self,projectName = None ,limit = True):
         response = {}
@@ -577,6 +621,10 @@ class Database(object):
 
     '''
     Get Projects paths Information
+    @param projectID: Project ID
+    @param versionID: ID of Version of Project to be fetched
+    
+    @return project information 
     '''
     def getProjectPathInfo(self,projectID,versionID):
         self.connect()
@@ -586,13 +634,25 @@ class Database(object):
         self.closeConnection()
         return response
 
-    '''Get Configuration'''
+    '''
+    Get SMTP and User Email Configuration
+   
+    @return Configuration 
+    
+    '''
     def getConfiguration(self):
         response = self.select(self._tableConfiguration, '*')
         self.closeConnection()
         return response
 
-    '''Get Given Version Details'''
+    '''
+    Get Given Version Details
+    @param projectID: Project ID
+    @param versionID: ID of Version of Project who's detail to be fetched
+    @param OrderBy: Order By
+    
+    @return project information 
+    '''
     def getVersionDetails(self,projectID,versionID,OrderBy=None):
         response = self.select(self._tableVersionDetail, '*'," projectID='"+str(projectID)+"' and versionID='"+str(versionID)+"'" , OrderBy)
         self.closeConnection()

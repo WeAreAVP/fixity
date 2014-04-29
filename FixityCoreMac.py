@@ -9,28 +9,28 @@ Returns the complete file ID as a single long string
 '''
 
 def ntfsIDForMac(f):
-    id=''
+    idNode = ''
     try:
         target = FixityCore.os.open(f , FixityCore.os.O_RDWR|FixityCore.os.O_CREAT )
         # Now get  the touple
         info = FixityCore.os.fstat(target)
-        id = str(info.st_ino)
+        idNode = str(info.st_ino)
 
         FixityCore.os.close(target)
         
-        return id
+        return idNode
 
-    except Exception as e:
+    except Exception as Excep:
 
         moreInformation = {"moreInfo":'none'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] == None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
-                moreInformation['LogsMore1'] =str(e[1])
+            if not Excep[1] == None:
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
 
@@ -44,4 +44,4 @@ def ntfsIDForMac(f):
         FixityCore.Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(f)  +" File FixtyCore\n", moreInformation)
 
         pass
-    return id
+    return idNode

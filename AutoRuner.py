@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
-# Fixity command line application
-# Version 0.3, 2013-10-28
+# Fixity command line application helper
+# Version 0.4, Apr 1, 2014
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -24,7 +24,7 @@ from os import getcwd ,path
 import base64
 
 
-#Custom Library
+# Custom Library
 from Debuger import Debuger
 from Database import Database
 
@@ -36,18 +36,16 @@ import FixityMail
 Auto Scan Runner on Given Time or on Demand
 '''
 
+
 class AutoRuner(object):
-    '''
-    Auto Scan Runner on Given Time or on Demand
-    '''
+    
+    
+    ''' Auto Scan Runner on Given Time or on Demand '''
     def runAutoFix(self , project , isEmailSendingSet):
-        
-         
         
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             
         DB = Database()
-        
         Information = DB.getProjectInfo(str(project).replace('.fxy', ''))
         configuration =  DB.getConfiguration()
          
@@ -61,16 +59,19 @@ class AutoRuner(object):
         if len(emailOfReciverUsers) > 0: 
             if '' in emailOfReciverUsers:
                 emailOfReciverUsers.remove('')
+                
         results = []
         Fitlers =''
         if Information != None:
             if len(Information) > 0:
                 Fitlers = str(Information[0]['filters'])
+                
         if(OS_Info == 'Windows'):
             results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
         else:
             results = FixityCore.run(AutiFixPath+"/projects/" + project + ".fxy", Fitlers, project)
         reportGeneratedForEmail = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
+
 
         if(len(configuration) > 0):
             newConfiguration = configuration[0]
@@ -78,11 +79,14 @@ class AutoRuner(object):
             newConfiguration['email'] = self.DecodeInfo(configuration[0]['email'])
             newConfiguration['pass'] = self.DecodeInfo(configuration[0]['pass'])
         
+        
             if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or isEmailSendingSet =='Run':
                 if (len(configuration) > 0):
                     if ( configuration[0]['email'] !='') and (configuration[0]['pass'] !=''):
                         for e in emailOfReciverUsers:
                             FixityMail.send(e, reportGeneratedForEmail, results[5], newConfiguration,project)
+
+
 
     def EncodeInfo(self,stringToBeEncoded):
         return base64.b16encode(base64.b16encode(stringToBeEncoded))

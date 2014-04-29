@@ -59,22 +59,22 @@ def deltask(project):
 
         try:
             remove("schedules\\fixity-" + project + ".bat")
-        except Exception as e:
+        except Exception as Except:
             
             
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[0] is None:
+                    moreInformation['LogsMore'] =str(Except[0])
+            except Exception as Excep1:
+                print(Excep1[0])
                 
                 
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[1] is None:
+                    moreInformation['LogsMore1'] =str(Except[1])
+            except Exception as Excep2:
+                print(Excep2[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Could Not Remove File Line 22 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".bat", moreInformation)
@@ -95,19 +95,19 @@ def deltask(project):
         
         try:
                 remove("schedules\\fixity-" + project + ".vbs")
-        except Exception as e:
+        except Exception as Except:
 
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[0] is None:
+                    moreInformation['LogsMore'] =str(Except[0])
+            except Exception as Excep1:
+                print(Excep1[0])
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[1] is None:
+                    moreInformation['LogsMore1'] =str(Except[1])
+            except Exception as Excep2:
+                print(Excep2[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Count not Remove File ,  Line 35 File FixtyScheduleTask' + "schedules\\fixity-" + project + ".vbs", moreInformation)
@@ -133,8 +133,8 @@ def deltask(project):
         try:
             p = subprocess.Popen(["launchctl", "unload", "-w", lunchAject], stdout=subprocess.PIPE)
             output, err = p.communicate()
-        except Exception as ex:
-            print(ex[0])
+        except Exception as Excep:
+            print(Excep[0])
             pass
         try:
             os.remove(lunchAject)
@@ -202,8 +202,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 f.write("cd /d %~dp0\n")
                 f.write("cd ..\n")
                 f.write("\"" + getcwd() + "\\schedules\\AutoFixity.exe\" \"" + prj + "\"\n")
-            except Exception as ex:
-                print(ex[0])
+            except Exception as Excep:
+                print(Excep[0])
             f.close()
 
             x = open("schedules\\fixity-" + prj + ".vbs", "w")
@@ -215,8 +215,8 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 x.write('WinScriptHost.Run("""" & p & """")')
                 x.write("\n")
                 x.write("Set WinScriptHost = Nothing")
-            except Exception as ex:
-                print(ex[0])
+            except Exception as Excep:
+                print(Excep[0])
             x.close()
         pathCommand= ''
         if OS_Info == 'Windows':
@@ -363,28 +363,28 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 try:
                     p = subprocess.Popen(["launchctl", "unload", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
-                except Exception as ex:
-                    print(ex[0])
+                except Exception as Excep:
+                    print(Excep[0])
 
                 try:
                     p = subprocess.Popen(["launchctl", "load", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
-                except Exception as ex:
-                    print(ex[0])
+                except Exception as Excep:
+                    print(Excep[0])
 
-        except Exception as e:
+        except Exception as Except:
 
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[0] is None:
+                    moreInformation['LogsMore'] =str(Except[0])
+            except Exception as Excep1:
+                print(Excep1[0])
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
-            except Exception as ex:
-                print(ex[0])
+                if not Except[1] is None:
+                    moreInformation['LogsMore1'] =str(Except[1])
+            except Exception as Excep2:
+                print(Excep2[0])
 
             Debuging.tureDebugerOn()
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
@@ -497,15 +497,18 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
             xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
             xmlsch.write("    <plist version=\"1.0\">\n")
             xmlsch.write("        <dict>\n")
+            
             xmlsch.write("            <key>Program</key>\n")
             xmlsch.write("                <string>" + str(pathInfo) +"</string>\n")
             xmlsch.write("            <key>Label</key>\n")
             xmlsch.write("            <string>Com.fixity."+str(ProjectName)+".demon</string>\n")
             xmlsch.write("            <key>ProgramArguments</key>\n")
+            
             xmlsch.write("            <array>\n")
             xmlsch.write("                <string>"+pathInfo+"</string>\n")
             xmlsch.write("                <string>-a="+str(ProjectName)+"</string>\n")
             xmlsch.write("            </array>\n")
+            
             xmlsch.write("            <key>StandardOutPath</key>\n")
             xmlsch.write("            <string>"+str(getcwd())+"/debug/debug.log</string>\n")
             xmlsch.write("            <key>StandardErrorPath</key>\n")
