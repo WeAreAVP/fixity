@@ -1066,7 +1066,7 @@ class ProjectWin(QMainWindow):
         def run(self):
             
             if all(d.text() == "" for d in self.dtx):
-                QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
+                QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan.")
                 return
             print('asdasdas')
             dmonth, dweek = 99, 99
@@ -1079,7 +1079,7 @@ class ProjectWin(QMainWindow):
             elif self.daily.isChecked():
                 interval = 3
             else:
-                QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans")
+                QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans.")
                 return
 
             Configurations = {}
@@ -1117,9 +1117,9 @@ class ProjectWin(QMainWindow):
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
 
                 self.Threading.start()
-                QMessageBox.information(self, "Fixity", "Scheduler for Project "+self.projects.currentItem().text() + " is in progress,you will receive an email when process is completed")
+                QMessageBox.information(self, "Fixity", self.projects.currentItem().text() + " has started a fixity check.\nIf email settings were provided, you will receive a report upon its completion.")
             else:
-                QMessageBox.information(self, "Fixity", "Project Configuration Not Found,Please Save the project and Try Again")
+                QMessageBox.information(self, "Fixity", "Projects must be saved before they can be run.\nPlease save your current project before running it.")
 
 
 
@@ -1134,7 +1134,7 @@ class ProjectWin(QMainWindow):
             try:
                 sbox.setText("Are you certain that you want to delete " + self.projects.currentItem().text() + "?")
             except:
-                QMessageBox.information(self, "Fixity", "No project selected for deletion!")
+                QMessageBox.information(self, "Fixity", "No project selected for deletion.\nPlease select a project to delete.")
                 return
             sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             sbox.setDefaultButton(QMessageBox.Cancel)
@@ -1230,7 +1230,7 @@ class ProjectWin(QMainWindow):
                         errorMsg = self.EmailPrefManager.ValidateEmail(SingleEmail)
                         if not str(errorMsg).strip() == 'None':
                             QB = QMessageBox()
-                            errorMsg = QB.information(self, "Error", errorMsg)
+                            errorMsg = QB.information(self, "One or more of the provided email addresses are malformed.\nPlease adjust/remove the problematic addresses.", errorMsg)
                             return
 
             if isRcipentEmailAddressSet:
