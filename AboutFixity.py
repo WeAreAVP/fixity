@@ -268,14 +268,14 @@ class AboutFixity(QDialog):
         self.pgroup.setLayout(self.play)
 
         slay = QVBoxLayout()
-        self.monthly.setFixedSize(495,40)
-        self.weekly.setFixedSize(495,500)
+        self.monthly.setFixedSize(540,40)
+        self.weekly.setFixedSize(540,500)
         slay.addWidget(self.monthly)
         slay.addWidget(self.weekly)
         self.CloseBtn.setFixedSize(200,30)
         slay.addWidget(self.CloseBtn)
 
-        self.sch.setFixedSize(495, 600)
+        self.sch.setFixedSize(540, 600)
         self.pgroup.setFixedSize(255, 600)
         self.main.addWidget(self.pgroup)
         self.main.addWidget(self.sch)
