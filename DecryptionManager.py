@@ -180,7 +180,7 @@ class DecryptionManager(QDialog):
 
         if(selectedProject is None or selectedProject == ''):
             
-            QMessageBox.information(self, "Warning", "Please Select a Project, and Try Again.")
+            QMessageBox.information(self, "Warning", "No project selected.\nPlease select a project and try again.")
             return
 
         projects_path = getcwd()+'\\projects\\'
@@ -215,7 +215,7 @@ class DecryptionManager(QDialog):
             sameValueFlag = False
         if selectedProject == '':
             
-            QMessageBox.information(self, "Failure", "No Project Selected")
+            QMessageBox.information(self, "Failure", "No project selected.\nPlease select a project and try again.")
             return
         SqlLiteDataBase  = Database()
         flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information, "id='" + str(Information['id']) + "'")
@@ -227,14 +227,14 @@ class DecryptionManager(QDialog):
                     except:
                         pass
                     
-                    QMessageBox.information(self, "Success", "Updated the Configuration Successfully")
+                    QMessageBox.information(self, "Success", "Project algorithm successfully changed.")
 
                     self.Cancel()
                     return
             else:
                 if (not hasChanged) and (sameValueFlag):
                     
-                    QMessageBox.information(self, "Information", "Everything was not confirmed that is why algorithm change did not take place.")
+                    QMessageBox.information(self, "Information", "Project algorithm was NOT successfully changed - please try again.")
         return
 
     ''' Triggers on project changed from drop down and sets related information in filters Field'''
@@ -266,7 +266,7 @@ class DecryptionManager(QDialog):
     '''Warning to change encryption value'''
     def slotWarning(self, projectName):
         
-        reply = QMessageBox.warning(self, 'Confirmation',"Are you sure you want to change Algorithum for  ?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+        reply = QMessageBox.warning(self, 'Confirmation',"Are you sure that you want to change the checksum algorithm for " + projectName + "?", QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         
         if reply == QMessageBox.Yes:
             return True
