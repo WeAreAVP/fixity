@@ -437,7 +437,6 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     print('=======Dicty=======')
     try:
         CurrentDirectory = dicty.get(line[2])
-        print(dicty)
     except Exception as Excep:
 
         moreInformation = {"moreInfo":'null'}
@@ -764,7 +763,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     CodeInfoormation = pathInformation[0]
 
                     pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
-                    print(pathInfo)
                     
                     dict[str(x[2]).replace('\r\n','')].append([str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n',''), str(x[0]).replace('\r\n',''), False])
                     dict_Hash[x[0]].append([str(pathInfo['path']) + str(pathInformation[1]).replace('\r\n',''), str(x[2]).replace('\r\n',''), False])
