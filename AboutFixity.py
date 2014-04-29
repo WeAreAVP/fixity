@@ -35,10 +35,16 @@ class AboutFixity(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
     '''Contstructor'''
-    def __init__(self):
-        QDialog.__init__(self)
+    def __init__(self, parentWin):
+        QDialog.__init__(self, parentWin)
         
         self.setWindowTitle('About Fixity')
+        
+        self.parentWin = parentWin
+        self.setWindowModality(Qt.WindowModal)
+        
+        self.parentWin.setWindowTitle('About Fixity')
+        
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images' + str(os.sep) + 'logo_sign_small.png')))
         self.AboutFixityLayout = QVBoxLayout()
 
@@ -262,14 +268,14 @@ class AboutFixity(QDialog):
         self.pgroup.setLayout(self.play)
 
         slay = QVBoxLayout()
-        self.monthly.setFixedSize(570,40)
-        self.weekly.setFixedSize(570,500)
+        self.monthly.setFixedSize(495,40)
+        self.weekly.setFixedSize(495,500)
         slay.addWidget(self.monthly)
         slay.addWidget(self.weekly)
         self.CloseBtn.setFixedSize(200,30)
         slay.addWidget(self.CloseBtn)
 
-        self.sch.setFixedSize(600, 600)
+        self.sch.setFixedSize(495, 600)
         self.pgroup.setFixedSize(255, 600)
         self.main.addWidget(self.pgroup)
         self.main.addWidget(self.sch)

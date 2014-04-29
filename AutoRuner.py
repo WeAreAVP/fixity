@@ -62,10 +62,12 @@ class AutoRuner(object):
                 
         results = []
         Fitlers =''
-        if Information != None:
+        print('------------- Fitlers ===================')
+        if Information is not None:
             if len(Information) > 0:
                 Fitlers = str(Information[0]['filters'])
-                
+        print(Fitlers)
+        print('------------- Fitlers ===================')
         if(OS_Info == 'Windows'):
             results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
         else:
