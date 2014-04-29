@@ -274,8 +274,10 @@ class AboutFixity(QDialog):
         slay.addWidget(self.weekly)
         self.CloseBtn.setFixedSize(200,30)
         slay.addWidget(self.CloseBtn)
-
-        self.sch.setFixedSize(540, 600)
+        if OS_Info == 'Windows':
+            self.sch.setFixedSize(560, 600)
+        else:
+            self.sch.setFixedSize(540, 600)
         self.pgroup.setFixedSize(255, 600)
         self.main.addWidget(self.pgroup)
         self.main.addWidget(self.sch)
