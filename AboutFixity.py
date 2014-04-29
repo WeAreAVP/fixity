@@ -35,10 +35,12 @@ class AboutFixity(QDialog):
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
     '''Contstructor'''
-    def __init__(self):
-        QDialog.__init__(self)
-        
+    def __init__(self,parentWin):
+        QDialog.__init__(self,parentWin)
+        self.setWindowModality(Qt.WindowModal)
         self.setWindowTitle('About Fixity')
+        self.parentWin = parentWin
+        self.parentWin.setWindowTitle('About Fixity')
         self.setWindowIcon(QIcon(path.join(getcwd(), 'images' + str(os.sep) + 'logo_sign_small.png')))
         self.AboutFixityLayout = QVBoxLayout()
 
@@ -75,7 +77,11 @@ class AboutFixity(QDialog):
     def ShowDialog(self):
         self.show()
         self.exec_()
-
+         
+    '''QDailog Reject Tigger over writen'''
+    def reject(self):
+        self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
+        super(AboutFixity,self).reject()
 
     ''' Set Layout'''
     def SetLayout(self, layout):

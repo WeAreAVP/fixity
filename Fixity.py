@@ -97,7 +97,7 @@ class ProjectWin(QMainWindow):
                         Debuging.logInfo('bitType = '+str(self.SystemInformation['bitType'])  , {} )
 
                 self.EmailPrefManager = EmailPref(self)
-                self.AboutFixityManager = AboutFixity()
+                self.AboutFixityManager = AboutFixity(self)
                 self.EmailPrefManager.setVersion('0.4')
                 self.DecryptionManager = DecryptionManager(self)
                 self.FileChanged = FileChanged(self)
@@ -427,7 +427,7 @@ class ProjectWin(QMainWindow):
 
             self.AboutFixityManager.Cancel()
             self.AboutFixityManager = None
-            self.AboutFixityManager = AboutFixity()
+            self.AboutFixityManager = AboutFixity(self)
             self.AboutFixityManager.SetDesgin()
             self.AboutFixityManager.ShowDialog()
 
