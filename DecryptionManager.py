@@ -113,12 +113,12 @@ class DecryptionManager(QDialog):
     def getProjects(self , src):
         ProjectsList = []
         for root, subFolders, files in walk(src):
-            for filePath in files:
-                    projectFile = open(src + "\\" + filePath, 'rb')
+            for file in files:
+                    projectFile = open(src + "\\" + file, 'rb')
                     projectFileLines = projectFile.readlines()
                     projectFile.close()
                     if (projectFileLines):
-                        ProjectsList.append(str(filePath).replace('.fxy', ''))
+                        ProjectsList.append(str(file).replace('.fxy', ''))
         return ProjectsList
 
 
@@ -178,7 +178,7 @@ class DecryptionManager(QDialog):
         hasChanged = False
         selectedProject = self.Porjects.currentText()
 
-        if(selectedProject is None or selectedProject == ''):
+        if(selectedProject == None or selectedProject == ''):
             
             QMessageBox.information(self, "Warning", "Please Select a Project, and Try Again.")
             return
@@ -192,7 +192,7 @@ class DecryptionManager(QDialog):
             Information = info[0]
 
         aloValueSelected = ''
-        if self.methods.currentText() is None or self.methods.currentText() == '':
+        if self.methods.currentText() == None or self.methods.currentText() == '':
             aloValueSelected = 'sha256'
         else:
             aloValueSelected = str(self.methods.currentText())
@@ -293,17 +293,17 @@ class DecryptionManager(QDialog):
                 for Singlefile in files:
                     fls.append(path.join(root, Singlefile))
 
-        except Exception as Except:
+        except Exception as e:
 
                 moreInformation = {"moreInfo":'null'}
                 try:
-                    if not Except[0] is None:
-                        moreInformation['LogsMore'] =str(Except[0])
+                    if not e[0] == None:
+                        moreInformation['LogsMore'] =str(e[0])
                 except:
                     pass
                 try:
-                    if not Except[1] is None:
-                        moreInformation['LogsMore1'] =str(Except[1])
+                    if not e[1] == None:
+                        moreInformation['LogsMore1'] =str(e[1])
                 except:
                     pass
 
@@ -329,17 +329,17 @@ class DecryptionManager(QDialog):
                 listOfValues.append((h, givenPath, i))
 
 
-        except Exception as Except:
+        except Exception as e:
 
                 moreInformation = {"moreInfo":'null'}
                 try:
-                    if not Except[0] is None:
-                        moreInformation['LogsMore'] =str(Except[0])
+                    if not e[0] == None:
+                        moreInformation['LogsMore'] =str(e[0])
                 except:
                     pass
                 try:
-                    if not Except[1] is None:
-                        moreInformation['LogsMore1'] =str(Except[1])
+                    if not e[1] == None:
+                        moreInformation['LogsMore1'] =str(e[1])
                 except:
                     pass
 

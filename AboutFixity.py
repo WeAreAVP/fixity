@@ -1,11 +1,9 @@
-# ===============================================================================
-#  -- coding: utf-8 --
-#  Details about fixity
-#  Version 0.4, Apr 1, 2014
-#  Copyright (c) 2013 AudioVisual Preservation Solutions
-#  All rights reserved.
-#  Released under the Apache license, v. 2.0
-# ===============================================================================
+# -- coding: utf-8 --
+# Email Preferences Setting to send eamil
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 
 '''
 Created on Dec 5, 2013
@@ -30,8 +28,6 @@ import hashlib
 
 
 class AboutFixity(QDialog):
-    
-    
     ''' Class to manage the Filter to be implemented for the files with specific extensions '''
     
     '''Contstructor'''
@@ -56,39 +52,32 @@ class AboutFixity(QDialog):
         self.weekly = QTextEdit()
         self.main = QHBoxLayout()
 
-
     ''' Distructor'''
     def destroyAboutFixity(self):
         del self
         
-        
-    ''' Create Window'''
+    '''Create Window'''
     def CreateWindow(self):
         self = QDialog()
         
-        
-    ''' Get Window'''
+    '''Get Window'''
     def GetWindow(self):
         return self
     
-    
-    ''' Show Dialog'''
+    '''Show Dialog'''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-
-    ''' Set Layout'''
+    '''Set Layout'''
     def SetLayout(self, layout):
         self.AboutFixityLayout = layout
 
-
-    ''' Get Layout'''
+    '''Get Layout'''
     def GetLayout(self):
         return self.AboutFixityLayout
     
-    
-    ''' Show Description'''
+    '''Show Description'''
     def showDescription(self):
         
         self.monthly.setText('<h1>DESCRIPTION</h1>')
@@ -102,13 +91,10 @@ class AboutFixity(QDialog):
         self.AuthorandLicenseBtn.setDisabled(False)
         self.ContactBtn.setDisabled(False)
 
-
-    ''' Show License Information On About Us Page(Trigger in  button press)'''
+    '''Show License Information On About Us Page(Trigger in  button press)'''
     def showLicense(self):
-        
         '''header'''
         self.monthly.setText('<h1>Author and License </h1>')
-        
         
         '''header Detail'''
         LicenseText = '<p>Fixity Copyright and License</p>'
@@ -120,7 +106,6 @@ class AboutFixity(QDialog):
         LicenseText += '<center>Version 2.0, January 2004</center></br>'
         LicenseText += '<center>http://www.apache.org/licenses/</center></br>'
         LicenseText += '<p>TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION</p></br>'
-        
         
         '''Definitions'''
         LicenseText += '<ol>'
@@ -217,7 +202,6 @@ class AboutFixity(QDialog):
         self.AuthorandLicenseBtn.setDisabled(True)
         self.ContactBtn.setDisabled(False)
         
-        
     '''Trigger The Show Contact'''
     def showContact(self):
         self.monthly.setText('<h1>Contact</h1>')
@@ -229,7 +213,6 @@ class AboutFixity(QDialog):
         self.DescriptionBtn.setDisabled(False)
         self.AuthorandLicenseBtn.setDisabled(False)
         self.ContactBtn.setDisabled(True)
-
 
     ''' All design Management Done in Here'''
     def SetDesgin(self):

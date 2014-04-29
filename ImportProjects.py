@@ -1,5 +1,5 @@
 # -- coding: utf-8 --
-# Import old Projects modules 
+# Email Preferences Setting to send eamil
 # Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
@@ -8,7 +8,11 @@
 Created on Dec 5, 2013
 @author: Furqan Wasi  <furqan@geekschicago.com>
 '''
-
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 import os
 OS_Info = ''
 if os.name == 'posix':
@@ -30,7 +34,7 @@ import time
 
 
 
-# Custom Classes
+#Custom Classes
 from Database import Database
 from EmailPref import EmailPref
 
@@ -144,7 +148,7 @@ class ImportProjects(QDialog):
 
         filePath = self.projectSelected.text()
 
-        if(filePath is None or filePath == ''):
+        if(filePath == None or filePath == ''):
             
             QMessageBox.information(self, "Error", "Please select valid Project/Manifest file path")
             
@@ -188,7 +192,7 @@ class ImportProjects(QDialog):
             CurrentDate = time.strftime("%Y-%m-%d")
             versionInformation['name'] = EP.EncodeInfo(str(CurrentDate))
             VersionID = DB.insert(DB._tableVersions, versionInformation)
-            if(VersionID is not None and VersionID !=''):
+            if(VersionID != None and VersionID !=''):
                 Config = {}
                 runDayOrMonth = ''
                 durationType = 0
@@ -244,7 +248,7 @@ class ImportProjects(QDialog):
                 else:
                     counter = 1
                     for  SinglePath in pathInfo:
-                        if(SinglePath != '' and SinglePath is not None):
+                        if(SinglePath != '' and SinglePath != None):
                             listing = []
                             listing.append(str(SinglePath))
                             listing.append('Fixity-'+str(counter))
@@ -266,7 +270,7 @@ class ImportProjects(QDialog):
 
                         FixInfo = re.split(r'\t+', singleContent)
 
-                        if FixInfo is not None:
+                        if FixInfo != None:
                             if(len(FixInfo) > 2):
                                 md5_hash = ''
                                 ssh256_hash = ''
@@ -313,8 +317,6 @@ class ImportProjects(QDialog):
         self.Cancel()
         return
         
-        
-        
     '''
     Pick Directory
     '''
@@ -328,14 +330,11 @@ class ImportProjects(QDialog):
         fileInformation  = list(QFileDialog.getOpenFileName(self,"Select File",str(path)))
         self.projectSelected.setText(str(fileInformation[0]))
         
-        
-        
     '''
     reset form
     '''
     def Reset(self):
         self.projectSelected.setText('')
-
 
     '''
     close the dailog box
@@ -345,8 +344,6 @@ class ImportProjects(QDialog):
         self.destroyImportProjects()
         self.close()
 
-
-
     '''
     Refresh Project Settings
     '''
@@ -354,7 +351,7 @@ class ImportProjects(QDialog):
             allProjects = DB.getProjectInfo()
             try:
                 projectLists = []
-                if allProjects is not None:
+                if allProjects != None:
                     if(len(allProjects) > 0):
                         for p in allProjects:
                             projectLists.append(str(allProjects[p]['title']))
@@ -367,13 +364,12 @@ class ImportProjects(QDialog):
                 pass
             
             try:
-                if projectLists is not None:
+                if projectLists != None:
                     if(len(projectLists) > 0):
                         for p in projectLists:
                             self.projectListWidget.addItem(p)
             except:
                 pass
-
              
     '''Get Fixity Home Path'''
     def getFixityHomePath(self):

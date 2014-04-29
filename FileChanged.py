@@ -1,6 +1,6 @@
 # -- coding: utf-8 --
 # Base Path Directory Changed
-# Version 0.4, Apr 1, 2014
+# Version 0.3, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
@@ -9,8 +9,13 @@
 Created on Feb 4, 2014
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
+# Fixity Scheduler
+# Version 0.3, 2013-10-28
+# Copyright (c) 2013 AudioVisual Preservation Solutions
+# All rights reserved.
+# Released under the Apache license, v. 2.0
 
-# Custom Library
+#Custom Library
 import base64
 from os import getcwd  , path
 from PySide.QtCore import *
@@ -144,7 +149,7 @@ class FileChanged(QDialog):
 
         self.GetLayout().addStrut(400)
 
-        # Initializing view elements
+        #initializing view elements
         self.orignalPathLable = QLabel()
         self.changePathToLable = QLabel()
         self.setInformation = QPushButton("&Orignal Path Information")
@@ -154,7 +159,7 @@ class FileChanged(QDialog):
         self.changePathTo = QTextEdit()
 
 
-        # Set view text
+        #Set view text
         self.orignalPath.setText(self.orignalPathText)
         self.changePathTo.setText(self.changePathText)
         self.orignalPathLable.setText('Change Path From')
@@ -162,13 +167,13 @@ class FileChanged(QDialog):
         self.orignalPath.setDisabled(True)
         self.changePathTo.setDisabled(True)
 
-        # Styling
+        #Styling
         self.orignalPath.setMaximumSize(400, 100)
         self.changePathTo.setMaximumSize(400, 100)
         self.cancel.setMaximumSize(200, 100)
         self.setInformation.setMaximumSize(200, 100)
 
-        # set Widget to layouts
+        #set Widget to layouts
         self.GetLayout().addWidget(self.orignalPathLable)
         self.GetLayout().addWidget(self.orignalPath)
         self.GetLayout().addWidget(self.changePathToLable)
@@ -176,7 +181,7 @@ class FileChanged(QDialog):
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.cancel)
 
-        # set triggers
+        #set triggers
         self.setInformation.clicked.connect(self.changeRootDirInfo)
         self.cancel.clicked.connect(self.CloseClick)
         self.SetWindowLayout()
@@ -190,14 +195,15 @@ class FileChanged(QDialog):
     def changeRootDirInfo(self):
         if not path.exists(self.changePathText):
             
-            msgBox = QMessageBox()
+            msgBox = QMessageBox();
             msgBox.setText(self.changePathText + ' does not exist.\nPlease provide a valid path and try again.')
             msgBox.exec_()
             
             self.changeThePathInformation = False
         else:
-            if (self.orignalPathText is not None and self.changePathText is not None) and (self.orignalPathText != '' and self.changePathText != ''):
+            if (self.orignalPathText != None and self.changePathText != None) and (self.orignalPathText != '' and self.changePathText != ''):
                 self.changeThePathInformation = True
             else:
                 self.changeThePathInformation = False
         self.FileChangedWin.close()
+
