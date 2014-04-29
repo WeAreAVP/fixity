@@ -158,14 +158,14 @@ class ChangeName(QDialog):
         
         isThisNameAlreadyTaken = SqlLiteDataBase.getProjectInfo(Information[0]['title'])
         if len(isThisNameAlreadyTaken) > 0:
-            MessageBoxForChangeName.information(self, "Fixity", "Project With this Name already Exists, please select a different Name.")
+            MessageBoxForChangeName.information(self, "Fixity", "A project with this name already exists - please enter a new project name.")
             return
         flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information[0], "id = '"+str(Information[0]['id'])+"'")
         if flag != None:
             self.refreshProjectSettings()
             thisItemIndex = self.parentWin.getProjectIndex(str(Information[0]['title']))
 
-            MessageBoxForChangeName.information(self, "Success", "Name have changed successfully!")
+            MessageBoxForChangeName.information(self, "Success", "Project name changed successfully!")
             self.parentWin.projects.item(thisItemIndex).setSelected(True)
             self.parentWin.changedNameIndex = thisItemIndex
             self.parentWin.changedNameName = Information[0]['title']
@@ -173,7 +173,7 @@ class ChangeName(QDialog):
             return
         else:
             
-            MessageBoxForChangeName.information(self, "Failure", "There was a problem setting the filter - please try again.")
+            MessageBoxForChangeName.information(self, "Failure", "There was a problem changing the project name - please try again.")
             self.refreshProjectSettings()
             self.reOpenChangeName()
                 
