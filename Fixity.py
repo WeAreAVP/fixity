@@ -1,9 +1,9 @@
-
 # Fixity GUI
 # Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
 # All rights reserved.
 # Released under the Apache license, v. 2.0
+
 
 import os
 OS_Info = ''
@@ -14,13 +14,13 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-#Bultin Libraries
+# Bultin Libraries
 from PySide.QtCore import *
 from PySide.QtGui import *
 if OS_Info == 'linux':
-    from os import path, listdir, remove, walk , getcwd , spawnl , system
+    from os import path, listdir, remove, walk, getcwd, spawnl, system
 else:
-    from os import path, listdir, remove, walk , getcwd , P_DETACH , spawnl , system
+    from os import path, listdir, remove, walk, getcwd, P_DETACH, spawnl, system
 
 from collections import deque
 from genericpath import exists
@@ -32,7 +32,7 @@ import argparse
 import platform
 import os
 
-#Custom Libraries
+# Custom Libraries
 import FixityCore
 import FixitySchtask
 from Threading import Threading
@@ -51,12 +51,12 @@ Debuging = Debuger()
 
 '''Main Class to handle all menu and options of Fixity'''
 
+
 class ProjectWin(QMainWindow):
 
-        '''
-        Constructor
-        '''
-        def __init__(self, EmailPref , FilterFiles):
+
+        ''' Constructor '''
+        def __init__(self, EmailPref, FilterFiles):
 
                 if(OS_Info == 'Windows'):
                     self.CreateAllRequiredFileAndDirectoriesForWindows()
@@ -67,9 +67,9 @@ class ProjectWin(QMainWindow):
 
                 self.createDatabaseTables()
 
-                pathInfo = str(getcwd()).replace('\\schedules','')
+                pathInfo = str(getcwd()).replace('\\schedules', '')
 
-                pathInfo = pathInfo.replace('schedules','')
+                pathInfo = pathInfo.replace('schedules', '')
 
                 if(OS_Info == 'Windows'):
                     databasePath = pathInfo+"\\bin\\Fixity.db-journal"
@@ -81,7 +81,7 @@ class ProjectWin(QMainWindow):
 
                 QMainWindow.__init__(self)
                 Debuging.tureDebugerOn()
-                Debuging.logInfo('Logger started!::::::::::::::::::' + "\n" ,{} )
+                Debuging.logInfo('Logger started!::::::::::::::::::' + "\n",{} )
 
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
@@ -124,7 +124,7 @@ class ProjectWin(QMainWindow):
                 dlte = QAction('&Delete Project', self)
                 self.configemail = QAction('&Email Settings', self)
                 aboutFixity = QAction('&About Fixity', self)
-                quit = QAction('&Quit Fixity', self)
+                quitMenu = QAction('&Quit Fixity', self)
 
                 FilterFilesMane = QAction('&Filter Files', self)
                 ChangeNameManu = QAction('&Change Project Name', self)
@@ -140,7 +140,7 @@ class ProjectWin(QMainWindow):
                 self.FileManuFixity.addAction(dlte)
                 self.FileManuFixity.addAction(ChangeNameManu)
                 self.FileManuFixity.addAction(aboutFixity)
-                self.FileManuFixity.addAction(quit)
+                self.FileManuFixity.addAction(quitMenu)
 
                 self.Preferences.addAction(FilterFilesMane)
 
@@ -155,7 +155,7 @@ class ProjectWin(QMainWindow):
                 save.triggered.connect(self.run)
                 usch.triggered.connect(self.updateschedule)
                 aboutFixity.triggered.connect(self.AboutFixityView)
-                quit.triggered.connect(self.close)
+                quitMenu.triggered.connect(self.close)
 
                 FilterFilesMane.triggered.connect(self.FilterFilesBox)
                 ChangeNameManu.triggered.connect(self.ChangeNameBox)
@@ -174,12 +174,12 @@ class ProjectWin(QMainWindow):
                 allProjects = self.Database.getProjectInfo()
 
                 projectLists = []
-                if allProjects != None:
+                if allProjects is not None:
                     if(len(allProjects) > 0):
                         for p in allProjects:
                             projectLists.append(str(allProjects[p]['title']))
 
-                if projectLists != None:
+                if projectLists is not  None:
                     if(len(projectLists) > 0):
                         for p in projectLists:
                             QListWidgetItem(str(p), self.projects)
@@ -320,7 +320,7 @@ class ProjectWin(QMainWindow):
         '''
         def cleanObjects(self):
 
-            #Closing opened Windows and database connections
+            # Closing opened Windows and database connections
             try:
                 self.Database.closeConnection()
             except:
@@ -358,7 +358,7 @@ class ProjectWin(QMainWindow):
             except:
                 pass
 
-            #Releasing the Variables
+            # Releasing the Variables
             try:
                 self.Database = None
             except:
@@ -433,8 +433,9 @@ class ProjectWin(QMainWindow):
 
         '''
         Pop Up to Change Root Directory If any change occured
-        orignalPathText:: Path In Manifest
-        changePathText:: New Path Given in Fixity Tool
+        @param orignalPathText: Path In Manifest
+        @param changePathText: New Path Given in Fixity Tool
+        
         '''
 
         def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
@@ -466,7 +467,7 @@ class ProjectWin(QMainWindow):
             self.ChangeName.SetDesgin()
             self.ChangeName.ShowDialog()
 
-            if self.changedNameIndex != None:
+            if self.changedNameIndex is not  None:
                 try:
                     self.projects.item(int(self.changedNameIndex)).setSelected(True)
                     self.projects.setCurrentRow(int(self.changedNameIndex))
@@ -476,8 +477,8 @@ class ProjectWin(QMainWindow):
                     self.unsaved = True
                     self.updateschedule()
                     self.unsaved = False
-                except Exception as ex:
-                    print(ex[0])
+                except Exception as Excep:
+                    print(Excep[0])
 
 
         '''
@@ -498,27 +499,27 @@ class ProjectWin(QMainWindow):
             SqlLiteDataBase = Database()
             Information = {'debugger':0}
             info = SqlLiteDataBase.getConfiguration()
-            if info != None:
+            if info is not None:
                 if(len(info)>0):
                     Information = info[0]
 
             debugText = ''
-            if start == None:
-                if info != None:
+            if start is None:
+                if info is not  None:
                     if len(info) < 0:
                             Information['debugger'] = 1
-                    elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
+                    elif Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] is None:
                         Information['debugger'] = 1
                     else:
                         Information['debugger'] = 0
 
-                    if info != None:
+                    if info is not  None:
                         if len(info) > 0:
                             SqlLiteDataBase.update(SqlLiteDataBase._tableConfiguration,Information,"id = '"+str(Information['id'])+"'")
                         else:
                             SqlLiteDataBase.insert(SqlLiteDataBase._tableConfiguration,Information)
 
-            if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] == None:
+            if Information['debugger'] == 0 or Information['debugger'] == '' or Information['debugger'] is None:
                 debugText = 'Turn Debugging On'
             else:
                 debugText = 'Turn Debugging Off'
@@ -537,7 +538,7 @@ class ProjectWin(QMainWindow):
         Gets Detail information of Windows
         '''
         def getWindowsInformation(self):
-            WindowsInformation = {};
+            WindowsInformation = {}
             try:
                 major , minor , build , platformType , servicePack = sys.getwindowsversion()
 
@@ -551,12 +552,12 @@ class ProjectWin(QMainWindow):
                 WindowsInformation['platform'] = windowDetailedName
                 windowDetailedName = str(windowDetailedName).split('-')
 
-                if(windowDetailedName[0] != None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows')):
+                if(windowDetailedName[0] is not  None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows')):
                     WindowsInformation['isWindows'] =True
                 else:
                     WindowsInformation['isWindows'] =False
 
-                if(windowDetailedName[1] != None and (str(windowDetailedName[1]) != '')):
+                if(windowDetailedName[1] is not None and (str(windowDetailedName[1]) != '')):
                     WindowsInformation['WindowsType'] =str(windowDetailedName[1])
                 else:
                     WindowsInformation['WindowsType'] =None
@@ -570,17 +571,17 @@ class ProjectWin(QMainWindow):
                     bits = 32
 
                 WindowsInformation['bitType'] = "Win{0}".format(bits)
-            except Exception as e:
+            except Exception as Excep:
                 Debuging = Debuger()
                 moreInformation = {"moreInfo":'null'}
                 try:
-                    if not e[0] == None:
-                        moreInformation['LogsMore'] =str(e[0])
+                    if not Excep[0] is None:
+                        moreInformation['LogsMore'] =str(Excep[0])
                 except:
                     pass
                 try:
-                    if not e[1] == None:
-                        moreInformation['LogsMore1'] =str(e[1])
+                    if not Excep[1] is None:
+                        moreInformation['LogsMore1'] =str(Excep[1])
                 except:
                     pass
 
@@ -594,6 +595,8 @@ class ProjectWin(QMainWindow):
         '''
         Updates Fields When Project Is Selected In List
         @Slot(str)
+        @param new: Is New Project
+        
         '''
         def update(self, new):
 
@@ -614,7 +617,7 @@ class ProjectWin(QMainWindow):
             self.StartWhenAvailable.setChecked(False)
             self.EmailOnlyWhenSomethingChanged.setChecked(False)
 
-            information = {}
+            
             projectName = self.projects.currentItem().text()
 
             projectInfo = self.Database.getProjectInfo(projectName)
@@ -632,14 +635,14 @@ class ProjectWin(QMainWindow):
 
             n = 0
             for n in pathInfo:
-                if n != None :
+                if n is not  None :
                     try:
                         self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
                     except:
                         self.dtx[(n)].setText("")
 
             for n in pathInfo:
-                if n != None :
+                if n is not  None :
                     try:
                         self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
                     except:
@@ -664,7 +667,8 @@ class ProjectWin(QMainWindow):
                     self.monthclick()
                     try:
                         self.dom.setValue(int(projectInfo[0]['runDayOrMonth']))
-                    except Exception as e:
+                    except Exception as Excep:
+                        print(Excep)
                         pass
             elif str(projectInfo[0]['durationType']) == '2':
                     self.weekly.setChecked(True)
@@ -793,7 +797,7 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
-                
+
                 currentProject = self.projects.currentItem().text()
 
                 projectInformation = {}
@@ -1107,7 +1111,7 @@ class ProjectWin(QMainWindow):
 
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
 
-                FileName = 'AutoFixity.exe';
+                FileName = 'AutoFixity.exe'
                 params = self.projects.currentItem().text() +' '+'Run'
 
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
@@ -1311,8 +1315,8 @@ class ProjectWin(QMainWindow):
                 if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
                     projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                     binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
-                    projectFileLines = projectFile.readlines();
-                    binFileLines = binFile.readlines();
+                    projectFileLines = projectFile.readlines()
+                    binFileLines = binFile.readlines()
                     projectFile.close()
 
                     binFile.close()
@@ -1334,8 +1338,8 @@ class ProjectWin(QMainWindow):
                 if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy') and path.isfile('bin\\' + self.projects.currentItem().text() + '-conf.txt'):
                     projectFile = open('projects\\' + self.projects.currentItem().text() + '.fxy', 'rb')
                     binFile = open('bin\\' + self.projects.currentItem().text() + '-conf.txt', 'rb')
-                    projectFileLines = projectFile.readlines();
-                    binFileLines = binFile.readlines();
+                    projectFileLines = projectFile.readlines()
+                    binFileLines = binFile.readlines()
                     if (not binFileLines) or (not projectFileLines):
                         self.unsaved = True
                     projectFile.close()

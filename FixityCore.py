@@ -81,17 +81,17 @@ def fixity(filePath, Algorithm , projectName= None):
         fixmd5 = hashlib.md5()
         fixsha256 = hashlib.sha256()
         
-    except Exception as e:
+    except Exception as Excep:
 
         moreInformation = {"moreInfo":'null'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] is None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
-                moreInformation['LogsMore1'] =str(e[1])
+            if not Excep[1] is None:
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
 
@@ -126,16 +126,16 @@ def fixity(filePath, Algorithm , projectName= None):
                 target.close()
                 
                 return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
-    except Exception as e:
+    except Exception as Excep:
         moreInformation = {"moreInfo":'none'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] is None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
-                moreInformation['LogsMore1'] =str(e[1])
+            if not Excep[1] is None:
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
         
@@ -227,13 +227,13 @@ def scpecialCharacterHandler(StringToBeHandled):
     
     try:
         StringToBeHandled = StringToBeHandled.decode('cp1252')
-    except Exception as ex:
-        print(ex[0])
+    except Exception as Excep:
+        print(Excep[0])
         pass
     try:
         StringToBeHandled = StringToBeHandled.encode('utf8')
-    except Exception as ex:
-        print(ex[0])
+    except Exception as Excep:
+        print(Excep[0])
         pass
     
     return StringToBeHandled
@@ -251,18 +251,18 @@ def toTuple(line):
 
     try:
         return [line['ssh256_hash'], str(line['path'].encode('utf-8')).strip(), line['inode']]
-    except Exception as e:
+    except Exception as Excep:
 
         Debugging.tureDebugerOn();
         moreInformation = {"moreInfo":'null'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] is None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
-                moreInformation['LogsMore1'] =str(e[1])
+            if not Excep[1] is None:
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
         Debugging.tureDebugerOn()
@@ -279,11 +279,11 @@ This is done to greatly speed up the eventual fixity checks
 @param file: Database file
 @return : defaultdict keyed to hash values
 '''
-def buildDict(file):
+def buildDict(filePathFix):
 
     try:
 
-        table = open(file, 'r')
+        table = open(filePathFix, 'r')
         db = defaultdict(list)
 
         for line in table.readlines():
@@ -297,20 +297,20 @@ def buildDict(file):
         except:
             pass
         return db
-    except Exception as e:
+    except Exception as Excep:
 
         Debugging.tureDebugerOn();
         moreInformation = {"moreInfo":'null'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] is None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
+            if not Excep[1] is None:
                 table.close()
 
-                moreInformation['LogsMore1'] =str(e[1])
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
         Debugging.tureDebugerOn()
@@ -320,9 +320,6 @@ def buildDict(file):
 
 
 		
-
-
-
 
 '''
 Writes table to file
@@ -440,17 +437,17 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     print('=======Dicty=======')
     try:
         CurrentDirectory = dicty.get(line[2])
-    except Exception as e:
+    except Exception as Excep:
 
         moreInformation = {"moreInfo":'null'}
         try:
-            if not e[0] == None:
-                moreInformation['LogsMore'] =str(e[0])
+            if not Excep[0] is None:
+                moreInformation['LogsMore'] =str(Excep[0])
         except:
             pass
         try:
-            if not e[1] == None:
-                moreInformation['LogsMore1'] =str(e[1])
+            if not Excep[1] is None:
+                moreInformation['LogsMore1'] =str(Excep[1])
         except:
             pass
         
@@ -460,7 +457,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     
     if path.isfile(line[1].decode('utf-8')):
         
-        if CurrentDirectory != None :
+        if CurrentDirectory is not None :
             print('if')
             CurrentDirectory = CurrentDirectory[0]
             isHashSame , isFilePathSame = '' , ''
@@ -474,10 +471,12 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             if isHashSame and isFilePathSame:
                 verifiedFiles.append(line[1])
                 return line, "Confirmed File :\t" + str(line[1])
+            
             if isHashSame and (not isFilePathSame):
                 verifiedFiles.append(line[1])
                 verifiedFiles.append(CurrentDirectory[0])
                 return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
+            
             if (not isHashSame) and isFilePathSame:
 
                 verifiedFiles.append(line[1])
@@ -512,16 +511,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
                         verifiedFiles.append(singleInforHashRelated[0])
                         
                         return line, "Moved or Renamed :\t" + line[1]
-#             for dictionarySingle1 in dictHash:
-#                 allInforHashRelated1 = dictHash[dictionarySingle1]
-#                 for singleInforHashRelated1 in allInforHashRelated1:
-#                     if singleInforHashRelated1[0] == line[1] :
-#                         verifiedFiles.append(line[1])
-#                         return line, "Moved or Renamed :\t" + line[1]
+
         verifiedFiles.append(line[1])
         return line, 'New File :\t' + str(line[1])
-
-
 
 
 
@@ -578,8 +570,8 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
             if not os.path.isdir( str(createPath) + 'reports' ):
                 try:
                     os.mkdir( str(createPath) + 'reports' )
-                except Exception as ex:
-                    print(ex[0])
+                except Exception as Excep:
+                    print(Excep[0])
 
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
             try:
@@ -591,8 +583,8 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         r = open(rn, 'w+')
         r.write(report)
         r.close()
-    except Exception as e:
-        print(e[0])
+    except Exception as Excep:
+        print(Excep[0])
 
     return rn
 
@@ -704,7 +696,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     projectPathInformation = DB.getProjectPathInfo(projectInformation[0]['id'],projectInformation[0]['versionCurrentID'])
     projectDetailInformation = DB.getVersionDetails( projectInformation[0]['id'] , projectInformation[0]['versionCurrentID'] ,' id DESC')
 
-    if(projectDetailInformation != None):
+    if(projectDetailInformation is not None):
         if (len(projectDetailInformation)<=0):
             if(len(projectInformation) > 0):
                 projectDetailInformation = DB.getVersionDetailsLast(projectInformation[0]['id'])
@@ -763,7 +755,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         try:
             x = toTuple(projectDetailInformation[l])
             
-            if x != None and x:
+            if x is not None and x:
                 pathInformation = str(x[1]).split('||')
                 
                 if pathInformation:
@@ -776,19 +768,21 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     dict_Hash[x[0]].append([str(pathInfo['path']) + str(pathInformation[1]).replace('\r\n',''), str(x[2]).replace('\r\n',''), False])
                     dict_File[str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n','')].append([str(x[0]).replace('\r\n',''),str( x[2]).replace('\r\n',''), False])
 
-        except Exception as ex :
+        except Exception as Excep :
 
             moreInformation = {"moreInfo":'null'}
             try:
-                if not ex[0] == None:
-                    moreInformation['LogsMore'] =str(ex[0])
-            except Exception as ex:
-                print(ex[0])
+                if not Excep[0] is None:
+                    moreInformation['LogsMore'] =str(Excep[0])
+            except Exception as Excep:
+                print('moreInformation 771 FC')
+                print(Excep[0])
             try:
-                if not ex[1] == None:
-                    moreInformation['LogsMore1'] =str(ex[1])
-            except Exception as ex:
-                print(ex[0])
+                if not Excep[1] is None:
+                    moreInformation['LogsMore1'] =str(Excep[1])
+            except Exception as Excep:
+                print('moreInformation 776 FC')
+                print(Excep[0])
             try:
                 moreInformation['directoryScanning']
             except:
@@ -797,7 +791,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             for SingleVal in ToBeScannedDirectoriesInProjectFile:
                 moreInformation['directoryScanning']= str(moreInformation['directoryScanning']) + "\t \t"+str(SingleVal)
 
-            print(moreInformation)
+            
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting 615  - 621 File FixityCore While inserting information'+"\n", moreInformation)
             
@@ -805,9 +799,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     print('added all files to dictionary')
     try:
         ToBeScannedDirectoriesInProjectFile.remove('\n')
-    except Exception as ex:
-            print(ex[0])
-    flagAnyChanges = False
+    except Exception as Excep:
+            print('ToBeScannedDirectoriesInProjectFile 794 FC')
+            print(Excep[0])
+    
 
     Algorithm = str(projectInformation[0]['selectedAlgo'])
     print('---------------------History ----------------')
@@ -876,16 +871,18 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
                             if fnmatch.fnmatch(lastIndexName, '.*'):
                                 flag = False
-                        except Exception as ex:
-                            print(ex[0])
+                        except Exception as Excep:
+                            print('fnmatch 865 FC')
+                            print(Excep[0])
 
                         try:
                             PathExploded = str(DirectorysInsideDetailsSingle[1]).split(str(os.sep))
                             for SingleDirtory in PathExploded:
                                 if fnmatch.fnmatch(SingleDirtory, '.*'):
                                     flag = False
-                        except Exception as ex:
-                            print(ex[0])
+                        except Exception as Excep:
+                            print('PathExploded 873 FC')
+                            print(Excep[0])
 
 
             if flag:
@@ -898,18 +895,19 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     if not response or len(response) < 1:
                             continue
                     print('Response from Verification=====')
-                except Exception as ex :
+                except Exception as Excep :
                     moreInformation = {"moreInfo":'null'}
                     try:
-                        if not ex[0] == None:
-                            moreInformation['LogsMore'] =str(ex[0])
-                    except Exception as ex:
-                        print(ex[0])
+                        if not Excep[0] is None:
+                            moreInformation['LogsMore'] =str(Excep[0])
+                    except Exception as Excep1:
+                        print(Excep1[0])
+                        
                     try:
-                        if not ex[1] == None:
-                            moreInformation['LogsMore1'] =str(ex[1])
-                    except Exception as ex:
-                        print(ex[0])
+                        if not Excep[1] is None:
+                            moreInformation['LogsMore1'] =str(Excep[1])
+                    except Exception as Excep2:
+                        print(Excep2[0])
 
 
                     Debugging.tureDebugerOn()
@@ -930,23 +928,25 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                         flagAnyChanges = True
                         corruptedOrChanged += 1
 
-                except Exception as ex:
-                    print(ex[0])
+                except Exception as Excep:
+                    print('corruptedOrChanged 920 FC')
+                    print(Excep[0])
                 
                 pathCode = getPathCode(str(SingleDirectory),InfReplacementArray)
                 pathID = getPathId(str(SingleDirectory),InfReplacementArray)
                 
                 try:
                     newCodedPath = str(response[0][1]).replace(SingleDirectory, pathCode+"||")
-                except Exception as ex:
+                except Exception as Excep:
                     newCodedPath = ' '
-                    print(ex[0])
+                    print('newCodedPath 929 FC')
+                    print(Excep[0])
 
-                versionDetailOptions = {}
+                
                 try:
                     
                     print('----Saving Details For :' + str(newCodedPath))
-                    
+                    versionDetailOptions = {}
                     versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
                     versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
                     versionDetailOptions['path'] = newCodedPath
@@ -957,6 +957,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     DB.insert(DB._tableVersionDetail, versionDetailOptions)
                     
                 except Exception as excp:
+                    print('versionDetailOptions 946 FC')
                     print(excp[0])
                     pass
                 
@@ -965,7 +966,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                         HistoryFile.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
                     else:
                         HistoryFile.write(str(response[0][0]['sha256']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
-                except:
+                except Exception as excp:
+                    print('HistoryFile 955 FC')
                     print(excp[0])
                     pass
                 
@@ -975,14 +977,17 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         missingFile = missing(dict_Hash,SingleDirectory)
         FileChangedList += missingFile[0]
-    except Exception as e:
-        print(e)
+    except Exception as Excep:
+        print('missing 965 FC')
+        print(Excep)
         pass
 
     informationToUpate = {}
     informationToUpate['versionCurrentID'] = versionID['id']
     DB.update(DB._tableProject, informationToUpate, "id='" + str(projectInformation[0]['id']) + "'")
+    
     print('Updating Project Information=====')
+    
     cpyProjectPathInformation  = projectPathInformation
     for PDI in cpyProjectPathInformation:
         del cpyProjectPathInformation[PDI]['id']
@@ -990,8 +995,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         DB.insert(DB._tableProjectPath, cpyProjectPathInformation[PDI])
     try:
         HistoryFile.close()
-    except Exception as ex:
-            print(ex[0])
+    except Exception as Excep:
+            print('HistoryFile 983 FC')
+            print(Excep[0])
 
 
     information = str(file).split('\\')
@@ -1002,7 +1008,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     total +=moved
     total +=created
     total +=corruptedOrChanged
-    print('checking for missing files')
+    print('checking for missing files FC')
     try:
         total += missingFile[1]
     except:
@@ -1011,8 +1017,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         HistoryFile.close()
 
-    except Exception as ex:
-            print(ex[0])
+    except Exception as Excep:
+            print('HistoryFile 1005 FC')
+            print(Excep[0])
     
     ProjectName = file.replace('.fxy','').replace('projects\\','')
     ProjectName = ProjectName.replace('.fxy','').replace('projects//','')
@@ -1025,8 +1032,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         lock.release()
         print('relased the file')
-    except Exception as ex:
-            print(ex[0])
+    except Exception as Excep:
+            print('release 1020 FC')
+            print(Excep[0])
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 
@@ -1076,7 +1084,7 @@ Get Path Id using path
 '''
 def getCodePathMore(code , InfReplacementArray):
     for single in InfReplacementArray:
-        if InfReplacementArray[single]['code'] and InfReplacementArray[single]['code'] != None and InfReplacementArray[single]['code'] == code:
+        if InfReplacementArray[single]['code'] and InfReplacementArray[single]['code'] is not None and InfReplacementArray[single]['code'] == code:
             return InfReplacementArray[single]
 
 
@@ -1095,9 +1103,10 @@ def getDirectoryDetail(projectName ,fullpath = False):
     allProjectDirectoryList = projfile.readline()
     projectDirectoryList = allProjectDirectoryList.split(';')
     for  SigleDir in projectDirectoryList:
-        if SigleDir !=None and SigleDir != '' and ('|-|-|' in SigleDir):
+        if SigleDir is not None and SigleDir != '' and ('|-|-|' in SigleDir):
             detialInformation = str(SigleDir).split('|-|-|')
-            if detialInformation[2] != None and detialInformation[2] !='' :
+            
+            if detialInformation[2] is not None and detialInformation[2] !='' :
                 indexOfDet = int(detialInformation[2])
                 DirectoryDetail[indexOfDet] = detialInformation
 
@@ -1147,17 +1156,17 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
                     Singlefile = scpecialCharacterHandler(Singlefile)
                 fls.append(path.join(root, Singlefile))
     
-    except Exception as e:
+    except Exception as Excep:
   
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
+                if not Excep[0] is None:
+                    moreInformation['LogsMore'] =str(Excep[0])
             except:
                 pass
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
+                if not Excep[1] is None:
+                    moreInformation['LogsMore1'] =str(Excep[1])
             except:
                 pass
   
@@ -1188,17 +1197,17 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             listOfValues.append((hashOfThisFileContent, givenPath, i))
         
 
-    except Exception as e:
+    except Exception as Excep:
 
             moreInformation = {"moreInfo":'null'}
             try:
-                if not e[0] == None:
-                    moreInformation['LogsMore'] =str(e[0])
+                if not Excep[0] is None:
+                    moreInformation['LogsMore'] =str(Excep[0])
             except:
                 pass
             try:
-                if not e[1] == None:
-                    moreInformation['LogsMore1'] =str(e[1])
+                if not Excep[1] is None:
+                    moreInformation['LogsMore1'] =str(Excep[1])
             except:
                 pass
 
