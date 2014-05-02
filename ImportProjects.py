@@ -157,9 +157,9 @@ class ImportProjects(QDialog):
             NameOfFile =  fileName.split('_-_-_')
             if '__' in fileName:
                 NameOfFileArr =  str(NameOfFile[0]).split('__')
-                fileName = NameOfFileArr[0]+'__'+str(int(time.time()))
+                fileName = NameOfFileArr[0]
             else:
-                fileName = NameOfFile[0]+'__'+str(int(time.time()))
+                fileName = NameOfFile[0]
                 
         
         Project = DB.getProjectInfo(fileName)
@@ -178,7 +178,7 @@ class ImportProjects(QDialog):
         projectConfiguration = str(fileToImportInfoOf.readline())
         lastRan  = str(fileToImportInfoOf.readline())
         allContent = fileToImportInfoOf.readlines()
-
+        
         if(pathInformation and  projectConfiguration):
             versionInformation ={}
             versionInformation['versionType'] = ''
@@ -188,6 +188,7 @@ class ImportProjects(QDialog):
             CurrentDate = time.strftime("%Y-%m-%d")
             versionInformation['name'] = EP.EncodeInfo(str(CurrentDate))
             VersionID = DB.insert(DB._tableVersions, versionInformation)
+            
             if(VersionID is not None and VersionID !=''):
                 Config = {}
                 runDayOrMonth = ''
@@ -213,9 +214,10 @@ class ImportProjects(QDialog):
                 elif(int(dmonth) != 99 and int(dweek) == 99):
                     durationType = 1
                     runDayOrMonth = dmonth
-
+                    
+                algorithmUsed = self.checkForAlgoUsed(allContent)
                 # 0 = Monthly, 1 = Weekly, 2 = Daily
-
+                
                 Config['lastRan'] = str(lastRan)
                 Config['filters'] = ''
                 Config['runTime'] = runTime
@@ -226,7 +228,7 @@ class ImportProjects(QDialog):
                 Config['emailOnlyUponWarning'] = 0
                 Config['runWhenOnBattery'] = 1
                 Config['extraConf'] = ''
-                Config['selectedAlgo'] = 'sha256'
+                Config['selectedAlgo'] = algorithmUsed
                 Config['emailAddress'] = self.CleanStringForDictionary(str(emailAddress).replace(';',''))
 
                 projectID = DB.insert(DB._tableProject, Config)
@@ -291,7 +293,6 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['ssh256_hash'] = self.CleanStringForDictionary(ssh256_hash)
                                 inforVersionDetail['path'] = self.CleanStringForDictionary(FixInfo[1])
                                 inforVersionDetail['inode'] = self.CleanStringForDictionary(FixInfo[2])
-                                
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
         
         QMessageBox.information(self, "Success", "Project importing completed ")
@@ -312,11 +313,34 @@ class ImportProjects(QDialog):
             pass
         self.Cancel()
         return
-        
-        
-        
+    
+    
+    
+    '''
+    Check For Algorithm Used
+    @param content: Content line containing Algorithm
+    
+    @return: Algorithm Used
+    '''
+    def checkForAlgoUsed(self,content):
+        algo = 'sha256'
+        for singleContent in content:
+            FixInfo = re.split(r'\t+', singleContent)
+            if FixInfo is not None:
+                if(len(FixInfo) > 2):
+                    if(len(str(FixInfo[0])) == 32):
+                        algo = 'md5'
+                    else:
+                        algo = 'sha256'
+                    return algo
+        return algo 
+    
+    
+    
     '''
     Pick Directory
+    
+    @return: None
     '''
     def pickdir(self):
         if OS_Info =='Windows':
@@ -331,14 +355,17 @@ class ImportProjects(QDialog):
         
         
     '''
-    reset form
+    Reset form
+    @return: None
     '''
     def Reset(self):
         self.projectSelected.setText('')
 
 
     '''
-    close the dailog box
+    Close the dailog box
+    
+    @return: None
     '''
     def Cancel(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
@@ -349,6 +376,8 @@ class ImportProjects(QDialog):
 
     '''
     Refresh Project Settings
+    
+    @return: None
     '''
     def refreshProjectSettings(self):
             allProjects = DB.getProjectInfo()
@@ -374,8 +403,15 @@ class ImportProjects(QDialog):
             except:
                 pass
 
+
+
+
              
-    '''Get Fixity Home Path'''
+    '''
+    Get Fixity Home Path
+    
+    @return: BasePathForMacAndWindows
+    '''
     def getFixityHomePath(self):
         pathInfo = str(getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','')
         pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')

@@ -438,10 +438,16 @@ class ProjectWin(QMainWindow):
         
         '''
 
-        def ChangeRootDirectoryInfor(self,orignalPathText,changePathText):
+        def ChangeRootDirectoryInfor(self,orignalPathText, changePathText, code):
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
-            self.FileChanged = FileChanged(self,orignalPathText,changePathText)
+            CodeOfDirectory =  str(code).split('-')
+            print('orignalPathText=============================')
+            print(orignalPathText)
+            print(changePathText)
+            print('orignalPathText=============================')
+            
+            self.FileChanged = FileChanged(self,orignalPathText, changePathText, int(CodeOfDirectory[1]))
             self.FileChanged.SetDesgin()
             self.FileChanged.ShowDialog()
             self.setWindowTitle("Fixity "+self.versoin)
@@ -534,8 +540,10 @@ class ProjectWin(QMainWindow):
             self.show()
             sys.exit(app.exec_())
 
+
         '''
         Gets Detail information of Windows
+        @return: tuple Windows Information
         '''
         def getWindowsInformation(self):
             WindowsInformation = {}
@@ -596,9 +604,10 @@ class ProjectWin(QMainWindow):
         Updates Fields When Project Is Selected In List
         @Slot(str)
         @param new: Is New Project
+        @param projetName: projet Name If Not Selected 
         
         '''
-        def update(self, new):
+        def update(self, new, projetNameForce = None):
 
             if self.unsaved:
                     sbox = QMessageBox()
@@ -617,10 +626,13 @@ class ProjectWin(QMainWindow):
             self.StartWhenAvailable.setChecked(False)
             self.EmailOnlyWhenSomethingChanged.setChecked(False)
 
-            
-            projectName = self.projects.currentItem().text()
+            if projetNameForce is None: 
+                projectName = self.projects.currentItem().text()
+            else:
+                projectName = projetNameForce
 
             projectInfo = self.Database.getProjectInfo(projectName)
+            
             pathInfo = self.Database.getProjectPathInfo(projectInfo[0]['id'] , projectInfo[0]['versionCurrentID'])
             emails = str(projectInfo[0]['emailAddress'])
             emails = emails.split(',')
@@ -693,10 +705,14 @@ class ProjectWin(QMainWindow):
         New Project Creation
         '''
         def new(self):
+            if self.unsaved:
+                QMessageBox.warning(self, "Fixity", "Can not create New Project.Please save other unsaved Projects and try again.")
+                return
+            
             QID = QInputDialog(self)
             QID.setWindowModality(Qt.WindowModal)
             name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
-
+            
             if not name[1]:
                 return
             projectInfo =  self.Database.getProjectInfo(name[0])
@@ -718,9 +734,9 @@ class ProjectWin(QMainWindow):
             self.old = newitem
             self.toggler(False)
 
-
         '''
         Process the changes made in Fixity
+        @return:  List-List Of Changed Paths
         '''
         def process(self, shouldRun=True):
 
@@ -771,19 +787,31 @@ class ProjectWin(QMainWindow):
                 for ds in self.dtx:
 
                     if ds.text().strip() != "":
+                        
                         self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
                         orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
                         changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
 
                         CodeOfPath = ''
-                        if self.FileChanged.changeThePathInformation:
+                        try:
+                            self.FileChanged.changeThePathInformation
+                        except:
+                            self.FileChanged = FileChanged(self)
+                            
+                        FlagIsPathChanged = False 
+                        if not self.FileChanged.changeThePathInformation:
+                            if self.FileChanged.Code == directoryIncreament:
+                                CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
+                                pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
+                                pathsInfoChanges[directoryIncreament] =  str(str(self.FileChanged.orignalPathText))
+                                FlagIsPathChanged = True
+                            else:
+                                FlagIsPathChanged = False 
+                        
+                        if not FlagIsPathChanged: 
                             CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
                             pathToSaveInManifest = str(ds.text())
                             pathsInfoChanges[directoryIncreament]=str(ds.text())
-                        else:
-                            CodeOfPath = FixityCore.pathCodeEncode(directoryIncreament)
-                            pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
-                            pathsInfoChanges[directoryIncreament] =  str(str(self.FileChanged.orignalPathText))
 
                         if(pathToSaveInManifest ==''):
                             pathToSaveInManifest = str(ds.text())
@@ -862,12 +890,14 @@ class ProjectWin(QMainWindow):
                                 for SingleFilter in FiltersArray :
                                     if SingleFilter == '' or l[n][1].find(SingleFilter) < 0:
                                         total += 1
-
+                
                 if shouldRun:
+                    
                     QMessageBox.information(self, "Fixity", str(total) + " files processed in project: " + self.projects.currentItem().text())
+                    
                     return pathsInfoChanges
+                       
                 else:
-
                     QMessageBox.information(self, "Fixity", "Settings saved for " + self.projects.currentItem().text())
                     return pathsInfoChanges
             else :
@@ -939,6 +969,7 @@ class ProjectWin(QMainWindow):
         '''
         Toggles all option fields on/off
         @param switch: switch could be True or False
+        
         @return: None
         '''
         def toggler(self, switch):
@@ -970,6 +1001,7 @@ class ProjectWin(QMainWindow):
 
         '''
         turn True to anything change related to selected project
+        @return:  None
         '''
         def changed(self):
                 self.unsaved = True
@@ -1066,7 +1098,7 @@ class ProjectWin(QMainWindow):
         def run(self):
             
             if all(d.text() == "" for d in self.dtx):
-                QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan.")
+                QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
             print('asdasdas')
             dmonth, dweek = 99, 99
@@ -1079,7 +1111,7 @@ class ProjectWin(QMainWindow):
             elif self.daily.isChecked():
                 interval = 3
             else:
-                QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans.")
+                QMessageBox.warning(self, "Fixity", "Project schedule not set - please select an interval for scans")
                 return
 
             Configurations = {}
@@ -1117,9 +1149,10 @@ class ProjectWin(QMainWindow):
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
 
                 self.Threading.start()
-                QMessageBox.information(self, "Fixity", self.projects.currentItem().text() + " has started a fixity check.\nIf email settings were provided, you will receive a report upon its completion.")
+                QMessageBox.information(self, "Fixity", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
+                
             else:
-                QMessageBox.information(self, "Fixity", "Projects must be saved before they can be run.\nPlease save your current project before running it.")
+                QMessageBox.information(self, "Fixity", "Project Configuration Not Found,Please Save the project and Try Again")
 
 
 
@@ -1134,7 +1167,7 @@ class ProjectWin(QMainWindow):
             try:
                 sbox.setText("Are you certain that you want to delete " + self.projects.currentItem().text() + "?")
             except:
-                QMessageBox.information(self, "Fixity", "No project selected for deletion.\nPlease select a project to delete.")
+                QMessageBox.information(self, "Fixity", "No project selected for deletion!")
                 return
             sbox.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
             sbox.setDefaultButton(QMessageBox.Cancel)
@@ -1175,6 +1208,8 @@ class ProjectWin(QMainWindow):
 
         '''
         Fetch All Directory with in this directory
+        
+        @return:  ListOfPaths in given Directory
         '''
         def buildTable(self, r, a):
 
@@ -1230,7 +1265,7 @@ class ProjectWin(QMainWindow):
                         errorMsg = self.EmailPrefManager.ValidateEmail(SingleEmail)
                         if not str(errorMsg).strip() == 'None':
                             QB = QMessageBox()
-                            errorMsg = QB.information(self, "One or more of the provided email addresses are malformed.\nPlease adjust/remove the problematic addresses.", errorMsg)
+                            errorMsg = QB.information(self, "Error", errorMsg)
                             return
 
             if isRcipentEmailAddressSet:
@@ -1381,7 +1416,8 @@ class ProjectWin(QMainWindow):
                 for  DirectoryDetailSingle in DirectoryDetail:
                     if (str(DirectoryDetail[DirectoryDetailSingle]['pathID']).strip() == str(code).strip()):
                         if(DirectoryDetail[DirectoryDetailSingle]['path'] != searchForPath):
-                            self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] , searchForPath )
+                            
+                            self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] ,searchForPath, code )
             except:
                 pass
 
@@ -1529,7 +1565,10 @@ class ProjectWin(QMainWindow):
                     except:
                         pass
 
-        ''' create Database Tables '''
+        ''' 
+        create Database Tables
+        @return:  None 
+        '''
         def createDatabaseTables(self):
 
                 try:
@@ -1622,7 +1661,3 @@ if __name__ == '__main__':
             sys.exit()
         except:
             print("Could not run this Project ")
-
-
-
-

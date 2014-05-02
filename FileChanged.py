@@ -27,7 +27,7 @@ class FileChanged(QDialog):
     
     @return: None  
     ''' 
-    def __init__(self,parentWin , orignalPathText ='', changePathText = '' ):
+    def __init__(self,parentWin , orignalPathText ='', changePathText = '', Code = ''):
         self.parentWin = parentWin
         self.FileChangedWin = QDialog(self.parentWin)
         self.FileChangedWin.setWindowModality(Qt.WindowModal)
@@ -35,8 +35,16 @@ class FileChanged(QDialog):
         self.FileChangedWin.setWindowIcon(QIcon(path.join(getcwd(), 'images'+str(os.sep)+'logo_sign_small.png')))
         self.FileChangedLayout = QVBoxLayout()
         self.version = '0.4'
+        
         self.orignalPathText = orignalPathText
         self.changePathText = changePathText
+        self.Code = Code
+        
+        print('Change Information---------------')
+        print('ORIGNAAL ::'+str(self.orignalPathText) )
+        print('CHANGED ::'+str(self.changePathText))
+        print('CODE ::'+str(self.Code))
+        print('Change Information---------------')
         self.changeThePathInformation = False
         self.ReplacementArray ={}
         
@@ -120,8 +128,20 @@ class FileChanged(QDialog):
     @return: None  
     ''' 
     def CloseClick(self):
+        print('close')
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.changeThePathInformation = False
+        print('close1')
+        if self.Code >=0:
+            print('close2')
+            try:
+                print('close3')
+                print(self.orignalPathText)
+                print(self.changePathText)
+                self.parentWin.dtx[(int(self.Code) - 1)].setText(str(self.orignalPathText))
+            except:
+                pass
+        
         self.FileChangedWin.close()
     
     '''
@@ -149,7 +169,7 @@ class FileChanged(QDialog):
         self.changePathToLable = QLabel()
         self.setInformation = QPushButton("&Orignal Path Information")
         self.setInformation = QPushButton("&Change Path")
-        self.cancel = QPushButton("Close")
+        self.cancel = QPushButton("Do Not Change Path")
         self.orignalPath = QTextEdit()
         self.changePathTo = QTextEdit()
 
@@ -168,7 +188,7 @@ class FileChanged(QDialog):
         self.cancel.setMaximumSize(200, 100)
         self.setInformation.setMaximumSize(200, 100)
 
-        # set Widget to layouts
+        # Set Widget to layouts
         self.GetLayout().addWidget(self.orignalPathLable)
         self.GetLayout().addWidget(self.orignalPath)
         self.GetLayout().addWidget(self.changePathToLable)
@@ -176,7 +196,7 @@ class FileChanged(QDialog):
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.cancel)
 
-        # set triggers
+        # Set triggers
         self.setInformation.clicked.connect(self.changeRootDirInfo)
         self.cancel.clicked.connect(self.CloseClick)
         self.SetWindowLayout()

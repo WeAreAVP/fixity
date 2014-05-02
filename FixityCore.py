@@ -210,9 +210,7 @@ def GetDirectoryInformationUsingInode(Path,Inode):
         return True
     except:
         return True
-		
-		
-		
+
 
 
 '''
@@ -240,7 +238,6 @@ def scpecialCharacterHandler(StringToBeHandled):
 
 
 
-	
 '''
 Method to convert database line into tuple
 @param line: Information of a single File
@@ -270,7 +267,7 @@ def toTuple(line):
 
         return None
 
-		
+
 
 
 '''
@@ -319,7 +316,7 @@ def buildDict(filePathFix):
         return None
 
 
-		
+
 
 '''
 Writes table to file
@@ -495,7 +492,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             for dictionarySingle in dictHash:
                 allInforHashRelated = dictHash[dictionarySingle]
                 for singleInforHashRelated in allInforHashRelated:
-                    # Y     Y    Y     N    Confirmed File
+                    ''' '''
                     if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0][Algorithm]:
                         verifiedFiles.append(line[1])
                         return line, "Confirmed File :\t" + str(line[1])
@@ -658,7 +655,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
 
 
     global verifiedFiles
-
+    flagAnyChanges = False
     print('Started:::'+projectName)
     try:
         processID = os.getpid()
@@ -977,6 +974,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         missingFile = missing(dict_Hash,SingleDirectory)
         FileChangedList += missingFile[0]
+        flagAnyChanges = True
     except Exception as Excep:
         print('missing 965 FC')
         print(Excep)
@@ -1035,6 +1033,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except Exception as Excep:
             print('release 1020 FC')
             print(Excep[0])
+    if checkForChanges:
+        return flagAnyChanges
+    
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 
 

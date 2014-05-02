@@ -325,7 +325,7 @@ class Database(object):
 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
             
-
+#             print(query)
             try:
                 self.connect()
             except Exception as ex:
@@ -479,7 +479,7 @@ class Database(object):
                         query += ' , '+ str(singleInfo) + "='" + str(information[singleInfo]) +"'"
                     counter=counter+1
             query += ' WHERE '+condition
-
+#             print(query)
             try:
                 self.connect()
             except:

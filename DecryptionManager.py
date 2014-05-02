@@ -50,6 +50,7 @@ from Database import Database
 
 Debugging = Debuger()
 ''' Class to manage the Filter to be implemented for the files with specific extensions '''
+
 class DecryptionManager(QDialog):
     
     '''Constructor'''
@@ -73,10 +74,11 @@ class DecryptionManager(QDialog):
     '''
     def destroyDecryptionManager(self):
         del self
-        
+    '''Reject'''
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
         super(DecryptionManager,self).reject()
+        
     '''Create Window'''
     def CreateWindow(self):
         self = QDialog()
@@ -86,22 +88,27 @@ class DecryptionManager(QDialog):
     def GetWindow(self):
         return self
 
+
     '''Create Show Window'''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
+
     '''Create Show Window'''
     def SetLayout(self, layout):
         self.DecryptionManagerLayout = layout
+        
         
     '''Set Layout for Windows'''
     def SetWindowLayout(self):
         self.setLayout(self.DecryptionManagerLayout)
         
+        
     '''Get Layout'''
     def GetLayout(self):
         return self.DecryptionManagerLayout
+
 
     ''' Reset Form information'''
     def ResetForm(self):
@@ -187,9 +194,10 @@ class DecryptionManager(QDialog):
         SqlLiteDataBase  = Database()
         info = SqlLiteDataBase.getProjectInfo(selectedProject)
         Information= {}
-
         if(len(info) > 0):
             Information = info[0]
+#         FixityCore.run(selectedProject,Information['filters'], selectedProject = '', True)
+        
 
         aloValueSelected = ''
         if self.methods.currentText() is None or self.methods.currentText() == '':
@@ -227,15 +235,16 @@ class DecryptionManager(QDialog):
                     except:
                         pass
                     
-                    QMessageBox.information(self, "Success", "Project algorithm successfully changed.")
+                    QMessageBox.information(self, "Success", selectedProject+"'s algorithm has been changed successfully.")
 
                     self.Cancel()
                     return
             else:
                 if (not hasChanged) and (sameValueFlag):
                     
-                    QMessageBox.information(self, "Information", "Project algorithm was NOT successfully changed - please try again.")
+                    QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed - please try again.")
         return
+
 
     ''' Triggers on project changed from drop down and sets related information in filters Field'''
     def projectChanged(self):
@@ -262,6 +271,7 @@ class DecryptionManager(QDialog):
         self.setWindowTitle("Fixity "+self.parentWin.versoin)
         self.destroyDecryptionManager()
         self.close()
+
 
     '''Warning to change encryption value'''
     def slotWarning(self, projectName):
