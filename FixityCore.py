@@ -833,6 +833,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     HistoryFile.write(keeptime.replace('\n', '').replace('\r\n', '')+"\n")
     HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     
+    HistoryFile.write( str( projectInformation[0]['filters'] )+'||-||'+str(projectInformation[0]['ignoreHiddenFiles']) + "\n")
+    HistoryFile.write( str( projectInformation[0]['selectedAlgo'] ) + "\n")
+    
     '''
     Running Scrpit against all given directory in given project
     '''

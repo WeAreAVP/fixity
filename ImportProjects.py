@@ -104,19 +104,17 @@ class ImportProjects(QDialog):
 
 
         self.GetLayout().addStrut(200)
-        self.Projects = QPushButton('Select Path')
+        self.Projects = QPushButton('Select Project')
         self.projectSelected = QTextEdit()
 
         self.Projects.clicked.connect(self.pickdir)
 
         self.GetLayout().addWidget(self.Projects)
         self.projectSelected = QLineEdit()
-        self.setInformation = QPushButton("Start Importing")
+        self.setInformation = QPushButton("Import")
         self.cancel = QPushButton("Close")
 
         self.projectSelected.setPlaceholderText("Project Path")
-
-        
 
         self.GetLayout().addWidget(self.projectSelected)
         self.GetLayout().addWidget(self.setInformation)
@@ -177,8 +175,10 @@ class ImportProjects(QDialog):
         emailAddress =  str(fileToImportInfoOf.readline())
         projectConfiguration = str(fileToImportInfoOf.readline())
         lastRan  = str(fileToImportInfoOf.readline())
+        filters  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
+        AlgorithmSelected  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
         allContent = fileToImportInfoOf.readlines()
-        
+        filters = filters.split('||-||')
         if(pathInformation and  projectConfiguration):
             versionInformation ={}
             versionInformation['versionType'] = ''
@@ -214,21 +214,22 @@ class ImportProjects(QDialog):
                 elif(int(dmonth) != 99 and int(dweek) == 99):
                     durationType = 1
                     runDayOrMonth = dmonth
-                    
-                algorithmUsed = self.checkForAlgoUsed(allContent)
+                if AlgorithmSelected == '' or AlgorithmSelected is None:
+                    AlgorithmSelected = self.checkForAlgoUsed(allContent)
                 # 0 = Monthly, 1 = Weekly, 2 = Daily
                 
                 Config['lastRan'] = str(lastRan)
-                Config['filters'] = ''
+                Config['filters'] = str(filters[0])
                 Config['runTime'] = runTime
                 Config['durationType'] = durationType
+                Config['ignoreHiddenFiles'] = str(filters[1])
                 Config['runDayOrMonth']  = runDayOrMonth
                 Config['emailOnlyUponWarning'] = 0
                 Config['ifMissedRunUponRestart'] = 0
                 Config['emailOnlyUponWarning'] = 0
                 Config['runWhenOnBattery'] = 1
                 Config['extraConf'] = ''
-                Config['selectedAlgo'] = algorithmUsed
+                Config['selectedAlgo'] = AlgorithmSelected
                 Config['emailAddress'] = self.CleanStringForDictionary(str(emailAddress).replace(';',''))
 
                 projectID = DB.insert(DB._tableProject, Config)

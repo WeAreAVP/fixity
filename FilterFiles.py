@@ -166,8 +166,8 @@ class FilterFiles(QDialog):
         self.IgnoreHiddenFiles = QCheckBox("Ignore Hidden Files")
 
 
-        if OS_Info == 'linux':
-                self.GetLayout().addWidget(self.IgnoreHiddenFiles)
+#         if OS_Info == 'linux':
+        self.GetLayout().addWidget(self.IgnoreHiddenFiles)
         self.GetLayout().addWidget(self.FilterField)
         self.GetLayout().addWidget(self.setInformation)
         self.GetLayout().addWidget(self.reset)
