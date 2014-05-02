@@ -556,10 +556,12 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         else:
 
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
+            print('===================pathInfo===================')
+            print(AutiFixPath)
             NameOfFile = str(projectName[1]).split('/')
-
+            print(NameOfFile)
             NameOfFile[(len(NameOfFile)-1)]
-
+            print(NameOfFile[(len(NameOfFile)-1)])
             
             pathInfo = getFixityHomePath()
             createPath = str(pathInfo).replace(' ', '\\ ')
@@ -569,13 +571,16 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
                     os.mkdir( str(createPath) + 'reports' )
                 except Exception as Excep:
                     print(Excep[0])
-
+            print(pathInfo)
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            print(rn)
+            
             try:
                 rn = str(rn).replace(' ', '\\ ')
             except Exception as Ex:
                 print(Ex[0])
-
+            print(rn)
+            print('===================pathInfo===================')
 
         r = open(rn, 'w+')
         r.write(report)
