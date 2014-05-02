@@ -579,9 +579,9 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
                 rn = str(rn).replace(' ', '\\ ')
             except Exception as Ex:
                 print(Ex[0])
-            print(rn)
-            print('===================pathInfo===================')
-
+            
+        print(rn)
+        print('===================pathInfo===================')
         r = open(rn, 'w+')
         r.write(report)
         r.close()
