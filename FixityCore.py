@@ -80,8 +80,10 @@ def fixity(filePath, Algorithm , projectName= None):
     moreInformation= {}
     
     try:
-        fixmd5 = hashlib.md5()
-        fixsha256 = hashlib.sha256()
+        if Algorithm =='md5':
+            fixmd5 = hashlib.md5()
+        else:
+            fixsha256 = hashlib.sha256()
         
     except Exception as Excep:
 
@@ -110,24 +112,33 @@ def fixity(filePath, Algorithm , projectName= None):
         if OS_Info == 'Windows':
             with open(filePath.decode('utf-8'), 'r') as target:
                 for piece in iter(lambda: target.read(4096), b''):
-                    
-                    fixmd5.update(piece)
-                    fixsha256.update(piece)
+                    if Algorithm =='md5':
+                        fixmd5.update(piece)
+                    else:
+                        fixsha256.update(piece)
                     
                 target.close()
                 
-                return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
+                if Algorithm =='md5':
+                    return fixmd5.hexdigest()
+                else:
+                    return fixsha256.hexdigest()
         else:
             
             with open(filePath, 'r') as target:
                 for piece in iter(lambda: target.read(4096), b''):
-                    
-                    fixmd5.update(piece)
-                    fixsha256.update(piece)
+                    if Algorithm =='md5':
+                        fixmd5.update(piece)
+                    else:
+                        fixsha256.update(piece)
                     
                 target.close()
                 
-                return {'md5':fixmd5.hexdigest() , 'sha256':fixsha256.hexdigest()}
+                if Algorithm =='md5':
+                    return fixmd5.hexdigest()
+                else:
+                    return fixsha256.hexdigest()
+                
     except Exception as Excep:
         moreInformation = {"moreInfo":'none'}
         try:
@@ -249,7 +260,7 @@ Method to convert database line into tuple
 def toTuple(line):
 
     try:
-        return [line['ssh256_hash'], str(line['path'].encode('utf-8')).strip(), line['inode']]
+        return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
     except Exception as Excep:
 
         Debugging.tureDebugerOn();
@@ -463,7 +474,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             isHashSame , isFilePathSame = '' , ''
 
             ''' Check For File Hash Change '''
-            isHashSame = (CurrentDirectory[1] == line[0][Algorithm])
+            isHashSame = (CurrentDirectory[1] == line[0])
 
             ''' Check For File Path Change ''' 
             isFilePathSame = (CurrentDirectory[0] == line[1])
@@ -666,8 +677,6 @@ With on the given directory
 '''
 def run(file,filters='',projectName = '',checkForChanges = False):
 
-
-
     global verifiedFiles
     flagAnyChanges = False
     print('Started:::'+projectName)
@@ -727,11 +736,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+'_-_-_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
 
-        
         pathInfo = pathInfo = getFixityHomePath()
-
         createPath = str(pathInfo).replace(' ', '\\ ')
-
+        
         if  not os.path.isdir(str(createPath)+'history') :
             try:
                 os.mkdir(str(createPath)+'history')
@@ -741,7 +748,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '=')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
 
-    
     try:
         HistoryFile = open(historyFile , 'w+')
     except:
@@ -762,7 +768,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     mails = str(projectInformation[0]['emailAddress']).split(',')
     print('writing ::: Stared Worked')
     check = 0
-    
+    print(projectDetailInformation)
     for l in projectDetailInformation:
         
         try:
@@ -780,7 +786,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     dict[str(x[2]).replace('\r\n','')].append([str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n',''), str(x[0]).replace('\r\n',''), False])
                     dict_Hash[x[0]].append([str(pathInfo['path']) + str(pathInformation[1]).replace('\r\n',''), str(x[2]).replace('\r\n',''), False])
                     dict_File[str(pathInfo['path']).replace('\r\n','')+str(pathInformation[1]).replace('\r\n','')].append([str(x[0]).replace('\r\n',''),str( x[2]).replace('\r\n',''), False])
-
+                    
         except Exception as Excep :
 
             moreInformation = {"moreInfo":'null'}
@@ -836,12 +842,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     keeptime = ''
     
     '''
-    -----------------------------
-    # Duration Type From Database
     #-----------------------------
-    #     1 = Monthly
-    #     2 = Week
-    #     3 = Daily
+    # Duration Type From Database|
+    #-----------------------------
+    # - 1 = Monthly
+    # - 2 = Week
+    # - 3 = Daily
     '''
     
     if int(projectInformation[0]['durationType']) == 3 :
@@ -914,9 +920,6 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 except Exception as Excep:
                     print('PathExploded 873 FC')
                     print(Excep[0])
-            
-                
-
 
             if flag:
                 check+= 1
@@ -974,19 +977,21 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     newCodedPath = ' '
                     print('newCodedPath 929 FC')
                     print(Excep[0])
-
-                
+                print('response===============')
+                print(response)
+                print('respons===========e')
                 try:
                     
                     print('----Saving Details For :' + str(newCodedPath))
                     versionDetailOptions = {}
-                    versionDetailOptions['md5_hash'] = str(response[0][0]['md5'])
-                    versionDetailOptions['ssh256_hash'] = str(response[0][0]['sha256'])
+                    print(response[0])
+                    versionDetailOptions['hashes'] = str(response[0][0])
                     versionDetailOptions['path'] = newCodedPath
                     versionDetailOptions['inode'] = str(response[0][2])
                     versionDetailOptions['versionID'] = str(versionID['id'])
                     versionDetailOptions['projectID'] = projectInformation[0]['id']
                     versionDetailOptions['projectPathID'] = pathID
+                    print(versionDetailOptions)
                     DB.insert(DB._tableVersionDetail, versionDetailOptions)
                     
                 except Exception as excp:
@@ -995,10 +1000,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     pass
                 
                 try:
-                    if(Algorithm == 'md5'):
-                        HistoryFile.write(str(response[0][0]['md5']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
-                    else:
-                        HistoryFile.write(str(response[0][0]['sha256']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
+                    HistoryFile.write(str(response[0][0]['hashes']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
                 except Exception as excp:
                     print('HistoryFile 955 FC')
                     print(excp[0])
@@ -1010,11 +1012,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         missingFile = missing(dict_Hash,SingleDirectory)
         FileChangedList += missingFile[0]
+        
         try:
             if missingFile[1] > 0:
                 flagAnyChanges = True
         except:
             pass
+        
     except Exception as Excep:
         print('missing 965 FC')
         print(Excep)
@@ -1024,7 +1028,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     informationToUpate['versionCurrentID'] = versionID['id']
     DB.update(DB._tableProject, informationToUpate, "id='" + str(projectInformation[0]['id']) + "'")
     
-    print('Updating Project Information=====')
+    print('===== Updating Project Information =====')
     
     cpyProjectPathInformation  = projectPathInformation
     for PDI in cpyProjectPathInformation:
@@ -1042,19 +1046,20 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     projectName = information[(len(information)-1)]
     projectName = str(projectName).split('.')
     
-    total = confirmed
-    total +=moved
-    total +=created
-    total +=corruptedOrChanged
+    total =  confirmed
+    total += moved
+    total += created
+    total += corruptedOrChanged
+    
     print('checking for missing files FC')
     try:
         total += missingFile[1]
     except:
         missingFile = ('','')
         pass
+    
     try:
         HistoryFile.close()
-
     except Exception as Excep:
             print('HistoryFile 1005 FC')
             print(Excep[0])
@@ -1205,6 +1210,7 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
                     moreInformation['LogsMore'] =str(Excep[0])
             except:
                 pass
+            
             try:
                 if not Excep[1] is None:
                     moreInformation['LogsMore1'] =str(Excep[1])
@@ -1223,11 +1229,8 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             print('Listing:::'+str(fls[f]))
 
             pathOftheFile = r''+path.abspath(fls[f])
-            
             EcodedBasePath = InfReplacementArray[DirectortPathToBeScanned]['code']
-
-            givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')
-            
+            givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')            
             hashOfThisFileContent = fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
             
             
@@ -1260,16 +1263,17 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
 
     return listOfValues
 
-# check weather this file is Hidden or Not 
+''' 
+Check weather this file is Hidden or Not
+@param pathOfFile: Path Of File or Directory to be checked
+
+@return: 0 if hidden and 2 if not in windows and in MAC true if hidden and false if not
+''' 
 def isThisFileHidden(pathOfFile):
     if os.name== 'nt':
+        '''Windows Condition'''
         attribute = win32api.GetFileAttributes(pathOfFile)
         return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
     else:
-        return pathOfFile.startswith('.') #linux
-
-
-# projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy','','New_Project')
-
-
+        '''linux'''
+        return pathOfFile.startswith('.') 

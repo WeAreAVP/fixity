@@ -232,6 +232,12 @@ class DecryptionManager(QDialog):
 
         if response:
             if flag:
+                
+                    try:
+                        FixityCore.run(selectedProject, Information['filters'], '', True)
+                    except:
+                        pass
+                
                     try:
                         msgBox.close()
                     except:

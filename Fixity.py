@@ -441,6 +441,7 @@ class ProjectWin(QMainWindow):
             self.FileChanged.DestroyEveryThing()
             self.FileChanged = None
             CodeOfDirectory =  str(code).split('-')
+            
             print('orignalPathText=============================')
             print(orignalPathText)
             print(changePathText)
@@ -451,9 +452,7 @@ class ProjectWin(QMainWindow):
             self.FileChanged.ShowDialog()
             self.setWindowTitle("Fixity "+self.versoin)
 
-        '''
-        Pop up to set Filters
-        '''
+        ''' Pop up to set Filters '''
         def FilterFilesBox(self):
             self.FilterFiles.Cancel()
             self.FilterFiles = None
@@ -461,9 +460,7 @@ class ProjectWin(QMainWindow):
             self.FilterFiles.SetDesgin()
             self.FilterFiles.ShowDialog()
 
-        '''
-        Pop up to Change Project Name
-        '''
+        ''' Pop up to Change Project Name '''
         def ChangeNameBox(self):
 
             self.ChangeName.Cancel()
@@ -486,9 +483,7 @@ class ProjectWin(QMainWindow):
                     print(Excep[0])
 
 
-        '''
-        Pop up to set Encryption Method
-        '''
+        ''' Pop up to set Encryption Method. '''
         def DecryptionManagerBox(self):
             self.DecryptionManager.Cancel()
             self.DecryptionManager = None
@@ -497,9 +492,7 @@ class ProjectWin(QMainWindow):
             self.DecryptionManager.ShowDialog()
 
 
-        '''
-        Trigger to switch debugger on or off
-        '''
+        ''' Trigger to switch debugger on or off '''
         def switchDebugger(self,start= None):
             SqlLiteDataBase = Database()
             Information = {'debugger':0}
@@ -531,9 +524,8 @@ class ProjectWin(QMainWindow):
 
             self.Debuging.setText(debugText)
 
-        '''
-        Create New Fixity Again
-        '''
+
+        ''' Create New Fixity Again '''
         def newWindow(self):
             self = ProjectWin()
             self.show()
@@ -541,8 +533,10 @@ class ProjectWin(QMainWindow):
 
 
         '''
+        
         Gets Detail information of Windows
         @return: tuple Windows Information
+        
         '''
         def getWindowsInformation(self):
             WindowsInformation = {}
@@ -636,6 +630,7 @@ class ProjectWin(QMainWindow):
             emails = str(projectInfo[0]['emailAddress'])
             emails = emails.split(',')
             rlabel = projectInfo[0]['lastRan']
+            
             countEmail = 0
             for email in emails:
                 try:
@@ -643,7 +638,8 @@ class ProjectWin(QMainWindow):
                 except:
                     pass
                 countEmail = countEmail + 1
-
+                
+                
             n = 0
             for n in pathInfo:
                 if n is not  None :
@@ -1579,7 +1575,7 @@ class ProjectWin(QMainWindow):
 
 
                 if not self.checkIfTableExistsInDatabase('configuration'):
-                    ''' Create configuration Table'''
+                    ''' Create Configuration Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "configuration" ( id INTEGER NOT NULL,  smtp TEXT,  email TEXT,  pass TEXT,  port INTEGER,  protocol TEXT,  debugger SMALLINT,  "updatedAt" DATETIME,  "createdAt" DATETIME,  PRIMARY KEY (id) );')
                     except:
@@ -1587,7 +1583,7 @@ class ProjectWin(QMainWindow):
 
 
                 if not self.checkIfTableExistsInDatabase('project'):
-                    ''' Create project Table'''
+                    ''' Create Project Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
                     except:
@@ -1596,7 +1592,7 @@ class ProjectWin(QMainWindow):
 
 
                 if not self.checkIfTableExistsInDatabase('projectPath'):
-                    ''' Create projectPath Table'''
+                    ''' Create ProjectPath Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL,  "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
                     except:
@@ -1604,15 +1600,15 @@ class ProjectWin(QMainWindow):
 
 
                 if not self.checkIfTableExistsInDatabase('versionDetail'):
-                    ''' Create versionDetail Table'''
+                    ''' Create VersionDetail Table'''
                     try:
-                        self.Database.sqlQuery('CREATE TABLE "versionDetail" (id INTEGER NOT NULL, "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "projectPathID" INTEGER NOT NULL, md5_hash TEXT NOT NULL, ssh256_hash TEXT NOT NULL, path TEXT NOT NULL, inode TEXT NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id), FOREIGN KEY("versionID") REFERENCES versions (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("projectPathID") REFERENCES "projectPath" (id));')
+                        self.Database.sqlQuery('CREATE TABLE "versionDetail" (id INTEGER NOT NULL, "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "projectPathID" INTEGER NOT NULL, "hashes" TEXT NOT NULL , "path" TEXT NOT NULL, inode TEXT NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id), FOREIGN KEY("versionID") REFERENCES versions (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("projectPathID") REFERENCES "projectPath" (id));')
                     except:
                         pass
 
 
                 if not self.checkIfTableExistsInDatabase('versions'):
-                    ''' Create versions Table'''
+                    ''' Create Versions Table'''
                     try:
                         self.Database.sqlQuery('CREATE TABLE "versions" (id INTEGER NOT NULL, "versionType" VARCHAR(10) NOT NULL, name VARCHAR(255) NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id));')
                     except:
