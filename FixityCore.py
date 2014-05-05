@@ -509,38 +509,29 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         else :
             print('else')
             CurrentDirectory = []
-            print(1)
+            
             for dictionarySingle in dictHash:
-                print(2)
-                
                 allInforHashRelated = dictHash[dictionarySingle]
-                print(3)
+                
                 for singleInforHashRelated in allInforHashRelated:
-                    print(singleInforHashRelated)
-                    print(4)
-                    print(line)
+                    
                     '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::YES    #SameI-Node::NO  '''
                     if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0]:
-                        print(5)
-                        verifiedFiles.append(line[1])
-                        
+                        verifiedFiles.append(line[1])            
                         return line, "Confirmed File :\t" + str(line[1])
 
                     
                         '''  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO  '''
                     elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0]:
-                        print(6)
                         verifiedFiles.append(line[1])
-                        
                         return line, 'Changed File :\t' + str(line[1])
                     
                         '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO  '''
                     elif singleInforHashRelated[0] != line[1] and dictionarySingle == line[0]:
-                        print(7)
                         verifiedFiles.append(line[1])
                         return line, 'New File :\t' + str(line[1])
                     
-        print(8)
+        
         '''  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
         verifiedFiles.append(line[1])
         return line, 'New File :\t' + str(line[1])
