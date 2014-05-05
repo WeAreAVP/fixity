@@ -14,9 +14,10 @@ elif os.name == 'nt':
 elif os.name == 'os2':
     OS_Info = 'check'
 
-# Bultin Libraries
+''' Built-in Libraries ''' 
 from PySide.QtCore import *
 from PySide.QtGui import *
+
 if OS_Info == 'linux':
     from os import path, listdir, remove, walk, getcwd, spawnl, system
 else:
@@ -32,7 +33,9 @@ import argparse
 import platform
 import os
 
-# Custom Libraries
+
+
+''' Custom Libraries '''
 import FixityCore
 import FixitySchtask
 from Threading import Threading
@@ -64,12 +67,11 @@ class ProjectWin(QMainWindow):
                     self.CreateAllRequiredFileAndDirectoriesForMac()
 
                 self.Database = Database()
-
                 self.createDatabaseTables()
 
                 pathInfo = str(getcwd()).replace('\\schedules', '')
-
                 pathInfo = pathInfo.replace('schedules', '')
+
 
                 if(OS_Info == 'Windows'):
                     databasePath = pathInfo+"\\bin\\Fixity.db-journal"
@@ -308,19 +310,17 @@ class ProjectWin(QMainWindow):
                 self.toggler((self.projects.count() == 0))
                 self.show()
 
-        '''
-        Distructor
-        '''
+        ''' Distructor '''
         def __del__(self):
             del self
 
         '''
         Clean All Objects Existed
-        Closing opened Windows and database conactions and Releasing the Variables
+        Closing opened Windows and database connections and Releasing the Variables
         '''
         def cleanObjects(self):
 
-            # Closing opened Windows and database connections
+            '''  Closing opened Windows and database connections ''' 
             try:
                 self.Database.closeConnection()
             except:
@@ -358,7 +358,7 @@ class ProjectWin(QMainWindow):
             except:
                 pass
 
-            # Releasing the Variables
+            '''  Releasing the Variables ''' 
             try:
                 self.Database = None
             except:
@@ -415,7 +415,6 @@ class ProjectWin(QMainWindow):
             self.ImportProjects = None
             self.ImportProjects = ImportProjects(self)
             self.ImportProjects.projectListWidget = self.projects
-
             self.ImportProjects.SetDesgin()
             self.ImportProjects.ShowDialog()
 
@@ -727,9 +726,9 @@ class ProjectWin(QMainWindow):
             self.monthclick()
             self.dom.setValue(1)
             self.timer.setTime(QTime(0, 0))
-            for x in xrange(0, 7):
-                self.dtx[x].setText("")
-                self.mtx[x].setText("")
+            for SingleRangeValue  in xrange(0, 7):
+                self.dtx[SingleRangeValue].setText("")
+                self.mtx[SingleRangeValue].setText("")
 
             self.old = newitem
             self.toggler(False)
@@ -884,11 +883,11 @@ class ProjectWin(QMainWindow):
                 if shouldRun:
                     for dx in self.dtx:
                         src = dx.text()
-                        l = self.buildTable(src, 'sha256')
-                        for n in xrange(len(l)):
+                        listOfDirectory = self.buildTable(src, 'sha256')
+                        for n in xrange(len(listOfDirectory)):
                             if FiltersArray:
                                 for SingleFilter in FiltersArray :
-                                    if SingleFilter == '' or l[n][1].find(SingleFilter) < 0:
+                                    if SingleFilter == '' or listOfDirectory[n][1].find(SingleFilter) < 0:
                                         total += 1
                 
                 if shouldRun:
@@ -1194,9 +1193,9 @@ class ProjectWin(QMainWindow):
             try:
                     self.update(self.projects.selectedItems()[0])
             except:
-                    for x in xrange(0, 7):
-                            self.dtx[x].setText("")
-                            self.mtx[x].setText("")
+                    for SingleRangeValue in xrange(0, 7):
+                            self.dtx[SingleRangeValue].setText("")
+                            self.mtx[SingleRangeValue].setText("")
                     self.monthly.setChecked(True)
                     self.monthclick()
                     self.timer.setTime(QTime(0, 0))

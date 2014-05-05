@@ -34,9 +34,11 @@ import sys
 import codecs
 import StringIO
 import parser
+import ctypes
 
 if(OS_Info == 'Windows'):
     import win32file
+    import win32api, win32con
 
 import shutil
 import base64
@@ -433,6 +435,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
     print('verifying:::'+str(line[1]))
     print('=======Dicty=======')
     try:
+        ''' Check if I-Node related information Exists in the Given Directory  '''
         CurrentDirectory = dicty.get(line[2])
     except Exception as Excep:
 
@@ -453,32 +456,39 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         pass
     
     if path.isfile(line[1].decode('utf-8')):
-        
+        '''' IF SAME INODE EXISTS '''
         if CurrentDirectory is not None :
             print('if')
             CurrentDirectory = CurrentDirectory[0]
             isHashSame , isFilePathSame = '' , ''
 
-            # Check For File Hash Change
+            ''' Check For File Hash Change '''
             isHashSame = (CurrentDirectory[1] == line[0][Algorithm])
 
-            # Check For File Path Change
+            ''' Check For File Path Change ''' 
             isFilePathSame = (CurrentDirectory[0] == line[1])
-
+            
+            '''   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
             if isHashSame and isFilePathSame:
                 verifiedFiles.append(line[1])
                 return line, "Confirmed File :\t" + str(line[1])
             
+            
+            '''   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
             if isHashSame and (not isFilePathSame):
                 verifiedFiles.append(line[1])
                 verifiedFiles.append(CurrentDirectory[0])
                 return line, "Moved or Renamed File :\t" + str(CurrentDirectory[0]) + "\t changed to\t" + str(line[1])
             
+            
+            '''   FileExists::YES  ||SameHashOfFile::NO  ||SameFilePath::YES ||SameI-Node::YES  '''
             if (not isHashSame) and isFilePathSame:
 
                 verifiedFiles.append(line[1])
                 return line, "Changed File :\t" + str(line[1])
-
+            
+            
+            '''   FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
             if (not isHashSame) and (not isFilePathSame):
                 
                 verifiedFiles.append(line[1])
@@ -492,23 +502,27 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
             for dictionarySingle in dictHash:
                 allInforHashRelated = dictHash[dictionarySingle]
                 for singleInforHashRelated in allInforHashRelated:
-                    ''' '''
+                    
+                    '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::YES    #SameI-Node::NO  '''
                     if singleInforHashRelated[0] == line[1] and dictionarySingle == line[0][Algorithm]:
                         verifiedFiles.append(line[1])
+                        
                         return line, "Confirmed File :\t" + str(line[1])
 
-                    # Y     N    Y    N    Changed File
+
+                        '''  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO  '''
                     elif singleInforHashRelated[0] == line[1] and dictionarySingle != line[0][Algorithm]:
                         verifiedFiles.append(line[1])
+                        
                         return line, 'Changed File :\t' + str(line[1])
                     
-                    # Y     N    Y    N    Changed File
+                        '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO  '''
                     elif singleInforHashRelated[0] != line[1] and dictionarySingle == line[0][Algorithm]:
                         verifiedFiles.append(line[1])
-                        verifiedFiles.append(singleInforHashRelated[0])
-                        
-                        return line, "Moved or Renamed :\t" + line[1]
-
+                        return line, 'New File :\t' + str(line[1])
+                    
+                    
+        '''  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
         verifiedFiles.append(line[1])
         return line, 'New File :\t' + str(line[1])
 
@@ -517,9 +531,9 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
 '''
 Writes report about the most recent fixity check
 Input: algorithm used, start time, directories scanned, number of files found, good files, warned files, bad files, missing files, [out?], current time, old DB, new DB
-Output: All this, written nicely to a tab-delimited file, with the filepath returned
+Output: All this, written nicely to a tab-delimited file, with the file returned
 
-@param algoUsed: Algorithum used for the project to record changes
+@param algoUsed: Algorithm used for the project to record changes
 @param projectPath: Project Name With Path
 @param TotalFilesScanned: Total number of File Scanned
 @param confirmedFileScanned: confirmed File Scanned
@@ -556,12 +570,10 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         else:
 
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
-            print('===================pathInfo===================')
-            print(AutiFixPath)
             NameOfFile = str(projectName[1]).split('/')
-            print(NameOfFile)
+
             NameOfFile[(len(NameOfFile)-1)]
-            print(NameOfFile[(len(NameOfFile)-1)])
+
             
             pathInfo = getFixityHomePath()
             createPath = str(pathInfo).replace(' ', '\\ ')
@@ -571,17 +583,14 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
                     os.mkdir( str(createPath) + 'reports' )
                 except Exception as Excep:
                     print(Excep[0])
-            print(pathInfo)
+
             rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-            print(rn)
-            
             try:
                 rn = str(rn).replace(' ', '\\ ')
             except Exception as Ex:
                 print(Ex[0])
-            
-        print(rn)
-        print('===================pathInfo===================')
+
+
         r = open(rn, 'w+')
         r.write(report)
         r.close()
@@ -609,12 +618,12 @@ def missing(dict,file=''):
     msg = ""
     count = 0
     global verifiedFiles
-    # walks through the dict and returns all False flags
+    ''' walks through the dict and returns all False flags ''' 
     for keys in dict:
         for obj in dict[keys]:
 
             if not path.isfile(obj[0]):
-                #check if file already exists in the manifest
+                ''' check if file already exists in the manifest ''' 
                 if not obj[0] in verifiedFiles:
                     verifiedFiles.append(obj[0])
                     msg += "Removed Files\t" + obj[0] +"\n"
@@ -627,16 +636,16 @@ def missing(dict,file=''):
 
 '''
 ---------------------------------------------------------------------------------------------------------
-Logic For Selection of Scheduler time In History or Depreciated Manifest Functionality
+Logic For Selection of Scheduler time In History or Depreciated Manifest Functionality                  |
 ---------------------------------------------------------------------------------------------------------
 If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly     |  Result
 (day of week to                                                        (day of month to 
 run on if none 99)                                                     run on if none 99)
 ==========================================================================================================
 ==========================================================================================================
-     99           ----    00:00:00    ----         99            ----        99              |  Daily
-     1            ----    00:00:00    ----         1             ----        99              |  weekly
-     99           ----    00:00:00    ----         99             ----        2              |  Monthly
+     99           ----    00:00:00    ----         99            ----        99              |  Daily    |
+     1            ----    00:00:00    ----         1             ----        99              |  weekly   |
+     99           ----    00:00:00    ----         99             ----        2              |  Monthly  |
 ----------------------------------------------------------------------------------------------------------
           
 '''
@@ -704,9 +713,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 projectDetailInformation = DB.getVersionDetailsLast(projectInformation[0]['id'])
 
     FiltersArray = filters.split(',')
+    
     dict = defaultdict(list)
     dict_Hash = defaultdict(list)
     dict_File = defaultdict(list)
+    
     confirmed , moved , created , corruptedOrChanged  = 0, 0, 0, 0
     FileChangedList = ""
     InfReplacementArray = {}
@@ -807,7 +818,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
 
     Algorithm = str(projectInformation[0]['selectedAlgo'])
-    print('---------------------History ----------------')
+    print('--------------------- History ----------------')
     counter = 0
     thisnumber = 0
     CurrentDate = time.strftime("%Y-%m-%d")
@@ -823,10 +834,15 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     
     HistoryFile.write(str(projectInformation[0]['emailAddress']).replace('\r\n', '').replace('\n', '')+"\n")
     keeptime = ''
-
+    
+    '''
+    -----------------------------
+    # Duration Type From Database
+    #-----------------------------
     #     1 = Monthly
     #     2 = Week
     #     3 = Daily
+    '''
     
     if int(projectInformation[0]['durationType']) == 3 :
         keeptime += '99 ' + str(projectInformation[0]['runTime']).replace('\r\n', '').replace('\n', '').replace('\n', '') + ' 99 99'
@@ -842,7 +858,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     HistoryFile.write( str( projectInformation[0]['selectedAlgo'] ) + "\n")
     
     '''
-    Running Scrpit against all given directory in given project
+    Running Script Against All Given Directory In Given Project
     '''
 
     for SingleDirectory in ToBeScannedDirectoriesInProjectFile:
@@ -868,26 +884,38 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                 if Filter !='' and DirectorysInsideDetailsSingle[1].find(str(Filter).strip()) >= 0:
                     flag =False
             
-            if OS_Info == 'linux':
-                    if(projectInformation[0]['ignoreHiddenFiles'] == 1 or projectInformation[0]['ignoreHiddenFiles'] == '1'):
-                        try:
-                            PathExploded = str(DirectorysInsideDetailsSingle[1]).split(str(os.sep))
-                            lastIndexName = PathExploded[len(PathExploded) - 1]
+            
+            if(projectInformation[0]['ignoreHiddenFiles'] == 1 or projectInformation[0]['ignoreHiddenFiles'] == '1'):
+                try:
+                    PathExploded = str(DirectorysInsideDetailsSingle[1]).split(str(os.sep))
+                    lastIndexName = PathExploded[len(PathExploded) - 1]
 
-                            if fnmatch.fnmatch(lastIndexName, '.*'):
-                                flag = False
-                        except Exception as Excep:
-                            print('fnmatch 865 FC')
-                            print(Excep[0])
+                    if fnmatch.fnmatch(lastIndexName, '.*'):
+                        flag = False
+                        
+                    if isThisFileHidden(DirectorysInsideDetailsSingle[1]):
+                        flag = False
+                        
+                except Exception as Excep:
+                    print('fnmatch 865 FC')
+                    print(Excep[0])
 
-                        try:
-                            PathExploded = str(DirectorysInsideDetailsSingle[1]).split(str(os.sep))
-                            for SingleDirtory in PathExploded:
-                                if fnmatch.fnmatch(SingleDirtory, '.*'):
-                                    flag = False
-                        except Exception as Excep:
-                            print('PathExploded 873 FC')
-                            print(Excep[0])
+                try:
+                    
+                    PathExploded = str(DirectorysInsideDetailsSingle[1]).split(str(os.sep))
+                    
+                    for SingleDirtory in PathExploded:
+                        if fnmatch.fnmatch(SingleDirtory, '.*'):
+                            flag = False
+                            
+                        if isThisFileHidden(SingleDirtory):
+                            flag = False
+                            
+                except Exception as Excep:
+                    print('PathExploded 873 FC')
+                    print(Excep[0])
+            
+                
 
 
             if flag:
@@ -982,7 +1010,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     try:
         missingFile = missing(dict_Hash,SingleDirectory)
         FileChangedList += missingFile[0]
-        flagAnyChanges = True
+        try:
+            if missingFile[1] > 0:
+                flagAnyChanges = True
+        except:
+            pass
     except Exception as Excep:
         print('missing 965 FC')
         print(Excep)
@@ -1227,6 +1259,14 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
             pass
 
     return listOfValues
+
+# check weather this file is Hidden or Not 
+def isThisFileHidden(pathOfFile):
+    if os.name== 'nt':
+        attribute = win32api.GetFileAttributes(pathOfFile)
+        return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
+    else:
+        return pathOfFile.startswith('.') #linux
 
 
 # projects_path = getcwd()+'\\projects\\'

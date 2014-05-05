@@ -9,12 +9,6 @@
 Created on Dec 5, 2013
 @author: Furqan Wasi <furqan@geekschicago.com>
 '''
-    
-# Fixity Scheduler
-# Version 0.3, 2013-10-28
-# Copyright (c) 2013 AudioVisual Preservation Solutions
-# All rights reserved.
-# Released under the Apache license, v. 2.0
 
 import os
 OS_Info = ''
@@ -37,13 +31,7 @@ import datetime
 '''Custom Classes'''
     
 from EmailPref import EmailPref
-if OS_Info == 'Windows':
-    import FixityCoreWin
-    FixityCore = FixityCoreWin
-else:
-    import FixityCoreMac
-    FixityCore = FixityCoreMac
-    
+import FixityCore    
 import FixitySchtask
 from Debuger import Debuger
 from Database import Database
@@ -69,11 +57,13 @@ class DecryptionManager(QDialog):
         
         self.isMethodChanged = False
         self.isAllfilesConfirmed = False
+        
     '''
     Distructor
     '''
     def destroyDecryptionManager(self):
         del self
+        
     '''Reject'''
     def reject(self):
         self.parentWin.setWindowTitle("Fixity "+self.parentWin.versoin)
@@ -196,20 +186,24 @@ class DecryptionManager(QDialog):
         Information= {}
         if(len(info) > 0):
             Information = info[0]
-#         FixityCore.run(selectedProject,Information['filters'], selectedProject = '', True)
-        
-
+        ResponseIsAnyThingChanged = True
+            
         aloValueSelected = ''
+        if Information['selectedAlgo'] == str(self.methods.currentText()):
+            QMessageBox.information(self, "Failure", "This Project is Already using this algorithm.")
+            return
+        
         if self.methods.currentText() is None or self.methods.currentText() == '':
             aloValueSelected = 'sha256'
         else:
             aloValueSelected = str(self.methods.currentText())
-
+        
         sameValueFlag = False
         if aloValueSelected != Information['selectedAlgo']:
 
             sameValueFlag =True
             response = self.slotWarning(selectedProject)
+            
             if response:
                 msgBox.setWindowTitle("Processing ....")
                 msgBox.setText("Reading Files, please wait ...")
@@ -217,19 +211,27 @@ class DecryptionManager(QDialog):
                 QCoreApplication.processEvents()
                 Information['selectedAlgo'] = aloValueSelected
                 response = True
+                try:
+                    ResponseIsAnyThingChanged = FixityCore.run(selectedProject, Information['filters'], '', True)
+                except Exception as Exp:
+                    print(Exp[0])
             else:
                 response = False
+                
         else:
             sameValueFlag = False
-        if selectedProject == '':
             
+        if selectedProject == '':
             QMessageBox.information(self, "Failure", "No project selected.\nPlease select a project and try again.")
             return
-        SqlLiteDataBase  = Database()
-        flag = SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information, "id='" + str(Information['id']) + "'")
+        flag = False
+        if not ResponseIsAnyThingChanged:
+            SqlLiteDataBase  = Database()
+            SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information, "id='" + str(Information['id']) + "'")
+            flag = True
 
         if response:
-            if flag :
+            if flag:
                     try:
                         msgBox.close()
                     except:
@@ -241,8 +243,10 @@ class DecryptionManager(QDialog):
                     return
             else:
                 if (not hasChanged) and (sameValueFlag):
-                    
-                    QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed - please try again.")
+                    if ResponseIsAnyThingChanged:
+                        QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed, because all files were not confirmed, please try again.")
+                    else:
+                        QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed - please try again.")
         return
 
 
@@ -333,9 +337,9 @@ class DecryptionManager(QDialog):
 
                 h = FixityCore.fixity(p, a , projectName)
                 if(OS_Info == 'Windows'):
-                    i = FixityCore.ntfsIDForWindows(p)
+                    i = FixityCore.FixityCoreWin.ntfsIDForWindows(p)
                 else:
-                    i = FixityCore.ntfsIDForMac(p)
+                    i = FixityCore.FixityCoreMac.ntfsIDForMac(p)
                 listOfValues.append((h, givenPath, i))
 
 
@@ -360,3 +364,10 @@ class DecryptionManager(QDialog):
                 pass
 
         return listOfValues
+
+# app = QApplication('asdas')
+# wDM = DecryptionManager(QDialog())
+# wDM.SetWindowLayout()
+# wDM.SetDesgin()
+# wDM.ShowDialog()
+# sys.exit(app.exec_())
