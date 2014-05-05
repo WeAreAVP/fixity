@@ -1521,16 +1521,20 @@ class ProjectWin(QMainWindow):
             FixityPublicBasePath = str(pathInfo).replace(' ', '\\ ')
 
             ''' Create History Folder '''
+            print(str(FixityPublicBasePath)+'history')
             try:
                 self.createDirectory(str(FixityPublicBasePath)+'history')
-            except:
+            except Exception as exp:
+                print(exp[0])
                 pass
 
 
             ''' Create reports Folder '''
+            print(str(FixityPublicBasePath)+'reports')
             try:
                 self.createDirectory(str(FixityPublicBasePath)+'reports')
-            except:
+            except Exception as exp:
+                print(exp[0])
                 pass
 
 
