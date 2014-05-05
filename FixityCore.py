@@ -744,7 +744,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             except:
                 pass
 
-        historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '=')+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+'_-_-_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
 
     try:
