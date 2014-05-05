@@ -1268,8 +1268,10 @@ class ProjectWin(QMainWindow):
                 if len(EmailInfo) <= 0:
                     QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
                     return
-
-            pathsInfoChanges = self.process(flagInitialScanUponSaving)
+            try:
+                pathsInfoChanges = self.process(flagInitialScanUponSaving)
+            except:
+                pathsInfoChanges = {}
             dmonth, dweek = 99, 99
             
             
