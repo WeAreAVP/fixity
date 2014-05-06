@@ -586,10 +586,10 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
 
         AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
         NameOfFile = str(projectName[1]).split('/')
-
+        print(NameOfFile)
         
 
-        
+        print(len(NameOfFile))
         pathInfo = getFixityHomePath()
         createPath = str(pathInfo).replace(' ', '\\ ')
 
