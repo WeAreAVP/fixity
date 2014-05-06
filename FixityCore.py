@@ -574,34 +574,36 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         print(1)
         report += str(DetailOutputOfAllFilesChanges)
         print(2)
-        if(OS_Info == 'Windows'):
-            AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-            rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
-        else:
-
-            AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
-            NameOfFile = str(projectName[1]).split('/')
-
-            
-
-            
-            pathInfo = getFixityHomePath()
-            createPath = str(pathInfo).replace(' ', '\\ ')
-
-            if not os.path.isdir( str(createPath) + 'reports' ):
-                try:
-                    os.mkdir( str(createPath) + 'reports' )
-                except Exception as Excep:
-                    print(Excep[0])
-
-            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-            try:
-                rn = str(rn).replace(' ', '\\ ')
-            except Exception as Ex:
-                print(Ex[0])
-
     except Exception as Excep:
         print(Excep[0])
+    print(3)
+    if(OS_Info == 'Windows'):
+        AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
+        rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
+    else:
+
+        AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
+        NameOfFile = str(projectName[1]).split('/')
+
+        
+
+        
+        pathInfo = getFixityHomePath()
+        createPath = str(pathInfo).replace(' ', '\\ ')
+
+        if not os.path.isdir( str(createPath) + 'reports' ):
+            try:
+                os.mkdir( str(createPath) + 'reports' )
+            except Exception as Excep:
+                print(Excep[0])
+
+        rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+        try:
+            rn = str(rn).replace(' ', '\\ ')
+        except Exception as Ex:
+            print(Ex[0])
+
+    
     try:
         r = open(rn, 'w+')
         r.write(report)
