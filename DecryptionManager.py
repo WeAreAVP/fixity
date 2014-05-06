@@ -235,7 +235,7 @@ class DecryptionManager(QDialog):
             if flag:
                 
                     try:
-                        FixityCore.run(selectedProject, Information['filters'], selectedProject, True)
+                        FixityCore.run(selectedProject, Information['filters'], selectedProject, False)
                     except:
                         pass
                 
