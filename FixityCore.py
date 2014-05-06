@@ -258,8 +258,7 @@ Method to convert database line into tuple
 @return tuple: (hash, abspath, id)
 '''
 def toTuple(line):
-    print(line)
-    exit
+    
     try:
         return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
     except Exception as Excep:
@@ -768,7 +767,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     mails = str(projectInformation[0]['emailAddress']).split(',')
     print('writing ::: Stared Worked')
     check = 0
-    print(projectDetailInformation)
+    
     for l in projectDetailInformation:
         
         try:

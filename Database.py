@@ -325,7 +325,7 @@ class Database(object):
 
             query = query + ' ( '+self.implode ( columnName , ' , ' ) + ' ) VALUES ( ' + self.implode ( values , ' , ' , False ) + ' ) '
             
-            print(query)
+            
             try:
                 self.connect()
             except Exception as ex:

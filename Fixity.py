@@ -1100,7 +1100,7 @@ class ProjectWin(QMainWindow):
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
-            print('asdasdas')
+            
             dmonth, dweek = 99, 99
             if self.monthly.isChecked():
                 interval = 1
