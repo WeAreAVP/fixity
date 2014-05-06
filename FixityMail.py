@@ -100,7 +100,7 @@ def send(recipients, text, attachment, information,projectName='', EmailPref = N
 			DebuggerObj.logError('Could not send email  Line range 38 - 44 File FixityMail ', moreInformation)
 		except:
 			pass
-		
+		print(moreInformation)
 		return False
 
  

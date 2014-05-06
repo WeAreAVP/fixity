@@ -443,8 +443,8 @@ Output: Message based on whether the file was good or not
 def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctValue = '',Algorithm='sha256'):
     
     global verifiedFiles
-    print('verifying:::'+str(line[1]))
-    print('=======Dicty=======')
+    
+    
     try:
         ''' Check if I-Node related information Exists in the Given Directory  '''
         CurrentDirectory = dicty.get(line[2])
@@ -976,21 +976,17 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     newCodedPath = ' '
                     print('newCodedPath 929 FC')
                     print(Excep[0])
-                print('response===============')
-                print(response)
-                print('respons===========e')
                 try:
                     
                     print('----Saving Details For :' + str(newCodedPath))
                     versionDetailOptions = {}
-                    print(response[0])
+                    
                     versionDetailOptions['hashes'] = str(response[0][0])
                     versionDetailOptions['path'] = newCodedPath
                     versionDetailOptions['inode'] = str(response[0][2])
                     versionDetailOptions['versionID'] = str(versionID['id'])
                     versionDetailOptions['projectID'] = projectInformation[0]['id']
                     versionDetailOptions['projectPathID'] = pathID
-                    print(versionDetailOptions)
                     DB.insert(DB._tableVersionDetail, versionDetailOptions)
                     
                 except Exception as excp:

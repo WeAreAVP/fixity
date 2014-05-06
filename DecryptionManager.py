@@ -35,6 +35,7 @@ import FixityCore
 import FixitySchtask
 from Debuger import Debuger
 from Database import Database
+import FixityMail
 
 Debugging = Debuger()
 ''' Class to manage the Filter to be implemented for the files with specific extensions '''
@@ -250,7 +251,18 @@ class DecryptionManager(QDialog):
             else:
                 if (not hasChanged) and (sameValueFlag):
                     if ResponseIsAnyThingChanged:
-                        QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed, because all files were not confirmed, please try again.")
+                        QMessageBox.information(self, "Information", selectedProject+"'s Checksum Algorithm Change Failure: Not all files were confirmed and the process was stopped. See report for details. Please perform the change once again to complete the process.")
+                        try:
+                            print('=====================================Information=====================================')
+                            print(Information)
+                            
+                            informationForEmailConfiguration = self.EmailPref.getConfigInfo()
+                            print(informationForEmailConfiguration)
+                            print(selectedProject)
+                            print(FixityMail.send(Information['emailAddress'], 'The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process.', None, informationForEmailConfiguration, selectedProject))
+                        except Exception as excep:
+                            print(excep)
+                            pass
                     else:
                         QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed - please try again.")
         return

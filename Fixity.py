@@ -442,10 +442,6 @@ class ProjectWin(QMainWindow):
             self.FileChanged = None
             CodeOfDirectory =  str(code).split('-')
             
-            print('orignalPathText=============================')
-            print(orignalPathText)
-            print(changePathText)
-            print('orignalPathText=============================')
             
             self.FileChanged = FileChanged(self,orignalPathText, changePathText, int(CodeOfDirectory[1]))
             self.FileChanged.SetDesgin()
@@ -612,9 +608,11 @@ class ProjectWin(QMainWindow):
                     if sval == QMessageBox.Ok:
                             self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                             return
+                        
             for n in range(0,7):
                 self.dtx[(n)].setText("")
                 self.mtx[(n)].setText("")
+                
             self.runOnlyOnACPower.setChecked(False)
             self.StartWhenAvailable.setChecked(False)
             self.EmailOnlyWhenSomethingChanged.setChecked(False)
@@ -648,16 +646,19 @@ class ProjectWin(QMainWindow):
                     except:
                         self.dtx[(n)].setText("")
 
+
             for n in pathInfo:
                 if n is not  None :
                     try:
                         self.dtx[(n)].setText(str(pathInfo[(n)]['path']).strip())
                     except:
                         self.dtx[(n)].setText("")
+                        
             if int(projectInfo[0]['emailOnlyUponWarning']) == 1:
                 self.EmailOnlyWhenSomethingChanged.setChecked(True)
             elif  int(projectInfo[0]['emailOnlyUponWarning']) == 0:
                 self.EmailOnlyWhenSomethingChanged.setChecked(False)
+
 
             if  int(projectInfo[0]['runWhenOnBattery']) == 1:
                 self.runOnlyOnACPower.setChecked(True)
@@ -669,6 +670,7 @@ class ProjectWin(QMainWindow):
             elif  int(projectInfo[0]['ifMissedRunUponRestart']) == 0:
                 self.StartWhenAvailable.setChecked(False)
 
+
             if str(projectInfo[0]['durationType']) == '1':
                     self.monthly.setChecked(True)
                     self.monthclick()
@@ -677,10 +679,12 @@ class ProjectWin(QMainWindow):
                     except Exception as Excep:
                         print(Excep)
                         pass
+                    
             elif str(projectInfo[0]['durationType']) == '2':
                     self.weekly.setChecked(True)
                     self.weekclick()
                     self.dow.setCurrentIndex(int(projectInfo[0]['runDayOrMonth']))
+                    
             elif str(projectInfo[0]['durationType']) == '3':
                     self.daily.setChecked(True)
                     self.dayclick()
@@ -728,6 +732,7 @@ class ProjectWin(QMainWindow):
 
             self.old = newitem
             self.toggler(False)
+            self.unsaved = True
 
         '''
         Process the changes made in Fixity
@@ -1394,8 +1399,6 @@ class ProjectWin(QMainWindow):
                         event.accept()
 
 
-
-
         '''
         Check For Changes In the provided base  path and old given base path the given project name
         @param projectName: Project Name
@@ -1551,6 +1554,8 @@ class ProjectWin(QMainWindow):
                     os.mkdir(str(directoryPath))
                 except:
                     pass
+                
+                
         '''
         Create Database File that Fixity Uses
         @param DatabasePath:Database File Path To be created
