@@ -558,6 +558,7 @@ Output: All this, written nicely to a tab-delimited file, with the file returned
 
 '''
 def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , movedFileScanned, newFileScanned, failedFileScanned, deletedFileScanned, DetailOutputOfAllFilesChanges, projectName=''):
+    print('writer')
     rn = ''
     try:
         report = "Fixity report\n"
@@ -570,8 +571,9 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         report += "New Files\t" + str(newFileScanned) + "\n"
         report += "Changed Files\t" + str(failedFileScanned) + "\n"
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
-        
+        print(1)
         report += str(DetailOutputOfAllFilesChanges)
+        print(2)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
             rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
@@ -580,7 +582,7 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
             AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
             NameOfFile = str(projectName[1]).split('/')
 
-            NameOfFile[(len(NameOfFile)-1)]
+            
 
             
             pathInfo = getFixityHomePath()
