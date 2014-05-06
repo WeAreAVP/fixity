@@ -577,7 +577,7 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         print(2)
     except Exception as Excep:
         print(Excep[0])
-    report += str(DetailOutputOfAllFilesChanges.decode('utf-8'))
+    report += u''+DetailOutputOfAllFilesChanges
     
         
     print(3)
