@@ -572,10 +572,14 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         report += "Changed Files\t" + str(failedFileScanned) + "\n"
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
         print(1)
-        report += str(DetailOutputOfAllFilesChanges)
+        
+        
         print(2)
     except Exception as Excep:
         print(Excep[0])
+    report += str(DetailOutputOfAllFilesChanges.decode('utf-8'))
+    
+        
     print(3)
     print(projectName)
     print(4)
