@@ -577,6 +577,8 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
     except Exception as Excep:
         print(Excep[0])
     print(3)
+    print(projectName)
+    print(4)
     if(OS_Info == 'Windows'):
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
         rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
@@ -602,8 +604,8 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
             rn = str(rn).replace(' ', '\\ ')
         except Exception as Ex:
             print(Ex[0])
-
-    
+    print(rn)
+    print(5)
     try:
         r = open(rn, 'w+')
         r.write(report)
