@@ -558,29 +558,19 @@ Output: All this, written nicely to a tab-delimited file, with the file returned
 
 '''
 def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , movedFileScanned, newFileScanned, failedFileScanned, deletedFileScanned, DetailOutputOfAllFilesChanges, projectName=''):
-    print('writer')
     rn = ''
     try:
         report = "Fixity report\n"
-        print('writer1')
         report += "Project name\t" + projectPath + "\n"
-        print('writer2')
         report += "Algorithm used\t" + algoUsed + "\n"
-        print('writer3')
         report += "Date\t" + str(datetime.date.today()) + "\n"
-        print('writer4')
         report += "Total Files\t" + str(TotalFilesScanned) + "\n"
-        print('writer5')
         report += "Confirmed Files\t" + str(confirmedFileScanned) + "\n"
-        print('writer6')
         report += "Moved or Renamed Files\t" + str(movedFileScanned) + "\n"
-        print('writer474')
         report += "New Files\t" + str(newFileScanned) + "\n"
-        print('writer8')
         report += "Changed Files\t" + str(failedFileScanned) + "\n"
-        print('writer49')
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
-        print('writer10')
+        
         report += str(DetailOutputOfAllFilesChanges)
         if(OS_Info == 'Windows'):
             AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
@@ -611,7 +601,6 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
     except Exception as Excep:
         print(Excep[0])
     try:
-        print('writer11')
         r = open(rn, 'w+')
         r.write(report)
         r.close()
