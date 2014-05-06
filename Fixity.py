@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 # Fixity GUI
 # Version 0.4, 2013-10-28
 # Copyright (c) 2013 AudioVisual Preservation Solutions
