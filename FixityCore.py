@@ -258,7 +258,8 @@ Method to convert database line into tuple
 @return tuple: (hash, abspath, id)
 '''
 def toTuple(line):
-
+    print(line)
+    exit
     try:
         return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
     except Exception as Excep:
@@ -995,7 +996,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     pass
                 
                 try:
-                    HistoryFile.write(str(response[0][0]['hashes']) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
+                    HistoryFile.write(str(response[0][0]) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n")
                 except Exception as excp:
                     print('HistoryFile 955 FC')
                     print(excp[0])
