@@ -1034,7 +1034,6 @@ class ProjectWin(QMainWindow):
 
 
 
-
         '''
         Month check box Click Trigger
         (Trigger on Month Check box click)

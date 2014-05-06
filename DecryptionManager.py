@@ -213,7 +213,7 @@ class DecryptionManager(QDialog):
                 Information['selectedAlgo'] = aloValueSelected
                 response = True
                 try:
-                    ResponseIsAnyThingChanged = FixityCore.run(selectedProject, Information['filters'], '', True)
+                    ResponseIsAnyThingChanged = FixityCore.run(selectedProject, Information['filters'], selectedProject, True)
                 except Exception as Exp:
                     print(Exp[0])
             else:
@@ -235,7 +235,7 @@ class DecryptionManager(QDialog):
             if flag:
                 
                     try:
-                        FixityCore.run(selectedProject, Information['filters'], '', True)
+                        FixityCore.run(selectedProject, Information['filters'], selectedProject, True)
                     except:
                         pass
                 
