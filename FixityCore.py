@@ -466,6 +466,7 @@ def verify_using_inode (dicty, dictHash, dictFile, line, fileNamePath='' , dctVa
         Debugging.logError('Error Reporting Line 250 FixityCore While listing directory and files FixityCore' +"\n", moreInformation)
         pass
     
+    '''' IF Given File Exists'''
     if path.isfile(line[1].decode('utf-8')):
         '''' IF SAME INODE EXISTS '''
         if CurrentDirectory is not None :
