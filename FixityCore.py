@@ -1104,7 +1104,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             print('release 1020 FC')
             print(Excep[0])
     if checkForChanges:
-        return flagAnyChanges
+        return flagAnyChanges , repath
     
     return confirmed, moved, created, corruptedOrChanged , missingFile[1], repath
 

@@ -157,9 +157,9 @@ class FilterFiles(QDialog):
 
         self.GetLayout().addWidget(self.Porjects)
         self.FilterField = QLineEdit()
-        self.setInformation = QPushButton("Set Information")
+        self.setInformation = QPushButton("Save && Close")
         self.reset = QPushButton("Reset")
-        self.cancel = QPushButton("Close")
+        self.cancel = QPushButton("Close Without Saving")
 
         self.FilterField.setPlaceholderText("Add Filter")
 

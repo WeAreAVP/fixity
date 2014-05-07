@@ -1,0 +1,7 @@
+started
+=====================================Information=====================================
+The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process. Thanks
+D:\python\Fixity Project\reports\fixity_2014-05-07-141830_New_Project.tsv
+writing Email
+email Sent
+ended 

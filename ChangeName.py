@@ -115,9 +115,9 @@ class ChangeName(QDialog):
         
         self.GetLayout().addWidget(self.Porjects)
         self.changeNameField = QLineEdit()
-        self.setInformation = QPushButton("Set Information")
+        self.setInformation = QPushButton("Save && Close")
         
-        self.cancel = QPushButton("Close")
+        self.cancel = QPushButton("Close Without Saving")
         
         self.changeNameField.setPlaceholderText("Add New Name")
         

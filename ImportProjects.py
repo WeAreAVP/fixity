@@ -112,7 +112,7 @@ class ImportProjects(QDialog):
         self.GetLayout().addWidget(self.Projects)
         self.projectSelected = QLineEdit()
         self.setInformation = QPushButton("Import")
-        self.cancel = QPushButton("Close")
+        self.cancel = QPushButton("Close Without Saving")
 
         self.projectSelected.setPlaceholderText("Project Path")
 

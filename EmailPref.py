@@ -200,10 +200,10 @@ class EmailPref(QDialog):
         self.noneProtocol = QRadioButton("None")
 
         self.Password.setEchoMode(QLineEdit.Password)
-        self.setInformation = QPushButton("Set Information")
+        self.setInformation = QPushButton("Save && Close")
         self.reset = QPushButton("Reset")
         self.checkEmail = QPushButton("Check Credentials")
-        self.cancel = QPushButton("Close")
+        self.cancel = QPushButton("Close Without Saving")
         self.loader = QLabel("Sending Email...")
 
         self.EmailAddrBar.setPlaceholderText("email: user@domain.com")

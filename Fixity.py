@@ -709,12 +709,20 @@ class ProjectWin(QMainWindow):
                 QMessageBox.warning(self, "Fixity", "Can not create New Project.Please save other unsaved Projects and try again.")
                 return
             
+            
             QID = QInputDialog(self)
             QID.setWindowModality(Qt.WindowModal)
             name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
             
             if not name[1]:
                 return
+            
+            IsProjectNameValid = self.ValidateProjectName(str(name[0]))
+            
+            if IsProjectNameValid is not None:
+                QMessageBox.warning(self, "Fixity", str(IsProjectNameValid))
+                return
+            
             projectInfo =  self.Database.getProjectInfo(name[0])
 
             if len(projectInfo) > 0:
@@ -1542,7 +1550,6 @@ class ProjectWin(QMainWindow):
                 pass
 
 
-
         '''
         Create Directory given in the path if dose not exists
         @param directoryPath: Directory Path to be created
@@ -1567,7 +1574,7 @@ class ProjectWin(QMainWindow):
             if DatabasePath:
                 if not os.path.isfile(DatabasePath):
                     try:
-                        DatabaseFile = open(str(DatabasePath),'w+')
+                        DatabaseFile = open(str(DatabasePath), 'w+')
                         DatabaseFile.close()
                     except:
                         pass
@@ -1633,8 +1640,22 @@ class ProjectWin(QMainWindow):
 
             @return List-list Of Result If Found Some
         '''
-        def checkIfTableExistsInDatabase(self,tableName):
-            return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='"+tableName+"'");
+        def checkIfTableExistsInDatabase(self, tableName):
+            return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='" + tableName + "'");
+        
+        
+        ''' 
+            Validate given email address
+            @param Email: Email Address
+           
+            @return: String Message of failure
+        ''' 
+        def ValidateProjectName(self, projectName):
+            if not re.match(r"^[a-zA-Z0-9-_]+$", projectName):
+                msgProjectNameValidation = "Invalid Project Name provided.  Please provide a valid project Name and try again."
+                return msgProjectNameValidation
+            return None
+            
 '''
 Auto Scan running handler
 '''
