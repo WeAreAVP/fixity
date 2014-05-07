@@ -5,7 +5,7 @@ Created By Furqan Wasi <furqan@avpreserve.com> Create On 7/5/2014 Wednesday,May
 
 1. Check if given file exists at given path 
  1. Check if any file exists for given inode in last scanned file's list
- 2. If file exists and inode exists in last scan ( means file is still present and was also have be scanned by Fixity in it's last scan)
+ 2. If file exists and inode exists in last scan ( means file is still present and was also have been scanned by Fixity in it's last scan)
  
     1. if  File Exists::YES  AND Hashes are Same of File in last scan and given file::YES  AND Have Same File Path of File in last scan and given file::YES AND Have Same I-Node of File in last scan and given file::YES
 	   *  `Result :: Confirmed File (FileExists::YES  || SameHashOfFile::YES  || SameFilePath::YES || Same I-Node::YES)`
