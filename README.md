@@ -97,3 +97,4 @@ AutoFxity.py will be placed into schedules directory where from task scheduler w
 #scheduling Process
 
 For Scheduling process Fixity is using windows task scheduler , it triggers the scanning process on given time when saving the project , for each project one scheduler will be created in Task scheduler   
+
