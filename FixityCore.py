@@ -591,7 +591,7 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
     print(4)
     if(OS_Info == 'Windows'):
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-        rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(projectName[0])  + '.tsv'
+        rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(projectName[0])  + '.tsv'
     else:
         fromDycruptionClass = False
         AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
@@ -613,9 +613,9 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
             except Exception as Excep:
                 print(Excep[0])
         if not fromDycruptionClass:
-            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
+            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
         else:
-            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '_' + str(NameOfFile)  + '.tsv'
+            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(NameOfFile)  + '.tsv'
         try:
             rn = str(rn).replace(' ', '\\ ')
         except Exception as Ex:

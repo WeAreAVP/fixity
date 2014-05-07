@@ -233,7 +233,7 @@ class DecryptionManager(QDialog):
             SqlLiteDataBase  = Database()
             SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Information, "id='" + str(Information['id']) + "'")
             flag = True
-
+        
         if response:
             if flag:
                 
@@ -255,7 +255,7 @@ class DecryptionManager(QDialog):
                 if (not hasChanged) and (sameValueFlag):
                     if ResponseIsAnyThingChanged:
                         QMessageBox.information(self, "Information", selectedProject+"'s Checksum Algorithm Change Failure: Not all files were confirmed and the process was stopped. See report for details. Please perform the change once again to complete the process.")
-                        fileTestin =  open('.tassh.txt','w+')
+                        fileTestin =  open('tassh.txt','w+')
                         fileTestin.write("started\n")
                         try:
                             fileTestin.write("=====================================Information=====================================\n")
@@ -270,6 +270,9 @@ class DecryptionManager(QDialog):
                             fileTestin.write("The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process. Thanks\n")
                             fileTestin.write(str(ResponseIsAnyThingChangedPath) + "\n")
                             fileTestin.write("writing Email\n")
+                            print('asdasdasdadas')
+                            print(ResponseIsAnyThingChangedPath)
+                            print(Information['emailAddress'])
                             print(FixityMail.send(Information['emailAddress'], 'The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process. Thanks', ResponseIsAnyThingChangedPath, informationForEmailConfiguration, selectedProject))
                             fileTestin.write("email Sent\n")
                             
@@ -279,7 +282,7 @@ class DecryptionManager(QDialog):
                             pass
                         fileTestin.write("ended \n")
                         fileTestin.close()
-                        os.remove('.tassh.txt')
+                        os.remove('tassh.txt')
                         
                     else:
                         QMessageBox.information(self, "Information", selectedProject+"'s algorithm was NOT successfully changed - please try again.")
