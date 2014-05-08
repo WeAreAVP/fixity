@@ -121,20 +121,31 @@ class ProjectWin(QMainWindow):
                 self.FileManuFixity = menubar.addMenu('&File')
                 self.Preferences = menubar.addMenu('&Preferences')
                 newp = QAction('&New Project', self)
-
+                newp.setShortcut('CTRL+N')
                 save = QAction('&Run Now', self)
+                save.setShortcut('CTRL+R')
                 usch = QAction('&Save Settings', self)
+                usch.setShortcut('CTRL+S')
                 dlte = QAction('&Delete Project', self)
+                dlte.setShortcut(QKeySequence.DeleteStartOfWord)
                 self.configemail = QAction('&Email Settings', self)
+                self.configemail.setShortcut("CTRL+E")
                 aboutFixity = QAction('&About Fixity', self)
+                aboutFixity.setShortcut('CTRL+,')
                 quitMenu = QAction('&Quit Fixity', self)
+                quitMenu.setShortcut(QKeySequence.Quit)
 
                 FilterFilesMane = QAction('&Filter Files', self)
+                FilterFilesMane.setShortcut('CTRL+F')
                 ChangeNameManu = QAction('&Change Project Name', self)
+                ChangeNameManu.setShortcut("CTRL+U");
                 DecryptionManagerMenu = QAction('&Select Checksum Algorithm', self)
+                DecryptionManagerMenu.setShortcut("CTRL+A")
 
                 self.Debuging = QAction('&Turn Debuging Off', self)
+                self.Debuging.setShortcut("CTRL+D")
                 self.ImportProjectfxy = QAction('&Import Project', self)
+                self.ImportProjectfxy.setShortcut("CTRL+I");
                 self.switchDebugger('start')
 
                 self.FileManuFixity.addAction(newp)
