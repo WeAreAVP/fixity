@@ -188,6 +188,12 @@ class DecryptionManager(QDialog):
         if(len(info) > 0):
             Information = info[0]
         ResponseIsAnyThingChanged = True
+        
+        if Information['projectRanBefore'] == 0 or Information['projectRanBefore'] == '0':
+            QMessageBox.information(self, "Failure", "This project has not been scanned before, Please run the project and then try again.")
+            return
+            
+             
             
         aloValueSelected = ''
         if Information['selectedAlgo'] == str(self.methods.currentText()):

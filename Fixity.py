@@ -61,7 +61,7 @@ class ProjectWin(QMainWindow):
 
         ''' Constructor '''
         def __init__(self, EmailPref, FilterFiles):
-
+                
                 if(OS_Info == 'Windows'):
                     self.CreateAllRequiredFileAndDirectoriesForWindows()
                 else:
@@ -85,7 +85,7 @@ class ProjectWin(QMainWindow):
                 QMainWindow.__init__(self)
                 Debuging.tureDebugerOn()
                 Debuging.logInfo('Logger started!::::::::::::::::::' + "\n",{} )
-
+                self.isPathChanged = False
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
                     if OS_Info == 'Windows':
@@ -321,6 +321,8 @@ class ProjectWin(QMainWindow):
                 self.unsaved = False
                 self.toggler((self.projects.count() == 0))
                 self.show()
+                for n in xrange(0,7): 
+                    self.dtx[n].setReadOnly(True)
 
         ''' Distructor '''
         def __del__(self):
@@ -1153,21 +1155,24 @@ class ProjectWin(QMainWindow):
                     Configurations[0]['emailOnlyUponWarning'] = 1
                 else:
                     Configurations[0]['emailOnlyUponWarning'] = 0
+                    
+                Configurations[0]['projectRanBefore'] = 1
+            
                 pathsInfoChanges = {}
                 directoryIncreamentDirs = 1
+            
                 for ds in self.dtx:
                     pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
                     directoryIncreamentDirs = directoryIncreamentDirs + 1
 
                 FilePath = getcwd()+'\\schedules\\'
-
+                self.updateschedule()
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
 
                 FileName = 'AutoFixity.exe'
                 params = self.projects.currentItem().text() +' '+'Run'
 
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
-
                 self.Threading.start()
                 QMessageBox.information(self, "Fixity", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
                 
@@ -1272,7 +1277,7 @@ class ProjectWin(QMainWindow):
 
         @return: None
         '''
-        def updateschedule(self,customPojectUpdate = None):
+        def updateschedule(self,customPojectUpdate = False):
 
             flagInitialScanUponSaving = False
             isRcipentEmailAddressSet = False
@@ -1288,7 +1293,7 @@ class ProjectWin(QMainWindow):
                             errorMsg = QB.information(self, "Error", errorMsg)
                             return
 
-            if isRcipentEmailAddressSet:
+            if isRcipentEmailAddressSet and not customPojectUpdate:
                 EmailInfo = self.EmailPrefManager.getConfigInfo()
                 if len(EmailInfo) <= 0:
                     QMessageBox.information(self, "Email Validation", 'Please configure an email account in the Preferences menu')
@@ -1308,7 +1313,7 @@ class ProjectWin(QMainWindow):
                     dweek = int(self.dow.currentIndex())
             elif self.daily.isChecked():
                     interval = 3
-
+                
 
             projectInformation = {}
             projectInformation['title'] = self.projects.currentItem().text()
@@ -1326,7 +1331,6 @@ class ProjectWin(QMainWindow):
                 runDayOrMonth = self.dom.value()
             projectInformation['emailAddress'] = allEmailAddres
             projectInformation['runDayOrMonth'] = runDayOrMonth
-            projectInformation['selectedAlgo'] = 'sha256'
             projectInformation['filters'] = ''
 
             if(self.runOnlyOnACPower.isChecked()):
@@ -1436,7 +1440,7 @@ class ProjectWin(QMainWindow):
                 for  DirectoryDetailSingle in DirectoryDetail:
                     if (str(DirectoryDetail[DirectoryDetailSingle]['pathID']).strip() == str(code).strip()):
                         if(DirectoryDetail[DirectoryDetailSingle]['path'] != searchForPath):
-                            
+                            self.isPathChanged = True
                             self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] ,searchForPath, code )
             except:
                 pass
@@ -1615,7 +1619,7 @@ class ProjectWin(QMainWindow):
                 if not self.checkIfTableExistsInDatabase('project'):
                     ''' Create Project Table'''
                     try:
-                        self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
+                        self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, projectRanBefore SMALLINT DEFAULT 0, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
                     except:
                         pass
 
@@ -1624,7 +1628,7 @@ class ProjectWin(QMainWindow):
                 if not self.checkIfTableExistsInDatabase('projectPath'):
                     ''' Create ProjectPath Table'''
                     try:
-                        self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL,  "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
+                        self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL, lastDifPath TEXT NULL DEFAULT  NULL , "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
                     except:
                         pass
 
@@ -1666,7 +1670,8 @@ class ProjectWin(QMainWindow):
                 msgProjectNameValidation = "Invalid Project Name provided.  Please provide a valid project Name and try again."
                 return msgProjectNameValidation
             return None
-            
+#         def haveTheProjectRanBefore(self):
+#             return self.Database.getOne("SELECT * FROM sqlite_master WHERE name ='" + tableName + "'");
 '''
 Auto Scan running handler
 '''

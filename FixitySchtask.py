@@ -344,6 +344,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Configurations,"id = '" + str(projectID) + "'")
 
         counter = 1
+        len(dirInfo)
         for ms in dirInfo:
             if (str(dirInfo[ms]) != ''):
                 PathsInfo = {}
@@ -367,6 +368,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                     print(Excep[0])
 
                 try:
+                    print(XMLFileNameWithDirName)
                     p = subprocess.Popen(["launchctl", "load", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
                 except Exception as Excep:
@@ -528,12 +530,15 @@ def CreateXMLOfMac(ProjectName , Version , RegistrationInfo  , Triggers , Princi
                 xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
 
             if interval == 2:
+                WeekInformation = {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 }
+                print(WeekInformation[Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']])
+                
                 xmlsch.write("            <key>Minute</key>\n")
                 xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
                 xmlsch.write("            <key>Hour</key>\n")
                 xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
                 xmlsch.write("            <key>Weekday</key>\n")
-                xmlsch.write("            <integer>" + str(Triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</integer>\n")
+                xmlsch.write("            <integer>" + str(WeekInformation[Triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
 
             if interval == 3:
                 xmlsch.write("            <key>Minute</key>\n")

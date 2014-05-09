@@ -84,7 +84,10 @@ def fixity(filePath, Algorithm , projectName= None):
             fixmd5 = hashlib.md5()
         else:
             fixsha256 = hashlib.sha256()
-        
+        print('===========Algorithm - ============')
+        print(Algorithm)
+        print('===========Algorithm- ============')            
+    
     except Exception as Excep:
 
         moreInformation = {"moreInfo":'null'}
@@ -558,12 +561,12 @@ Output: All this, written nicely to a tab-delimited file, with the file returned
 @return: String-File Path of the report writen
 
 '''
-def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , movedFileScanned, newFileScanned, failedFileScanned, deletedFileScanned, DetailOutputOfAllFilesChanges, projectName=''):
+def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , movedFileScanned, newFileScanned, failedFileScanned, deletedFileScanned, DetailOutputOfAllFilesChanges, projectName='',title=''):
     print('writer')
     rn = ''
     try:
         report = "Fixity report\n"
-        report += "Project name\t" + projectPath + "\n"
+        report += "Project name\t" + title + "\n"
         report += "Algorithm used\t" + algoUsed + "\n"
         report += "Date\t" + str(datetime.date.today()) + "\n"
         report += "Total Files\t" + str(TotalFilesScanned) + "\n"
@@ -572,7 +575,7 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         report += "New Files\t" + str(newFileScanned) + "\n"
         report += "Changed Files\t" + str(failedFileScanned) + "\n"
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
-        print(1)
+        
         try:
             report += DetailOutputOfAllFilesChanges.encode('utf8')
         except:
@@ -581,18 +584,15 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
             report += DetailOutputOfAllFilesChanges.decode('utf8')
         except:
             pass
-        print(report)
-        print(2)
+        
     except Exception as Excep:
         print(Excep[0])
         
         
-    print(3)
-    print(projectName)
-    print(4)
+
     if(OS_Info == 'Windows'):
         AutiFixPath = (getcwd()).replace('schedules','').replace('\\\\',"\\")
-        rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(projectName[0])  + '.tsv'
+        rn = AutiFixPath+str(os.sep)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(title)  + '.tsv'
     else:
         fromDycruptionClass = False
         AutiFixPath = (getcwd()).replace('schedules','').replace('//',"/")
@@ -601,10 +601,10 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         except:
             NameOfFile = str(projectName[0])
             fromDycruptionClass = True
-        print(NameOfFile)
+        
         
 
-        print(len(NameOfFile))
+        
         pathInfo = getFixityHomePath()
         createPath = str(pathInfo).replace(' ', '\\ ')
 
@@ -613,27 +613,26 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
                 os.mkdir( str(createPath) + 'reports' )
             except Exception as Excep:
                 print(Excep[0])
-        if not fromDycruptionClass:
-            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(NameOfFile[(len(NameOfFile)-1)])  + '.tsv'
-        else:
-            rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(NameOfFile)  + '.tsv'
+        
+        rn = str(pathInfo)+'reports'+str(os.sep)+'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(title)  + '.tsv'
+        
         try:
             rn = str(rn).replace(' ', '\\ ')
         except Exception as Ex:
             print(Ex[0])
-    print(rn)
-    print(5)
+    
+    
     try:
         r = open(rn, 'w+')
         try:
             r.write(report.decode('utf8'))
         except:
-            pass
-        
-        try:
-            r.write(report.encode('utf8'))
-        except:
-            pass
+            try:
+                r.write(report.encode('utf8'))
+            except:
+                pass
+            
+       
         
         r.close()
     except Exception as Excep:
@@ -851,8 +850,8 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except Exception as Excep:
             print('ToBeScannedDirectoriesInProjectFile 794 FC')
             print(Excep[0])
-    
-
+    print('==================project information==============')
+    print(projectInformation)
     Algorithm = str(projectInformation[0]['selectedAlgo'])
     print('--------------------- History ----------------')
     counter = 0
@@ -901,6 +900,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         '''
         Getting all files and directory  in side "SingleDirectory" with detail information (inode, path and file hash)
         '''
+        print('===========Algorithm============')
+        print(Algorithm)
+        print('===========Algorithm============')
         DirectorysInsideDetails = quietTable(r''+SingleDirectory, Algorithm,InfReplacementArray , projectName)
 
         for DirectorysInsideDetailsSingle in DirectorysInsideDetails:
@@ -1095,8 +1097,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     ProjectName = ProjectName.replace('.fxy','').replace('//','/')
     ProjectName = ProjectName.replace('.fxy','').replace('projects/','')
     ProjectName = ProjectName.replace('.fxy','').replace('\\\\','\\')
-    
-    repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList,projectName)
+    title = ''
+    try:
+        title = projectInformation[0]['title']
+    except:
+        pass
+    repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList, ProjectName, title)
 
     try:
         lock.release()
@@ -1213,7 +1219,9 @@ Method to create (hash, path, id) tables from file root
 @return:  List - List of scanned Directory
 '''
 def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfReplacementArray = {} , projectName = ''):
-
+    print('===========AlgorithumUsedForThisProject============')
+    print(AlgorithumUsedForThisProject)
+    print('===========AlgorithumUsedForThisProject============')
     listOfValues = []
     fls = []
 
@@ -1255,7 +1263,10 @@ def quietTable(DirectortPathToBeScanned, AlgorithumUsedForThisProject , InfRepla
 
             pathOftheFile = r''+path.abspath(fls[f])
             EcodedBasePath = InfReplacementArray[DirectortPathToBeScanned]['code']
-            givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')            
+            givenPath = str(pathOftheFile).replace(DirectortPathToBeScanned, EcodedBasePath + '||')
+            print('===========AlgorithumUsedForThisProject============')
+            print(AlgorithumUsedForThisProject)
+            print('===========AlgorithumUsedForThisProject============')            
             hashOfThisFileContent = fixity(pathOftheFile, AlgorithumUsedForThisProject , projectName)
             
             
