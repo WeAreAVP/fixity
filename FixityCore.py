@@ -575,15 +575,19 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
         report += "New Files\t" + str(newFileScanned) + "\n"
         report += "Changed Files\t" + str(failedFileScanned) + "\n"
         report += "Removed Files\t" + str(deletedFileScanned) + "\n"
-        
+
+        utf_encode = False
+
         try:
             report += DetailOutputOfAllFilesChanges.encode('utf8')
         except:
+            utf_encode = True
             pass
-        try:
-            report += DetailOutputOfAllFilesChanges.decode('utf8')
-        except:
-            pass
+        if utf_encode:
+            try:
+                report += DetailOutputOfAllFilesChanges.decode('utf8')
+            except:
+                pass
         
     except Exception as Excep:
         print(Excep[0])
@@ -777,9 +781,13 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+'_-_-_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
 
+    historyFilePath = historyFile
+    HistoryFile = None
     try:
-        HistoryFile = open(historyFile , 'w+')
-    except:
+        print("historyFile::"+historyFilePath)
+        HistoryFile = open(historyFilePath , 'w+')
+    except Exception as e:
+        print('writing ::: History File Exception::'+str(e.message))
         pass
     print('writing ::: History File')
 
