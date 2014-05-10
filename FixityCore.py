@@ -771,7 +771,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     InfReplacementArrayForReplacedFile = {}
     
     if(OS_Info == 'Windows'):
-        historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+'_-_-_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        historyFile = getcwd()+str(os.sep)+'history'+str(os.sep)+str(projectName).replace('.fxy', '')+'_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
     else:
 
         pathInfo = pathInfo = getFixityHomePath()
@@ -783,7 +783,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
             except:
                 pass
 
-        historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+'_-_-_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
+        historyFile = str(pathInfo) + 'history' + str(os.sep)+str(projectName).replace('.fxy', '')+'_'+str(datetime.date.today())+'-'+str(datetime.datetime.now().strftime('%H%M%S'))+'.tsv'
         historyFile = str(historyFile).replace(' ', '\\ ')
 
     historyFilePath = historyFile

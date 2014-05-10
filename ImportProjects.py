@@ -17,6 +17,7 @@ elif os.name == 'nt':
     OS_Info = 'Windows'
 elif os.name == 'os2':
     OS_Info = 'check'
+
     
 from PySide.QtCore import *
 from PySide.QtGui import *
@@ -163,22 +164,23 @@ class ImportProjects(QDialog):
         
         fileName = fileName.replace('.fxy','')
         fileName = fileName.replace('.tsv','')
+        QID = QInputDialog(self)
+        QID.setWindowModality(Qt.WindowModal)    
+        name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
+        if not name[1]:
+            QMessageBox.information(self, "Error", "Invalid Project Name!")
+            return
         
-        if '_-_-_' in fileName:
-            NameOfFile =  fileName.split('_-_-_')
-            if '__' in fileName:
-                NameOfFileArr =  str(NameOfFile[0]).split('__')
-                fileName = NameOfFileArr[0]
-            else:
-                fileName = NameOfFile[0]
-                
+        fileName = name[0]
+        
+        responseName = self.ValidateProjectName(fileName)
+        if responseName is not None:
+            return
         
         Project = DB.getProjectInfo(fileName)
 
         if(len(Project)>0):
-            
             QMessageBox.information(self, "Error", "A Project with this name already exists!")
-            
             return
        
         
@@ -455,6 +457,18 @@ class ImportProjects(QDialog):
         
         return CleanString
      
+    ''' 
+        Validate given email address
+        @param Email: Email Address
+       
+        @return: String Message of failure
+    ''' 
+    def ValidateProjectName(self, projectName):
+        if not re.match(r"^[a-zA-Z0-9-_]+$", projectName):
+            msgProjectNameValidation = "Invalid Project Name provided.  Please provide a valid project Name and try again."
+            return msgProjectNameValidation
+        return None
+    
 # app = QApplication(sys.argv)
 # w = ImportProjects(QDialog())
 # w.SetWindowLayout()

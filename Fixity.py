@@ -765,6 +765,7 @@ class ProjectWin(QMainWindow):
             self.toggler(False)
             self.unsaved = True
 
+
         '''
         Process the changes made in Fixity
         @return:  List-List Of Changed Paths
@@ -774,6 +775,7 @@ class ProjectWin(QMainWindow):
             if all(d.text() == "" for d in self.dtx):
                     QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                     return
+            print(1)
             dmonth, dweek = 99, 99
             if self.monthly.isChecked():
                     interval = 1
@@ -795,7 +797,7 @@ class ProjectWin(QMainWindow):
                             QB = QMessageBox()
                             errorMsg = QB.information(self, "Error", errorMsg)
                             return
-
+            
             isfileExists = False
             if path.isfile('projects\\' + self.projects.currentItem().text() + '.fxy'):
                 isfileExists = True
@@ -807,29 +809,29 @@ class ProjectWin(QMainWindow):
 
                 if not projFileText :
                     isfileExists = False
-
+            
             if shouldRun or (not isfileExists):
-
+                
                 total = 0
                 directoryIncreament = 1
 
                 pathsInfoChanges = {}
                 dontSave = False
+                
                 print('ProjectInformationasd ada dasd ')
-                print(self.projects.currentItem().text())
+                
                 ProjectInformation = self.Database.getProjectInfo(str(self.projects.currentItem().text()))
                 ProjectInformation = ProjectInformation[0]
                 DirectoryDetail = self.Database.getProjectPathInfo(ProjectInformation['id'], ProjectInformation['versionCurrentID'])
                 
                 numOfPathScanned = 0
+                
                 for ds in self.dtx:
                     if ds.text().strip() != "":
                         numOfPathScanned = numOfPathScanned + 1
-                        
+                                       
                 for ds in self.dtx:
                     if ds.text().strip() != "":
-                        
-                        
                         self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
                         orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
                         changePathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
@@ -867,12 +869,16 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
-                        
                 
+                directoryIncreamentcheck = 0
+                if len(pathsInfoChanges) <=0:
+                    for ds in self.dtx:
+                        if ds.text().strip() != "":
+                            directoryIncreamentcheck = directoryIncreamentcheck + 1
+                            pathsInfoChanges[directoryIncreamentcheck] = str(ds.text())
                 currentProject = self.projects.currentItem().text()
                 self.isLessPathsThenBefore = False
-                print(numOfPathScanned)
-                print(len(DirectoryDetail))
+                
                 if numOfPathScanned < len(DirectoryDetail):
                     self.isLessPathsThenBefore = True
                     print('is Less Paths Then Before')
@@ -1336,9 +1342,11 @@ class ProjectWin(QMainWindow):
                             QB = QMessageBox()
                             errorMsg = QB.information(self, "Error", errorMsg)
                             return
+            
             if all(d.text() == "" for d in self.dtx):
                 QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                 return
+            
             
             if isRcipentEmailAddressSet and not customPojectUpdate:
                 EmailInfo = self.EmailPrefManager.getConfigInfo()
@@ -1348,8 +1356,9 @@ class ProjectWin(QMainWindow):
             try:
                 pathsInfoChanges = self.process(flagInitialScanUponSaving)
             except Exception as Exept:
-                print(Exept.message)
+                
                 pathsInfoChanges = {}
+            
             dmonth, dweek = 99, 99
             
             

@@ -312,7 +312,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
         else:
             XMLFileNameWithDirName = CreateXMLOfMac(prj , VERSION , RegistrationInfo  , Triggers , Principals , Settings , Actions, interval)
             
-            
         ############################################################################################################################
 
         XMLFilePath = "\"" + getcwd() + "\\" + XMLFileNameWithDirName + "\""
@@ -344,8 +343,9 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Configurations,"id = '" + str(projectID) + "'")
 
         counter = 1
-       
+        
         for ms in dirInfo:
+            
             if (str(dirInfo[ms]) != ''):
                 PathsInfo = {}
                 PathsInfo['projectID'] = projectID
@@ -356,6 +356,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                 SqlLiteDataBase.insert(SqlLiteDataBase._tableProjectPath, PathsInfo)
 
                 counter = counter + 1
+        
         try:
             if OS_Info == 'Windows':
                 subprocess.call(Command , startupinfo=startupinfo)
@@ -368,7 +369,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
                     print(Excep[0])
 
                 try:
-                    print(XMLFileNameWithDirName)
                     p = subprocess.Popen(["launchctl", "load", "-w", XMLFileNameWithDirName], stdout=subprocess.PIPE)
                     output, err = p.communicate()
                 except Exception as Excep:
@@ -391,9 +391,6 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             Debuging.tureDebugerOn()
             Debuging.logError('Create scheduler Command could not run Line range 197 File FixitySchtask ', moreInformation)
             pass
-
-
-
 
 
 '''
