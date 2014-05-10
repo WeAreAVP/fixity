@@ -821,9 +821,14 @@ class ProjectWin(QMainWindow):
                 ProjectInformation = ProjectInformation[0]
                 DirectoryDetail = self.Database.getProjectPathInfo(ProjectInformation['id'], ProjectInformation['versionCurrentID'])
                 
+                numOfPathScanned = 0
                 for ds in self.dtx:
-
                     if ds.text().strip() != "":
+                        numOfPathScanned = numOfPathScanned + 1
+                        
+                for ds in self.dtx:
+                    if ds.text().strip() != "":
+                        
                         
                         self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
                         orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
@@ -862,12 +867,17 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
+                        
                 
                 currentProject = self.projects.currentItem().text()
-                print(self.isPathChanged)
-                if self.isPathChanged == True and (ProjectInformation['lastDifPaths'] is None or ProjectInformation['lastDifPaths'] == ''):
-                    allPreviousPaths = ''
-                    
+                self.isLessPathsThenBefore = False
+                print(numOfPathScanned)
+                print(len(DirectoryDetail))
+                if numOfPathScanned < len(DirectoryDetail):
+                    self.isLessPathsThenBefore = True
+                    print('is Less Paths Then Before')
+                if (self.isPathChanged == True and (ProjectInformation['lastDifPaths'] is None or ProjectInformation['lastDifPaths'] == '')) or self.isLessPathsThenBefore:
+                    allPreviousPaths = ''                    
                     for  DirectoryDetailSingle in DirectoryDetail:
                         if (DirectoryDetail[DirectoryDetailSingle]['path'] is not None and str(DirectoryDetail[DirectoryDetailSingle]['path']).split() != ''):
                             if allPreviousPaths == '':
@@ -875,7 +885,7 @@ class ProjectWin(QMainWindow):
                             else:
                                 allPreviousPaths = allPreviousPaths+','+str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
                             
-                    if len(DirectoryDetail) >0:
+                    if len(DirectoryDetail) > 0:
                         UpdateInf = {}        
                         UpdateInf['lastDifPaths'] = allPreviousPaths
                         self.Database.update(self.Database._tableProject, UpdateInf, "id = '"+str(ProjectInformation['id'])+"'")
@@ -1029,6 +1039,7 @@ class ProjectWin(QMainWindow):
                 self.mtx[n].setDisabled(switch)
                 self.dtx[n].setDisabled(switch)
                 self.but[n].setDisabled(switch)
+                self.binOfDirs[n].setDisabled(switch)
             self.timer.setDisabled(switch)
             self.monthly.setDisabled(switch)
             self.weekly.setDisabled(switch)
