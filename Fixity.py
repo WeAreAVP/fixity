@@ -263,21 +263,28 @@ class ProjectWin(QMainWindow):
 
                 self.dlay = QVBoxLayout()
                 self.dlay.setSpacing(0)
-                self.dtx, self.but = [], []
-
+                self.dtx, self.but, self.binOfDirs = [], [], []
+                
                 for n in xrange(0, 7):
                     hbox = QHBoxLayout()
                     hbox.setContentsMargins(0, 0, 0, 0)
                     hbox.setSpacing(0)
                     self.dtx.append(QLineEdit())
                     self.but.append(QPushButton('...'))
+                    self.binOfDirs.append(QPushButton('X'))
+                    
                     self.but[n].setFixedSize(30, 21)
                     self.dtx[n].setContentsMargins(0, 2, 7, 0)
                     self.dtx[n].setFixedSize(150,22)
+                    self.binOfDirs[n].setFixedSize(25,22)
+                    self.binOfDirs[n].setStyleSheet('QPushButton {color: red; font: bold}')
                     self.but[n].clicked.connect(self.pickdir)
                     self.dtx[n].textChanged.connect(self.changed)
+                    self.binOfDirs[n].clicked.connect(self.removeDirs)
+                    
                     hbox.addWidget(self.dtx[n])
                     hbox.addWidget(self.but[n])
+                    hbox.addWidget(self.binOfDirs[n])
                     self.dlay.addLayout(hbox)
 
                 self.dirs = QGroupBox("Directories")
@@ -472,7 +479,9 @@ class ProjectWin(QMainWindow):
 
         ''' Pop up to Change Project Name '''
         def ChangeNameBox(self):
-
+            if self.unsaved == True:
+                QMessageBox.warning(self, "Fixity", "Can not Change Name of Project. Please save other unsaved Projects and try again.")
+                return
             self.ChangeName.Cancel()
             self.ChangeName = None
             self.ChangeName = ChangeName(self)
@@ -806,6 +815,12 @@ class ProjectWin(QMainWindow):
 
                 pathsInfoChanges = {}
                 dontSave = False
+                print('ProjectInformationasd ada dasd ')
+                print(self.projects.currentItem().text())
+                ProjectInformation = self.Database.getProjectInfo(str(self.projects.currentItem().text()))
+                ProjectInformation = ProjectInformation[0]
+                DirectoryDetail = self.Database.getProjectPathInfo(ProjectInformation['id'], ProjectInformation['versionCurrentID'])
+                
                 for ds in self.dtx:
 
                     if ds.text().strip() != "":
@@ -847,9 +862,24 @@ class ProjectWin(QMainWindow):
                             self.FileChanged.ReplacementArray[directoryIncreament]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
 
                         directoryIncreament = directoryIncreament + 1
-
+                
                 currentProject = self.projects.currentItem().text()
-
+                print(self.isPathChanged)
+                if self.isPathChanged == True and (ProjectInformation['lastDifPaths'] is None or ProjectInformation['lastDifPaths'] == ''):
+                    allPreviousPaths = ''
+                    
+                    for  DirectoryDetailSingle in DirectoryDetail:
+                        if (DirectoryDetail[DirectoryDetailSingle]['path'] is not None and str(DirectoryDetail[DirectoryDetailSingle]['path']).split() != ''):
+                            if allPreviousPaths == '':
+                                allPreviousPaths = str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
+                            else:
+                                allPreviousPaths = allPreviousPaths+','+str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
+                            
+                    if len(DirectoryDetail) >0:
+                        UpdateInf = {}        
+                        UpdateInf['lastDifPaths'] = allPreviousPaths
+                        self.Database.update(self.Database._tableProject, UpdateInf, "id = '"+str(ProjectInformation['id'])+"'")
+                    self.isPathChanged = False
                 projectInformation = {}
                 projectInformation['title'] = self.projects.currentItem().text()
 
@@ -1082,7 +1112,10 @@ class ProjectWin(QMainWindow):
                 if PathSelectedForthiDirectory and PathSelectedForthiDirectory !='':
                     self.dtx[n].setText(PathSelectedForthiDirectory)
 
-
+        
+        def removeDirs(self):
+            n = self.binOfDirs.index(self.sender())
+            self.dtx[n].setText('')
 
         '''
         Provides Replace Path Information Array
@@ -1292,7 +1325,10 @@ class ProjectWin(QMainWindow):
                             QB = QMessageBox()
                             errorMsg = QB.information(self, "Error", errorMsg)
                             return
-
+            if all(d.text() == "" for d in self.dtx):
+                QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
+                return
+            
             if isRcipentEmailAddressSet and not customPojectUpdate:
                 EmailInfo = self.EmailPrefManager.getConfigInfo()
                 if len(EmailInfo) <= 0:
@@ -1300,7 +1336,8 @@ class ProjectWin(QMainWindow):
                     return
             try:
                 pathsInfoChanges = self.process(flagInitialScanUponSaving)
-            except:
+            except Exception as Exept:
+                print(Exept.message)
                 pathsInfoChanges = {}
             dmonth, dweek = 99, 99
             
@@ -1359,7 +1396,7 @@ class ProjectWin(QMainWindow):
             Configurations['onlyonchange'] = self.EmailOnlyWhenSomethingChanged.isChecked()
             Configurations['RunInitialScan'] = False
             self.unsaved = False
-
+            
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
 
@@ -1441,7 +1478,7 @@ class ProjectWin(QMainWindow):
                     if (str(DirectoryDetail[DirectoryDetailSingle]['pathID']).strip() == str(code).strip()):
                         if(DirectoryDetail[DirectoryDetailSingle]['path'] != searchForPath):
                             self.isPathChanged = True
-                            self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] ,searchForPath, code )
+                            self.ChangeRootDirectoryInfor(DirectoryDetail[DirectoryDetailSingle]['path'] ,searchForPath, code )                    
             except:
                 pass
 
@@ -1619,7 +1656,7 @@ class ProjectWin(QMainWindow):
                 if not self.checkIfTableExistsInDatabase('project'):
                     ''' Create Project Table'''
                     try:
-                        self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, projectRanBefore SMALLINT DEFAULT 0, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
+                        self.Database.sqlQuery('CREATE TABLE "project" (ignoreHiddenFiles NUMERIC, id INTEGER PRIMARY KEY, versionCurrentID INTEGER, projectRanBefore SMALLINT DEFAULT 0, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), lastDifPaths TEXT NULL DEFAULT  NULL ,  runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
                     except:
                         pass
 
@@ -1628,7 +1665,7 @@ class ProjectWin(QMainWindow):
                 if not self.checkIfTableExistsInDatabase('projectPath'):
                     ''' Create ProjectPath Table'''
                     try:
-                        self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL, lastDifPath TEXT NULL DEFAULT  NULL , "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
+                        self.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL, "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
                     except:
                         pass
 
@@ -1648,7 +1685,9 @@ class ProjectWin(QMainWindow):
                     except:
                         pass
 
-
+        
+        
+            
         '''
             Check If Table Exists In Database
             @param tableName: Table Name

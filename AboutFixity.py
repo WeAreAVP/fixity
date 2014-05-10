@@ -60,6 +60,10 @@ class AboutFixity(QDialog):
         self.sch = QGroupBox()
         self.monthly = QTextEdit()
         self.weekly = QTextEdit()
+        
+        self.monthly.setReadOnly(True)
+        self.weekly.setReadOnly(True)
+        
         self.main = QHBoxLayout()
 
     ''' Distructor'''

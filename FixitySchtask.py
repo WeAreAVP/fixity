@@ -344,7 +344,7 @@ def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformat
             SqlLiteDataBase.update(SqlLiteDataBase._tableProject, Configurations,"id = '" + str(projectID) + "'")
 
         counter = 1
-        len(dirInfo)
+       
         for ms in dirInfo:
             if (str(dirInfo[ms]) != ''):
                 PathsInfo = {}

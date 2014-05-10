@@ -147,7 +147,20 @@ class ImportProjects(QDialog):
             QMessageBox.information(self, "Error", "Please select valid Project/Manifest file path")
             
             return
+        flagIsaTsvFile = False
+        flagIsafxyFile = False
         fileName = str(path.basename(filePath))
+        print(fileName)
+        if '.tsv' in fileName:
+            flagIsaTsvFile = True
+            
+        if '.fxy' in fileName:
+            flagIsafxyFile = True
+        
+        if not flagIsafxyFile and not flagIsaTsvFile:
+            QMessageBox.information(self, "Error", "Invalid File Given")
+            return
+        
         fileName = fileName.replace('.fxy','')
         fileName = fileName.replace('.tsv','')
         
@@ -175,10 +188,14 @@ class ImportProjects(QDialog):
         emailAddress =  str(fileToImportInfoOf.readline())
         projectConfiguration = str(fileToImportInfoOf.readline())
         lastRan  = str(fileToImportInfoOf.readline())
-        filters  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
-        AlgorithmSelected  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
+        filters = {}
+        AlgorithmSelected = ''
+        if flagIsaTsvFile:
+            filters  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
+            AlgorithmSelected  = str(self.CleanStringForDictionary(fileToImportInfoOf.readline()))
+            filters = filters.split('||-||')
         allContent = fileToImportInfoOf.readlines()
-        filters = filters.split('||-||')
+        
         if(pathInformation and  projectConfiguration):
             versionInformation ={}
             versionInformation['versionType'] = ''
@@ -219,17 +236,20 @@ class ImportProjects(QDialog):
                 # 0 = Monthly, 1 = Weekly, 2 = Daily
                 
                 Config['lastRan'] = str(lastRan)
-                Config['filters'] = str(filters[0])
+                
+                if flagIsaTsvFile:
+                    Config['filters'] = str(filters[0])
+                    Config['ignoreHiddenFiles'] = str(filters[1])
+                    Config['selectedAlgo'] = AlgorithmSelected
+                    
                 Config['runTime'] = runTime
                 Config['durationType'] = durationType
-                Config['ignoreHiddenFiles'] = str(filters[1])
                 Config['runDayOrMonth']  = runDayOrMonth
                 Config['emailOnlyUponWarning'] = 0
                 Config['ifMissedRunUponRestart'] = 0
                 Config['emailOnlyUponWarning'] = 0
                 Config['runWhenOnBattery'] = 1
                 Config['extraConf'] = ''
-                Config['selectedAlgo'] = AlgorithmSelected
                 Config['emailAddress'] = self.CleanStringForDictionary(str(emailAddress).replace(';',''))
 
                 projectID = DB.insert(DB._tableProject, Config)
@@ -271,12 +291,12 @@ class ImportProjects(QDialog):
 
                         if FixInfo is not None:
                             if(len(FixInfo) > 2):
-                                md5_hash = ''
-                                ssh256_hash = ''
+                                hashes = ''
+                                
                                 if(len(str(FixInfo[0])) == 32):
-                                    md5_hash = FixInfo[0]
+                                    hashes = FixInfo[0]
                                 else:
-                                    ssh256_hash = FixInfo[0]
+                                    hashes = FixInfo[0]
                                 InforOfPathID = {}
                                 if '||' in str(FixInfo[1]):
                                     InforOfPathID = str(FixInfo[1]).split('||')
@@ -290,8 +310,7 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['projectID'] = projectID['id']
                                 inforVersionDetail['versionID'] = VersionID['id']
                                 inforVersionDetail['projectPathID'] = InforOfPathID[0]
-                                inforVersionDetail['md5_hash'] = self.CleanStringForDictionary(md5_hash)
-                                inforVersionDetail['ssh256_hash'] = self.CleanStringForDictionary(ssh256_hash)
+                                inforVersionDetail['hashes'] = self.CleanStringForDictionary(hashes)
                                 inforVersionDetail['path'] = self.CleanStringForDictionary(FixInfo[1])
                                 inforVersionDetail['inode'] = self.CleanStringForDictionary(FixInfo[2])
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)

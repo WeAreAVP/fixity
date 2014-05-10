@@ -14,6 +14,7 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 from os import getcwd , path, listdir, remove, walk
 import sys
+import re
 
 '''Custom Classes'''
 from EmailPref import EmailPref
@@ -146,11 +147,15 @@ class ChangeName(QDialog):
     def SetInformation(self):
         MessageBoxForChangeName = QMessageBox 
         selectedProject = self.Porjects.currentText()
+        repsonseIsValidName = self.ValidateProjectName(str(self.changeNameField.text()))
+        print(repsonseIsValidName)
+        if repsonseIsValidName is not None:
+            MessageBoxForChangeName.information(self, "Fixity", repsonseIsValidName)
+            return
         Information = SqlLiteDataBase.getProjectInfo(selectedProject)
         FixitySchtask.deltask(str(selectedProject))
         FixitySchtask.deltask(str(self.changeNameField.text()))
         if(self.changeNameField.text() == '' and self.changeNameField.text() == None):
-            
             MessageBoxForChangeName.information(self, "Fixity", "No project selected - please select a project and try again.")
             return
         else:
@@ -185,6 +190,17 @@ class ChangeName(QDialog):
     
     
     
+    ''' 
+        Validate given email address
+        @param Email: Email Address
+       
+        @return: String Message of failure
+    ''' 
+    def ValidateProjectName(self, projectName):
+        if not re.match(r"^[a-zA-Z0-9-_]+$", projectName):
+            msgProjectNameValidation = "Invalid Project Name provided.  Please provide a valid project Name and try again."
+            return msgProjectNameValidation
+        return None
     
     '''Re Open Change Name'''
     def reOpenChangeName(self):

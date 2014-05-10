@@ -5,16 +5,19 @@
 # All rights reserved.
 # Released under the Apache license, v. 2.0
 
-import FixityCore
 
 
 
+import win32file
+from Debuger import Debuger
+Debugging = Debuger()
 '''
 File ID for NTFS
 Returns the complete file ID as a single long string
 (volume number, high index, low index)
 '''
 def ntfsIDForWindows(filePath):
+    print('ntfsIDForWindows')
     idNode = '';
     try:
         
@@ -35,15 +38,15 @@ def ntfsIDForWindows(filePath):
         
         
         
-        Debugging = FixityCore.Debuger()
+        
         Debugging.tureDebugerOn()
         Debugging.logError('Error Reporting Line 106 - 108 While reading file to Creating INode for File :' + str(filePath)  +" File FixtyCore\n", moreInformation)
         pass
     
     try:
-        idNode = str(FixityCore.win32file.GetFileInformationByHandle(FixityCore.win32file._get_osfhandle(target.fileno()))[4]) + \
-            str(FixityCore.win32file.GetFileInformationByHandle(FixityCore.win32file._get_osfhandle(target.fileno()))[8]) + \
-            str(FixityCore.win32file.GetFileInformationByHandle(FixityCore.win32file._get_osfhandle(target.fileno()))[9])
+        idNode = str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[4]) + \
+            str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
+            str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
         return idNode
     except Exception as Excep:
 
@@ -59,8 +62,7 @@ def ntfsIDForWindows(filePath):
                     moreInformation['LogsMore1'] =str(Excep[1])
             except:
                 pass
-            
-            Debugging = FixityCore.Debuger()
+          
             Debugging.tureDebugerOn()
             Debugging.logError('Error Reporting Line 89 - 95 While Creating INode for File :' + str(filePath)  +" File FixtyCore\n", moreInformation)
             pass

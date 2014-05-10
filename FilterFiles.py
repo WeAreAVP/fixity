@@ -225,6 +225,7 @@ class FilterFiles(QDialog):
     ''' Reset Text of Filters '''
     def Reset(self):
         self.FilterField.setText('')
+        self.IgnoreHiddenFiles.setChecked(False)
 
 
     '''
