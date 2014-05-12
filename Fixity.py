@@ -33,6 +33,7 @@ import sys
 import argparse
 import platform
 import os
+import traceback
 
 
 
@@ -843,6 +844,7 @@ class ProjectWin(QMainWindow):
                         numOfPathScanned = numOfPathScanned + 1
                 
                 for ds in self.dtx:
+                    print "Hey hey hey !::"+ds.text().strip()
                     if ds.text().strip() != "":
                         self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
                         orignalPathTextCode = FixityCore.pathCodeEncode(directoryIncreament)
@@ -959,7 +961,9 @@ class ProjectWin(QMainWindow):
                 ConfigurationInfo = self.Database.getProjectInfo(currentProject)
                 FiltersArray = {}
 
-                if ConfigurationInfo:
+                Allfilters = ""
+
+                if ConfigurationInfo and ConfigurationInfo[0]['filters'] is not None and ConfigurationInfo[0]['filters'] != "":
                     if ConfigurationInfo[0]['id']:
                         Allfilters = ConfigurationInfo[0]['filters']
                         Allfilters = str(Allfilters.replace('\n', ''))
@@ -1374,7 +1378,9 @@ class ProjectWin(QMainWindow):
             try:
                 pathsInfoChanges = self.process(flagInitialScanUponSaving)
             except Exception as Exept:
-                
+                print Exept.message
+                tb = traceback.format_exc()
+                print tb
                 pathsInfoChanges = {}
             
             dmonth, dweek = 99, 99
