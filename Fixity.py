@@ -1238,7 +1238,7 @@ class ProjectWin(QMainWindow):
                 FilePath = getcwd()+'\\schedules\\'
                 
                 
-#                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
                 
                 FileName = 'AutoFixity.exe'
                 params = self.projects.currentItem().text() +' '+'Run'
