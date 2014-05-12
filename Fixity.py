@@ -86,6 +86,7 @@ class ProjectWin(QMainWindow):
                 Debuging.tureDebugerOn()
                 Debuging.logInfo('Logger started!::::::::::::::::::' + "\n",{} )
                 self.isPathChanged = False
+                self.isPathChangedGlobal = False
                 self.SystemInformation = self.getWindowsInformation()
                 if(self.SystemInformation):
                     if OS_Info == 'Windows':
@@ -775,7 +776,7 @@ class ProjectWin(QMainWindow):
             if all(d.text() == "" for d in self.dtx):
                     QMessageBox.warning(self, "Fixity", "No directories selected!\nPlease set directories to scan")
                     return
-            print(1)
+            
             dmonth, dweek = 99, 99
             if self.monthly.isChecked():
                     interval = 1
@@ -818,18 +819,25 @@ class ProjectWin(QMainWindow):
                 pathsInfoChanges = {}
                 dontSave = False
                 
-                print('ProjectInformationasd ada dasd ')
                 
                 ProjectInformation = self.Database.getProjectInfo(str(self.projects.currentItem().text()))
-                ProjectInformation = ProjectInformation[0]
-                DirectoryDetail = self.Database.getProjectPathInfo(ProjectInformation['id'], ProjectInformation['versionCurrentID'])
+                try:
+                    ProjectInformation = ProjectInformation[0]
+                except:
+                    pass
+                DirectoryDetail = None
+                try:
+                    DirectoryDetail = self.Database.getProjectPathInfo(ProjectInformation['id'], ProjectInformation['versionCurrentID'])
+                except:
+                    pass
                 
                 numOfPathScanned = 0
                 
                 for ds in self.dtx:
+                    
                     if ds.text().strip() != "":
                         numOfPathScanned = numOfPathScanned + 1
-                                       
+                
                 for ds in self.dtx:
                     if ds.text().strip() != "":
                         self.checkForChanges(self.projects.currentItem().text(),ds.text(), 'Fixity-'+str(directoryIncreament))
@@ -870,6 +878,8 @@ class ProjectWin(QMainWindow):
 
                         directoryIncreament = directoryIncreament + 1
                 
+                
+                
                 directoryIncreamentcheck = 0
                 if len(pathsInfoChanges) <=0:
                     for ds in self.dtx:
@@ -878,24 +888,26 @@ class ProjectWin(QMainWindow):
                             pathsInfoChanges[directoryIncreamentcheck] = str(ds.text())
                 currentProject = self.projects.currentItem().text()
                 self.isLessPathsThenBefore = False
-                
-                if numOfPathScanned < len(DirectoryDetail):
-                    self.isLessPathsThenBefore = True
-                    print('is Less Paths Then Before')
-                if (self.isPathChanged == True and (ProjectInformation['lastDifPaths'] is None or ProjectInformation['lastDifPaths'] == '')) or self.isLessPathsThenBefore:
-                    allPreviousPaths = ''                    
-                    for  DirectoryDetailSingle in DirectoryDetail:
-                        if (DirectoryDetail[DirectoryDetailSingle]['path'] is not None and str(DirectoryDetail[DirectoryDetailSingle]['path']).split() != ''):
-                            if allPreviousPaths == '':
-                                allPreviousPaths = str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
-                            else:
-                                allPreviousPaths = allPreviousPaths+','+str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
-                            
-                    if len(DirectoryDetail) > 0:
-                        UpdateInf = {}        
-                        UpdateInf['lastDifPaths'] = allPreviousPaths
-                        self.Database.update(self.Database._tableProject, UpdateInf, "id = '"+str(ProjectInformation['id'])+"'")
-                    self.isPathChanged = False
+                if DirectoryDetail is not None:
+                    if numOfPathScanned < len(DirectoryDetail):
+                        self.isLessPathsThenBefore = True
+                        print('is Less Paths Then Before')
+                    if (self.isPathChanged == True and (ProjectInformation['lastDifPaths'] is None or ProjectInformation['lastDifPaths'] == '')) or self.isLessPathsThenBefore:
+                        allPreviousPaths = ''                    
+                        for  DirectoryDetailSingle in DirectoryDetail:
+                            if (DirectoryDetail[DirectoryDetailSingle]['path'] is not None and str(DirectoryDetail[DirectoryDetailSingle]['path']).split() != ''):
+                                if allPreviousPaths == '':
+                                    allPreviousPaths = str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
+                                else:
+                                    allPreviousPaths = allPreviousPaths+','+str(DirectoryDetail[DirectoryDetailSingle]['path'])+'||-||'+str(DirectoryDetail[DirectoryDetailSingle]['pathID'])
+                        self.isPathChangedGlobal = True
+                        if len(DirectoryDetail) > 0:
+                            UpdateInf = {}        
+                            UpdateInf['lastDifPaths'] = allPreviousPaths
+                            self.Database.update(self.Database._tableProject, UpdateInf, "id = '"+str(ProjectInformation['id'])+"'")
+                        
+                        self.isPathChanged = False
+                        
                 projectInformation = {}
                 projectInformation['title'] = self.projects.currentItem().text()
 
@@ -913,7 +925,7 @@ class ProjectWin(QMainWindow):
                 projectInformation['durationType'] = durationType
                 projectInformation['runDayOrMonth'] = interval
                 projectInformation['selectedAlgo'] = 'sha256'
-                projectInformation['filters'] = ''
+                
                 if(self.runOnlyOnACPower.isChecked()):
                     projectInformation['runWhenOnBattery'] = 1
                 else:
@@ -1216,14 +1228,16 @@ class ProjectWin(QMainWindow):
                     directoryIncreamentDirs = directoryIncreamentDirs + 1
 
                 FilePath = getcwd()+'\\schedules\\'
+                
                 self.updateschedule()
                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
 
                 FileName = 'AutoFixity.exe'
                 params = self.projects.currentItem().text() +' '+'Run'
-
+ 
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
                 self.Threading.start()
+                 
                 QMessageBox.information(self, "Fixity", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
                 
             else:
@@ -1328,7 +1342,7 @@ class ProjectWin(QMainWindow):
         @return: None
         '''
         def updateschedule(self,customPojectUpdate = False):
-
+            
             flagInitialScanUponSaving = False
             isRcipentEmailAddressSet = False
             allEmailAddres = ''
@@ -1388,7 +1402,7 @@ class ProjectWin(QMainWindow):
                 runDayOrMonth = self.dom.value()
             projectInformation['emailAddress'] = allEmailAddres
             projectInformation['runDayOrMonth'] = runDayOrMonth
-            projectInformation['filters'] = ''
+            
 
             if(self.runOnlyOnACPower.isChecked()):
                 projectInformation['runWhenOnBattery'] = 1
@@ -1405,7 +1419,7 @@ class ProjectWin(QMainWindow):
             else:
                 projectInformation['emailOnlyUponWarning'] = 0
 
-            projectInformation['extraConf'] = ''
+            
             data = str(datetime.datetime.now()).split('.')
             projectInformation['lastRan'] = data[0]
             
@@ -1419,7 +1433,8 @@ class ProjectWin(QMainWindow):
             
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
-
+            if self.isPathChangedGlobal:
+                self.update(self.projects.selectedItems()[0])
 
 
         '''

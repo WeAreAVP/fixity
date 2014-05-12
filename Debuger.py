@@ -60,8 +60,8 @@ class Debuger(object):
         else:
             self.loger.basicConfig(filename=getcwd() +str(os.sep)+'debug'+str(os.sep)+'debug.log',level=logging.DEBUG)
 
-        self.isdebugerOn = False
-
+        self.isdebugerOn = True
+        self.tureDebugerOn()
         self.Information ={}
 
         self.Information = self.getDebugConfiguration()

@@ -72,14 +72,20 @@ class AutoRuner(object):
             results = FixityCore.run(AutiFixPath+"\\projects\\" + project + ".fxy", Fitlers, project)
         else:
             results = FixityCore.run(AutiFixPath+"/projects/" + project + ".fxy", Fitlers, project)
+        
         reportGeneratedForEmail = "FIXITY REPORT:\n* " + str(results[0]) + " Confirmed Files\n* " + str(results[1]) + " Moved or Renamed Files\n* " + str(results[2]) + " New Files\n* " + str(results[3]) + " Changed Files\n* " + str(results[4]) + " Removed Files"
-
+        
 
         if(len(configuration) > 0):
             newConfiguration = configuration[0]
-            newConfiguration['smtp'] = self.DecodeInfo(configuration[0]['smtp'])
-            newConfiguration['email'] = self.DecodeInfo(configuration[0]['email'])
-            newConfiguration['pass'] = self.DecodeInfo(configuration[0]['pass'])
+            if configuration[0]['smtp'] !='' or configuration[0]['smtp'] is not None and configuration[0]['smtp'] !='None':
+                newConfiguration['smtp'] = self.DecodeInfo(configuration[0]['smtp'])
+                
+            if configuration[0]['email'] !='' or configuration[0]['email'] is not None and configuration[0]['email'] !='None':
+                newConfiguration['email'] = self.DecodeInfo(configuration[0]['email'])
+                
+            if configuration[0]['pass'] !='' or configuration[0]['pass'] is not None and configuration[0]['pass'] !='None':
+                newConfiguration['pass'] = self.DecodeInfo(configuration[0]['pass'])
         
         
             if results[1] > 0 or results[2] > 0 or results[3] > 0 or results[4] > 0 or Information[0]['emailOnlyUponWarning'] == 0 or isEmailSendingSet =='Run':
@@ -91,8 +97,10 @@ class AutoRuner(object):
 
 
     def EncodeInfo(self,stringToBeEncoded):
-        return base64.b16encode(base64.b16encode(stringToBeEncoded))
+        if stringToBeEncoded is not None:
+            return base64.b16encode(base64.b16encode(stringToBeEncoded))
 
     def DecodeInfo(self,stringToBeDecoded):
-        return base64.b16decode(base64.b16decode(stringToBeDecoded.strip()))
-             
+        
+        if stringToBeDecoded is not None:
+            return base64.b16decode(base64.b16decode(stringToBeDecoded))

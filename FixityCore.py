@@ -839,12 +839,12 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     CodeInfoormation = pathInformation[0]
                     
                     pathInfo = {}
-                    print(CodeInfoormation)
+                    
                     if len(basePathsWithIdAsKey) > 0 and len(projectDetailInformation) > 0 :    
                         pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArrayForReplacedFile)
                     else:
                         pathInfo = getCodePathMore(CodeInfoormation ,InfReplacementArray)
-                    print(pathInfo)
+                    
                     
                     FlagIsPathOld = False
                     try:
@@ -860,8 +860,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
                     dict[str(x[2]).replace('\r\n','')].append([str(indexPathInfor).replace('\r\n','')+str(pathInformation[1]).replace('\r\n',''), str(x[0]).replace('\r\n',''), False])
                     dict_Hash[x[0]].append([str(indexPathInfor) + str(pathInformation[1]).replace('\r\n',''), str(x[2]).replace('\r\n',''), False])
                     dict_File[str(indexPathInfor).replace('\r\n','')+str(pathInformation[1]).replace('\r\n','')].append([str(x[0]).replace('\r\n',''),str( x[2]).replace('\r\n',''), False])
-            print(dict)
-            print(dict_Hash)
+            
         except Exception as Excep :
 
             moreInformation = {"moreInfo":'null'}
@@ -936,7 +935,19 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     HistoryFile.write(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
     
     HistoryFile.write( str( projectInformation[0]['filters'] )+'||-||'+str(projectInformation[0]['ignoreHiddenFiles']) + "\n")
-    HistoryFile.write( str( projectInformation[0]['selectedAlgo'] ) + "\n")
+    
+    selectedAlgoForHistory = 'sha256'
+    print('projectInformation[0]')
+    print(projectInformation[0]['selectedAlgo'])
+    print('projectInformation[0]')
+    print(projectInformation[0]['selectedAlgo'] is not None)
+    if projectInformation[0]['selectedAlgo'] is not None and projectInformation[0]['selectedAlgo'] != '' and projectInformation[0]['selectedAlgo'] != 'None':
+        print(projectInformation[0]['selectedAlgo'])
+        selectedAlgoForHistory = projectInformation[0]['selectedAlgo']
+    else:
+        selectedAlgoForHistory = 'sha256'
+    
+    HistoryFile.write( str( selectedAlgoForHistory ) + "\n")
     
     '''
     Running Script Against All Given Directory In Given Project
@@ -1153,7 +1164,7 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except Exception as Excep:
             print('release 1020 FC')
             print(Excep[0])
-            
+    
     if checkForChanges:
         return flagAnyChanges , repath
     

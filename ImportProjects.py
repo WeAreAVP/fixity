@@ -157,6 +157,8 @@ class ImportProjects(QDialog):
             
         if '.fxy' in fileName:
             flagIsafxyFile = True
+            
+        flagProjectContainDetail = False
         
         if not flagIsafxyFile and not flagIsaTsvFile:
             QMessageBox.information(self, "Error", "Invalid File Given")
@@ -286,7 +288,7 @@ class ImportProjects(QDialog):
                         DB.insert(DB._tableProjectPath, inforProjectPath)
 
                 if projectID and len(allContent) > 0:
-
+                    flagProjectContainDetail = True
                     for singleContent in allContent:
 
                         FixInfo = re.split(r'\t+', singleContent)
@@ -316,6 +318,11 @@ class ImportProjects(QDialog):
                                 inforVersionDetail['path'] = self.CleanStringForDictionary(FixInfo[1])
                                 inforVersionDetail['inode'] = self.CleanStringForDictionary(FixInfo[2])
                                 DB.insert(DB._tableVersionDetail, inforVersionDetail)
+            if flagProjectContainDetail:
+                if projectID:
+                    informationToUpate = {}
+                    informationToUpate['projectRanBefore'] = 1
+                    DB.update(DB._tableProject, informationToUpate, "id='" + str(projectID['id']) + "'")
         
         QMessageBox.information(self, "Success", "Project importing completed ")
         self.refreshProjectSettings()

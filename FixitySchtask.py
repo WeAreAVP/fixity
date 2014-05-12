@@ -174,7 +174,8 @@ Writes a task to SCHTASKS and creates necessary VBS/BAT files , ACPowerCheck, St
 @return: None 
 '''
 def schedule(interval, dow, dom, timeSch, project, Configurations,SystemInformation,dirInfo = {}):
-
+        print(dirInfo)
+        print('asdas')
         EP = EmailPref(None)
         VERSION = '0.4'
         USERNAME = environ.get("USERNAME")
