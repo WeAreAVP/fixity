@@ -269,6 +269,7 @@ class ProjectWin(QMainWindow):
                 for n in xrange(0, 7):
                     hbox = QHBoxLayout()
                     hbox.setContentsMargins(0, 0, 0, 0)
+                
                     hbox.setSpacing(0)
                     self.dtx.append(QLineEdit())
                     self.but.append(QPushButton('...'))
@@ -289,6 +290,9 @@ class ProjectWin(QMainWindow):
                     self.dlay.addLayout(hbox)
 
                 self.dirs = QGroupBox("Directories")
+                if OS_Info == 'linux':
+                    self.dirs.setFixedSize(273,267)
+                    
                 self.mail = QGroupBox("Recipient Email Addresses")
                 self.dirs.setLayout(self.dlay)
                 self.mail.setLayout(self.mlay)
