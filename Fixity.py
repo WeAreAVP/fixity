@@ -1434,7 +1434,8 @@ class ProjectWin(QMainWindow):
             FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
             self.unsaved = False
             if self.isPathChangedGlobal:
-                self.update(self.projects.selectedItems()[0])
+                self.update(str(self.projects.selectedItems()[0].text()))
+                self.isPathChangedGlobal = False
 
 
         '''
