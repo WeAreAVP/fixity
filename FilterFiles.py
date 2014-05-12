@@ -250,7 +250,8 @@ class FilterFiles(QDialog):
             ignoreHiddenFiles = str(Information[0]['ignoreHiddenFiles']).replace('\n', '')
         except:
             pass
-
+        if filters is None or filters == 'None' or filters == '':   
+            filters = ''
         self.FilterField.setText(filters)
 
         if(ignoreHiddenFiles == 1 or ignoreHiddenFiles == '1'):

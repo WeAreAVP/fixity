@@ -1228,21 +1228,23 @@ class ProjectWin(QMainWindow):
                     
                 Configurations[0]['projectRanBefore'] = 1
             
-                pathsInfoChanges = {}
-                directoryIncreamentDirs = 1
-            
-                for ds in self.dtx:
-                    pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
-                    directoryIncreamentDirs = directoryIncreamentDirs + 1
-
+#                 pathsInfoChanges = {}
+# #                 directoryIncreamentDirs = 1
+# #             
+# #                 for ds in self.dtx:
+# #                     pathsInfoChanges[directoryIncreamentDirs]=str(ds.text())
+# #                     directoryIncreamentDirs = directoryIncreamentDirs + 1
+#                 pathsInfoChanges = self.process(False)
                 FilePath = getcwd()+'\\schedules\\'
+#                 FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
+                self.updateschedule(False,False)
                 
                 
-                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text(), Configurations[0],self.SystemInformation, pathsInfoChanges)
+                
                 
                 FileName = 'AutoFixity.exe'
                 params = self.projects.currentItem().text() +' '+'Run'
-                self.updateschedule()
+                
                 self.Threading = Threading(self.projects.currentItem().text(), self.projects.currentItem().text(), 1,FileName,FilePath , params)
                 self.Threading.start()
                  
@@ -1349,7 +1351,7 @@ class ProjectWin(QMainWindow):
 
         @return: None
         '''
-        def updateschedule(self,customPojectUpdate = False):
+        def updateschedule(self,customPojectUpdate = False,runSch = True):
             
             flagInitialScanUponSaving = False
             isRcipentEmailAddressSet = False
@@ -1441,7 +1443,9 @@ class ProjectWin(QMainWindow):
             Configurations['RunInitialScan'] = False
             self.unsaved = False
             
-            FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
+            if runSch or True:
+                FixitySchtask.schedule(interval, dweek, dmonth, self.timer.time().toString(), self.projects.currentItem().text() , projectInformation,self.SystemInformation , pathsInfoChanges)
+                
             self.unsaved = False
             if self.isPathChangedGlobal:
                 self.update(str(self.projects.selectedItems()[0].text()))

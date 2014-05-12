@@ -761,8 +761,11 @@ def run(file,filters='',projectName = '',checkForChanges = False):
         if (len(projectDetailInformation)<=0):
             if(len(projectInformation) > 0):
                 projectDetailInformation = DB.getVersionDetailsLast(projectInformation[0]['id'])
-
-    FiltersArray = filters.split(',')
+    FiltersArray = {}
+    try:
+        FiltersArray = filters.split(',')
+    except:
+        pass
     
     dict = defaultdict(list)
     dict_Hash = defaultdict(list)
@@ -808,7 +811,10 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     if len(projectInformation) > 0:
         if projectInformation[0]['lastDifPaths'] !='' and projectInformation[0]['lastDifPaths'] is not None:
             basePathsWithIdAsKey = getOldDirectories(str(projectInformation[0]['lastDifPaths']))
+    print(basePathsWithIdAsKey)
+
     ToBeScannedDirectoriesInProjectFile = []
+    
     for pathInfo in projectPathInformation:
         IdInfo = str(projectPathInformation[pathInfo]['pathID']).split('-')
         indexPathInfor = r''+str(str(projectPathInformation[pathInfo]['path']).strip())
@@ -1159,8 +1165,9 @@ def run(file,filters='',projectName = '',checkForChanges = False):
     except:
         pass
     DB.update(DB._tableProject, {'lastDifPaths':''}, "`id` = '"+str(projectInformation[0]['id'])+"'")
+    DB.update(DB._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(projectInformation[0]['id'])+"'")
     repath = writer(Algorithm, ProjectName , total, confirmed, moved, created, corruptedOrChanged, missingFile[1], FileChangedList, ProjectName, title)
-
+    
     try:
         lock.release()
         print('relased the file')

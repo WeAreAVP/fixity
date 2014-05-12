@@ -54,8 +54,11 @@ class AutoRuner(object):
         if Information != None:
             if len(Information) > 0:
                 emailOfReciverUsersStr = str(Information[0]['emailAddress'])
-
-        emailOfReciverUsers = emailOfReciverUsersStr.split(',')        
+        try:
+                    
+            emailOfReciverUsers = emailOfReciverUsersStr.split(',')
+        except:
+            pass        
         if len(emailOfReciverUsers) > 0: 
             if '' in emailOfReciverUsers:
                 emailOfReciverUsers.remove('')
