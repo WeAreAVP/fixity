@@ -571,6 +571,9 @@ def writer(algoUsed, projectPath, TotalFilesScanned, confirmedFileScanned , move
     print('writer')
     rn = ''
     try:
+        if algoUsed == None or algoUsed == 'None' or algoUsed == '':
+            algoUsed = 'sha256'
+            
         report = "Fixity report\n"
         report += "Project name\t" + title + "\n"
         report += "Algorithm used\t" + algoUsed + "\n"
