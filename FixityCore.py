@@ -113,7 +113,9 @@ def fixity(filePath, Algorithm , projectName= None):
        
         
         if OS_Info == 'Windows':
-            with open(filePath.decode('utf-8'), 'r') as target:
+            
+            
+            with open(filePath.decode('utf-8'), 'rb') as target:
                 for piece in iter(lambda: target.read(4096), b''):
                     if Algorithm =='md5':
                         fixmd5.update(piece)
@@ -128,7 +130,7 @@ def fixity(filePath, Algorithm , projectName= None):
                     return fixsha256.hexdigest()
         else:
             
-            with open(filePath, 'r') as target:
+            with open(filePath, 'rb') as target:
                 for piece in iter(lambda: target.read(4096), b''):
                     if Algorithm =='md5':
                         fixmd5.update(piece)
@@ -1391,7 +1393,3 @@ def getOldDirectories(lastDifPaths):
             basePathsWithIdAsKey[str(firstIndexPathSecondIndexID[1])] = str(firstIndexPathSecondIndexID[0])
             
     return basePathsWithIdAsKey
-
-# projects_path = getcwd()+'\\projects\\'
-# run(projects_path+'New_Project.fxy','','New_Project')
-# exit()
