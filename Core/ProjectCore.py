@@ -2,6 +2,7 @@
 
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification
+import thread
 
 import datetime, re
 

@@ -50,7 +50,8 @@ class Configuration(object):
             self.log_file_path = r''+(os.path.join(str(os.getcwd()), 'debug'+str(os.sep))+'debug.log')
 
             self.database_file_path = r''+(os.path.join(str(os.getcwd()), 'bin'+str(os.sep))+'Fixity.db')
-        self.avpreserve_img = str(self.Fixity.Configuration.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
+
+        self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7
@@ -117,9 +118,6 @@ class Configuration(object):
     def getDebugFilePath(self):
         return str(self.log_file_path)
 
-
-
-
     def getDatabaseFilePath(self):
         return str(self.database_file_path)
 
@@ -141,7 +139,6 @@ class Configuration(object):
     def getLibPath(self):
         return self.lib_agent_path
 
-
     def getEmailConfiguration(self):
         return self.email_configuration
 
@@ -158,12 +155,12 @@ class Configuration(object):
     def saveEmailConfiguration(self, information):
         config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
         if len(config_exists) <=0:
-            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
+            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information)
         else:
             self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
         self.setEmailConfiguration(information)
 
-        print('checking')
+
     def LogHistory(self):
         """ generated source for method LogHistory """
         #  TODO

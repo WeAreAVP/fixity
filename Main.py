@@ -3,11 +3,13 @@ Created on May 14, 2014
 
 @author: Furqan
 '''
-import sys, os
+import sys
+from os import path
 from Core import SharedApp
 from GUI import GUILibraries
 import App
-import argparse
+from argparse import ArgumentParser
+
 
 class Main (object):
 
@@ -25,12 +27,9 @@ class Main (object):
         project_core = self.Fixity.getSingleProject(project_name)
         project_core.Run()
 
-
-
-
 if __name__ == '__main__':
     try:
-        parser = argparse.ArgumentParser()
+        parser = ArgumentParser()
         parser.add_argument('-a', '--autorun')
         args = parser.parse_args()
     except Exception:
@@ -52,22 +51,17 @@ if __name__ == '__main__':
             sys.exit()
         except Exception:
             exc_type, exc_obj, exc_tb = sys.exc_info()
-            file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+            file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             error_information = {}
-            try:
-                error_information['file_name'] = file_name
-            except:
-                pass
 
-            try:
-                error_information['error_type'] = exc_type
-            except:
-                pass
+            try:error_information['file_name'] = file_name
+            except:pass
 
-            try:
-                error_information['line_no'] = exc_tb.tb_lineno
-            except:
-                pass
+            try:error_information['error_type'] = exc_type
+            except:pass
+
+            try: error_information['line_no'] = exc_tb.tb_lineno
+            except:pass
             print(error_information)
 
             print("Could not run this Project "+str(Exception.message))
