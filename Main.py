@@ -11,7 +11,6 @@ import argparse
 
 class Main (object):
 
-    ''' classdocs '''
     def __init__(self):
         SharedApp.SharedApp.App = App.App.getInstance()
         self.Fixity = SharedApp.SharedApp.App

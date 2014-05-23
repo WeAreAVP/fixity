@@ -125,7 +125,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
         pic.setGeometry(30, 30, 500, 600)
         pic.setFixedSize(400,400)
         '''use full ABSOLUTE path to the image, not relative'''
-        pic.setPixmap(GUILibraries.QPixmap(str(self.Fixity.Configuration.getBasePath())+'avpreserve.png'))
+        pic.setPixmap(GUILibraries.QPixmap(str(self.Fixity.Configuration.getAvpreserve_img())))
 
         self.description_btn.clicked.connect(self.showDescription)
         self.authorand_license_btn.clicked.connect(self.showLicense)

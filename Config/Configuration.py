@@ -50,7 +50,7 @@ class Configuration(object):
             self.log_file_path = r''+(os.path.join(str(os.getcwd()), 'debug'+str(os.sep))+'debug.log')
 
             self.database_file_path = r''+(os.path.join(str(os.getcwd()), 'bin'+str(os.sep))+'Fixity.db')
-
+        self.avpreserve_img = str(self.Fixity.Configuration.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7
@@ -71,6 +71,9 @@ class Configuration(object):
     def getImagesPath(self):
         return str(self.images_path)
 
+    def getAvpreserve_img(self):
+        return self.avpreserve_img
+
     def getBasePath(self):
         return str(self.base_path)
 
@@ -88,7 +91,7 @@ class Configuration(object):
         return base64.b16encode(base64.b16encode(string_to_be_encoded))
 
     def getLogoSignSmall(self):
-        return str(self.getBasePath())+ str(self.logo_sign_small)
+        return str(self.getBasePath()) + 'assets' + (str(os.sep)) + str(self.logo_sign_small)
 
     def getOsType(self):
         return str(self.OsType)
