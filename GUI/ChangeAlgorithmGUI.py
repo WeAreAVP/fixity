@@ -4,7 +4,7 @@ Created on May 14, 2014
 '''
 
 from GUI import GUILibraries
-from Core import SharedApp
+from Core import SharedApp, EmailNotification
 
 
 # Class to manage the Algorithm change to be implemented for the files to get Hashes
@@ -89,7 +89,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.ProjectChanged()
         selected_project = self.projects.currentText()
         project_core = self.Fixity.getSingleProject(str(selected_project))
-        print(project_core.getAlgorithm())
+
         if project_core.getAlgorithm() == 'md5':
             self.methods.setCurrentIndex(1)
         else:
@@ -113,6 +113,10 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
             return
 
+        if project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0':
+            self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])
+            return
+
         msgBox.setWindowTitle("Processing ....")
         msgBox.setText("Reading Files, please wait ...")
         msgBox.show()
@@ -120,12 +124,15 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
         result_of_all_file_confirmed = project_core.Run(True)
+        email_config = self.Fixity.Configuration.getEmailConfiguration()
 
         msgBox.close()
 
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
-            self.notification.showError(self, "Information", selected_project+"'s "+GUILibraries.messages['checksum_algorithm_change_failure'])
+            email_notification = EmailNotification.EmailNotification()
+            self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
+            email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config)
             return
 
         update_project_algo = {}

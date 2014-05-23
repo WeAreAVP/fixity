@@ -1,6 +1,6 @@
 Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
-# Directory Structure
+Directory Structure
 ./bin (Contains Database and configuration files)
 
 ./build (Stores file required to create stand alone application)
@@ -17,7 +17,7 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 ./schedules (contains files used in scheduling process)
 
-# MAC CONFIGURATION
+MAC CONFIGURATION
 1) Download and install latest Xcode
 
 2) Download and install QT 4.8 (witout debug-libraries) http://qt-project.org/downloads
@@ -34,7 +34,7 @@ install cmake install qmake
 
 7) Upgrade PySide sudo easy_install-2.7 -U PySide
 
-# For App Creation
+For App Creation
 py2applet --make-setup MyApplication.py
 
 rm -rf build dist
@@ -45,10 +45,10 @@ new app will be create in "dist" folder
 
 For More Information Visist:https://pythonhosted.org/py2app/tutorial.html
 
-# scheduling Process
+scheduling Process
 Fixity is using launchd for scheduling , it save's plist for scheduling at "cd ~/Library/LaunchAgents/" , in this .plist file stores all scheduling information , for each project one .plist will be created.
 
-# Windows Configuration
+Windows Configuration
 1) Download and install Python2.7
 
 2) Download and install pyside1.2
@@ -63,10 +63,10 @@ For eclipse from install new update , install pydev from python.org/updates and 
 
 5) if having problem of missing library download and install them from python.org using python setup.py install (setup.py file will be provided in the given library package )
 
-# App/Executable File Creation
+App/Executable File Creation
 python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" FileName.py
 
-# In Fixity two Files are created
+In Fixity two Files are created
 
 python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" Fixity.py
 
@@ -82,5 +82,5 @@ Fixity.exe will be placed at the same level of all other directories for example
 
 AutoFxity.py will be placed into schedules directory where from task scheduler will access it to run scanner
 
-# scheduling Process
+scheduling Process
 For Scheduling process Fixity is using windows task scheduler , it triggers the scanning process on given time when saving the project , for each project one scheduler will be created in Task scheduler

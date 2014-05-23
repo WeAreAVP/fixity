@@ -82,12 +82,16 @@ class DirsHandler(object):
 
                 x = self.toTuple(project_detail_information[l])
                 if x is not None and x:
+                    print(x)
                     index_path_infor = ''
                     path_information = str(x[1]).split('||')
                     if path_information:
-                        dict[self.cleanString(str(x[2]))].append([self.cleanString(str(self.getPath())+str(index_path_infor)) +self.cleanString(str(path_information[1])), self.cleanString(str(x[0])), False])
-                        dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.cleanString(str(path_information[1])),  self.cleanString(str(x[2])), False])
-                        dict_File[self.cleanString(str(self.getPath())+str(index_path_infor))+self.cleanString(str(path_information[1]))].append([self.cleanString(str(x[0])), self.cleanString(str(x[2])), False])
+                        dict[self.Fixity.Configuration.CleanStringForDictionary(str(x[2]))].append(
+                            [self.Fixity.Configuration.CleanStringForDictionary(str(self.getPath())+str(index_path_infor)) +self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1])),
+                             self.Fixity.Configuration.CleanStringForDictionary(str(x[0])),
+                             False])
+                        dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1])),  self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
+                        dict_File[self.Fixity.Configuration.CleanStringForDictionary(str(self.getPath())+str(index_path_infor))+self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1]))].append([self.Fixity.Configuration.CleanStringForDictionary(str(x[0])), self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
 
             except Exception:
                 self.Fixity.logger.LogException(Exception.message)

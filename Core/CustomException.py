@@ -13,8 +13,6 @@ class CustomException(object):
     def getInstance():
         if not isinstance(CustomException._instance, CustomException):
             CustomException._instance = object.__new__(CustomException)
-            CustomException._instance.setUp()
-
         return CustomException._instance
 
 

@@ -56,7 +56,7 @@ class EmailNotification(object):
 
 
         try:
-            if((protocol == 'SSL') or (protocol == 'ssl')):
+            if protocol == 'SSL' or protocol == 'ssl':
 
                 server = SMTP_SSL(str(information['smtp']), port)
                 server.ehlo
@@ -64,7 +64,7 @@ class EmailNotification(object):
                 server.sendmail(addr, recipients, msg.as_string())
                 print('sending email')
                 return True
-            if((protocol == 'TLS') or (protocol == 'tls')):
+            if protocol == 'TLS' or protocol == 'tls' :
                 server = SMTP(str(information['smtp']), port)
                 server.starttls()
                 server.login(addr, pas)
@@ -79,11 +79,11 @@ class EmailNotification(object):
                 return True
 
 
-        except (SMTPException, SMTPServerDisconnected,  SMTPResponseException,  SMTPSenderRefused,  SMTPRecipientsRefused,  SMTPDataError,  SMTPConnectError,  SMTPHeloError,  SMTPAuthenticationError,  Exception ) as Excep:
+        except (SMTPException, SMTPServerDisconnected,  SMTPResponseException,  SMTPSenderRefused,  SMTPRecipientsRefused,  SMTPDataError,  SMTPConnectError,  SMTPHeloError,  SMTPAuthenticationError,  Exception ):
 
             moreInformation= {}
             try:
-                moreInformation ={'SenderEmailAddress::':addr, 'RecipientsEmailAddress':recipients,  '::More Detail':'', 'ErrorCode':str(Excep[0]),  'ErrorMsg':str(Excep[1]) }
+                moreInformation ={'SenderEmailAddress::':addr, 'RecipientsEmailAddress':recipients,  '::More Detail':'', 'ErrorMsg':str(Exception.message)}
             except:
                 pass
             self.Fixity.logger.LogException(str(moreInformation))
@@ -95,9 +95,8 @@ class EmailNotification(object):
         print(information)
         return self.SendEmail(recipients, text, None, information)
 
+    def ReportEmail(self, recipients, attachment, text, information):
+        return self.SendEmail(recipients, text, attachment, information)
 
-    def ReportEmail(self):
-        return False
-
-    def ErrorEmail(self):
-        return False
+    def ErrorEmail(self, recipients, attachment, text, information):
+        return self.SendEmail(recipients, text, attachment, information)

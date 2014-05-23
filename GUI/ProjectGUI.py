@@ -239,6 +239,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_groupBox.setFixedSize(255, 269)
     def changed(self):
         print('a')
+
     def createProjectListingOption(self):
         self.widget = GUILibraries.QWidget(self)
         self.pgroup = GUILibraries.QGroupBox("Projects")
@@ -285,7 +286,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if project_name == '':
             return
 
-        project_core = self.Fixity.ProjectsList[project_name]
+        try:
+            project_core = self.Fixity.ProjectsList[project_name]
+        except Exception:
+            self.Fixity.logger.LogException(Exception.message)
+
         emails = str(project_core.getEmail_address())
         emails = emails.split(',')
         last_run_label = project_core.getLast_ran()
@@ -428,11 +433,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
         try:
             project_core = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
             directory_detail = project_core.getDirectories()
-            for  directory_detail_single in directory_detail:
-                if str(directory_detail[directory_detail_single].getPathID().strip()) == str(code).strip():
-                    if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
-                        self.isPathChanged = True
-                        self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
+            if len(directory_detail) > 0:
+                for  directory_detail_single in directory_detail:
+                    if str(directory_detail[directory_detail_single].getPathID().strip()) == str(code).strip():
+                        if directory_detail[directory_detail_single].getPath().strip() != '' and  search_for_path != '':
+                            if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
+                                self.isPathChanged = True
+                                self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
         except Exception:
             self.Fixity.logger.LogException()
             pass
@@ -461,62 +468,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
         directory_increment = 1
         
         for directory_single in self.dirs_text_fields:
-            print "Hey hey hey !::"+directory_single.text().strip()
+
             if directory_single.text().strip() != "":
                 self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
                 directory_increment = directory_increment + 1
-
-
-        #        orignalPathTextCode = FixityCore.pathCodeEncode(directory_increment)
-        #        changePathTextCode = FixityCore.pathCodeEncode(directory_increment)
-        #
-        #        CodeOfPath = ''
-        #        try:
-        #            self.FileChanged.changeThePathInformation
-        #        except:
-        #            self.FileChanged = FileChanged(self)
-        #
-        #        FlagIsPathChanged = False
-        #        if not self.FileChanged.changeThePathInformation:
-        #            if self.FileChanged.Code == directory_increment:
-        #                CodeOfPath = FixityCore.pathCodeEncode(directory_increment)
-        #                pathToSaveInManifest = str(str(self.FileChanged.orignalPathText))
-        #                pathsInfoChanges[directory_increment] =  str(str(self.FileChanged.orignalPathText))
-        #                FlagIsPathChanged = True
-        #            else:
-        #                FlagIsPathChanged = False
-        #
-        #        if not FlagIsPathChanged:
-        #            CodeOfPath = FixityCore.pathCodeEncode(directory_increment)
-        #            pathToSaveInManifest = str(ds.text())
-        #            pathsInfoChanges[directory_increment]=str(ds.text())
-        #
-        #        if(pathToSaveInManifest ==''):
-        #            pathToSaveInManifest = str(ds.text())
-        #            if(str(ds.text()) != ''):
-        #                pathsInfoChanges[directory_increment] =  str(ds.text())
-        #            else:
-        #                pathsInfoChanges[directory_increment] =  str(self.FileChanged.orignalPathText)
-        #            CodeOfPath = FixityCore.pathCodeEncode(directory_increment)
-        #
-        #        if self.FileChanged.changeThePathInformation:
-        #            self.FileChanged.ReplacementArray[directory_increment]= {'orignalpath':self.FileChanged.orignalPathText ,'newPath': self.FileChanged.changePathText,  'orignal':orignalPathTextCode , 'new':changePathTextCode}
-        #
-        #        directory_increment = directory_increment + 1
-        #
-        #
-        #
-        #directory_incrementcheck = 0
-        #if len(pathsInfoChanges) <=0:
-        #    for ds in self.dtx:
-        #        if ds.text().strip() != "":
-        #            directory_incrementcheck = directory_incrementcheck + 1
-        #            pathsInfoChanges[directory_incrementcheck] = str(ds.text())
-
-
-
-
-
 
     def new(self):
 

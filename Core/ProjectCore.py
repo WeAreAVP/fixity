@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from Core import DirsHandler
-from Core import SharedApp, SchedulerCore
+from Core import SharedApp, SchedulerCore, EmailNotification
+
 import datetime, re
 
 global verified_files
@@ -470,19 +471,36 @@ class ProjectCore(object):
         information_for_report['moved']= moved
         information_for_report['total'] = total
 
-        created_report_path = self.writerReportFile(information_for_report, report_content)
+        created_report_info = self.writerReportFile(information_for_report, report_content)
+
         self.writerHistoryFile(history_content)
 
         if check_for_changes:
-            if int(moved) > 0:return {'file_changed_found':True, 'report_path':created_report_path}
+            if int(moved) > 0:
+                return {'file_changed_found': True, 'report_path': created_report_info['path']}
 
-            elif int(created) > 0:return {'file_changed_found':True, 'report_path':created_report_path}
+            elif int(created) > 0:
+                return {'file_changed_found': True, 'report_path': created_report_info['path']}
 
-            elif int(moved) > 0:return {'file_changed_found':True, 'report_path':created_report_path}
+            elif int(moved) > 0:
+                return {'file_changed_found': True, 'report_path': created_report_info['path']}
 
-            elif int(corrupted_or_changed) > 0:return {'file_changed_found':True, 'report_path':created_report_path}
+            elif int(corrupted_or_changed) > 0:
+                return {'file_changed_found': True, 'report_path': created_report_info['path']}
 
-            else:return {'file_changed_found':False, 'report_path':created_report_path }
+            else:
+                return {'file_changed_found': False, 'report_path': created_report_info['path']}
+
+        else:
+            email_config = self.Fixity.Configuration.getEmailConfiguration()
+            try:
+                if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
+
+                    email_notification = EmailNotification.EmailNotification()
+                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
+            except:
+                pass
+
 
     # Apply Filter For This project
     # @param filters: sav filters againts this project
@@ -569,7 +587,7 @@ class ProjectCore(object):
             report += "New Files\t" + str(information['created']) + "\n"
             report += "Changed Files\t" + str(information['corrupted_or_changed']) + "\n"
             report += "Removed Files\t" + str(information['missing_file']) + "\n"
-
+            email_content = report
             utf_encode = False
             try:
                 report += detail_output_of_all_files_changes.encode('utf8')
@@ -602,4 +620,4 @@ class ProjectCore(object):
         except Exception:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        return rn
+        return {'path': rn, 'email_content' : email_content }

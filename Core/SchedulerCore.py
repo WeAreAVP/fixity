@@ -109,7 +109,7 @@ class SchedulerCore(object):
                 f.write("@ECHO OFF\n")
                 f.write("cd /d %~dp0\n")
                 f.write("cd ..\n")
-                f.write("\"" + os.getcwd()+str(os.sep) + "schedules"+str(os.sep)+"AutoFixity.exe\" \"" + project_name + "\"\n")
+                f.write("\"" + os.getcwd()+str(os.sep) + "main.exe\" \"-a=" + project_name + "\"\n")
 
             except Exception:
                 self.Fixity.logger.LogException(Exception.message)

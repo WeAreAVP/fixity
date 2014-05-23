@@ -144,8 +144,11 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         self.SetWindowLayout()
         information = self.Fixity.Configuration.getEmailConfiguration()
-        if information is not None and len(information) > 0:
-            self.setInformation(information)
+        try:
+                if information is not None and len(information) > 0 and information['smtp'] != None:
+                    self.setInformation(information)
+        except:
+            pass
 
 
 

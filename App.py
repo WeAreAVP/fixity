@@ -6,7 +6,7 @@ Created on May 14, 2014
 
 from Config import Configuration,  Validation, Setup
 from GUI import GUILibraries, ProjectGUI
-from Core import Debugger, Database, CustomException, SharedApp, ProjectCore
+from Core import Debugger, Database, CustomException, SharedApp, ProjectCore, ProjectRepository
 
 class App(object):
     _instance = None
@@ -20,9 +20,8 @@ class App(object):
         return App._instance
 
     def setUp(self):
-        self.ExceptionHandler = CustomException.CustomException()
+        self.ExceptionHandler = CustomException.CustomException.getInstance()
         self.Configuration = Configuration()
-
         self.Validation = Validation
         self.Setup = Setup.Setup()
         self.Setup.setupApp()
@@ -31,6 +30,8 @@ class App(object):
         self.Database.connect()
         self.ProjectGUI = ProjectGUI
         self.Setup.createTables()
+        self.ProjectRepo = ProjectRepository.ProjectRepository()
+
         email_configuration = self.Database.getConfiguration()
 
         try:
@@ -44,7 +45,7 @@ class App(object):
 
 
     def loadAllProjects(self):
-        all_projects = self.Database.getProjectInfo()
+        all_projects = self.ProjectRepo.getAll()
         if all_projects is not None:
             if len(all_projects) > 0:
                 for single_project in all_projects:

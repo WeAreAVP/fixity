@@ -12,7 +12,6 @@
 .project
 .pyproject
 .DS_Store
-.pydevproject
 Fixity.db
 debug.log
 conf.xml
