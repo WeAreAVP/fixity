@@ -27,12 +27,15 @@ class Main (object):
         project_core = self.Fixity.getSingleProject(project_name)
         project_core.Run()
 
+
+
+
 if __name__ == '__main__':
     try:
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         parser.add_argument('-a', '--autorun')
         args = parser.parse_args()
-    except Exception:
+    except:
         print("Could not run this Project "+str(Exception.message))
         pass
 
@@ -49,19 +52,24 @@ if __name__ == '__main__':
             Fixity = Main()
             Fixity.LaunchScheduler(args.autorun)
             sys.exit()
-        except Exception:
+        except:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
             error_information = {}
+            try:
+                error_information['file_name'] = file_name
+            except:
+                pass
 
-            try:error_information['file_name'] = file_name
-            except:pass
+            try:
+                error_information['error_type'] = exc_type
+            except:
+                pass
 
-            try:error_information['error_type'] = exc_type
-            except:pass
-
-            try: error_information['line_no'] = exc_tb.tb_lineno
-            except:pass
+            try:
+                error_information['line_no'] = exc_tb.tb_lineno
+            except:
+                pass
             print(error_information)
 
             print("Could not run this Project "+str(Exception.message))

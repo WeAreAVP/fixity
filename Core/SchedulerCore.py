@@ -25,42 +25,42 @@ class SchedulerCore(object):
 
             try:
                 os.remove(str(self.Fixity.Configuration.getSchedulesPath()) + str(os.sep) + "fixity-" + project + ".bat")
-            except Exception:
+            except:
                 pass
 
 
             try:
                 os.remove(str(self.Fixity.Configuration.getSchedulesPath()) + "fixity-" + project + ".bat")
-            except Exception:
+            except:
                 pass
 
 
             try:
                 os.remove(str(self.Fixity.Configuration.getSchedulesPath()) + "fixity-" + project + "-sch.xml")
-            except Exception:
+            except:
                 pass
 
             try:
                 os.remove(str(self.Fixity.Configuration.getSchedulesPath()) + "fixity-" + project + ".vbs")
-            except Exception:
+            except:
                 pass
         else:
             try:
                 AgentPath = self.Fixity.Configuration.getAgentPath()
                 lunch_agent= AgentPath +str(os.sep)+ "Com.fixity."+str(project) + ".demon.plist"
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
 
             try:
                 p = subprocess.Popen(["launchctl", "unload", "-w", lunch_agent], stdout=subprocess.PIPE)
                 output, err = p.communicate()
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 
             try:
                 os.remove(lunch_agent)
-            except Exception:
+            except:
                 self.Fixity.logger.LogException()
                 pass
 
@@ -111,7 +111,7 @@ class SchedulerCore(object):
                 f.write("cd ..\n")
                 f.write("\"" + os.getcwd()+str(os.sep) + "main.exe\" \"-a=" + project_name + "\"\n")
 
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
             f.close()
 
@@ -126,7 +126,7 @@ class SchedulerCore(object):
                 x.write("\n")
                 x.write("Set WinScriptHost = Nothing")
 
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
             x.close()
 
@@ -234,18 +234,18 @@ class SchedulerCore(object):
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
                 p = subprocess.call(command, startupinfo=startupinfo)
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
         else:
             try:
                 p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
                 p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 

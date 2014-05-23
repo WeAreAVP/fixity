@@ -7,9 +7,20 @@ Created on May 14, 2014
 from Config import Configuration,  Validation, Setup
 from GUI import GUILibraries, ProjectGUI
 from Core import Debugger, Database, CustomException, SharedApp, ProjectCore, ProjectRepository
+import Queue
 
 class App(object):
     _instance = None
+    def __init__(self):
+        self.setUp()
+
+    def selfDestruct(self):
+        print('self Destruct')
+        self.Database.selfDestruct()
+        self.ExceptionHandler.selfDestruct()
+        self.logger.selfDestruct()
+        del self
+
 
     @staticmethod
     def getInstance():
@@ -32,6 +43,7 @@ class App(object):
         self.Setup.createTables()
         self.ProjectRepo = ProjectRepository.ProjectRepository()
 
+
         email_configuration = self.Database.getConfiguration()
 
         try:
@@ -41,6 +53,8 @@ class App(object):
             pass
 
         self.ProjectsList = {}
+        self.queue = Queue()
+
         self.loadAllProjects()
 
 
@@ -53,6 +67,11 @@ class App(object):
                     project_logic.setProjectInfo(all_projects[single_project])
                     self.ProjectsList[all_projects[single_project]['title']] = project_logic
 
+    def getSingleThreadToQueue(self, thread_id):
+        return self.queue.get(thread_id)
+
+    def addSingleThreadToQueue(self, thread_id):
+        return self.queue.put(thread_id)
 
     def getProjectList(self):
         information = []

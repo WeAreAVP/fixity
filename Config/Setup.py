@@ -39,7 +39,7 @@ class Setup(object):
                 return xml_obj.write(self.config_file_path)
 
 
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -52,7 +52,7 @@ class Setup(object):
             try:
                 DatabaseFile = open(str(self.Fixity.Configuration.getDatabaseFilePath()), 'w+')
                 DatabaseFile.close()
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -63,7 +63,7 @@ class Setup(object):
         if not os.path.isdir(self.Fixity.Configuration.getHistoryPath()):
             try:
                 os.mkdir(self.Fixity.Configuration.getHistoryPath())
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -71,7 +71,7 @@ class Setup(object):
         if not os.path.isdir(self.Fixity.Configuration.getSchedulesPath()):
             try:
                 os.mkdir(self.Fixity.Configuration.getSchedulesPath())
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -79,7 +79,7 @@ class Setup(object):
         if not os.path.isdir(self.Fixity.Configuration.getReportsPath()):
             try:
                 os.mkdir(self.Fixity.Configuration.getReportsPath())
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -91,7 +91,7 @@ class Setup(object):
 
                 self.Fixity.Database.sqlQuery('CREATE TABLE "configuration" ( id INTEGER NOT NULL,  smtp TEXT,  email TEXT,  pass TEXT,  port INTEGER,  protocol TEXT,  debugger SMALLINT,  "updatedAt" DATETIME,  "createdAt" DATETIME,  PRIMARY KEY (id) );')
 
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -99,7 +99,7 @@ class Setup(object):
             ''' Create Project Table'''
             try:
                 self.Fixity.Database.sqlQuery('CREATE TABLE "project" (id INTEGER PRIMARY KEY, versionCurrentID INTEGER, projectRanBefore SMALLINT DEFAULT 0, title VARCHAR(255), durationType INTEGER, runTime TEXT(10), lastDifPaths TEXT NULL DEFAULT  NULL,   runDayOrMonth VARCHAR(12),selectedAlgo VARCHAR(8),filters TEXT, runWhenOnBattery SMALLINT, ifMissedRunUponRestart SMALLINT, ignoreHiddenFiles NUMERIC,  emailOnlyUponWarning SMALLINT, emailAddress TEXT,extraConf TEXT, lastRan DATETIME, updatedAt DATETIME, createdAt DATETIME);')
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -107,7 +107,7 @@ class Setup(object):
             ''' Create ProjectPath Table'''
             try:
                 self.Fixity.Database.sqlQuery('CREATE TABLE "projectPath" ( id INTEGER NOT NULL,  "projectID" INTEGER NOT NULL,  "versionID" INTEGER,  path TEXT NOT NULL, "pathID" VARCHAR(15) NOT NULL,  "updatedAt" DATETIME,"createdAt"DATETIME, PRIMARY KEY (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("versionID") REFERENCES versions (id));')
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -115,7 +115,7 @@ class Setup(object):
             ''' Create VersionDetail Table'''
             try:
                 self.Fixity.Database.sqlQuery('CREATE TABLE "versionDetail" (id INTEGER NOT NULL, "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "projectPathID" INTEGER NOT NULL, "hashes" TEXT NOT NULL,  "path" TEXT NOT NULL, inode TEXT NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id), FOREIGN KEY("versionID") REFERENCES versions (id), FOREIGN KEY("projectID") REFERENCES project (id), FOREIGN KEY("projectPathID") REFERENCES "projectPath" (id));')
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 
@@ -124,7 +124,7 @@ class Setup(object):
             ''' Create Versions Table'''
             try:
                 self.Fixity.Database.sqlQuery('CREATE TABLE "versions" (id INTEGER NOT NULL,  "versionID" INTEGER NOT NULL, "projectID" INTEGER NOT NULL, "versionType" VARCHAR(10) NOT NULL, name VARCHAR(255) NOT NULL, "updatedAt" DATETIME, "createdAt" DATETIME, PRIMARY KEY (id));')
-            except Exception:
+            except:
                 traceback.print_stack()
                 pass
 

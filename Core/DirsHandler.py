@@ -53,8 +53,12 @@ class DirsHandler(object):
         project_core = self.Fixity.getSingleProject(project_name)
 
         project_detail_information = self.Fixity.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
-        if len(project_detail_information) <=0:
+        if project_detail_information is False:
             project_detail_information = self.Fixity.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
+
+        if len(project_detail_information) <= 0:
+            project_detail_information = self.Fixity.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
+
 
         verified_files = list()
 
@@ -63,6 +67,7 @@ class DirsHandler(object):
         try:
             filters_array = str(project_core.getFilters()).split(',')
         except:
+            print('no filters found')
             pass
 
         dict = defaultdict(list)
@@ -72,8 +77,6 @@ class DirsHandler(object):
         confirmed,  moved,  created,  corrupted_or_changed  = 0, 0, 0, 0
         file_changed_list = ""
 
-
-        mails = str(project_core.getEmail_address()).split(';')
         print('writing ::: Stared Worked')
         check = 0
 
@@ -93,7 +96,7 @@ class DirsHandler(object):
                         dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1])),  self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
                         dict_File[self.Fixity.Configuration.CleanStringForDictionary(str(self.getPath())+str(index_path_infor))+self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1]))].append([self.Fixity.Configuration.CleanStringForDictionary(str(x[0])), self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
 
-            except Exception:
+            except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 
@@ -132,7 +135,7 @@ class DirsHandler(object):
                     if self.isGivenFileHidden(directories_inside_details_single[1]):
                         flag = False
 
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -145,7 +148,7 @@ class DirsHandler(object):
                             flag = False
                         if self.isGivenFileHidden(single_directory_hidden):
                             flag = False
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -158,7 +161,7 @@ class DirsHandler(object):
                     if not response or len(response) < 1:
                             continue
 
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -172,7 +175,7 @@ class DirsHandler(object):
                         created += 1
                     else:
                         corrupted_or_changed += 1
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -181,7 +184,7 @@ class DirsHandler(object):
 
                 try:
                     new_coded_path = str(response[0][1]).replace(single_directory, path_code+"||")
-                except Exception:
+                except:
                     new_coded_path = ' '
                     self.Fixity.logger.LogException(Exception.message)
                     pass
@@ -198,7 +201,7 @@ class DirsHandler(object):
                     version_detail_options['projectPathID'] = self.getID()
 
                     self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, version_detail_options)
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -207,7 +210,7 @@ class DirsHandler(object):
 
                 try:
                     history_content +=str(response[0][0]) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n"
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
@@ -216,7 +219,7 @@ class DirsHandler(object):
         try:
             missing_file = self.checkForMissingFiles(dict_hash)
             file_changed_list += str(missing_file[0])
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -234,6 +237,7 @@ class DirsHandler(object):
             total += missing_file[1]
         except:
             missing_file = ('','')
+            print('no missing file')
             pass
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(project_core.getID())+"'")
@@ -275,7 +279,7 @@ class DirsHandler(object):
         try:
             ''' Check if I-Node related information Exists in the Given Directory  '''
             current_directory = dicty.get(line[2])
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
         print('Verfiy File ::::: '+str(line[1]))
@@ -348,7 +352,7 @@ class DirsHandler(object):
     def toTuple(self, line):
         try:
             return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             return None
 
@@ -389,7 +393,7 @@ class DirsHandler(object):
                         single_file = self.specialCharacterHandler(single_file)
                     fls.append(os.path.join(root, single_file))
                     print('Listing ::::: '+str(os.path.join(root, single_file)))
-        except Exception:
+        except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 
@@ -408,7 +412,7 @@ class DirsHandler(object):
                 else:
                     inode = self.inodeForMac(path_of_the_file)
                 listOfValues.append((hash_of_this_file_content, given_path, inode))
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -423,11 +427,13 @@ class DirsHandler(object):
     def specialCharacterHandler(self, string_to_be_handled):
         try:
             string_to_be_handled = string_to_be_handled.decode('cp1252')
-        except Exception:
+        except:
+            print('specialCharacterHandler :::: cp1252 not helping')
             pass
         try:
             string_to_be_handled = string_to_be_handled.encode('utf8')
-        except Exception:
+        except:
+            print('specialCharacterHandler :::: utf8')
             pass
 
         return string_to_be_handled
@@ -448,7 +454,7 @@ class DirsHandler(object):
             else:
                 fixsha256 = hashlib.sha256()
 
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -484,7 +490,7 @@ class DirsHandler(object):
                         return fixmd5.hexdigest()
                     else:
                         return fixsha256.hexdigest()
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -505,7 +511,7 @@ class DirsHandler(object):
             os.close(target)
 
             return id_node
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
         return id_node
@@ -525,7 +531,7 @@ class DirsHandler(object):
         id_node = '';
         try:
             target = open(file_path.decode('utf-8'), 'rb')
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -534,7 +540,7 @@ class DirsHandler(object):
                 str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[8]) + \
                 str(win32file.GetFileInformationByHandle(win32file._get_osfhandle(target.fileno()))[9])
             return id_node
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 

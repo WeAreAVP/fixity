@@ -27,12 +27,9 @@ bin
 bin/*
 debug
 debug/*
-schedules/*
-schedules
-build/*
-build
-dist/*
-dist
+scheduler
+scheduler/*
 __pycache__
 __pycache__/*
+test.py
 

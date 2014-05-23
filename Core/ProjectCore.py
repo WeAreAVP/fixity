@@ -2,9 +2,12 @@
 
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification
-import thread
 
-import datetime, re
+import datetime
+import re
+import os
+import thread
+from Core import DatabaseLockHandler
 
 global verified_files
 class ProjectCore(object):
@@ -395,12 +398,25 @@ class ProjectCore(object):
 
         return False
 
+    def launchThread(self):
+        run_thread = thread()
+        print('============================================')
+        run_thread.start_new_thread(self.launchRun, tuple())
+        self.Fixity.add
+        print('============================================')
+
+    def launchRun(self):
+        import App
+        SharedApp.SharedApp.App = App.App()
+        self.Fixity = SharedApp.SharedApp.App
+        self.Run(False, True)
+
 
     # Run This project
     # @param check_for_changes: if only want to know is all file confirmed or not
     #
     # @return array
-    def Run(self, check_for_changes = False ):
+    def Run(self, check_for_changes = False , is_from_thread = False):
         report_content = ''
         history_content = ''
 
@@ -412,6 +428,38 @@ class ProjectCore(object):
         total = 0
         all_paths = ''
         number_of_path = 0
+
+
+        #Get process id of this Fixity process
+        try:
+            process_id = os.getpid()
+        except:
+            process_id = None
+
+        # Get File Locker and check for dead lock
+        #try:
+        lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+
+        is_dead_lock = lock.isProcessLockFileIsDead()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+
+
+        #try:
+        if(is_dead_lock):
+            lock.is_locked = True
+            lock.release()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+
+        #try:
+        print('acquire')
+        lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
         for index in self.directories:
             if self.directories[index].getPath() != '':
@@ -476,6 +524,16 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_content)
 
+
+
+        #try:
+        lock.release()
+        print('relased the file')
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+
+
         if check_for_changes:
             if int(moved) > 0:
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
@@ -501,6 +559,9 @@ class ProjectCore(object):
                     email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
             except:
                 pass
+        if is_from_thread:
+            self.Fixity.selfDestruct()
+
 
 
     # Apply Filter For This project
@@ -568,7 +629,7 @@ class ProjectCore(object):
             history_file_obj = open(history_file, 'w+')
             history_file_obj.write(Content)
             history_file_obj.close()
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -600,7 +661,7 @@ class ProjectCore(object):
                     report += detail_output_of_all_files_changes.decode('utf8')
                 except:
                     pass
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -618,7 +679,7 @@ class ProjectCore(object):
                     pass
 
             r.close()
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
         return {'path': rn, 'email_content' : email_content }

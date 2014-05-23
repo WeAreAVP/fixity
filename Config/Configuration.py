@@ -30,7 +30,7 @@ class Configuration(object):
             self.history_path = r''+(os.path.join(self.base_path, 'history'+str(os.sep)))
             self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
             self.images_path = r''+(os.path.join(self.base_path, 'images'+str(os.sep)))
-            self.lock_file_path = r''+(os.path.join(self.base_path, 'dblocker.log.lock'))
+            self.lock_file_path = r''+(os.path.join(self.base_path, 'dblocker.log'))
             self.log_file_path = r''+(os.path.join(self.base_path, 'debug.log'))
             self.database_file_path = r''+(os.path.join(self.base_path,'Fixity.db'))
 
@@ -62,6 +62,9 @@ class Configuration(object):
         self.time_format = "HH:mm"
         self.Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         self.is_debugging_on = False
+
+    def getLockFilePath(self):
+        return self.lock_file_path
 
     def getCheck_sum_methods(self):
         return self.check_sum_methods
@@ -118,6 +121,9 @@ class Configuration(object):
     def getDebugFilePath(self):
         return str(self.log_file_path)
 
+
+
+
     def getDatabaseFilePath(self):
         return str(self.database_file_path)
 
@@ -139,6 +145,7 @@ class Configuration(object):
     def getLibPath(self):
         return self.lib_agent_path
 
+
     def getEmailConfiguration(self):
         return self.email_configuration
 
@@ -155,7 +162,7 @@ class Configuration(object):
     def saveEmailConfiguration(self, information):
         config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
         if len(config_exists) <=0:
-            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information)
+            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
         else:
             self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
         self.setEmailConfiguration(information)
@@ -246,7 +253,7 @@ class Configuration(object):
                 bits = 32
 
             WindowsInformation['bitType'] = "Win{0}".format(bits)
-        except Exception:
+        except:
             print(Exception.message)
         return WindowsInformation
 

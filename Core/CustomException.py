@@ -9,12 +9,16 @@ import sys, os, traceback
 class CustomException(object):
 
     _instance = None
+
+
     @staticmethod
     def getInstance():
         if not isinstance(CustomException._instance, CustomException):
             CustomException._instance = object.__new__(CustomException)
         return CustomException._instance
 
+    def selfDestruct(self):
+        del self
 
     def getExceptionDetails(self):
         exc_type, exc_obj, exc_tb = sys.exc_info()

@@ -11,6 +11,19 @@ import sqlite3
 
 class Database(object):
     _instance = None
+    def __init__(self):
+        Database._instance = object.__new__(Database)
+        Database._instance.Fixity = SharedApp.SharedApp.App
+        Database._instance._tableConfiguration = 'configuration'
+        Database._instance._tableProject = 'project'
+        Database._instance._tableProjectPath = 'projectPath'
+        Database._instance._tableVersionDetail = 'versionDetail'
+        Database._instance._tableVersions ='versions'
+        Database._instance.connect()
+        Database._instance.con = None
+        Database._instance.cursor = None
+        Database._instance.timeSpan = 1
+
 
     @staticmethod
     def getInstance():
@@ -29,11 +42,14 @@ class Database(object):
 
         return Database._instance
 
+    def selfDestruct(self):
+        del self
+
     def connect(self):
         try:
             self.con = sqlite3.connect(self.Fixity.Configuration.getDatabaseFilePath())
             self.cursor = self.con.cursor()
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -133,7 +149,7 @@ class Database(object):
     #Get Given Version Details
     #@param project_id: Project ID
     #@param version_id: ID of Version of Project who's detail to be fetched
-    #@param OrderBy: Order By
+    #@param order_by: Order By
     #
     #@return project information
 
@@ -208,27 +224,27 @@ class Database(object):
 
 
     #SQL Select Query
-    #@param tableName: Table Name
+    #@param table_name: Table Name
     #@param select: Column To Select
     #@param condition: Conditions as String
-    #@param orderBy: order By Columns
+    #@param order_by: order By Columns
     #
     #@return: Query Result
 
     def select(self,tableName,  select  = '*', condition=None,orderBy = None):
         try:
 
-            query = 'SELECT '+ str(select) +' FROM '+str(tableName)
-            if(condition != None):
+            query = 'SELECT '+ str(select) +' FROM '+str(table_name)
+            if(condition is not None):
                 query += ' WHERE ' + condition
-            if(orderBy != None):
-                query += ' ORDER BY '+ orderBy
-
+            if(order_by is not None):
+                query += ' ORDER BY '+ order_by
+            print(query)
             response = {}
-            responseCounter = 0
+            response_counter = 0
             for r in self.dict_gen(self.cursor.execute(query)):
-                response[responseCounter] = r
-                responseCounter =responseCounter + 1
+                response[response_counter] = r
+                response_counter = response_counter + 1
             self.commit()
 
 
@@ -298,16 +314,11 @@ class Database(object):
             return False
 
 
-
-
-
-
     #SQL Delete Query
     #@param table_name: Table Name
     #@param condition: Condition of which row will deleted
     #
     #@return: Response of Query Result
-
 
     def delete(self,table_name ,condition):
         try:
@@ -318,11 +329,6 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             self.Fixity.logger.LogException(Exception.message)
             return False
-
-
-
-
-
 
       #SQL Update Query
       #@param table_name: Table Name
@@ -351,11 +357,6 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             self.Fixity.logger.LogException(Exception.message)
             return False
-
-
-
-
-
 
 
     #  Columns and records Implode for query

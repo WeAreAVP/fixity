@@ -288,7 +288,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         try:
             project_core = self.Fixity.ProjectsList[project_name]
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
 
         emails = str(project_core.getEmail_address())
@@ -334,7 +334,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.monthClick()
                 try:
                     self.day_of_month.setValue(int(project_core.scheduler.getRun_day_or_month()))
-                except Exception:
+                except:
                     self.Fixity.logger.LogException(Exception.message)
                     return
 
@@ -381,7 +381,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         response = False
         try:
             response = self.notification.showQuestion(self,'Delete Project?',str(GUILibraries.messages['sure_delete'])+ self.projects.currentItem().text() + "?")
-        except Exception:
+        except:
             self.Fixity.logger.LogException(Exception.message)
             return
 
@@ -414,7 +414,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         project_core = self.Save()
-        project_core.Run()
+        project_core.launchThread()
         self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
 
 
@@ -440,7 +440,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                             if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
                                 self.isPathChanged = True
                                 self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
-        except Exception:
+        except:
             self.Fixity.logger.LogException()
             pass
 

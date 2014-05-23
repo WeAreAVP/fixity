@@ -10,6 +10,8 @@ import xml.etree.cElementTree as XmlHanlder
 
 class Debugger(object):
     _instance = None
+    def __init__(self):
+        Debugger._instance.setUp()
 
     @staticmethod
     def getInstance():
@@ -17,6 +19,9 @@ class Debugger(object):
             Debugger._instance = object.__new__(Debugger)
             Debugger._instance.setUp()
         return Debugger._instance
+
+    def selfDestruct(self):
+        del self
 
     def setUp(self):
         self.Fixity = SharedApp.SharedApp.App
@@ -29,8 +34,8 @@ class Debugger(object):
         # Create debug file
         try:
             self.loger.basicConfig(filename=self.debug_file_path, level=logging.DEBUG)
-        except Exception as Excep:
-                print(Excep.message)
+        except:
+
                 print(self.Fixity.ExceptionHandler.getExceptionDetails())
                 print(self.Fixity.ExceptionHandler.getTraceBack())
                 pass
@@ -59,7 +64,7 @@ class Debugger(object):
 
                         self.loger.debug(str(key) + '::' + str(more_information[key])+"\n")
 
-        except Exception:
+        except:
                 print(Exception.message)
                 pass
 
@@ -76,7 +81,7 @@ class Debugger(object):
                 if(more_information):
                     for key in more_information:
                         self.loger.info(key + '::' + more_information[key]+"\n")
-        except Exception:
+        except:
             print(self.Fixity.ExceptionHandler.getExceptionDetails())
             print(self.Fixity.ExceptionHandler.getTraceBack())
             self.is_debugger_on = False
@@ -94,7 +99,7 @@ class Debugger(object):
                     for key in more_information:
                         self.loger.warning(key + '::' + more_information[key]+"\n")
 
-        except Exception:
+        except:
             print(self.Fixity.ExceptionHandler.getExceptionDetails())
             print(self.Fixity.ExceptionHandler.getTraceBack())
             self.is_debugger_on = False
@@ -140,9 +145,11 @@ class Debugger(object):
             ExceptionDetail = self.Fixity.ExceptionHandler.getExceptionDetails()
         except:
             pass
-        print('==========================message======================')
+
+        print('========================== Exception Message ======================')
         print(ExceptionDetail)
-        print('==========================message======================')
+        print('========================== Exception Message ======================')
+
         try:
             ExceptionDetail['trace_back'] = self.Fixity.ExceptionHandler.getTraceBack()
         except:
