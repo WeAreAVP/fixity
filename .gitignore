@@ -27,8 +27,12 @@ bin
 bin/*
 debug
 debug/*
-scheduler
-scheduler/*
+schedules/*
+schedules
+build/*
+build
+dist/*
+dist
 __pycache__
 __pycache__/*
 
