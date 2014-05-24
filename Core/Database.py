@@ -12,38 +12,38 @@ import sqlite3
 class Database(object):
     _instance = None
     def __init__(self):
-        Database._instance = object.__new__(Database)
-        Database._instance.Fixity = SharedApp.SharedApp.App
-        Database._instance._tableConfiguration = 'configuration'
-        Database._instance._tableProject = 'project'
-        Database._instance._tableProjectPath = 'projectPath'
-        Database._instance._tableVersionDetail = 'versionDetail'
-        Database._instance._tableVersions ='versions'
-        Database._instance.connect()
-        Database._instance.con = None
-        Database._instance.cursor = None
-        Database._instance.timeSpan = 1
+        self.Fixity = SharedApp.SharedApp.App
+        self._tableConfiguration = 'configuration'
+        self._tableProject = 'project'
+        self._tableProjectPath = 'projectPath'
+        self._tableVersionDetail = 'versionDetail'
+        self._tableVersions ='versions'
+        self.connect()
+        self.con = None
+        self.cursor = None
+        self.timeSpan = 1
 
 
-    @staticmethod
-    def getInstance():
-        if not isinstance(Database._instance, Database):
-            Database._instance = object.__new__(Database)
-            Database._instance.Fixity = SharedApp.SharedApp.App
-            Database._instance._tableConfiguration = 'configuration'
-            Database._instance._tableProject = 'project'
-            Database._instance._tableProjectPath = 'projectPath'
-            Database._instance._tableVersionDetail = 'versionDetail'
-            Database._instance._tableVersions ='versions'
-            Database._instance.connect()
-            Database._instance.con = None
-            Database._instance.cursor = None
-            Database._instance.timeSpan = 1
-
-        return Database._instance
+    #@staticmethod
+    #def getInstance():
+    #    if not isinstance(Database._instance, Database):
+    #        Database._instance = object.__new__(Database)
+    #        Database._instance.Fixity = SharedApp.SharedApp.App
+    #        Database._instance._tableConfiguration = 'configuration'
+    #        Database._instance._tableProject = 'project'
+    #        Database._instance._tableProjectPath = 'projectPath'
+    #        Database._instance._tableVersionDetail = 'versionDetail'
+    #        Database._instance._tableVersions ='versions'
+    #        Database._instance.connect()
+    #        Database._instance.con = None
+    #        Database._instance.cursor = None
+    #        Database._instance.timeSpan = 1
+    #
+    #    return Database._instance
 
     def selfDestruct(self):
         del self
+
 
     def connect(self):
         try:
@@ -59,14 +59,14 @@ class Database(object):
     #@return: One sQuery Result
 
     def getOne(self, query):
-        try:
+        #try:
             self.cursor.execute(query)
             self.con.commit()
             Row = self.cursor.fetchone()
             return Row
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
 
 
@@ -76,13 +76,13 @@ class Database(object):
     #@return: Query Result
 
     def sqlQuery(self, query):
-        try:
+        #try:
             response = self.cursor.execute(query)
             self.con.commit()
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
     #Get Project Information
     #@param projectName: Project Name to be searched in database
@@ -91,8 +91,8 @@ class Database(object):
     #@return project information
 
     def getProjectInfo(self,projectName = None, limit = True):
-        response = {}
-        try:
+
+        #try:
             information = {}
             information['id'] = None
             limit = ' '
@@ -105,9 +105,9 @@ class Database(object):
 
             return self.select(self._tableProject, '*', condition)
 
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
     #Get Projects paths Information
     #@param project_id: Project ID
@@ -116,16 +116,16 @@ class Database(object):
     #@return project information
 
     def getProjectPathInfo(self ,project_id ,version_id):
-        try:
+        #try:
             self.connect()
             information = {}
             information['id'] = None
             response = self.select(self._tableProjectPath, '*', "projectID='"+str(project_id)+"' and versionID = '"+ str(version_id) + "'")
             
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
 
 
@@ -136,12 +136,12 @@ class Database(object):
 
 
     def getConfiguration(self):
-        try:
+        #try:
             response = self.select(self._tableConfiguration, '*')
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
 
 
@@ -154,12 +154,12 @@ class Database(object):
     #@return project information
 
     def getVersionDetails(self, project_id, version_id, pathID, where, OrderBy=None):
-        try:
+        #try:
             response = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"' and versionID='"+str(version_id)+"' and "+where,  OrderBy)
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
     ''' Fetch information related to email configuration'''
     def getConfigInfo(self, project=None):
@@ -190,15 +190,15 @@ class Database(object):
     #Get Last Inserted Version of given project
     def getVersionDetailsLast(self, project_id, path_id, where):
 
-        try:
+        #try:
             response = {}
             result_of_last_version = self.select(self._tableVersionDetail, '*', "projectID='" + str(project_id) +"' and "+ where, ' versionID DESC LIMIT 1')
             if(len(result_of_last_version) > 0):
                 response = self.getVersionDetails(project_id, result_of_last_version[0]['versionID'], path_id,  where, ' id DESC')
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
 
 
@@ -206,15 +206,15 @@ class Database(object):
 
     #Convert List to Tuple Data type
     def listToTuple(self, proveded_list):
-        try:
+        #try:
             new_list = []
             for single_of_proveded_list in  proveded_list:
                 new_list.append(proveded_list[single_of_proveded_list])
             return tuple(new_list)
-
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
     def commit(self):
         self.con.commit()
@@ -231,8 +231,8 @@ class Database(object):
     #
     #@return: Query Result
 
-    def select(self,tableName,  select  = '*', condition=None,orderBy = None):
-        try:
+    def select(self,table_name ,select = '*', condition=None, order_by = None):
+        #try:
 
             query = 'SELECT '+ str(select) +' FROM '+str(table_name)
             if(condition is not None):
@@ -249,9 +249,9 @@ class Database(object):
 
 
             return response
-        except (sqlite3.OperationalError,Exception):
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
 
 

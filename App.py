@@ -7,7 +7,7 @@ Created on May 14, 2014
 from Config import Configuration,  Validation, Setup
 from GUI import GUILibraries, ProjectGUI
 from Core import Debugger, Database, CustomException, SharedApp, ProjectCore, ProjectRepository
-import Queue
+from Queue import Queue
 
 class App(object):
     _instance = None
@@ -19,8 +19,6 @@ class App(object):
         self.Database.selfDestruct()
         self.ExceptionHandler.selfDestruct()
         self.logger.selfDestruct()
-        del self
-
 
     @staticmethod
     def getInstance():
@@ -37,7 +35,7 @@ class App(object):
         self.Setup = Setup.Setup()
         self.Setup.setupApp()
         self.logger = Debugger.Debugger.getInstance()
-        self.Database = Database.Database.getInstance()
+        self.Database = Database.Database()
         self.Database.connect()
         self.ProjectGUI = ProjectGUI
         self.Setup.createTables()
@@ -60,7 +58,7 @@ class App(object):
 
     def loadAllProjects(self):
         all_projects = self.ProjectRepo.getAll()
-        if all_projects is not None:
+        if all_projects is not None and all_projects is not False:
             if len(all_projects) > 0:
                 for single_project in all_projects:
                     project_logic = ProjectCore.ProjectCore()
@@ -70,8 +68,8 @@ class App(object):
     def getSingleThreadToQueue(self, thread_id):
         return self.queue.get(thread_id)
 
-    def addSingleThreadToQueue(self, thread_id):
-        return self.queue.put(thread_id)
+    def addSingleThreadToQueue(self, thread_id, thread_object):
+        return self.queue.put(thread_object)
 
     def getProjectList(self):
         information = []
@@ -80,6 +78,7 @@ class App(object):
                 information.append(str(self.ProjectsList[project].getTitle()))
         return information
 
+    # TODO MOVE repo
     def getSingleProject(self, project_name):
         try:
             selected_project_object = self.ProjectsList[project_name]

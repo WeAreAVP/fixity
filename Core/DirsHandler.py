@@ -9,6 +9,7 @@ Created on May 14, 2014
 import os, datetime, time, fnmatch, hashlib, win32file, win32con, win32api
 from collections import defaultdict
 from Core import SharedApp
+from Core import Database
 class DirsHandler(object):
     def __init__(self,path, path_id, ID):
         super(DirsHandler, self).__init__()
@@ -16,6 +17,7 @@ class DirsHandler(object):
         self.path = path
         self.path_id= path_id
         self.ID = ID
+        self.Database = Database.Database()
 
     def getPath(self):
         return self.path
@@ -52,12 +54,12 @@ class DirsHandler(object):
 
         project_core = self.Fixity.getSingleProject(project_name)
 
-        project_detail_information = self.Fixity.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
+        project_detail_information = self.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
         if project_detail_information is False:
-            project_detail_information = self.Fixity.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
+            project_detail_information = self.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
 
         if len(project_detail_information) <= 0:
-            project_detail_information = self.Fixity.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
+            project_detail_information = self.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
 
 
         verified_files = list()
@@ -200,7 +202,7 @@ class DirsHandler(object):
                     version_detail_options['projectID'] = project_core.getID()
                     version_detail_options['projectPathID'] = self.getID()
 
-                    self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, version_detail_options)
+                    self.Database.insert(self.Database._tableVersionDetail, version_detail_options)
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
@@ -225,7 +227,7 @@ class DirsHandler(object):
 
         information_to_update = {}
         information_to_update['versionCurrentID'] = version_id
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_update, " id= '" + str(project_core.getID()) + "'")
+        self.Database.update(self.Database._tableProject, information_to_update, " id= '" + str(project_core.getID()) + "'")
 
 
         total =  confirmed
@@ -240,8 +242,8 @@ class DirsHandler(object):
             print('no missing file')
             pass
 
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(project_core.getID())+"'")
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(project_core.getID())+"'")
+        self.Database.update(self.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(project_core.getID())+"'")
+        self.Database.update(self.Database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(project_core.getID())+"'")
 
 
         information = {}

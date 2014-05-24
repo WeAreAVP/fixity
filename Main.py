@@ -32,7 +32,7 @@ class Main (object):
 
 if __name__ == '__main__':
     try:
-        parser = argparse.ArgumentParser()
+        parser = ArgumentParser()
         parser.add_argument('-a', '--autorun')
         args = parser.parse_args()
     except:
@@ -43,12 +43,14 @@ if __name__ == '__main__':
     # scheduler other wise it will open Fixity Front end View)
 
     if args.autorun is None or args.autorun == '':
+        # TODO Single Lne
         Fixity = Main()
         Fixity.LaunchGUI(sys.argv)
 
     else:
         try:
             print('Scanning is in progress!........')
+            # TODO Single Lne above
             Fixity = Main()
             Fixity.LaunchScheduler(args.autorun)
             sys.exit()

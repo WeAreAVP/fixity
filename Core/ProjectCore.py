@@ -3,11 +3,27 @@
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification
 
+
 import datetime
 import re
 import os
 import thread
 from Core import DatabaseLockHandler
+import threading
+import time
+
+class ThreadClass(threading.Thread):
+
+  def run(self):
+    self.Fixity = SharedApp.SharedApp.App
+    count = 0
+    if count > 10:
+        exit()
+    count = count + 1
+    now = datetime.datetime.now()
+    print count
+    (self.getName(), now)
+
 
 global verified_files
 class ProjectCore(object):
@@ -99,8 +115,6 @@ class ProjectCore(object):
     def getPreviousVersion(self): return self.previous_version
 
     def setPreviousVersion(self, previous_version): self.previous_version = previous_version
-
-
 
 
     # Creates New Version
@@ -241,7 +255,7 @@ class ProjectCore(object):
             config = {}
             run_say_or_month = ''
             duration_type = 0
-            run_time = '00:00'
+
 
             config['title'] = str(project_name)
             config['versionCurrentID'] =''
@@ -399,11 +413,13 @@ class ProjectCore(object):
         return False
 
     def launchThread(self):
-        run_thread = thread()
+
         print('============================================')
-        run_thread.start_new_thread(self.launchRun, tuple())
-        self.Fixity.add
+        threadas = threading.Thread()
+        run_thread = thread.start_new_thread(self.launchRun, tuple())
+        self.Fixity.queue.put(run_thread)
         print('============================================')
+
 
     def launchRun(self):
         import App
@@ -411,12 +427,11 @@ class ProjectCore(object):
         self.Fixity = SharedApp.SharedApp.App
         self.Run(False, True)
 
-
     # Run This project
     # @param check_for_changes: if only want to know is all file confirmed or not
     #
     # @return array
-    def Run(self, check_for_changes = False , is_from_thread = False):
+    def Run(self, check_for_changes = False, is_from_thread = False):
         report_content = ''
         history_content = ''
 
@@ -429,7 +444,6 @@ class ProjectCore(object):
         all_paths = ''
         number_of_path = 0
 
-
         #Get process id of this Fixity process
         try:
             process_id = os.getpid()
@@ -437,29 +451,28 @@ class ProjectCore(object):
             process_id = None
 
         # Get File Locker and check for dead lock
-        #try:
-        lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+        try:
+            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
 
-        is_dead_lock = lock.isProcessLockFileIsDead()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+            is_dead_lock = lock.isProcessLockFileIsDead()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
+        try:
+            if(is_dead_lock):
+                lock.is_locked = True
+                lock.release()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
-        #try:
-        if(is_dead_lock):
-            lock.is_locked = True
-            lock.release()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
-
-        #try:
-        print('acquire')
-        lock.acquire()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            print('acquire')
+            lock.acquire()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
         for index in self.directories:
             if self.directories[index].getPath() != '':
@@ -471,12 +484,11 @@ class ProjectCore(object):
         keep_time = ''
 
         # - 1 = Monthly  - 2 = Week  - 3 = Daily
-
-        if int(self.getScheduler().getDurationType()) == 3 :
+        if int(self.getScheduler().getDurationType()) == 3:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime())) + ' 99 99'
-        elif int(self.getScheduler().getDurationType()) == 2 :
+        elif int(self.getScheduler().getDurationType()) == 2:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime()))+ ' ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRun_day_or_month())) + ' 99'
-        elif int(self.getScheduler().getDurationType()) == 1 :
+        elif int(self.getScheduler().getDurationType()) == 1:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRun_day_or_month()))
 
         history_content += self.Fixity.Configuration.CleanStringForDictionary(keep_time) +"\n"
@@ -511,7 +523,6 @@ class ProjectCore(object):
                 try:total += str(result_score['total'])
                 except:pass
 
-
         information_for_report = {}
         information_for_report['missing_file'] = missing_file
         information_for_report['corrupted_or_changed']= corrupted_or_changed
@@ -524,14 +535,12 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_content)
 
-
-
-        #try:
-        lock.release()
-        print('relased the file')
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            lock.release()
+            print('relased the file')
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
 
         if check_for_changes:
@@ -561,7 +570,6 @@ class ProjectCore(object):
                 pass
         if is_from_thread:
             self.Fixity.selfDestruct()
-
 
 
     # Apply Filter For This project
@@ -621,8 +629,6 @@ class ProjectCore(object):
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
         self.setDirectories(directories)
 
-
-
     def writerHistoryFile(self, Content):
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
         try:
@@ -632,10 +638,6 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
-
-
-
 
     def writerReportFile(self, information, detail_output_of_all_files_changes):
         try:
@@ -682,4 +684,4 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        return {'path': rn, 'email_content' : email_content }
+        return {'path': rn, 'email_content' : email_content}
