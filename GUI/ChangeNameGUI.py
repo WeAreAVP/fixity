@@ -8,7 +8,7 @@ from Core import SharedApp
 
 
 # Class to manage the the Name of the project,  ChangeName class manages the action of name changing and also updating the scheduler and other information changed '''
-
+from Core import Database
 class ChangeNameGUI(GUILibraries.QDialog ):
 
     # Contstructor'''
@@ -24,6 +24,7 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         self.change_name_layout = GUILibraries.QVBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
+        self.Database = Database.Database()
     #  Distructor'''
     def destroyChangeName(self):
         del self  

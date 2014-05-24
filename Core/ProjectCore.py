@@ -11,6 +11,8 @@ import thread
 from Core import DatabaseLockHandler
 import threading
 import time
+from Core import Database
+
 
 class ThreadClass(threading.Thread):
 
@@ -48,6 +50,8 @@ class ProjectCore(object):
         self.previous_version = None
         self.is_inserted = False
         self.is_saved = False
+
+        self.Database = Database.Database()
 
     def setDirectories(self, directories):
         for n in directories:
@@ -125,7 +129,7 @@ class ProjectCore(object):
     # @return Version ID Created
     def createNewVersion(self, project_id, version_type ):
 
-        get_old_version  = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
+        get_old_version  = self.Database.select(self.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
 
         version_id = 1
         if len(get_old_version) > 0:
@@ -141,7 +145,7 @@ class ProjectCore(object):
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
 
-        return self.Fixity.Database.insert(self.Fixity.Database._tableVersions, information)
+        return self.Database.insert(self.Database._tableVersions, information)
 
     # Save Project
     #
@@ -170,19 +174,19 @@ class ProjectCore(object):
 
         project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         project_id = {}
-        project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
+        project_exists = self.Database.select(self.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
 
 
         if len(project_exists) <= 0:
             # Insert Project
             project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-            project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, project_information)
+            project_id = self.Database.insert(self.Database._tableProject, project_information)
             self.setPreviousVersion('')
 
         else:
 
             # Update Project
-            self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
+            self.Database.update(self.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
             project_id['id'] = project_exists[0]['id']
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
 
@@ -205,10 +209,10 @@ class ProjectCore(object):
             dir_information['versionID'] = version_id['id']
             dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-            dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
+            dir_path_id = self.Database.insert(self.Database._tableProjectPath, dir_information)
             self.directories[dirs_objects].setID(dir_path_id['id'])
 
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
+        self.Database.update(self.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
         self.SaveSchedule()
 
 
@@ -221,7 +225,7 @@ class ProjectCore(object):
     #
     # @return Bool
     def Delete(self):
-        self.Fixity.Database.delete(self.Fixity.Database._tableProject,'id ="' + str(self.getID()) + '"')
+        self.Database.delete(self.Database._tableProject,'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
         return True
 
@@ -304,12 +308,12 @@ class ProjectCore(object):
             config['extraConf'] = ''
             config['emailAddress'] = self.Fixity.Configuration.CleanStringForDictionary(str(email_address).replace(';',''))
 
-            project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, config)
+            project_id = self.Database.insert(self.Database._tableProject, config)
             version_id = self.createNewVersion(project_id['id'], 'project')
             information_project_update = {}
             information_project_update['versionCurrentID'] = version_id['id']
 
-            self.Fixity.Database.update(self.Fixity.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
+            self.Database.update(self.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
 
             all_project_paths = []
             path_info = file_to_import_info_of.split(';')
@@ -342,7 +346,7 @@ class ProjectCore(object):
                     information_project_path['path'] = inform_path[0]
                     information_project_path['pathID'] = inform_path[1]
 
-                    self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, information_project_path)
+                    self.Database.insert(self.Database._tableProjectPath, information_project_path)
 
             if project_id and len(all_content) > 0:
                 flag_project_contain_detail = True
@@ -372,13 +376,13 @@ class ProjectCore(object):
                             information_version_detail['hashes'] = self.Fixity.Configuration.CleanStringForDictionary(hashes)
                             information_version_detail['path'] = self.Fixity.Configuration.CleanStringForDictionary(fix_info[1])
                             information_version_detail['inode'] = self.Fixity.Configuration.CleanStringForDictionary(fix_info[2])
-                            self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, information_version_detail)
+                            self.Database.insert(self.Database._tableVersionDetail, information_version_detail)
 
             if flag_project_contain_detail:
                 if project_id:
                     information_to_upate = {}
                     information_to_upate['projectRanBefore'] = 1
-                    self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
+                    self.Database.update(self.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
 
         try:
             file_to_import_info_of.close()
@@ -408,7 +412,7 @@ class ProjectCore(object):
     def ChangeTitle(self, new_title):
         information = {}
         information['title'] = new_title
-        self.Fixity.Database.update(self.Fixity.Database._tableProject,information, 'id="' + str(self.getID()) + '"')
+        self.Database.update(self.Database._tableProject,information, 'id="' + str(self.getID()) + '"')
 
         return False
 
@@ -425,6 +429,7 @@ class ProjectCore(object):
         import App
         SharedApp.SharedApp.App = App.App()
         self.Fixity = SharedApp.SharedApp.App
+        self.Database = Database.Database()
         self.Run(False, True)
 
     # Run This project
@@ -445,34 +450,34 @@ class ProjectCore(object):
         number_of_path = 0
 
         #Get process id of this Fixity process
-        try:
-            process_id = os.getpid()
-        except:
-            process_id = None
+        #try:
+        #    process_id = os.getpid()
+        #except:
+        #    process_id = None
 
         # Get File Locker and check for dead lock
-        try:
-            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+        #try:
+        #    lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+        #
+        #    is_dead_lock = lock.isProcessLockFileIsDead()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
-            is_dead_lock = lock.isProcessLockFileIsDead()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
-
-        try:
-            if(is_dead_lock):
-                lock.is_locked = True
-                lock.release()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
-
-        try:
-            print('acquire')
-            lock.acquire()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    if(is_dead_lock):
+        #        lock.is_locked = True
+        #        lock.release()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+        #
+        #try:
+        #    print('acquire')
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
         for index in self.directories:
             if self.directories[index].getPath() != '':
@@ -535,12 +540,12 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_content)
 
-        try:
-            lock.release()
-            print('relased the file')
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    lock.release()
+        #    print('relased the file')
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
 
         if check_for_changes:
@@ -588,7 +593,7 @@ class ProjectCore(object):
         else:
             information['ignoreHiddenFiles'] = 0
 
-        response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, '"' + str(self.getID()) + '"')
+        response = self.Database.update(self.Database._tableProject, information, '"' + str(self.getID()) + '"')
         return response
 
     # Save Setting
@@ -626,7 +631,7 @@ class ProjectCore(object):
         self.setCreated_at(projects_info['createdAt'])
         self.setUpdated_at(projects_info['updatedAt'])
 
-        directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
+        directories = self.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
         self.setDirectories(directories)
 
     def writerHistoryFile(self, Content):

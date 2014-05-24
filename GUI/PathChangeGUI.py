@@ -7,7 +7,7 @@ from GUI import GUILibraries
 from Core import SharedApp
 
 __author__ = 'Furqan'
-
+from Core import Database
 # Class to manage the Filter to be implemented for the files with specific extensions
 
 
@@ -25,6 +25,8 @@ class PathChangeGUI(GUILibraries.QDialog):
         self.change_path_text = change_path_text
         self.code = code
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
+
+        self.Database = Database.Database()
 
     '''
     Distructor

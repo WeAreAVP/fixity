@@ -150,7 +150,7 @@ class Configuration(object):
         return self.email_configuration
 
     def fetchEmailConfiguration(self):
-        emailConfiguration = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration)
+        emailConfiguration = self.Database.select(self.Database._tableConfiguration)
         if len(emailConfiguration) > 0:
             self.setEmailConfiguration(emailConfiguration[0])
         else:
@@ -160,11 +160,11 @@ class Configuration(object):
         self.email_configuration = email_configuration
 
     def saveEmailConfiguration(self, information):
-        config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
+        config_exists = self.Database.select(self.Database._tableConfiguration, 'id')
         if len(config_exists) <=0:
-            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
+            self.Database.insert(self.Database._tableConfiguration, information )
         else:
-            self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+            self.Database.update(self.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
         self.setEmailConfiguration(information)
 
 

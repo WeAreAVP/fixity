@@ -5,7 +5,7 @@ Created on May 14, 2014
 
 from GUI import GUILibraries
 from Core import SharedApp, EmailNotification
-
+from Core import Database
 
 # Class to manage the Algorithm change to be implemented for the files to get Hashes
 class ChangeAlgorithmGUI(GUILibraries.QDialog):
@@ -25,6 +25,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.is_all_files_confirmed = False
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
+        self.Database = Database.Database()
     # Distructor
     def destroy(self):
         del self
@@ -138,7 +139,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         update_project_algo = {}
         update_project_algo['selectedAlgo'] = algo_value_selected
 
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, update_project_algo, "id='" + str(project_core.getID()) + "'")
+        self.Database.update(self.Database._tableProject, update_project_algo, "id='" + str(project_core.getID()) + "'")
 
         project_core.setAlgorithm(algo_value_selected)
 

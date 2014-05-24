@@ -9,7 +9,7 @@ from Core import EmailNotification
 __author__ = 'Furqan'
 
 # Class to manage the Filter to be implemented for the files with specific extensions
-
+from Core import Database
 
 class EmailNotificationGUI(GUILibraries.QDialog):
     def __init__(self,parent_win):
@@ -23,6 +23,8 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.setWindowIcon(GUILibraries.QIcon(str(self.Fixity.Configuration.getLogoSignSmall())))
         self.email_pref_layout = GUILibraries.QVBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
+
+        self.Database = Database.Database()
 
     def reject(self):
         try:

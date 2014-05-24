@@ -2,12 +2,15 @@ from Core import SharedApp
 
 import email, datetime, os
 from smtplib import *
-
+from Core import Database
 class EmailNotification(object):
 
     def __init__(self):
+
         super(EmailNotification, self).__init__()
         self.Fixity = SharedApp.SharedApp.App
+
+        self.Database = Database.Database()
 
     #Sends Email
     #Note that ADDRESS and PASSWORD should be set before use

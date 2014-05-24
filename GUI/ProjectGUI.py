@@ -10,13 +10,15 @@ from Core import SharedApp, ProjectCore
 
 # Built-in Libraries
 import datetime
-
+from Core import Database
 ''' Project GUI Class '''
 class ProjectGUI(GUILibraries.QMainWindow):
     #Constructor
     def __init__(self):
 
         super(ProjectGUI, self).__init__()
+
+        self.Database = Database.Database()
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
         self.about_fixity_gui = AboutFixityGUI.AboutFixityGUI(self)
@@ -487,7 +489,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name']))
             return
 
-        project_info = self.Fixity.Database.select(self.Fixity.Database._tableProject, 'id','title="'+name[0]+'"')
+        project_info = self.Database.select(self.Database._tableProject, 'id','title="'+name[0]+'"')
 
         if len(project_info) > 0:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
@@ -519,7 +521,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     return
 
         if is_recipient_email_address_set and False:
-                email_info = self.Fixity.Database.getConfigInfo()
+                email_info = self.Database.getConfigInfo()
                 if len(email_info) <= 0:
                     self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
                     return

@@ -18,10 +18,11 @@ class Database(object):
         self._tableProjectPath = 'projectPath'
         self._tableVersionDetail = 'versionDetail'
         self._tableVersions ='versions'
-        self.connect()
+
         self.con = None
         self.cursor = None
         self.timeSpan = 1
+        self.connect()
 
 
     #@staticmethod

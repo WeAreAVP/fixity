@@ -51,7 +51,7 @@ class DirsHandler(object):
     def Run(self, project_name):
 
         global verified_files
-
+        self.Database = Database.Database()
         project_core = self.Fixity.getSingleProject(project_name)
 
         project_detail_information = self.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
