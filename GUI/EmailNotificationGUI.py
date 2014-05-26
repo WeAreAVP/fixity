@@ -141,6 +141,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.TLS_protocol.clicked.connect(self.TLS_protocolConif)
         self.none_protocol.clicked.connect(self.none_protocolConif)
 
+        self.SSL_protocol.setChecked(True)
 
         self.SetWindowLayout()
         information = self.Fixity.Configuration.getEmailConfiguration()

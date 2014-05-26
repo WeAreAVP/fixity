@@ -257,63 +257,108 @@ class SchedulerCore(object):
     def CreateXML(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
 
         Months = self.Fixity.Configuration.getMonths()
-        xmlsch = open("schedules\\fixity-" + project_name + "-sch.xml", "w")
+        schedule_path = self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + "-sch.xml"
+        xmlsch = open(schedule_path, "w")
+        scheduler_xml_text = ''
+        scheduler_xml_template_lines = []
+        # Months
+        if interval == 1:
+            template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path(), "r")
+            scheduler_xml_template_lines = template_monthly_file.readlines()
+            template_monthly_file.close()
+
+        # Weeks
+        elif interval == 2:
+            template_week_file = open(self.Fixity.Configuration.getSch_week_template_path(), "r")
+            scheduler_xml_template_lines = template_week_file.readlines()
+            template_week_file.close()
+
+        # Days
+        elif interval == 3:
+            template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path(), "r")
+            scheduler_xml_template_lines = template_days_file.readlines()
+            template_days_file.close()
+
+
+
+        for scheduler_xml_template_single_line in scheduler_xml_template_lines:
+                scheduler_xml_template_single_line = self.Fixity.Configuration.CleanStringForBreaks(str(scheduler_xml_template_single_line))
+                response = False
+                response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{current_data_time}}', registration_info['Date'])
+                # Attributes Available in only Daily Template
+                if interval == 3:
+                    if response is False:
+                        response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{days_interval}}', str(triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']))
+
+
+                # Attributes Available in only Weekly Template
+                if interval == 2:
+                        if response is False:
+                            response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{weeks_interval}}', str(triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']))
+
+                        if response is False:
+                            response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{day_of_week}}', str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']))
+
+
+
+                # Attributes Available in only monthly Template
+                if interval == 1:
+                    if response is False:
+                        response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{days_of_month}}', str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']))
+
+
+                # Attributes Available in all XML Templates
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{user}}', str(registration_info['Author']))
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{version}}', str(self.Fixity.Configuration.getApplicationVersion()))
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{start_boundary}}', str(triggers['CalendarTrigger']['StartBoundary']))
+
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{enabled}}', settings['Enabled'])
+
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{allow_start_on_demand}}', settings['AllowStartOnDemand'])
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{allow_hard_terminate}}', settings['AllowHardTerminate'])
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{disallow_start_if_on_batteries}}', settings['DisallowStartIfOnBatteries'])
+
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{start_when_available}}', settings['StartWhenAvailable'])
+
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{day_of_week}}', settings['StartWhenAvailable'])
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{wake_to_run}}', settings['WakeToRun'])
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{command}}', actions['Exec']['Command'])
+
+
+                if response is False:
+                    # if no value found to replace
+                    scheduler_xml_text += str(scheduler_xml_template_single_line)
+                else:
+                    scheduler_xml_text += response
+
         try:
-            xmlsch.write("<?xml version=\"1.0\" ?>\n")
-            xmlsch.write("<Task xmlns=\"http://schemas.microsoft.com/windows/2004/02/mit/task\">\n")
-            xmlsch.write("    <RegistrationInfo>\n")
-            xmlsch.write("        <Date>" + registration_info['Date'] + "</Date>\n")
-            xmlsch.write("        <Author>" + registration_info['Author'] + "</Author>\n")
-            xmlsch.write("        <Version>" + registration_info['Description'] + "</Version>\n")
-            xmlsch.write("        <Description>" + registration_info['Description'] + "</Description>\n")
-            xmlsch.write("    </RegistrationInfo>\n")
-            xmlsch.write("    <Triggers>\n")
-            xmlsch.write("        <CalendarTrigger>\n")
-            xmlsch.write("            <StartBoundary>" + triggers['CalendarTrigger']['StartBoundary'] + "</StartBoundary>\n")
-            if interval == 1:
-                xmlsch.write("            <ScheduleByMonth>\n")
-                xmlsch.write("                <DaysOfMonth>\n")
-                xmlsch.write("                    <Day>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</Day>\n")
-                xmlsch.write("                </DaysOfMonth >\n")
-                xmlsch.write("                <Months>\n")
-                for Month in Months:
-                    xmlsch.write("                <" + Month + "/>\n")
-                xmlsch.write("                </Months>\n")
-                xmlsch.write("            </ScheduleByMonth>\n")
-            if interval == 2:
-                xmlsch.write("            <ScheduleByWeek>\n")
-                xmlsch.write("                <WeeksInterval >" + str(triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval']) + "</WeeksInterval >\n")
-                xmlsch.write("                <DaysOfWeek>\n")
-                xmlsch.write("                    <" + str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']) + "/>\n")
-                xmlsch.write("                </DaysOfWeek >\n")
-                xmlsch.write("            </ScheduleByWeek>\n")
-            if interval == 3:
-                xmlsch.write("            <ScheduleByDay>\n")
-                xmlsch.write("                <DaysInterval>" + str(triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval']) + "</DaysInterval>\n")
-                xmlsch.write("            </ScheduleByDay>\n")
-
-            xmlsch.write("        </CalendarTrigger>\n")
-            xmlsch.write("    </Triggers>\n")
-            xmlsch.write("    <Settings>\n")
-            xmlsch.write("        <Enabled>" + settings['Enabled'] + "</Enabled>\n")
-            xmlsch.write("        <AllowStartOnDemand>" + settings['AllowStartOnDemand'] + "</AllowStartOnDemand>\n")
-            xmlsch.write("        <AllowHardTerminate>" + settings['AllowHardTerminate'] + "</AllowHardTerminate>\n")
-            xmlsch.write("        <DisallowStartIfOnBatteries>" + settings['DisallowStartIfOnBatteries'] + "</DisallowStartIfOnBatteries>\n")
-            xmlsch.write("        <StartWhenAvailable>" + settings['StartWhenAvailable'] + "</StartWhenAvailable>\n")
-            xmlsch.write("        <WakeToRun>" + settings['WakeToRun'] + "</WakeToRun>\n")
-
-            xmlsch.write("    </Settings>\n")
-            xmlsch.write("    <Actions>\n")
-            xmlsch.write("        <Exec>\n")
-            xmlsch.write("            <Command>" + actions['Exec']['Command'] + "</Command>\n")
-            xmlsch.write("        </Exec>\n")
-            xmlsch.write("      </Actions>\n")
-            xmlsch.write("</Task>\n")
+            xmlsch.write(scheduler_xml_text)
         except:
             pass
         xmlsch.close()
 
-        return "schedules"+str(os.sep)+"fixity-" + project_name + "-sch.xml"
+        return schedule_path
 
 
     #Create XML for Mac launchd process
@@ -329,6 +374,8 @@ class SchedulerCore(object):
 
         lunch_agent =str(lunch_agent).replace(' ','\\ ')
         pathInfo =str(pathInfo).replace(' ','\\ ')
+
+
 
         xmlsch = open(u''+lunch_agent, "w")
         try:
@@ -386,14 +433,23 @@ class SchedulerCore(object):
         return lunch_agent
 
     def setRunTime(self, runTime):self.runTime = runTime
-    def getRunTime(self ):return self.runTime
+    def getRunTime(self ): return self.runTime
     def setDurationType(self, duration_type):self.duration_type = duration_type
-    def getDurationType(self ):return self.duration_type
-    def setRun_day_or_month(self, run_day_or_month):self.run_day_or_month = run_day_or_month
-    def setRun_when_on_battery(self, run_when_on_battery):self.run_when_on_battery = run_when_on_battery
-    def getRun_when_on_battery(self):return self.run_when_on_battery
-    def getRun_day_or_month(self ):return self.run_day_or_month
+    def getDurationType(self ): return self.duration_type
+    def setRun_day_or_month(self, run_day_or_month): self.run_day_or_month = run_day_or_month
+    def setRun_when_on_battery(self, run_when_on_battery): self.run_when_on_battery = run_when_on_battery
+    def getRun_when_on_battery(self): return self.run_when_on_battery
+    def getRun_day_or_month(self ): return self.run_day_or_month
     def setIf_missed_run_upon_restart(self, if_missed_run_upon_restart):self.if_missed_run_upon_restart = if_missed_run_upon_restart
-    def getIf_missed_run_upon_restart(self):return self.if_missed_run_upon_restart
+    def getIf_missed_run_upon_restart(self): return self.if_missed_run_upon_restart
     def setEmail_only_upon_warning(self, email_only_upon_warning):self.email_only_upon_warning = email_only_upon_warning
-    def getEmail_only_upon_warning(self):return self.email_only_upon_warning
+    def getEmail_only_upon_warning(self): return self.email_only_upon_warning
+
+    def setValuesForScheduler(self, string, find_string, replace_with_string):
+
+        string = str(string)
+        find_string = str(find_string)
+        replace_with_string = str(replace_with_string)
+        if find_string in string:
+            return str(string).replace(find_string, replace_with_string) + '\n'
+        return False

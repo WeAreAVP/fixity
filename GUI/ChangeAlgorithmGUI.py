@@ -88,7 +88,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.SetWindowLayout()
         self.ProjectChanged()
         selected_project = self.projects.currentText()
-        project_core = self.Fixity.getSingleProject(str(selected_project))
+        project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
         if project_core.getAlgorithm() == 'md5':
             self.methods.setCurrentIndex(1)
@@ -107,7 +107,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
             self.notification.showError(self, "Warning", GUILibraries.messages['no_project_selected'])
             return
 
-        project_core = self.Fixity.getSingleProject(str(selected_project))
+        project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
         if project_core.getAlgorithm() == algo_value_selected:
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
@@ -156,7 +156,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
     def ProjectChanged(self):
         selected_project = self.projects.currentText()
-        project_core = self.Fixity.getSingleProject(str(selected_project))
+        project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
         if project_core.getAlgorithm() == 'md5':
             self.methods.setCurrentIndex(1)

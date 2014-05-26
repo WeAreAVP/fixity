@@ -267,7 +267,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
 
     def update(self, new, projet_name_force = None):
-
+        print('update')
         if self.unsaved:
                 message = "There are unsaved changes to this project.\n"
                 message += "These will be discarded when opening a new project.\nWould you like to stay on this project?"
@@ -291,7 +291,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         except:
             project_name = ''
         try:
-            project_core = self.Fixity.getSingleProject(project_name)
+            project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -397,7 +397,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         if response:
-            project_core = self.Fixity.getSingleProject(self.projects.currentItem().text())
+            project_core = self.Fixity.ProjectRepo.getSingleProject(self.projects.currentItem().text())
             project_core.Delete()
 
             self.projects.takeItem(self.projects.row(self.projects.currentItem()))
@@ -438,7 +438,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def checkForChanges(self, search_for_path, code):
         try:
-            project_core = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
+            project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
             directory_detail = project_core.getDirectories()
             if len(directory_detail) > 0:
                 for directory_detail_single in directory_detail:
@@ -527,9 +527,15 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     self.notification.showWarning(self, "Error", GUILibraries.messages['invalid_email'])
                     return
 
-        if is_recipient_email_address_set and False:
-                email_info = self.Fixity.Database.getConfigInfo()
-                if len(email_info) <= 0:
+        if is_recipient_email_address_set:
+
+                email_info = self.Fixity.Configuration.getEmailConfiguration()
+
+                try:
+                    if (email_info['email'] == '' and email_info['email'] is None)  and (email_info['smtp'] != '' or email_info['smtp'] is None):
+                        self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
+                        return
+                except:
                     self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
                     return
         if all(d.text() == "" for d in self.dirs_text_fields):
@@ -663,7 +669,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.import_project_gui = ImportProjGUI.ImportProjectGUI(self)
         self.import_project_gui.LaunchDialog()
 
-
     #Day check box Click Trigger
     #(Trigger on day Check box click)
     #
@@ -674,9 +679,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.day_of_week.hide()
         self.spacer.changeSize(30, 25)
 
-
-
-
     #Month check box Click Trigger
     #(Trigger on week Check box click)
     #
@@ -686,11 +688,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.spacer.changeSize(0, 0)
         self.day_of_month.hide()
         self.day_of_week.show()
-
-
-
-
-
 
     #Month check box Click Trigger
     #(Trigger on Month Check box click)

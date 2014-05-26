@@ -29,10 +29,18 @@ class Configuration(object):
             self.schedules_path = r''+(os.path.join(self.base_path, 'schedules'+str(os.sep)))
             self.history_path = r''+(os.path.join(self.base_path, 'history'+str(os.sep)))
             self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
-            self.images_path = r''+(os.path.join(self.base_path, 'images'+str(os.sep)))
+            self.assets_path = r''+(os.path.join(self.base_path, 'assets'+str(os.sep)))
             self.lock_file_path = r''+(os.path.join(self.base_path, 'dblocker.log'))
             self.log_file_path = r''+(os.path.join(self.base_path, 'debug.log'))
             self.database_file_path = r''+(os.path.join(self.base_path,'Fixity.db'))
+            self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
+            self.report_template_path = r''+(os.path.join(self.template_path)+'Report.txt')
+            self.history_template_path = r''+(os.path.join(self.template_path)+'History.txt')
+            self.report_email_template_path = r''+(os.path.join(self.template_path)+'ReportEmail.txt')
+            self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
+            self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
+            self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
+
 
         else:
             self.lib_agent_path = str(self.user_home_path)++str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
@@ -45,7 +53,7 @@ class Configuration(object):
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
             self.history_path = r''+str(self.getBasePath()) + 'history' +str(os.sep)
             self.bin_path = r''+(os.path.join(str(os.getcwd()), 'bin'+str(os.sep)))
-            self.images_path = r''+(os.path.join(str(os.getcwd()), 'images'+str(os.sep)))
+            self.assets_path = r''+(os.path.join(str(os.getcwd()), 'assets'+str(os.sep)))
             self.lock_file_path = r''+(os.path.join(str(os.getcwd()), 'dblocker.log.lock'))
             self.log_file_path = r''+(os.path.join(str(os.getcwd()), 'debug'+str(os.sep))+'debug.log')
 
@@ -63,91 +71,79 @@ class Configuration(object):
         self.Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         self.is_debugging_on = False
 
-    def getLockFilePath(self):
-        return self.lock_file_path
 
-    def getCheck_sum_methods(self):
-        return self.check_sum_methods
-    def getMonths(self):
-        return self.Months
-    def getWeekInformation(self):
-        self.WeekInformation;
-    def getImagesPath(self):
-        return str(self.images_path)
+    def getSch_daily_template_path(self): return self.sch_daily_template_path
 
-    def getAvpreserve_img(self):
-        return self.avpreserve_img
+    def getSch_week_template_path(self): return self.sch_week_template_path
 
-    def getBasePath(self):
-        return str(self.base_path)
+    def getSch_month_template_path(self): return self.sch_month_template_path
 
-    def getIs_debugging_on(self):
-        return self.is_debugging_on
+    def getHistoryTemplatePath(self):return self.history_template_path
 
-    def setIs_debugging_on(self, is_debugging_on):
-        self.is_debugging_on = is_debugging_on
+    def getReportTemplatePath(self):return self.report_template_path
 
-    def getApplicationVersion(self):
-        return str(self.application_version)
+    def getReportEmailTemplatePath(self):return self.report_email_template_path
+
+    def getTemplatePath(self):return self.template_path
+
+    def getLockFilePath(self):return self.lock_file_path
+
+    def getCheck_sum_methods(self):return self.check_sum_methods
+
+    def getMonths(self): return self.Months
+
+    def getWeekInformation(self):self.WeekInformation;
+
+    def getImagesPath(self):return str(self.assets_path)
+
+    def getAvpreserve_img(self):return self.avpreserve_img
+
+    def getBasePath(self):return str(self.base_path)
+
+    def getIs_debugging_on(self):return self.is_debugging_on
+
+    def setIs_debugging_on(self, is_debugging_on):self.is_debugging_on = is_debugging_on
+
+    def getApplicationVersion(self):return str(self.application_version)
 
     def EncodeInfo(self, string_to_be_encoded):
         string_to_be_encoded = str(string_to_be_encoded).strip()
         return base64.b16encode(base64.b16encode(string_to_be_encoded))
 
-    def getLogoSignSmall(self):
-        return str(self.getBasePath()) + 'assets' + (str(os.sep)) + str(self.logo_sign_small)
+    def getLogoSignSmall(self):return str(self.getBasePath()) + 'assets' + (str(os.sep)) + str(self.logo_sign_small)
 
-    def getOsType(self):
-        return str(self.OsType)
+    def getOsType(self):return str(self.OsType)
 
-    def getApplicationName(self):
-        return str(self.application_name)
+    def getApplicationName(self): return str(self.application_name)
 
-    def getNumberOfPathDirectories(self):
-        return int(self.number_of_path_directories)
+    def getNumberOfPathDirectories(self):return int(self.number_of_path_directories)
 
-    def getNumberOfEmailField(self):
-        return int(self.number_of_path_email)
+    def getNumberOfEmailField(self):return int(self.number_of_path_email)
 
-    def getWeekDays(self):
-        return self.week_days
+    def getWeekDays(self): return self.week_days
 
-    def getTimeFormat(self):
-        return self.time_format
+    def getTimeFormat(self): return self.time_format
 
-    def getUserHomePath(self):
-        self.user_home_path = os.path.expanduser('~')
+    def getUserHomePath(self): self.user_home_path = os.path.expanduser('~')
 
-    def getDebugFilePath(self):
-        return str(self.log_file_path)
+    def getDebugFilePath(self):return str(self.log_file_path)
 
+    def getDatabaseFilePath(self):return str(self.database_file_path)
 
+    def getReportsPath(self):return str(self.reports_path)
 
+    def getSchedulesPath(self):return str(self.schedules_path)
 
-    def getDatabaseFilePath(self):
-        return str(self.database_file_path)
+    def getHistoryPath(self): return str(self.history_path)
 
-    def getReportsPath(self):
-        return str(self.reports_path)
+    def getBinPath(self): return str(self.bin_path)
 
-    def getSchedulesPath(self):
-        return str(self.schedules_path)
+    def getAgentPath(self): return self.agent_path
 
-    def getHistoryPath(self):
-        return str(self.history_path)
-
-    def getBinPath(self):
-        return str(self.bin_path)
-
-    def getAgentPath(self):
-        return self.agent_path
-
-    def getLibPath(self):
-        return self.lib_agent_path
+    def getLibPath(self): return self.lib_agent_path
 
 
-    def getEmailConfiguration(self):
-        return self.email_configuration
+    def getEmailConfiguration(self): return self.email_configuration
 
     def fetchEmailConfiguration(self):
         emailConfiguration = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration)
@@ -156,8 +152,7 @@ class Configuration(object):
         else:
             return {}
 
-    def setEmailConfiguration(self, email_configuration):
-        self.email_configuration = email_configuration
+    def setEmailConfiguration(self, email_configuration): self.email_configuration = email_configuration
 
     def saveEmailConfiguration(self, information):
         config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
@@ -257,12 +252,12 @@ class Configuration(object):
             print(Exception.message)
         return WindowsInformation
 
-    #CleanStringForDictionary
+    #CleanStringForBreaks
     #@param StringToBeCleaned: String To Be Cleaned
     #
     #@return: CleanString
 
-    def CleanStringForDictionary(self,StringToBeCleaned):
+    def CleanStringForBreaks(self,StringToBeCleaned):
         CleanString = str(StringToBeCleaned).strip()
         try:
             CleanString = CleanString.replace('\r\n', '')

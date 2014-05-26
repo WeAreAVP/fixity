@@ -154,7 +154,7 @@ class ImportProjectGUI(GUILibraries.QDialog):
             self.notification.showError(self, 'Invalid Name', GUILibraries.messages['in_valid_project_name'])
             return
 
-        Project = self.Fixity.getSingleProject(str(file_name))
+        Project = self.Fixity.ProjectRepo.getSingleProject(str(file_name))
 
         if Project != False:
             self.notification.showError(self, 'Invalid Name', GUILibraries.messages['project_already_selected'])

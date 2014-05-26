@@ -172,7 +172,6 @@ class ProjectCore(object):
         project_id = {}
         project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
 
-
         if len(project_exists) <= 0:
             # Insert Project
             project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
@@ -180,7 +179,6 @@ class ProjectCore(object):
             self.setPreviousVersion('')
 
         else:
-
             # Update Project
             self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
             project_id['id'] = project_exists[0]['id']
@@ -246,8 +244,8 @@ class ProjectCore(object):
         filters = {}
         algorithm_selected = ''
         if flag_is_a_tsv_file:
-            filters  = str(self.Fixity.Configuration.CleanStringForDictionary(file_to_import_info_of.readline()))
-            algorithm_selected  = str(self.Fixity.Configuration.CleanStringForDictionary(file_to_import_info_of.readline()))
+            filters  = str(self.Fixity.Configuration.CleanStringForBreaks(file_to_import_info_of.readline()))
+            algorithm_selected  = str(self.Fixity.Configuration.CleanStringForBreaks(file_to_import_info_of.readline()))
             filters = filters.split('||-||')
         all_content = file_to_import_info_of.readlines()
 
@@ -265,7 +263,7 @@ class ProjectCore(object):
             is_month, is_week = 99, 99
             run_time = str(information[1])
             is_week = information[2]
-            is_month = str(self.Fixity.Configuration.CleanStringForDictionary(information[3]))
+            is_month = str(self.Fixity.Configuration.CleanStringForBreaks(information[3]))
 
             # 0 = Monthly, 1 = Weekly, 2 = Daily
             if int(is_month) == 99 and int(is_week) == 99:
@@ -303,7 +301,7 @@ class ProjectCore(object):
             config['emailOnlyUponWarning'] = 0
             config['runWhenOnBattery'] = 1
             config['extraConf'] = ''
-            config['emailAddress'] = self.Fixity.Configuration.CleanStringForDictionary(str(email_address).replace(';',''))
+            config['emailAddress'] = self.Fixity.Configuration.CleanStringForBreaks(str(email_address).replace(';',''))
 
             project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, config)
             version_id = self.createNewVersion(project_id['id'], 'project')
@@ -370,9 +368,9 @@ class ProjectCore(object):
                             information_version_detail['projectID'] = project_id['id']
                             information_version_detail['versionID'] = version_id['id']
                             information_version_detail['projectPathID'] = information_of_path_id[0]
-                            information_version_detail['hashes'] = self.Fixity.Configuration.CleanStringForDictionary(hashes)
-                            information_version_detail['path'] = self.Fixity.Configuration.CleanStringForDictionary(fix_info[1])
-                            information_version_detail['inode'] = self.Fixity.Configuration.CleanStringForDictionary(fix_info[2])
+                            information_version_detail['hashes'] = self.Fixity.Configuration.CleanStringForBreaks(hashes)
+                            information_version_detail['path'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[1])
+                            information_version_detail['inode'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[2])
                             self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, information_version_detail)
 
             if flag_project_contain_detail:
@@ -415,11 +413,11 @@ class ProjectCore(object):
 
     def launchThread(self):
 
-        print('============================================')
-        threadas = threading.Thread()
+
+
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue.put(run_thread)
-        print('============================================')
+
 
 
     def launchRun(self):
@@ -453,25 +451,32 @@ class ProjectCore(object):
             process_id = None
 
         # Get File Locker and check for dead lock
+        #try:
+        #    lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+        #
+        #    is_dead_lock = lock.isProcessLockFileIsDead()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+        #
+        #try:
+        #    if(is_dead_lock):
+        #        lock.is_locked = True
+        #        lock.release()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
+        #
+        #try:
+        #    print('acquire')
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
         try:
-            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
-
-            is_dead_lock = lock.isProcessLockFileIsDead()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
-
-        try:
-            if(is_dead_lock):
-                lock.is_locked = True
-                lock.release()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
-
-        try:
-            print('acquire')
-            lock.acquire()
+            reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
+            history_lines = reports_file.readlines()
+            reports_file.close()
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -481,23 +486,23 @@ class ProjectCore(object):
                 all_paths += str(self.directories[index].getPath())+';'
             number_of_path = number_of_path + 1
 
-        history_content += self.Fixity.Configuration.CleanStringForDictionary(str(all_paths))+"\n"
-        history_content += self.Fixity.Configuration.CleanStringForDictionary(str(self.getEmail_address()))+"\n"
+        #history_content += self.Fixity.Configuration.CleanStringForBreaks(str(all_paths))+"\n"
+        #history_content += self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address()))+"\n"
         keep_time = ''
 
         # - 1 = Monthly  - 2 = Week  - 3 = Daily
         if int(self.getScheduler().getDurationType()) == 3:
-            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime())) + ' 99 99'
+            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 99'
         elif int(self.getScheduler().getDurationType()) == 2:
-            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime()))+ ' ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRun_day_or_month())) + ' 99'
+            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime()))+ ' ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month())) + ' 99'
         elif int(self.getScheduler().getDurationType()) == 1:
-            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForDictionary(str(self.getScheduler().getRun_day_or_month()))
+            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
 
-        history_content += self.Fixity.Configuration.CleanStringForDictionary(keep_time) +"\n"
-        history_content += datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
-        history_content += str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()) + "\n"
-        history_content +=  str(self.getAlgorithm()) + "\n"
-
+        #history_content += self.Fixity.Configuration.CleanStringForBreaks(keep_time) +"\n"
+        #history_content += datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
+        #history_content += str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()) + "\n"
+        #history_content +=  str(self.getAlgorithm()) + "\n"
+        history_content = ''
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle())
@@ -525,6 +530,47 @@ class ProjectCore(object):
                 try:total += str(result_score['total'])
                 except:pass
 
+        #{{base_directory}}
+        #{{email_address}}
+        #{{schedule}}
+        #{{last_ran}}
+        #{{filters}}
+        #{{algo}}
+        #{{content}}
+        history_text = ''
+        try:
+            for history_line_single in history_lines:
+                history_line_single = str(history_line_single).replace('\n', '')
+                if '{{base_directory}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{base_directory}}', self.Fixity.Configuration.CleanStringForBreaks(str(all_paths)))+"\n"
+
+                if '{{email_address}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{email_address}}', self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
+
+                if '{{schedule}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{schedule}}', self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
+
+                if '{{last_ran}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{last_ran}}', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
+
+                if '{{filters}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{filters}}', str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+
+                if '{{algo}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{algo}}', str(self.getAlgorithm()))+"\n"
+
+                if '{{content}}' in history_line_single:
+                    history_text += str(history_line_single).replace('{{content}}', str(history_content))+"\n"
+
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+
+
+
+
+
         information_for_report = {}
         information_for_report['missing_file'] = missing_file
         information_for_report['corrupted_or_changed']= corrupted_or_changed
@@ -535,14 +581,14 @@ class ProjectCore(object):
 
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
-        self.writerHistoryFile(history_content)
+        self.writerHistoryFile(history_text)
 
-        try:
-            lock.release()
-            print('relased the file')
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    lock.release()
+        #    print('relased the file')
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
 
         if check_for_changes:
@@ -589,7 +635,7 @@ class ProjectCore(object):
             information['ignoreHiddenFiles'] = 1
         else:
             information['ignoreHiddenFiles'] = 0
-
+        self.setIgnore_hidden_file(information['ignoreHiddenFiles'])
         response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, '"' + str(self.getID()) + '"')
         return response
 
@@ -642,43 +688,53 @@ class ProjectCore(object):
             pass
 
     def writerReportFile(self, information, detail_output_of_all_files_changes):
+
         try:
-            report = "Fixity report\n"
-            report += "Project name\t" + self.getTitle() + "\n"
-            report += "Algorithm used\t" + str(self.getAlgorithm()) + "\n"
-            report += "Date\t" + str(datetime.date.today()) + "\n"
-            report += "Total Files\t" + str(information['total']) + "\n"
-            report += "Confirmed Files\t" + str(information['confirmed']) + "\n"
-            report += "Moved or Renamed Files\t" + str(information['moved']) + "\n"
-            report += "New Files\t" + str(information['created']) + "\n"
-            report += "Changed Files\t" + str(information['corrupted_or_changed']) + "\n"
-            report += "Removed Files\t" + str(information['missing_file']) + "\n"
-            email_content = report
-            utf_encode = False
-            try:
-                report += detail_output_of_all_files_changes.encode('utf8')
-            except:
-                utf_encode = True
-                pass
-            if utf_encode:
-                try:
-                    report += detail_output_of_all_files_changes.decode('utf8')
-                except:
-                    pass
+            reports_file = open(self.Fixity.Configuration.getReportTemplatePath(), 'r')
+            reports_lines = reports_file.readlines()
+            reports_file.close()
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
+
+        reports_text = ''
+        try:
+            for reports_single_line in reports_lines:
+                reports_single_line = str(reports_single_line).replace('\n','')
+                reports_text += self.setReportInformation(reports_single_line, information, detail_output_of_all_files_changes) +"\n"
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            reports_file = open(self.Fixity.Configuration.getReportEmailTemplatePath(), 'r')
+            email_reports_lines = reports_file.readlines()
+            reports_file.close()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        reports_email_text = ''
+        try:
+
+            for email_reports_single_line in email_reports_lines:
+                reports_single_line = str(email_reports_single_line).replace('\n','')
+                reports_email_text += self.setReportInformation(reports_single_line, information, detail_output_of_all_files_changes , True) +"\n"
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
 
         try:
             r = open(rn, 'w+')
             try:
-                r.write(report.decode('utf8'))
+                r.write(reports_text.decode('utf8'))
             except:
+
                 try:
-                    r.write(report.encode('utf8'))
+                    r.write(reports_text.encode('utf8'))
                 except:
                     pass
 
@@ -686,4 +742,51 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        return {'path': rn, 'email_content' : email_content}
+        return {'path': rn, 'email_content' : reports_email_text}
+
+
+    def setReportInformation(self, report_text ,information, detail_output_of_all_files_changes, email_report = False):
+        reports_text = str(report_text)
+
+        if '{{project_name}}' in reports_text:
+            reports_text = str(reports_text).replace('{{project_name}}', str(self.getTitle()))
+        elif '{{algo}}' in reports_text:
+            reports_text = str(reports_text).replace('{{algo}}', self.getAlgorithm())
+
+        elif '{{date}}' in reports_text:
+            reports_text = str(reports_text).replace('{{date}}', str(datetime.date.today()))
+
+        elif '{{total_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{total_files}}', str(information['total']))
+
+        elif '{{confirmed_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{confirmed_files}}', str(information['confirmed']))
+
+        elif '{{moved_or_renamed_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{moved_or_renamed_files}}', str(information['moved']))
+
+        elif '{{new_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{new_files}}', str(information['created']))
+
+        elif '{{changed_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{changed_files}}', str(information['corrupted_or_changed']))
+
+        elif '{{removed_files}}' in reports_text:
+            reports_text = str(reports_text).replace('{{removed_files}}', str(information['missing_file']))
+
+        elif '{{details}}' in reports_text and email_report is False:
+            utf_encode = False
+            try:
+                reports_text = reports_text.replace('{{details}}', detail_output_of_all_files_changes.encode('utf8'))
+            except:
+                utf_encode = True
+                pass
+
+            if utf_encode:
+                try:
+                    reports_text = reports_text.replace('{{details}}', detail_output_of_all_files_changes.decode('utf8'))
+                except:
+                    pass
+
+
+        return reports_text

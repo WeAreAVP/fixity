@@ -53,7 +53,7 @@ class DirsHandler(object):
 
         global verified_files
         self.Database = Database.Database()
-        project_core = self.Fixity.getSingleProject(project_name)
+        project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
         project_detail_information = self.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
         if project_detail_information is False:
@@ -92,12 +92,12 @@ class DirsHandler(object):
                     index_path_infor = ''
                     path_information = str(x[1]).split('||')
                     if path_information:
-                        dict[self.Fixity.Configuration.CleanStringForDictionary(str(x[2]))].append(
-                            [self.Fixity.Configuration.CleanStringForDictionary(str(self.getPath())+str(index_path_infor)) +self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1])),
-                             self.Fixity.Configuration.CleanStringForDictionary(str(x[0])),
+                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append(
+                            [self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())+str(index_path_infor)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])),
+                             self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),
                              False])
-                        dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1])),  self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
-                        dict_File[self.Fixity.Configuration.CleanStringForDictionary(str(self.getPath())+str(index_path_infor))+self.Fixity.Configuration.CleanStringForDictionary(str(path_information[1]))].append([self.Fixity.Configuration.CleanStringForDictionary(str(x[0])), self.Fixity.Configuration.CleanStringForDictionary(str(x[2])), False])
+                        dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])),  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+                        dict_File[self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())+str(index_path_infor))+self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
@@ -125,7 +125,6 @@ class DirsHandler(object):
             for filter in filters_array:
                 if filter !='' and directories_inside_details_single[1].find(str(filter).strip()) >= 0:
                     flag =False
-
 
             if(project_core.getIgnore_hidden_file() == 1 or project_core.getIgnore_hidden_file() == '1'):
 

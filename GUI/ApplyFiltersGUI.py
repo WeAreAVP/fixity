@@ -142,7 +142,7 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
             self.notification.showError(self, "No Project Selected", GUILibraries.messages['no_project_selected'])
             return
         flag = True
-        project_core = self.Fixity.getSingleProject(selected_project)
+        project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
         project_core.applyFilter(filters, Is_ignore_hidden_files)
 
         if flag is not None:
@@ -159,7 +159,7 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         print('projectChanged')
 
         selected_project = self.projects.currentText()
-        project_core = self.Fixity.getSingleProject(selected_project)
+        project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
         filters = project_core.getFilters()
         ignore_hidden_files = project_core.getIgnore_hidden_file()
         self.filter_field.setText(filters)
@@ -170,8 +170,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
             self.ignore_hidden_files.setChecked(False)
 
         return
-
-
 
     '''
     Close the Dialog Box
