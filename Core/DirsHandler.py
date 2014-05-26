@@ -10,6 +10,7 @@ import os, datetime, time, fnmatch, hashlib, win32file, win32con, win32api
 from collections import defaultdict
 from Core import SharedApp
 from Core import Database
+
 class DirsHandler(object):
     def __init__(self,path, path_id, ID):
         super(DirsHandler, self).__init__()
@@ -87,7 +88,7 @@ class DirsHandler(object):
 
                 x = self.toTuple(project_detail_information[l])
                 if x is not None and x:
-                    print(x)
+
                     index_path_infor = ''
                     path_information = str(x[1]).split('||')
                     if path_information:

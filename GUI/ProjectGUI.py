@@ -10,15 +10,13 @@ from Core import SharedApp, ProjectCore
 
 # Built-in Libraries
 import datetime
-from Core import Database
+
 ''' Project GUI Class '''
 class ProjectGUI(GUILibraries.QMainWindow):
     #Constructor
     def __init__(self):
 
         super(ProjectGUI, self).__init__()
-
-        self.Database = Database.Database()
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
         self.about_fixity_gui = AboutFixityGUI.AboutFixityGUI(self)
@@ -52,6 +50,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         #create Directories and email Listing view
         self.createDirectories()
+        try:
+            self.old = self.projects.itemAt(0, 0)
+            self.update(self.old)
+            self.old.setSelected(True)
+        except:
+            pass
 
         if len(self.Fixity.ProjectsList) > 0:
             for project in self.Fixity.ProjectsList:
@@ -62,7 +66,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.unsaved = False
         self.toggler((self.projects.count() == 0))
         self.show()
-
+        self.unsaved = False
 
     def createDirectories(self):
         self.mail_layout = GUILibraries.QVBoxLayout()
@@ -167,7 +171,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.file_manu_fixity.addAction(self.quit_menu)
         self.preferences.addAction(self.filter_files_menu)
         self.preferences.addAction(self.debuging_menu)
-        self.preferences.addAction(self.change_name_menu)
+        #self.preferences.addAction(self.change_name_menu)
         self.preferences.addAction(self.import_menu)
         self.preferences.addAction(self.config_email_menu)
         self.preferences.addAction(self.decryption_manager_menu)
@@ -240,7 +244,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_groupBox.setLayout(self.scheduling_layout)
         self.scheduling_groupBox.setFixedSize(255, 269)
     def changed(self):
-        print('a')
+        self.unsaved = True
+        print('changed')
+
 
     def createProjectListingOption(self):
         self.widget = GUILibraries.QWidget(self)
@@ -265,8 +271,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if self.unsaved:
                 message = "There are unsaved changes to this project.\n"
                 message += "These will be discarded when opening a new project.\nWould you like to stay on this project?"
-                response = GUILibraries.notification.showQuestion(self, 'un-saved Project', message)
+                response = self.notification.showQuestion(self, 'un-saved Project', message)
+
                 if response:
+                    self.unsaved = False
                     self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                     return
 
@@ -278,20 +286,21 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setChecked(False)
         self.email_only_when_something_changed .setChecked(False)
 
-        if projet_name_force is None:
-            try:
-                project_name = self.projects.currentItem().text()
-            except:
-                project_name = ''
-        else:
-            project_name = projet_name_force
-        if project_name == '':
-            return
-
         try:
-            project_core = self.Fixity.ProjectsList[project_name]
+            project_name = self.projects.currentItem().text()
+        except:
+            project_name = ''
+        try:
+            project_core = self.Fixity.getSingleProject(project_name)
+
         except:
             self.Fixity.logger.LogException(Exception.message)
+            pass
+        try:
+            if project_core is False:
+                return
+        except:
+            return
 
         emails = str(project_core.getEmail_address())
         emails = emails.split(',')
@@ -356,6 +365,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.timer.setTime(GUILibraries.QTime(int(t[0]), int(t[1])))
         self.lastrun.setText("Last checked:\n" + last_run_label)
+        self.unsaved = False
+        self.old = new
 
     def switchDebugger(self, is_start=False):
         status = self.Fixity.logger.get()
@@ -379,10 +390,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
 
     def delete(self):
-
-        response = False
         try:
-            response = self.notification.showQuestion(self,'Delete Project?',str(GUILibraries.messages['sure_delete'])+ self.projects.currentItem().text() + "?")
+            response = self.notification.showQuestion(self, 'Delete Project?', str(GUILibraries.messages['sure_delete'])+ self.projects.currentItem().text() + "?")
         except:
             self.Fixity.logger.LogException(Exception.message)
             return
@@ -403,8 +412,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.lastrun.setText("Last checked:")
             self.toggler((self.projects.count() == 0))
             self.update(False)
-
-
+            if len(self.Fixity.ProjectsList) <= 0:
+                self.toggler(True)
 
     def run(self):
         if all(d.text() == "" for d in self.dirs_text_fields):
@@ -416,13 +425,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         project_core = self.Save()
+
         project_core.launchThread()
         self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
-
-
-
-
-
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
@@ -436,7 +441,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             project_core = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
             directory_detail = project_core.getDirectories()
             if len(directory_detail) > 0:
-                for  directory_detail_single in directory_detail:
+                for directory_detail_single in directory_detail:
                     if str(directory_detail[directory_detail_single].getPathID().strip()) == str(code).strip():
                         if directory_detail[directory_detail_single].getPath().strip() != '' and  search_for_path != '':
                             if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
@@ -468,7 +473,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             if directory_single.text().strip() != "":
                 num_if_path_scanned = num_if_path_scanned + 1
         directory_increment = 1
-        
+
         for directory_single in self.dirs_text_fields:
 
             if directory_single.text().strip() != "":
@@ -489,7 +494,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name']))
             return
 
-        project_info = self.Database.select(self.Database._tableProject, 'id','title="'+name[0]+'"')
+        project_info = self.Fixity.Database.select(self.Fixity.Database._tableProject, 'id','title="'+name[0]+'"')
 
         if len(project_info) > 0:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
@@ -506,6 +511,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_text_fields[SingleRangeValue].setText("")
             self.mail_text_fields[SingleRangeValue].setText("")
         self.toggler(False)
+        self.unsaved = True
+        self.old = new_item
 
     def Save(self, project = None):
         all_email_addres = ''
@@ -521,7 +528,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     return
 
         if is_recipient_email_address_set and False:
-                email_info = self.Database.getConfigInfo()
+                email_info = self.Fixity.Database.getConfigInfo()
                 if len(email_info) <= 0:
                     self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
                     return
@@ -623,6 +630,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.project.setDirectories(information)
         self.project.Save()
         self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
+        self.unsaved = False
         return self.project
 
     def AboutFixity(self):
@@ -683,6 +691,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
 
 
+
     #Month check box Click Trigger
     #(Trigger on Month Check box click)
     #
@@ -715,7 +724,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields[n].setDisabled(status)
             self.dirs_text_fields[n].setDisabled(status)
             self.bin_of_dirs[n].setDisabled(status)
-            self.bin_of_dirs[n].setDisabled(status)
+            self.browse_dirs[n].setDisabled(status)
+
 
         self.timer.setDisabled(status)
         self.monthly.setDisabled(status)
@@ -724,6 +734,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.timer.setDisabled(status)
         self.day_of_month.setDisabled(status)
         self.day_of_week.setDisabled(status)
+
         try:
             self.run_only_on_ac_power.setDisabled(status)
         except:
@@ -736,7 +747,25 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.email_only_when_something_changed .setDisabled(status)
         except:
             pass
+    #Refresh Project Settings on the main Window
+    def refreshProjectSettings(self):
+            
+            allProjects = self.Fixity.getProjectList()
+            try:
+                self.projects.clear()
+            except Exception as ex:
+                print(ex[0])
+                pass
 
+            try:
+                if allProjects != None:
+                    if(len(allProjects) > 0):
+                        for p in allProjects:
+                            self.projects.addItem(p)
+            except Exception as ex:
+                print(ex[0])
+                pass
+            self.unsaved = False
 
 
 

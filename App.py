@@ -15,10 +15,7 @@ class App(object):
         self.setUp()
 
     def selfDestruct(self):
-        print('self Destruct')
-        self.Database.selfDestruct()
-        self.ExceptionHandler.selfDestruct()
-        self.logger.selfDestruct()
+        print('self destruct')
 
     @staticmethod
     def getInstance():
@@ -35,7 +32,7 @@ class App(object):
         self.Setup = Setup.Setup()
         self.Setup.setupApp()
         self.logger = Debugger.Debugger.getInstance()
-        self.Database = Database.Database()
+        self.Database = Database.Database.getInstance()
         self.Database.connect()
         self.ProjectGUI = ProjectGUI
         self.Setup.createTables()

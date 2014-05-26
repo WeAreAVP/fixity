@@ -1,6 +1,6 @@
 import os, subprocess, time
 from Core import SharedApp
-from Core import Database
+
 
 class SchedulerCore(object):
 
@@ -11,8 +11,6 @@ class SchedulerCore(object):
         self.run_when_on_battery = None
         self.duration_type = None
         self.Fixity = SharedApp.SharedApp.App
-
-        self.Database = Database.Database()
 
 
     #Deletes the SCHTASK entry and its corresponding files

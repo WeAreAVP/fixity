@@ -8,7 +8,7 @@ from Core import SharedApp
 
 
 # Class to manage the the Name of the project,  ChangeName class manages the action of name changing and also updating the scheduler and other information changed '''
-from Core import Database
+
 class ChangeNameGUI(GUILibraries.QDialog ):
 
     # Contstructor'''
@@ -24,7 +24,6 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         self.change_name_layout = GUILibraries.QVBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
-        self.Database = Database.Database()
     #  Distructor'''
     def destroyChangeName(self):
         del self  
@@ -103,9 +102,9 @@ class ChangeNameGUI(GUILibraries.QDialog ):
             return
 
         selected_project = self.projects.currentText()
-        Isproject_nameValid = self.Fixity.Validation.ValidateProjectName(self.change_name_field.text())
-        print(Isproject_nameValid)
-        if not Isproject_nameValid:
+        is_project_name_valid = self.Fixity.Validation.ValidateProjectName(self.change_name_field.text())
+        print(is_project_name_valid)
+        if not is_project_name_valid:
             self.notification.showError(self, "Failure", str(GUILibraries.messages['in_valid_project_name']))
             return
 
@@ -118,8 +117,18 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         if False:
             self.notification.showInformation(self, "Failure", GUILibraries.messages['problem_proj_name_change'])
             return
-        self.Fixity.ProjectsList[selected_project].ChangeTitle(self.change_name_field.text())
+        new_name = self.change_name_field.text()
+        project_core = self.Fixity.ProjectsList[selected_project]
+
+        project_core.ChangeTitle(new_name)
+        project_core.setTitle(new_name)
+
+        self.Fixity.ProjectsList[new_name] = project_core
+
+        self.Fixity.removeProject(selected_project)
+
         self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
+        self.parent_win.refreshProjectSettings()
         self.Cancel()
 
 

@@ -6,10 +6,8 @@ Created on May 14, 2014
 import GUILibraries
 from Core import SharedApp, ProjectCore
 
-__author__ = 'Furqan'
-
 # Class to manage the Filter to be implemented for the files with specific extensions
-from Core import Database
+
 
 class ImportProjectGUI(GUILibraries.QDialog):
 
@@ -26,8 +24,6 @@ class ImportProjectGUI(GUILibraries.QDialog):
         self.import_projects_layout = GUILibraries.QVBoxLayout()
         self.project_list_widget = None
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
-
-        self.Database = Database.Database()
     '''
     Distructor
     '''
