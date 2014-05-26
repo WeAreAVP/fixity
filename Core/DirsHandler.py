@@ -70,7 +70,7 @@ class DirsHandler(object):
         try:
             filters_array = str(project_core.getFilters()).split(',')
         except:
-            print('no filters found')
+            #print('no filters found')
             pass
 
         dict = defaultdict(list)
@@ -80,7 +80,7 @@ class DirsHandler(object):
         confirmed,  moved,  created,  corrupted_or_changed  = 0, 0, 0, 0
         file_changed_list = ""
 
-        print('writing ::: Stared Worked')
+        #print('writing ::: Stared Worked')
         check = 0
 
         for l in project_detail_information:
@@ -133,26 +133,25 @@ class DirsHandler(object):
                     lastIndexName = path_exploded[len(path_exploded) - 1]
                     if fnmatch.fnmatch(lastIndexName, '.*'):
                         flag = False
-
                     if self.isGivenFileHidden(directories_inside_details_single[1]):
                         flag = False
-
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
 
 
-                try:
-                    path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
-                    for single_directory_hidden in path_exploded:
-                        if fnmatch.fnmatch(single_directory_hidden, '.*'):
-                            flag = False
-                        if self.isGivenFileHidden(single_directory_hidden):
-                            flag = False
-                except:
-                    self.Fixity.logger.LogException(Exception.message)
-                    pass
+                #try:
+                path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                for single_directory_hidden in path_exploded:
+                    if fnmatch.fnmatch(single_directory_hidden, '.*'):
+                        flag = False
+
+                    if self.isGivenFileHidden(single_directory_hidden):
+                        flag = False
+                #except:
+                #    self.Fixity.logger.LogException(Exception.message)
+                #    pass
 
 
             if flag:
@@ -256,7 +255,7 @@ class DirsHandler(object):
         information['history_content'] = history_content
         information['total'] = total
 
-
+        print(information)
 
         return information
 
@@ -284,7 +283,7 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        print('Verfiy File ::::: '+str(line[1]))
+        #print('Verfiy File ::::: '+str(line[1]))
         '''' IF Given File Exists'''
         if os.path.isfile(line[1].decode('utf-8')):
             '''' IF SAME INODE EXISTS '''
@@ -394,7 +393,7 @@ class DirsHandler(object):
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         single_file = self.specialCharacterHandler(single_file)
                     fls.append(os.path.join(root, single_file))
-                    print('Listing ::::: '+str(os.path.join(root, single_file)))
+                    #print('Listing ::::: '+str(os.path.join(root, single_file)))
         except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
@@ -403,7 +402,7 @@ class DirsHandler(object):
 
         try:
             for f in xrange(len(fls)):
-                print('get Details of File ::::: '+str(os.path.abspath(fls[f])))
+                #print('get Details of File ::::: '+str(os.path.abspath(fls[f])))
                 path_of_the_file = r''+os.path.abspath(fls[f])
                 encoded_base_path = self.getPathID()
                 given_path = str(path_of_the_file).replace(directory_path_to_be_scanned, encoded_base_path + '||')
@@ -430,12 +429,12 @@ class DirsHandler(object):
         try:
             string_to_be_handled = string_to_be_handled.decode('cp1252')
         except:
-            print('specialCharacterHandler :::: cp1252 not helping')
+            #print('specialCharacterHandler :::: cp1252 not helping')
             pass
         try:
             string_to_be_handled = string_to_be_handled.encode('utf8')
         except:
-            print('specialCharacterHandler :::: utf8')
+            #print('specialCharacterHandler :::: utf8')
             pass
 
         return string_to_be_handled
@@ -558,10 +557,15 @@ class DirsHandler(object):
     #@return: 0 if hidden and 2 if not in windows and in MAC true if hidden and false if not
 
     def isGivenFileHidden(self, path_of_file):
-        if os.name== 'nt':
-            '''Windows Condition'''
-            attribute = win32api.GetFileAttributes(path_of_file)
-            return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
+
+        if os.name == 'nt':
+            if '\\' in path_of_file:
+                '''Windows Condition'''
+                path_of_file = repr(path_of_file).strip("'")
+
+                attribute = win32api.GetFileAttributes(path_of_file)
+                return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)
+            return 0
         else:
             '''linux'''
             return path_of_file.startswith('.')

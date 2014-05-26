@@ -368,7 +368,7 @@ class Database(object):
 
 
     def insert(self, table_name, information):
-        #try:
+        try:
             query = 'INSERT INTO '+str(table_name)
             values = {}
             columnName = {}
@@ -389,16 +389,16 @@ class Database(object):
             self.cursor.execute(query)
             self.commit()
             return {'id':self.cursor.lastrowid}
-        #except (sqlite3.OperationalError,Exception):
-        #    global counter_recursion
-        #    SharedApp.SharedApp.App.Database = Database()
-        #    if counter_recursion < 2:
-        #        counter_recursion = counter_recursion + 1
-        #        return self.insert(table_name, information)
-        #    counter_recursion = 0
-        #
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    return False
+        except (sqlite3.OperationalError,Exception):
+            global counter_recursion
+            SharedApp.SharedApp.App.Database = Database()
+            if counter_recursion < 2:
+                counter_recursion = counter_recursion + 1
+                return self.insert(table_name, information)
+            counter_recursion = 0
+
+            self.Fixity.logger.LogException(Exception.message)
+            return False
 
 
     #SQL Delete Query
@@ -450,6 +450,7 @@ class Database(object):
 
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
+
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1

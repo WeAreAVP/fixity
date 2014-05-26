@@ -99,4 +99,6 @@ class EmailNotification(object):
         return self.SendEmail(recipients, text, attachment, information)
 
     def ErrorEmail(self, recipients, attachment, text, information):
+        print(information)
+        print(attachment)
         return self.SendEmail(recipients, text, attachment, information)

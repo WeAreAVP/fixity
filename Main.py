@@ -23,7 +23,7 @@ class Main (object):
         app.MainFixityWindow.show()
         app.exec_()
 
-    def LaunchScheduler(self, project_name):
+    def LaunchCLI(self, project_name):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
         project_core.Run()
 

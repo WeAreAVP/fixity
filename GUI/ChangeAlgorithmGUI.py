@@ -102,6 +102,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         selected_project = self.projects.currentText()
         algo_value_selected = self.methods.currentText()
+        print(algo_value_selected)
 
         if selected_project is None or selected_project == '':
             self.notification.showError(self, "Warning", GUILibraries.messages['no_project_selected'])
@@ -130,15 +131,21 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
-            email_notification = EmailNotification.EmailNotification()
-            self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
-            email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config)
+            try:
+                if email_config['smtp'] != '' and email_config['smtp'] is not None:
+                    email_notification = EmailNotification.EmailNotification()
+                    self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
+                    if project_core.getEmail_address() !='' and project_core.getEmail_address() is not None:
+                        email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config)
+            except:
+                self.Fixity.logger.LogException(Exception.message)
+                pass
             return
 
         update_project_algo = {}
         update_project_algo['selectedAlgo'] = algo_value_selected
-
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_project_algo, "id='" + str(project_core.getID()) + "'")
+
 
         project_core.setAlgorithm(algo_value_selected)
 
@@ -152,6 +159,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         msgBox.close()
 
         self.notification.showInformation(self, "Success", selected_project+"'s " + GUILibraries.messages['algorithm_success'])
+        self.Cancel()
 
 
     def ProjectChanged(self):

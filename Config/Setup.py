@@ -36,7 +36,7 @@ class Setup(object):
                     self.is_debugger_on = True
                 else:
                     self.is_debugger_on = False
-                return xml_obj.write(self.config_file_path)
+                xml_obj.write(self.config_file_path)
 
 
             except:
@@ -46,7 +46,7 @@ class Setup(object):
         if self.Fixity.Configuration.getOsType() == 'linux':
             if(not os.path.isdir(self.Fixity.Configuration.getLibPath())) or (not os.path.isdir(self.Fixity.Configuration.getAgentPath())):
                 os.makedirs(self.Fixity.Configuration.getAgentPath())
-
+        print(self.Fixity.Configuration.getDatabaseFilePath())
         # create Database file
         if not os.path.isfile(self.Fixity.Configuration.getDatabaseFilePath()):
             try:
@@ -56,9 +56,7 @@ class Setup(object):
                 traceback.print_stack()
                 pass
 
-
-
-
+        print(self.Fixity.Configuration.getHistoryPath())
         # Create History directory
         if not os.path.isdir(self.Fixity.Configuration.getHistoryPath()):
             try:
@@ -66,7 +64,7 @@ class Setup(object):
             except:
                 traceback.print_stack()
                 pass
-
+        print(self.Fixity.Configuration.getSchedulesPath())
         # Create Schedules directory
         if not os.path.isdir(self.Fixity.Configuration.getSchedulesPath()):
             try:
@@ -74,7 +72,7 @@ class Setup(object):
             except:
                 traceback.print_stack()
                 pass
-
+        print(self.Fixity.Configuration.getReportsPath())
         # Create Reports directory
         if not os.path.isdir(self.Fixity.Configuration.getReportsPath()):
             try:

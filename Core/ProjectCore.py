@@ -149,9 +149,10 @@ class ProjectCore(object):
 
     def Save(self):
         project_information = {}
+        #self = self.Fixity.ProjectsList[self.getTitle()]
         project_information['title'] = self.getTitle()
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
-        project_information['versionCurrentID'] = self.getVersion()
+
         project_information['projectRanBefore'] = self.getProject_ran_before()
         project_information['lastDifPaths'] = self.getLast_dif_paths()
         project_information['selectedAlgo'] = self.getAlgorithm()
@@ -169,6 +170,7 @@ class ProjectCore(object):
         project_information['lastRan'] = self.getLast_ran()
 
         project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
+
         project_id = {}
         project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
 
@@ -179,10 +181,17 @@ class ProjectCore(object):
             self.setPreviousVersion('')
 
         else:
+
+
             # Update Project
+            project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
+
+
             project_id['id'] = project_exists[0]['id']
+            self.setID(project_id['id'])
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
+
 
 
         self.setID(project_id['id'])
@@ -208,7 +217,6 @@ class ProjectCore(object):
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
         self.SaveSchedule()
-
 
         if project_id['id'] :
             self.Fixity.ProjectsList[self.getTitle()] = self
@@ -257,7 +265,7 @@ class ProjectCore(object):
 
 
             config['title'] = str(project_name)
-            config['versionCurrentID'] =''
+
 
             information = project_configuration.split(' ')
             is_month, is_week = 99, 99
@@ -301,12 +309,16 @@ class ProjectCore(object):
             config['emailOnlyUponWarning'] = 0
             config['runWhenOnBattery'] = 1
             config['extraConf'] = ''
+            config['lastDifPaths'] = ''
+            config['projectRanBefore'] = 0
             config['emailAddress'] = self.Fixity.Configuration.CleanStringForBreaks(str(email_address).replace(';',''))
 
             project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, config)
             version_id = self.createNewVersion(project_id['id'], 'project')
+            config['versionCurrentID'] = version_id['id']
             information_project_update = {}
             information_project_update['versionCurrentID'] = version_id['id']
+
 
             self.Fixity.Database.update(self.Fixity.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
 
@@ -342,6 +354,9 @@ class ProjectCore(object):
                     information_project_path['pathID'] = inform_path[1]
 
                     self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, information_project_path)
+            self.setID(project_id['id'])
+            self.setProjectInfo(config)
+            self.setVersion(information_project_update['versionCurrentID'])
 
             if project_id and len(all_content) > 0:
                 flag_project_contain_detail = True
@@ -377,8 +392,9 @@ class ProjectCore(object):
                 if project_id:
                     information_to_upate = {}
                     information_to_upate['projectRanBefore'] = 1
+                    self.setProject_ran_before(1)
                     self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
-
+            self.Fixity.ProjectsList[self.getTitle()] = self
         try:
             file_to_import_info_of.close()
         except:
@@ -451,28 +467,28 @@ class ProjectCore(object):
             process_id = None
 
         # Get File Locker and check for dead lock
-        #try:
-        #    lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
-        #
-        #    is_dead_lock = lock.isProcessLockFileIsDead()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
-        #
-        #try:
-        #    if(is_dead_lock):
-        #        lock.is_locked = True
-        #        lock.release()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
-        #
-        #try:
-        #    print('acquire')
-        #    lock.acquire()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+
+            is_dead_lock = lock.isProcessLockFileIsDead()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            if(is_dead_lock):
+                lock.is_locked = True
+                lock.release()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            print('acquire')
+            lock.acquire()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -486,8 +502,6 @@ class ProjectCore(object):
                 all_paths += str(self.directories[index].getPath())+';'
             number_of_path = number_of_path + 1
 
-        #history_content += self.Fixity.Configuration.CleanStringForBreaks(str(all_paths))+"\n"
-        #history_content += self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address()))+"\n"
         keep_time = ''
 
         # - 1 = Monthly  - 2 = Week  - 3 = Daily
@@ -498,10 +512,7 @@ class ProjectCore(object):
         elif int(self.getScheduler().getDurationType()) == 1:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
 
-        #history_content += self.Fixity.Configuration.CleanStringForBreaks(keep_time) +"\n"
-        #history_content += datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"
-        #history_content += str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()) + "\n"
-        #history_content +=  str(self.getAlgorithm()) + "\n"
+
         history_content = ''
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
@@ -527,16 +538,10 @@ class ProjectCore(object):
                 try:history_content += str(result_score['history_content'])
                 except:pass
 
-                try:total += str(result_score['total'])
+                try:total = int(total) + int(result_score['total'])
                 except:pass
 
-        #{{base_directory}}
-        #{{email_address}}
-        #{{schedule}}
-        #{{last_ran}}
-        #{{filters}}
-        #{{algo}}
-        #{{content}}
+
         history_text = ''
         try:
             for history_line_single in history_lines:
@@ -583,12 +588,12 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_text)
 
-        #try:
-        #    lock.release()
-        #    print('relased the file')
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            lock.release()
+            print('relased the file')
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
 
         if check_for_changes:
@@ -626,17 +631,20 @@ class ProjectCore(object):
     # @return bool
     def applyFilter(self,filters ,is_ignore_hidden_files):
         self.filters = filters
-        self.setIgnore_hidden_file(is_ignore_hidden_files)
+        if is_ignore_hidden_files == 1 or is_ignore_hidden_files is True:
+            self.setIgnore_hidden_file(1)
+        else:
+            self.setIgnore_hidden_file(0)
 
         information = {}
         information['filters'] = filters
 
-        if is_ignore_hidden_files:
+        if is_ignore_hidden_files == 1 or is_ignore_hidden_files is True:
             information['ignoreHiddenFiles'] = 1
         else:
             information['ignoreHiddenFiles'] = 0
-        self.setIgnore_hidden_file(information['ignoreHiddenFiles'])
-        response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, '"' + str(self.getID()) + '"')
+        self.setIgnore_hidden_file(str(information['ignoreHiddenFiles']))
+        response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id = "' + str(self.getID()) + '"')
         return response
 
     # Save Setting
@@ -652,9 +660,18 @@ class ProjectCore(object):
 
     # @return None
     def setProjectInfo(self, projects_info):
-        self.setID(projects_info['id'])
+
+        try:
+            self.setID(projects_info['id'])
+        except:
+            projects_info['id'] = self.getID()
+            pass
         self.setTitle (projects_info['title'])
-        self.setIgnore_hidden_file (projects_info['ignoreHiddenFiles'])
+        if projects_info['ignoreHiddenFiles'] == True or projects_info['ignoreHiddenFiles'] == 1:
+            self.setIgnore_hidden_file (1)
+        else:
+            self.setIgnore_hidden_file (0)
+
         self.setVersion (projects_info['versionCurrentID'])
         self.setProject_ran_before (projects_info['projectRanBefore'])
         self.setLast_dif_paths (projects_info['lastDifPaths'])
@@ -662,7 +679,7 @@ class ProjectCore(object):
         self.setFilters (projects_info['filters'])
 
         self.scheduler.setDurationType (projects_info['durationType'])
-        self.scheduler.setRunTime (projects_info['runTime'])
+        self.scheduler.setRunTime(projects_info['runTime'])
         self.scheduler.setRun_day_or_month (projects_info['runDayOrMonth'])
         self.scheduler.setRun_when_on_battery (projects_info['runWhenOnBattery'])
         self.scheduler.setIf_missed_run_upon_restart (projects_info['ifMissedRunUponRestart'])
@@ -671,11 +688,19 @@ class ProjectCore(object):
         self.setEmail_address (projects_info['emailAddress'])
         self.setExtra_conf(projects_info['extraConf'])
         self.setLast_ran(projects_info['lastRan'])
-        self.setCreated_at(projects_info['createdAt'])
-        self.setUpdated_at(projects_info['updatedAt'])
+        try:
+            self.setCreated_at(projects_info['createdAt'])
+        except:
+            pass
+        try:
+            self.setUpdated_at(projects_info['updatedAt'])
+        except:
+            pass
 
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
+
         self.setDirectories(directories)
+
 
     def writerHistoryFile(self, Content):
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
@@ -724,7 +749,7 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
+        print(reports_text)
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
 
         try:

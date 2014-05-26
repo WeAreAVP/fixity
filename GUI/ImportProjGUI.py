@@ -158,13 +158,15 @@ class ImportProjectGUI(GUILibraries.QDialog):
 
         if Project != False:
             self.notification.showError(self, 'Invalid Name', GUILibraries.messages['project_already_selected'])
+            return
 
         self.setWindowTitle('Importing Project ....')
         self.parent_win.setWindowTitle('Importing Project ....')
 
         if project_core.ImportProject(self.project_selected.text(), file_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
             self.notification.showInformation(self, 'Invalid Name', GUILibraries.messages['project_imported_sccuessfully'])
-
+        self.parent_win.refreshProjectSettings()
+        self.parent_win.toggler(False)
         self.Cancel()
 
     '''

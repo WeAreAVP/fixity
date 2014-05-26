@@ -50,19 +50,20 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         #create Directories and email Listing view
         self.createDirectories()
-        try:
-            self.old = self.projects.itemAt(0, 0)
-            self.update(self.old)
-            self.old.setSelected(True)
-        except:
-            pass
+
 
         if len(self.Fixity.ProjectsList) > 0:
             for project in self.Fixity.ProjectsList:
                 GUILibraries.QListWidgetItem(str(self.Fixity.ProjectsList[project].getTitle()), self.projects)
 
         self.projects.setCurrentRow(0)
-        self.update(False)
+        #self.update(False)
+        try:
+            self.old = self.projects.itemAt(0, 0)
+            self.update(self.old)
+            self.old.setSelected(True)
+        except:
+            pass
         self.unsaved = False
         self.toggler((self.projects.count() == 0))
         self.show()
@@ -121,7 +122,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.widget.setLayout(self.main)
         self.setCentralWidget(self.widget)
-        self.projects.itemClicked.connect(self.update)
 
         self.run_only_on_ac_power.setDisabled(False)
         self.start_when_available.setDisabled(False)
@@ -245,7 +245,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_groupBox.setFixedSize(255, 269)
     def changed(self):
         self.unsaved = True
-        print('changed')
+
 
 
     def createProjectListingOption(self):
@@ -267,24 +267,17 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
 
     def update(self, new, projet_name_force = None):
-        print('update')
+
         if self.unsaved:
                 message = "There are unsaved changes to this project.\n"
                 message += "These will be discarded when opening a new project.\nWould you like to stay on this project?"
                 response = self.notification.showQuestion(self, 'un-saved Project', message)
 
                 if response:
-                    self.unsaved = False
                     self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                    self.unsaved = False
                     return
 
-        for n in range(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
-            self.dirs_text_fields[(n)].setText("")
-            self.mail_text_fields[(n)].setText("")
-
-        self.run_only_on_ac_power.setChecked(False)
-        self.start_when_available.setChecked(False)
-        self.email_only_when_something_changed .setChecked(False)
 
         try:
             project_name = self.projects.currentItem().text()
@@ -292,6 +285,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             project_name = ''
         try:
             project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
+
 
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -301,6 +295,18 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 return
         except:
             return
+
+
+
+        for n in range(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+            self.dirs_text_fields[(n)].setText("")
+            self.mail_text_fields[(n)].setText("")
+
+        self.run_only_on_ac_power.setChecked(False)
+        self.start_when_available.setChecked(False)
+        self.email_only_when_something_changed .setChecked(False)
+
+
 
         emails = str(project_core.getEmail_address())
         emails = emails.split(',')
@@ -365,8 +371,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.timer.setTime(GUILibraries.QTime(int(t[0]), int(t[1])))
         self.lastrun.setText("Last checked:\n" + last_run_label)
-        self.unsaved = False
         self.old = new
+        self.unsaved = False
+
 
     def switchDebugger(self, is_start=False):
         status = self.Fixity.logger.get()
@@ -411,6 +418,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.timer.setTime(GUILibraries.QTime(0, 0))
             self.lastrun.setText("Last checked:")
             self.toggler((self.projects.count() == 0))
+            self.unsaved = False
             self.update(False)
             if len(self.Fixity.ProjectsList) <= 0:
                 self.toggler(True)
@@ -438,6 +446,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def checkForChanges(self, search_for_path, code):
         try:
+
             project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
             directory_detail = project_core.getDirectories()
             if len(directory_detail) > 0:
@@ -475,10 +484,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
         directory_increment = 1
 
         for directory_single in self.dirs_text_fields:
-
-            if directory_single.text().strip() != "":
-                self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
-                directory_increment = directory_increment + 1
+            #if directory_single.text().strip() != "":
+            self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
+            directory_increment = directory_increment + 1
 
     def new(self):
 
@@ -542,12 +550,25 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Error", GUILibraries.messages['no_directories'])
             return
 
+
         if project:
             self.project = project
+
         else:
+
+            try:
+
+                self.project = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
+            except:
+                self.project = ProjectCore.ProjectCore()
+                pass
+
+        if self.project is None or self.project is False:
             self.project = ProjectCore.ProjectCore()
+
         self.check_for_path_changes()
         current_item = self.projects.currentItem().text()
+
         self.project.setTitle(current_item)
 
         is_month, is_week = 99, 99
@@ -751,7 +772,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             try:
                 self.projects.clear()
             except Exception as ex:
-                print(ex[0])
+
                 pass
 
             try:
@@ -760,7 +781,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                         for p in allProjects:
                             self.projects.addItem(p)
             except Exception as ex:
-                print(ex[0])
+
                 pass
             self.unsaved = False
 

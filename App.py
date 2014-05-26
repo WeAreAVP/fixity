@@ -75,7 +75,16 @@ class App(object):
                 information.append(str(self.ProjectsList[project].getTitle()))
         return information
 
+    # TODO MOVE repo
+    def getSingleProject(self, project_name):
+        try:
+            print(project_name)
+            selected_project_object = self.ProjectsList[project_name]
+            print(selected_project_object)
 
+            return selected_project_object
+        except:
+            return False
 
     def removeProject(self, project_name):
         self.ProjectsList.__delitem__(project_name)

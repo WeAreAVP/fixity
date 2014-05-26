@@ -216,11 +216,12 @@ class SchedulerCore(object):
         else:
             xml_file_name_with_dir_name = self.CreateXMLOfMac(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
 
-        xml_file_path = "\"" + os.getcwd() + "\\" + xml_file_name_with_dir_name + "\""
+        xml_file_path = "\"" + xml_file_name_with_dir_name + "\""
 
         command = ''
         if self.Fixity.Configuration.getOsType() == 'Windows':
             SystemInformation = self.Fixity.Configuration.getWindowsInformation()
+
             if(str(SystemInformation['WindowsType']) == '7'):
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
@@ -317,7 +318,6 @@ class SchedulerCore(object):
                 if response is False:
                     response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{start_boundary}}', str(triggers['CalendarTrigger']['StartBoundary']))
 
-
                 if response is False:
                     response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{enabled}}', settings['Enabled'])
 
@@ -329,7 +329,11 @@ class SchedulerCore(object):
                     response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{allow_hard_terminate}}', settings['AllowHardTerminate'])
 
                 if response is False:
-                    response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{disallow_start_if_on_batteries}}', settings['DisallowStartIfOnBatteries'])
+
+                    if settings['DisallowStartIfOnBatteries'] == 'true' or settings['DisallowStartIfOnBatteries'] == True:
+                        response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{disallow_start_if_on_batteries}}', 'false')
+                    else:
+                        response = self.setValuesForScheduler(scheduler_xml_template_single_line, '{{disallow_start_if_on_batteries}}', 'true')
 
 
                 if response is False:
