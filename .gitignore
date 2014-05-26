@@ -4,7 +4,7 @@
 *.pyc
 *.tsv
 *.conf
-*.xml
+conf.xml
 *.sch
 *.bat
 *.vb
