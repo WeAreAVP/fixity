@@ -9,7 +9,7 @@ conf.xml
 *.bat
 *.vb
 .dblocker.log.lock.swp
-.dblocker.log
+dblocker.log
 .project
 .pyproject
 .DS_Store
