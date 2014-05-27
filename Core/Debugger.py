@@ -28,7 +28,7 @@ class Debugger(object):
 
         self.debug_file_path = self.Fixity.Configuration.getDebugFilePath()
 
-        self.config_file_path = self.Fixity.Configuration.getBasePath()+'conf.xml'
+        self.config_file_path = self.Fixity.Configuration.getConfig_file_path()
         self.loger = logging
 
         # Create debug file
