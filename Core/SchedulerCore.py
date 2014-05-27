@@ -45,28 +45,21 @@ class SchedulerCore(object):
             except:
                 pass
         else:
-            try:
-                AgentPath = self.Fixity.Configuration.getLibAgentPath()
-                lunch_agent= AgentPath +str(os.sep)+ "Com.fixity."+str(project) + ".demon.plist"
-                print(lunch_agent)
-            except:
-                self.Fixity.logger.LogException(Exception.message)
-                pass
+
+            AgentPath = self.Fixity.Configuration.getLibAgentPath()
+            launch_agent= AgentPath + "Com.fixity."+str(project) + ".demon.plist"
+
 
             try:
-                p = subprocess.Popen(["launchctl", "unload", "-w", lunch_agent], stdout=subprocess.PIPE)
+                p = subprocess.Popen(["launchctl", "unload", launch_agent], stdout=subprocess.PIPE)
                 output, err = p.communicate()
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 
             try:
-                print('removing ')
-                print(lunch_agent)
-                os.remove(lunch_agent)
+                os.remove(launch_agent)
             except:
-                print('removing ')
-                print(lunch_agent)
                 self.Fixity.logger.LogException()
                 pass
 
@@ -102,12 +95,14 @@ class SchedulerCore(object):
         if self.getDurationType() == 3:
             mo = "DAILY"
 
+        print('===================')
+        print(self.getRun_day_or_month())
         if self.getDurationType() == 2:
-                days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
-                spec = " /D " + days[self.getRun_day_or_month()] + " "
+            days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
+            spec = " /D " + days[int(self.getRun_day_or_month())] + " "
         elif self.getDurationType() == 1:
-                spec = " /D " + str(self.getRun_day_or_month()) + " "
-
+            spec = " /D " + str(self.getRun_day_or_month()) + " "
+        print('===================')
         if self.Fixity.Configuration.getOsType() == 'Windows':
             f = open("schedules"+str(os.sep)+"fixity-" + project_name + ".bat", "w")
             try:
@@ -181,7 +176,7 @@ class SchedulerCore(object):
             triggers['CalendarTrigger']['ScheduleByWeek'] = {}
             triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = {}
             triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval'] = '1'
-            triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = daysOfWeek[self.getRun_day_or_month()]
+            triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = daysOfWeek[int(self.getRun_day_or_month())]
         if self.getDurationType() == 3:
             triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'] = '1'
 
@@ -216,14 +211,14 @@ class SchedulerCore(object):
         information['RunInitialScan'] = 0
         
         
-        print(self.Fixity.Configuration.getOsType())
+
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             xml_file_name_with_dir_name = self.CreateXML(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
         else:
             xml_file_name_with_dir_name = self.CreateXMLOfMac(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
 
-        print(xml_file_name_with_dir_name)
+
         xml_file_path = "\"" + xml_file_name_with_dir_name + "\""
 
         command = ''
@@ -247,6 +242,7 @@ class SchedulerCore(object):
                 self.Fixity.logger.LogException(Exception.message)
                 pass
         else:
+
             try:
                 p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
             except:
@@ -380,65 +376,66 @@ class SchedulerCore(object):
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
 
 
-        lunch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
+        launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
 
 
 
+        xmlsch = open(u''+launch_agent, "w")
+        # try:
+        xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
+        xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
+        xmlsch.write("    <plist version=\"1.0\">\n")
+        xmlsch.write("        <dict>\n")
 
-        xmlsch = open(u''+lunch_agent, "w")
-        try:
-            xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-            xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
-            xmlsch.write("    <plist version=\"1.0\">\n")
-            xmlsch.write("        <dict>\n")
+        xmlsch.write("            <key>Program</key>\n")
+        xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
+        xmlsch.write("            <key>Label</key>\n")
+        xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
+        xmlsch.write("            <key>ProgramArguments</key>\n")
 
-            xmlsch.write("            <key>Program</key>\n")
-            xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
-            xmlsch.write("            <key>Label</key>\n")
-            xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
-            xmlsch.write("            <key>ProgramArguments</key>\n")
+        xmlsch.write("            <array>\n")
+        xmlsch.write("                <string>"+self.Fixity.Configuration.getFixityLaunchPath()+"</string>\n")
+        xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
+        xmlsch.write("            </array>\n")
 
-            xmlsch.write("            <array>\n")
-            xmlsch.write("                <string>"+self.Fixity.Configuration.getFixityLaunchPath()+"</string>\n")
-            xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
-            xmlsch.write("            </array>\n")
+        xmlsch.write("            <key>StandardOutPath</key>\n")
+        xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
+        xmlsch.write("            <key>StandardErrorPath</key>\n")
+        xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
+        xmlsch.write("            <key>StartCalendarInterval</key>\n")
+        xmlsch.write("            <dict>\n")
 
-            xmlsch.write("            <key>StandardOutPath</key>\n")
-            xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
-            xmlsch.write("            <key>StandardErrorPath</key>\n")
-            xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
-            xmlsch.write("            <key>StartCalendarInterval</key>\n")
-            xmlsch.write("            <dict>\n")
+        infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
+        trigger_information = str(infoTrigger[1]).split(':')
+        if interval == 1:
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
+            xmlsch.write("            <key>Day</key>\n")
+            xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
+        if interval == 2:
+            WeekInformation = self.Fixity.Configuration.getWeekInformation()
 
-            infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-            trigger_information = str(infoTrigger[1]).split(':')
-            if interval == 1:
-                xmlsch.write("            <key>Minute</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-                xmlsch.write("            <key>Hour</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-                xmlsch.write("            <key>Day</key>\n")
-                xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
-            if interval == 2:
-                WeekInformation = self.Fixity.Configuration.getWeekInformation()
-                xmlsch.write("            <key>Minute</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-                xmlsch.write("            <key>Hour</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-                xmlsch.write("            <key>Weekday</key>\n")
-                xmlsch.write("            <integer>" + str(WeekInformation[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
-            if interval == 3:
-                xmlsch.write("            <key>Minute</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-                xmlsch.write("            <key>Hour</key>\n")
-                xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-            xmlsch.write("            </dict>\n")
-            xmlsch.write("        </dict>\n")
-            xmlsch.write("    </plist>\n")
-        except:
-            pass
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
+            xmlsch.write("            <key>Weekday</key>\n")
+
+            xmlsch.write("            <integer>" + str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) + "</integer>\n")
+        if interval == 3:
+            xmlsch.write("            <key>Minute</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
+            xmlsch.write("            <key>Hour</key>\n")
+            xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
+        xmlsch.write("            </dict>\n")
+        xmlsch.write("        </dict>\n")
+        xmlsch.write("    </plist>\n")
+        # except:
+        #     pass
         xmlsch.close()
-        return lunch_agent
+        return launch_agent
 
     def setRunTime(self, runTime):self.runTime = runTime
     def getRunTime(self ): return self.runTime

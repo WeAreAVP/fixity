@@ -89,11 +89,13 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.ProjectChanged()
         selected_project = self.projects.currentText()
         project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
-
-        if project_core.getAlgorithm() == 'md5':
-            self.methods.setCurrentIndex(1)
-        else:
-            self.methods.setCurrentIndex(0)
+        try:
+            if project_core.getAlgorithm() == 'md5':
+                self.methods.setCurrentIndex(1)
+            else:
+                self.methods.setCurrentIndex(0)
+        except:
+            pass
 
 
     def Save(self):
@@ -114,7 +116,8 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
             return
 
-        if project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0':
+
+        if project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None :
             self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])
             return
 
@@ -164,15 +167,16 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
     def ProjectChanged(self):
         selected_project = self.projects.currentText()
-        project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
+        try:
+            project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
-        if project_core.getAlgorithm() == 'md5':
-            self.methods.setCurrentIndex(1)
-        else:
-            self.methods.setCurrentIndex(0)
+            if project_core.getAlgorithm() == 'md5':
+                self.methods.setCurrentIndex(1)
+            else:
+                self.methods.setCurrentIndex(0)
+        except:
+            pass
         return
-
-
 
     #Close the Dialog Box
 

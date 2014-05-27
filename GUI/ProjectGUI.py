@@ -105,7 +105,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(False)
+            self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
@@ -128,6 +128,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setDisabled(False)
         self.email_only_when_something_changed.setDisabled(False)
 
+        if len(self.Fixity.ProjectsList) <=0:
+            self.togglerMenu(True)
 
     def createMenu(self):
          #Creat All Menu
@@ -423,6 +425,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.update(False)
             if len(self.Fixity.ProjectsList) <= 0:
                 self.toggler(True)
+                self.togglerMenu(True)
 
     def run(self):
         if all(d.text() == "" for d in self.dirs_text_fields):
@@ -509,7 +512,19 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
             directory_increment = directory_increment + 1
 
+    def togglerMenu(self, status):
+        self.save_menu.setDisabled(status)
+        self.update_menu.setDisabled(status)
+        self.delete_menu.setDisabled(status)
+        self.change_name_menu.setDisabled(status)
+        self.filter_files_menu.setDisabled(status)
+        self.decryption_manager_menu.setDisabled(status)
+
     def new(self):
+        self.togglerMenu(False)
+        if self.unsaved == True:
+            self.notification.showError(self, "Fixity", str(GUILibraries.messages['save_other_projects']))
+            return
 
         QID =GUILibraries.QInputDialog(self)
         QID.setWindowModality(GUILibraries.Qt.WindowModal)
@@ -786,6 +801,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.email_only_when_something_changed .setDisabled(status)
         except:
             pass
+
+
+
+
+
+
     #Refresh Project Settings on the main Window
     def refreshProjectSettings(self):
             

@@ -12,18 +12,6 @@ from Core import DatabaseLockHandler
 import threading
 import time
 
-class ThreadClass(threading.Thread):
-
-  def run(self):
-    self.Fixity = SharedApp.SharedApp.App
-    count = 0
-    if count > 10:
-        exit()
-    count = count + 1
-    now = datetime.datetime.now()
-    print count
-    (self.getName(), now)
-
 
 global verified_files
 class ProjectCore(object):
@@ -128,9 +116,10 @@ class ProjectCore(object):
         get_old_version  = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
 
         version_id = 1
-        if len(get_old_version) > 0:
-            version_id = int(get_old_version[0]['versionID'])
-            version_id = version_id + 1
+        if get_old_version is not None and get_old_version is not False:
+            if len(get_old_version) > 0:
+                version_id = int(get_old_version[0]['versionID'])
+                version_id = version_id + 1
 
         information = {}
         current_date = str(datetime.datetime.now()).split('.')
@@ -330,6 +319,7 @@ class ProjectCore(object):
             if '|-|-|' in file_to_import_info_of:
                 for single_path in path_info:
                     single_path_detail = single_path.split('|-|-|')
+
                     if(len(single_path_detail) > 1):
                         listing = []
                         listing.append(str(single_path_detail[0]))
@@ -476,20 +466,20 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        # try:
-        #     if(is_dead_lock):
-        #         lock.is_locked = True
-        #         lock.release()
-        # except:
-        #     self.Fixity.logger.LogException(Exception.message)
-        #     pass
-        #
-        # try:
-        #     print('acquire')
-        #     lock.acquire()
-        # except:
-        #     self.Fixity.logger.LogException(Exception.message)
-        #     pass
+        try:
+            if(is_dead_lock):
+                lock.is_locked = True
+                lock.release()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            print('acquire')
+            lock.acquire()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -572,11 +562,6 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
-
-
-
-
         information_for_report = {}
         information_for_report['missing_file'] = missing_file
         information_for_report['corrupted_or_changed']= corrupted_or_changed
@@ -589,12 +574,17 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_text)
 
-        # try:
-        #     lock.release()
-        #     print('relased the file')
-        # except:
-        #     self.Fixity.logger.LogException(Exception.message)
-        #     pass
+        self.Database.update(self.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        self.setLast_dif_paths('')
+        self.Database.update(self.Database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
+        self.setProject_ran_before('1')
+
+        try:
+            lock.release()
+            print('relased the file')
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
 
         if check_for_changes:
@@ -756,9 +746,9 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        print(reports_text)
-        rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
 
+        rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
+        print(reports_text)
         try:
             r = open(rn, 'w+')
             try:

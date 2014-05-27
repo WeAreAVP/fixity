@@ -123,7 +123,9 @@ class DirsHandler(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
-
+        print('-------------------------------')
+        print(dict)
+        print('-------------------------------')
         history_content = ''
         Algorithm = str(project_core.getAlgorithm())
 
@@ -262,8 +264,6 @@ class DirsHandler(object):
             print('no missing file')
             pass
 
-        self.Database.update(self.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(project_core.getID())+"'")
-        self.Database.update(self.Database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(project_core.getID())+"'")
 
 
         information = {}
@@ -276,7 +276,7 @@ class DirsHandler(object):
         information['history_content'] = history_content
         information['total'] = total
 
-        print(information)
+
 
         return information
 

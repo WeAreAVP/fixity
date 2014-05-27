@@ -160,14 +160,18 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
 
         selected_project = self.projects.currentText()
         project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
-        filters = project_core.getFilters()
-        ignore_hidden_files = project_core.getIgnore_hidden_file()
-        self.filter_field.setText(filters)
+        try:
+            filters = project_core.getFilters()
+            ignore_hidden_files = project_core.getIgnore_hidden_file()
 
-        if(ignore_hidden_files == 1 or ignore_hidden_files == '1'):
-            self.ignore_hidden_files.setChecked(True)
-        else:
-            self.ignore_hidden_files.setChecked(False)
+            self.filter_field.setText(filters)
+
+            if(ignore_hidden_files == 1 or ignore_hidden_files == '1'):
+                self.ignore_hidden_files.setChecked(True)
+            else:
+                self.ignore_hidden_files.setChecked(False)
+        except:
+            pass
 
         return
 

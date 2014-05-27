@@ -250,8 +250,9 @@ class Database(object):
         try:
             response = {}
             result_of_last_version = self.select(self._tableVersionDetail, '*', "projectID='" + str(project_id) +"' and "+ where, ' versionID DESC LIMIT 1')
-            if(len(result_of_last_version) > 0):
-                response = self.getVersionDetails(project_id, result_of_last_version[0]['versionID'], path_id,  where, ' id DESC')
+            if result_of_last_version is not None and result_of_last_version is not False:
+                if(len(result_of_last_version) > 0):
+                    response = self.getVersionDetails(project_id, result_of_last_version[0]['versionID'], path_id,  where, ' id DESC')
             return response
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
@@ -443,7 +444,7 @@ class Database(object):
                         query += ' , '+ str(single_info) + "='" + str(information[single_info]) + "'"
                     counter = counter+1
             query += ' WHERE '+condition
-            print(query)
+
             response = self.cursor.execute(query)
             self.commit()
             return response

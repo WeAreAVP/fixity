@@ -66,16 +66,16 @@ class Configuration(object):
             self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
-            print('base_path)')
-            print(self.base_path)
-            print('fixity_launch_path')
-            print(self.fixity_launch_path)
-            print('reports_path')
-            print(self.reports_path)
-            print('schedules_path')
-            print(self.schedules_path)
-            print('history_path')
-            print(self.history_path)
+            # print('base_path)')
+            # print(self.base_path)
+            # print('fixity_launch_path')
+            # print(self.fixity_launch_path)
+            # print('reports_path')
+            # print(self.reports_path)
+            # print('schedules_path')
+            # print(self.schedules_path)
+            # print('history_path')
+            # print(self.history_path)
 
 
         self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
@@ -111,7 +111,7 @@ class Configuration(object):
 
     def getMonths(self): return self.Months
 
-    def getWeekInformation(self):self.WeekInformation;
+    def getWeekInformation(self): return self.WeekInformation
 
     def getImagesPath(self):return str(self.assets_path)
 
@@ -167,19 +167,32 @@ class Configuration(object):
 
     def fetchEmailConfiguration(self):
         emailConfiguration = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration)
-        if len(emailConfiguration) > 0:
-            self.setEmailConfiguration(emailConfiguration[0])
-        else:
-            return {}
+        if emailConfiguration is not None and emailConfiguration is not False:
+            if len(emailConfiguration) > 0:
+                self.setEmailConfiguration(emailConfiguration[0])
+            else:
+                return {}
+
 
     def setEmailConfiguration(self, email_configuration): self.email_configuration = email_configuration
 
     def saveEmailConfiguration(self, information):
+
+
+        is_email_config_insert = False
         config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
-        if len(config_exists) <=0:
-            self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
-        else:
+
+        if config_exists is not None and config_exists is not False:
+            if len(config_exists) <=0:
+                self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
+                is_email_config_insert = True
+            else:
+                is_email_config_insert = False
+
+
+        if is_email_config_insert is False:
             self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+
         self.setEmailConfiguration(information)
 
 

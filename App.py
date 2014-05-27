@@ -70,17 +70,18 @@ class App(object):
 
     def getProjectList(self):
         information = []
-        if len(self.ProjectsList) > 0:
-            for project in self.ProjectsList:
-                information.append(str(self.ProjectsList[project].getTitle()))
+        if self.ProjectsList is not None and self.ProjectsList is not False:
+            if len(self.ProjectsList) > 0:
+                for project in self.ProjectsList:
+                    information.append(str(self.ProjectsList[project].getTitle()))
         return information
 
     # TODO MOVE repo
     def getSingleProject(self, project_name):
         try:
-            print(project_name)
+
             selected_project_object = self.ProjectsList[project_name]
-            print(selected_project_object)
+
 
             return selected_project_object
         except:

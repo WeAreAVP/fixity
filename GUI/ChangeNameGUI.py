@@ -119,6 +119,16 @@ class ChangeNameGUI(GUILibraries.QDialog ):
             return
 
         new_name = self.change_name_field.text()
+
+        try:
+            project_exists = self.Fixity.ProjectsList[str(new_name)]
+            project_exists.getID()
+            project_exists.getTitle()
+            self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
+            return
+        except:
+            pass
+
         project_core = self.Fixity.ProjectsList[selected_project]
 
         project_core.ChangeTitle(new_name)

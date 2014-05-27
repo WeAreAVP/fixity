@@ -92,13 +92,11 @@ class EmailNotification(object):
 
 
     def TestingEmail(self,recipients, text, information):
-        print(information)
+
         return self.SendEmail(recipients, text, None, information)
 
     def ReportEmail(self, recipients, attachment, text, information):
         return self.SendEmail(recipients, text, attachment, information)
 
     def ErrorEmail(self, recipients, attachment, text, information):
-        print(information)
-        print(attachment)
         return self.SendEmail(recipients, text, attachment, information)
