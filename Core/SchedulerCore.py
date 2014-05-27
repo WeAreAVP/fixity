@@ -46,10 +46,12 @@ class SchedulerCore(object):
                 pass
         else:
             try:
-                AgentPath = self.Fixity.Configuration.getAgentPath()
+                AgentPath = self.Fixity.Configuration.getLibAgentPath()
                 lunch_agent= AgentPath +str(os.sep)+ "Com.fixity."+str(project) + ".demon.plist"
+                print(lunch_agent)
             except:
                 self.Fixity.logger.LogException(Exception.message)
+                pass
 
             try:
                 p = subprocess.Popen(["launchctl", "unload", "-w", lunch_agent], stdout=subprocess.PIPE)
@@ -59,8 +61,12 @@ class SchedulerCore(object):
                 pass
 
             try:
+                print('removing ')
+                print(lunch_agent)
                 os.remove(lunch_agent)
             except:
+                print('removing ')
+                print(lunch_agent)
                 self.Fixity.logger.LogException()
                 pass
 
@@ -210,12 +216,14 @@ class SchedulerCore(object):
         information['RunInitialScan'] = 0
         
         
+        print(self.Fixity.Configuration.getOsType())
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             xml_file_name_with_dir_name = self.CreateXML(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
         else:
             xml_file_name_with_dir_name = self.CreateXMLOfMac(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
 
+        print(xml_file_name_with_dir_name)
         xml_file_path = "\"" + xml_file_name_with_dir_name + "\""
 
         command = ''
@@ -371,13 +379,9 @@ class SchedulerCore(object):
     #Output : XML for Mac launhd scheduling
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
 
-        agent_path = self.Fixity.Configuration.getAgentPath()
 
-        pathInfo = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
-        lunch_agent= agent_path +str(os.sep)+ "Com.fixity."+str(project_name) + ".demon.plist"
+        lunch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
 
-        lunch_agent =str(lunch_agent).replace(' ','\\ ')
-        pathInfo =str(pathInfo).replace(' ','\\ ')
 
 
 
@@ -389,13 +393,13 @@ class SchedulerCore(object):
             xmlsch.write("        <dict>\n")
 
             xmlsch.write("            <key>Program</key>\n")
-            xmlsch.write("                <string>" + str(pathInfo) +"</string>\n")
+            xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
             xmlsch.write("            <key>Label</key>\n")
             xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
             xmlsch.write("            <key>ProgramArguments</key>\n")
 
             xmlsch.write("            <array>\n")
-            xmlsch.write("                <string>"+pathInfo+"</string>\n")
+            xmlsch.write("                <string>"+self.Fixity.Configuration.getFixityLaunchPath()+"</string>\n")
             xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
             xmlsch.write("            </array>\n")
 

@@ -5,8 +5,13 @@ Created on May 14, 2014
 @author: Furqan Wasi
 
 '''
+import os
 
-import os, datetime, time, fnmatch, hashlib, win32file, win32con, win32api
+if os.name == 'nt':
+    import win32file, win32con, win32api
+
+import datetime, time, fnmatch, hashlib
+
 from collections import defaultdict
 from Core import SharedApp
 from Core import Database
@@ -82,6 +87,14 @@ class DirsHandler(object):
 
         #print('writing ::: Stared Worked')
         check = 0
+        old_dirs_information = {}
+        if project_core.getLast_dif_paths() != 'None' and project_core.getLast_dif_paths() != '' and project_core.getLast_dif_paths() != None:
+            last_dif_paths_array = str(project_core.getLast_dif_paths()).split(',')
+
+            for last_dif_paths in last_dif_paths_array:
+                single_dir_information = last_dif_paths.split('||-||')
+                if single_dir_information[0] != None and single_dir_information[0] != '':
+                    old_dirs_information[single_dir_information[1]] = single_dir_information[0]
 
         for l in project_detail_information:
             try:
@@ -89,15 +102,23 @@ class DirsHandler(object):
                 x = self.toTuple(project_detail_information[l])
                 if x is not None and x:
 
-                    index_path_infor = ''
                     path_information = str(x[1]).split('||')
                     if path_information:
-                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append(
-                            [self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())+str(index_path_infor)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])),
-                             self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),
-                             False])
-                        dict_hash[x[0]].append([str(self.getPath())+str(index_path_infor) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])),  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
-                        dict_File[self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())+str(index_path_infor))+self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+                        try:
+                            base_old_file_path = old_dirs_information[str(self.getPathID())]
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                        except:
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                            pass
+
+                        # Parttren [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
+                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),False])
+
+                        # Parttren [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+
+                        # Parttren [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
@@ -438,7 +459,6 @@ class DirsHandler(object):
             pass
 
         return string_to_be_handled
-
 
 
 

@@ -44,7 +44,7 @@ class Setup(object):
                 pass
 
         if self.Fixity.Configuration.getOsType() == 'linux':
-            if(not os.path.isdir(self.Fixity.Configuration.getLibPath())) or (not os.path.isdir(self.Fixity.Configuration.getAgentPath())):
+            if(not os.path.isdir(self.Fixity.Configuration.getAgentPath())):
                 os.makedirs(self.Fixity.Configuration.getAgentPath())
         print(self.Fixity.Configuration.getDatabaseFilePath())
         # create Database file

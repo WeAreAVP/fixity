@@ -443,7 +443,7 @@ class Database(object):
                         query += ' , '+ str(single_info) + "='" + str(information[single_info]) + "'"
                     counter = counter+1
             query += ' WHERE '+condition
-
+            print(query)
             response = self.cursor.execute(query)
             self.commit()
             return response

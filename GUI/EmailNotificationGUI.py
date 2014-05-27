@@ -160,13 +160,14 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         port = ''
         smtp = ''
         protocol = ''
-        print(information)
-        if(len(information)> 0):
-            email_addr = information['email']
-            Pass = str(information['pass'])
-            port = str(information['port'])
-            smtp = str(information['smtp'])
-            protocol = str(information['protocol'])
+
+        if information :
+            if(len(information)> 0):
+                email_addr = information['email']
+                Pass = str(information['pass'])
+                port = str(information['port'])
+                smtp = str(information['smtp'])
+                protocol = str(information['protocol'])
         self.email_addr_bar.setText(email_addr)
         self.password.setText(Pass)
         if((smtp is not None) and (smtp !='')):
@@ -179,7 +180,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             self.TLS_protocol.setChecked(False)
             self.none_protocol.setChecked(False)
 
-            if(port is not None and port !='' ):
+            if port is not None and port != '' :
                 self.port.setText(port)
             else:
                 self.port.setText('465')
@@ -196,7 +197,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             self.none_protocol.setChecked(True)
             self.TLS_protocol.setChecked(False)
             self.SSL_protocol.setChecked(False)
-            if(port is not None and port !='' ):
+            if port is not None and port != '' :
                 self.port.setText(port)
             else:
                 self.port.setText('25')
@@ -292,13 +293,14 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             port = ''
             pass
 
-        if(port is not None and port !='' ):
+        if port is not None and port != '' :
             self.port.setText(port)
         else:
             self.port.setText('587')
 
     def destroy(self):
         del self
+
     def checkIsEmailValid(self):
 
         self.loader.show()
@@ -388,10 +390,3 @@ class EmailNotificationGUI(GUILibraries.QDialog):
     def LaunchDialog(self):
         self.SetDesgin()
         self.ShowDialog()
-
-#app = GUILibraries.QApplication('asdas')
-#w = EmailNotification(GUILibraries.QDialog())
-#w.SetWindowLayout()
-#w.SetDesgin()
-#w.ShowDialog()
-#app.exec_()

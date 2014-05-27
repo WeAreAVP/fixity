@@ -96,14 +96,14 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         self.project_changed()
 
     def Save(self):
-        print('Save')
+
         if(self.change_name_field.text() == '' and self.change_name_field.text() == None):
             self.notification.showError(self, "Failure", GUILibraries.messages['no_project_selected'])
             return
 
         selected_project = self.projects.currentText()
         is_project_name_valid = self.Fixity.Validation.ValidateProjectName(self.change_name_field.text())
-        print(is_project_name_valid)
+
         if not is_project_name_valid:
             self.notification.showError(self, "Failure", str(GUILibraries.messages['in_valid_project_name']))
             return
@@ -117,14 +117,17 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         if False:
             self.notification.showInformation(self, "Failure", GUILibraries.messages['problem_proj_name_change'])
             return
+
         new_name = self.change_name_field.text()
         project_core = self.Fixity.ProjectsList[selected_project]
 
         project_core.ChangeTitle(new_name)
         project_core.setTitle(new_name)
 
-        self.Fixity.ProjectsList[new_name] = project_core
+        project_core.scheduler.delTask(selected_project)
+        project_core.scheduler.schedule(new_name)
 
+        self.Fixity.ProjectsList[new_name] = project_core
         self.Fixity.removeProject(selected_project)
 
         self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
@@ -150,8 +153,3 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         self.ShowDialog()
 
 
-#pplication('asd')
-#AF = ChangeName(GUILibraries.QDialog())
-#AF.SetDesgin()
-#AF.ShowDialog()
-#exit(app.exec_())

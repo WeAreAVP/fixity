@@ -43,21 +43,40 @@ class Configuration(object):
 
 
         else:
-            self.lib_agent_path = str(self.user_home_path)++str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
+            self.lib_agent_path = str(self.user_home_path)+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
             self.agent_path = str(self.user_home_path)+str(os.sep)+"Library"
             pathInfo = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources', '')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
 
             self.base_path = pathInfo
+            self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
-            self.history_path = r''+str(self.getBasePath()) + 'history' +str(os.sep)
-            self.bin_path = r''+(os.path.join(str(os.getcwd()), 'bin'+str(os.sep)))
-            self.assets_path = r''+(os.path.join(str(os.getcwd()), 'assets'+str(os.sep)))
-            self.lock_file_path = r''+(os.path.join(str(os.getcwd()), 'dblocker.log.lock'))
-            self.log_file_path = r''+(os.path.join(str(os.getcwd()), 'debug'+str(os.sep))+'debug.log')
+            self.schedules_path = r''+(os.path.join(self.base_path, 'schedules'+str(os.sep)))
+            self.history_path = r''+(os.path.join(self.base_path, 'history'+str(os.sep)))
+            self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
+            self.assets_path = r''+(os.path.join(self.base_path, 'assets'+str(os.sep)))
+            self.lock_file_path = r''+(os.path.join(self.base_path, 'dblocker.log'))
+            self.log_file_path = r''+(os.path.join(self.base_path, 'debug.log'))
+            self.database_file_path = r''+(os.path.join(self.base_path,'Fixity.db'))
+            self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
+            self.report_template_path = r''+(os.path.join(self.template_path)+'Report.txt')
+            self.history_template_path = r''+(os.path.join(self.template_path)+'History.txt')
+            self.report_email_template_path = r''+(os.path.join(self.template_path)+'ReportEmail.txt')
+            self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
+            self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
+            self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
+            print('base_path)')
+            print(self.base_path)
+            print('fixity_launch_path')
+            print(self.fixity_launch_path)
+            print('reports_path')
+            print(self.reports_path)
+            print('schedules_path')
+            print(self.schedules_path)
+            print('history_path')
+            print(self.history_path)
 
-            self.database_file_path = r''+(os.path.join(str(os.getcwd()), 'bin'+str(os.sep))+'Fixity.db')
 
         self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
         self.check_sum_methods = ['sha256', 'md5']
@@ -140,7 +159,8 @@ class Configuration(object):
 
     def getAgentPath(self): return self.agent_path
 
-    def getLibPath(self): return self.lib_agent_path
+    def getLibAgentPath(self): return self.lib_agent_path
+    def getFixityLaunchPath(self): return self.fixity_launch_path
 
 
     def getEmailConfiguration(self): return self.email_configuration

@@ -227,6 +227,7 @@ class ProjectCore(object):
     #
     # @return Bool
     def Delete(self):
+        self.scheduler.delTask(self.getTitle())
         self.Fixity.Database.delete(self.Fixity.Database._tableProject,'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
         return True
@@ -475,20 +476,20 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        try:
-            if(is_dead_lock):
-                lock.is_locked = True
-                lock.release()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
-
-        try:
-            print('acquire')
-            lock.acquire()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        # try:
+        #     if(is_dead_lock):
+        #         lock.is_locked = True
+        #         lock.release()
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
+        #
+        # try:
+        #     print('acquire')
+        #     lock.acquire()
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -588,12 +589,12 @@ class ProjectCore(object):
 
         self.writerHistoryFile(history_text)
 
-        try:
-            lock.release()
-            print('relased the file')
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        # try:
+        #     lock.release()
+        #     print('relased the file')
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
 
 
         if check_for_changes:
@@ -673,8 +674,14 @@ class ProjectCore(object):
             self.setIgnore_hidden_file (0)
 
         self.setVersion (projects_info['versionCurrentID'])
-        self.setProject_ran_before (projects_info['projectRanBefore'])
-        self.setLast_dif_paths (projects_info['lastDifPaths'])
+        try:
+            self.setProject_ran_before (projects_info['projectRanBefore'])
+        except:
+            pass
+        try:
+            self.setLast_dif_paths (projects_info['lastDifPaths'])
+        except:
+            pass
         self.setAlgorithm (projects_info['selectedAlgo'])
         self.setFilters (projects_info['filters'])
 

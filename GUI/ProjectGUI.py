@@ -17,6 +17,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def __init__(self):
 
         super(ProjectGUI, self).__init__()
+        self.isPathChanged = False
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
         self.about_fixity_gui = AboutFixityGUI.AboutFixityGUI(self)
@@ -456,6 +457,26 @@ class ProjectGUI(GUILibraries.QMainWindow):
                             if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
                                 self.isPathChanged = True
                                 self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
+
+            if (self.isPathChanged == True and (project_core.getLast_dif_paths() is None or project_core.getLast_dif_paths() == ''  or project_core.getLast_dif_paths() == 'None')):
+                    all_previous_paths = ''
+
+                    for  directory_detail_single in directory_detail:
+
+                        if (directory_detail[directory_detail_single].getPath() is not None):
+                            if all_previous_paths == '':
+                                all_previous_paths = str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
+                            else:
+                                all_previous_paths = all_previous_paths+','+str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
+
+                    self.is_path_changed_global = True
+                    if len(directory_detail) > 0:
+                        update_inf = {}
+                        update_inf['lastDifPaths'] = all_previous_paths
+                        self.Fixity.Database.update(self.Fixity.Database._tableProject, update_inf, "id = '" + str(project_core.getID()) + "'")
+                        project_core.setLast_dif_paths(all_previous_paths)
+
+                    self.isPathChanged = False
         except:
             self.Fixity.logger.LogException()
             pass
