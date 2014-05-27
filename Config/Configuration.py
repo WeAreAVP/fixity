@@ -40,7 +40,7 @@ class Configuration(object):
             self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
-
+            self.config_file_path = self.Fixity.Configuration.getBasePath()+'conf.xml'
 
         else:
             self.lib_agent_path = str(self.user_home_path)+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
@@ -56,6 +56,7 @@ class Configuration(object):
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
             self.schedules_path = r''+(os.path.join(os.getcwd(), 'schedules'+str(os.sep)))
+            self.config_file_path = r''+(os.path.join(os.getcwd(), 'conf.xml'))
             self.history_path = r''+(os.path.join(self.base_path, 'history'+str(os.sep)))
             self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
             self.assets_path = r''+(os.path.join(os.getcwd(), 'assets'+str(os.sep)))
@@ -152,7 +153,8 @@ class Configuration(object):
     def setIs_debugging_on(self, is_debugging_on):self.is_debugging_on = is_debugging_on
 
     def getApplicationVersion(self):return str(self.application_version)
-
+    def getConfig_file_path(self):
+        return self.config_file_path
     def EncodeInfo(self, string_to_be_encoded):
         string_to_be_encoded = str(string_to_be_encoded).strip()
         return base64.b16encode(base64.b16encode(string_to_be_encoded))

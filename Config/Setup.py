@@ -14,7 +14,7 @@ class Setup(object):
         self.is_debugger_on = True
         self.debug_file_path = self.Fixity.Configuration.getDebugFilePath()
 
-        self.config_file_path = self.Fixity.Configuration.getBasePath()+'conf.xml'
+        self.config_file_path = self.Fixity.Configuration.getConfig_file_path()
 
     def setupApp(self):
         self.createDirsAndFiles()
