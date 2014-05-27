@@ -48,34 +48,56 @@ class Configuration(object):
             pathInfo = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources', '')
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
-
+            pathInfo = str(pathInfo).replace('Main.app', '')
+            print('Home Path')
+            print(os.getcwd())
+            print('Home Path')
             self.base_path = pathInfo
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
-            self.schedules_path = r''+(os.path.join(self.base_path, 'schedules'+str(os.sep)))
+            self.schedules_path = r''+(os.path.join(os.getcwd(), 'schedules'+str(os.sep)))
             self.history_path = r''+(os.path.join(self.base_path, 'history'+str(os.sep)))
             self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
-            self.assets_path = r''+(os.path.join(self.base_path, 'assets'+str(os.sep)))
-            self.lock_file_path = r''+(os.path.join(self.base_path, 'dblocker.log'))
-            self.log_file_path = r''+(os.path.join(self.base_path, 'debug.log'))
-            self.database_file_path = r''+(os.path.join(self.base_path,'Fixity.db'))
+            self.assets_path = r''+(os.path.join(os.getcwd(), 'assets'+str(os.sep)))
+            self.lock_file_path = r''+(os.path.join(os.getcwd(), 'dblocker.log'))
+            self.log_file_path = r''+(os.path.join(os.getcwd(), 'debug.log'))
+            self.database_file_path = r''+(os.path.join(os.getcwd(),'Fixity.db'))
             self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
             self.report_template_path = r''+(os.path.join(self.template_path)+'Report.txt')
             self.history_template_path = r''+(os.path.join(self.template_path)+'History.txt')
+
             self.report_email_template_path = r''+(os.path.join(self.template_path)+'ReportEmail.txt')
-            self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
-            self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
-            self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
-            # print('base_path)')
-            # print(self.base_path)
-            # print('fixity_launch_path')
-            # print(self.fixity_launch_path)
-            # print('reports_path')
-            # print(self.reports_path)
-            # print('schedules_path')
-            # print(self.schedules_path)
-            # print('history_path')
-            # print(self.history_path)
+            self.sch_daily_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacDaily.xml')
+            self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
+            self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
+
+            print('base_path)')
+            print(self.base_path)
+
+            print('fixity_launch_path')
+            print(self.fixity_launch_path)
+
+            print('reports_path')
+            print(self.reports_path)
+
+            print('schedules_path')
+            print(self.schedules_path)
+
+            print('history_path')
+            print(self.history_path)
+
+            print('sch_daily_template_path_mac')
+            print(self.sch_daily_template_path_mac)
+
+            print('sch_month_template_path_mac')
+            print(self.sch_month_template_path_mac)
+
+            print('template_path')
+            print(self.template_path)
+
+            print('log_file_path')
+            print(self.log_file_path)
+
 
 
         self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
@@ -96,6 +118,12 @@ class Configuration(object):
     def getSch_week_template_path(self): return self.sch_week_template_path
 
     def getSch_month_template_path(self): return self.sch_month_template_path
+
+    def getSch_daily_template_path_mac(self): return self.sch_daily_template_path_mac
+
+    def getSch_week_template_path_mac(self): return self.sch_week_template_path_mac
+
+    def getSch_month_template_path_mac(self): return self.sch_month_template_path_mac
 
     def getHistoryTemplatePath(self):return self.history_template_path
 
