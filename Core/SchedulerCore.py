@@ -95,14 +95,14 @@ class SchedulerCore(object):
         if self.getDurationType() == 3:
             mo = "DAILY"
 
-        print('===================')
-        print(self.getRun_day_or_month())
+
+
         if self.getDurationType() == 2:
             days = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"]
             spec = " /D " + days[int(self.getRun_day_or_month())] + " "
         elif self.getDurationType() == 1:
             spec = " /D " + str(self.getRun_day_or_month()) + " "
-        print('===================')
+
         if self.Fixity.Configuration.getOsType() == 'Windows':
             f = open("schedules"+str(os.sep)+"fixity-" + project_name + ".bat", "w")
             try:
@@ -433,14 +433,14 @@ class SchedulerCore(object):
                     if response is False:
                         WeekInformation = self.Fixity.Configuration.getWeekInformation()
                         response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
-                print(response)
+
 
                 if response is False:
                     # if no value found to replace
                     scheduler_xml_text += str(scheduler_xml_template_line_single) +"\n"
                 else:
                     scheduler_xml_text += response
-            print(scheduler_xml_text)
+
             try:
                 xmlsch.write(scheduler_xml_text)
             except:
@@ -451,62 +451,6 @@ class SchedulerCore(object):
         xmlsch.close()
         return launch_agent
 
-
-        # # try:
-        # xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-        # xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
-        # xmlsch.write("    <plist version=\"1.0\">\n")
-        # xmlsch.write("        <dict>\n")
-        #
-        # xmlsch.write("            <key>Program</key>\n")
-        # xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
-        # xmlsch.write("            <key>Label</key>\n")
-        # xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
-        # xmlsch.write("            <key>ProgramArguments</key>\n")
-        #
-        # xmlsch.write("            <array>\n")
-        # xmlsch.write("                <string>"+self.Fixity.Configuration.getFixityLaunchPath()+"</string>\n")
-        # xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
-        # xmlsch.write("            </array>\n")
-        #
-        # xmlsch.write("            <key>StandardOutPath</key>\n")
-        # xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
-        # xmlsch.write("            <key>StandardErrorPath</key>\n")
-        # xmlsch.write("            <string>"+str(os.getcwd())+"/debug/debug.log</string>\n")
-        # xmlsch.write("            <key>StartCalendarInterval</key>\n")
-        # xmlsch.write("            <dict>\n")
-        #
-        # infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-        # trigger_information = str(infoTrigger[1]).split(':')
-        # if interval == 1:
-        #     xmlsch.write("            <key>Minute</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-        #     xmlsch.write("            <key>Hour</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-        #     xmlsch.write("            <key>Day</key>\n")
-        #     xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
-        # if interval == 2:
-        #     WeekInformation = self.Fixity.Configuration.getWeekInformation()
-        #
-        #     xmlsch.write("            <key>Minute</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-        #     xmlsch.write("            <key>Hour</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-        #     xmlsch.write("            <key>Weekday</key>\n")
-        #
-        #     xmlsch.write("            <integer>" + str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) + "</integer>\n")
-        # if interval == 3:
-        #     xmlsch.write("            <key>Minute</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
-        #     xmlsch.write("            <key>Hour</key>\n")
-        #     xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
-        # xmlsch.write("            </dict>\n")
-        # xmlsch.write("        </dict>\n")
-        # xmlsch.write("    </plist>\n")
-        # # except:
-        # #     pass
-        # xmlsch.close()
-        # return launch_agent
 
     def setRunTime(self, runTime):self.runTime = runTime
     def getRunTime(self ): return self.runTime

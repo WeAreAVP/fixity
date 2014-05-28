@@ -35,10 +35,7 @@ class Debugger(object):
         try:
             self.loger.basicConfig(filename=self.debug_file_path, level=logging.DEBUG)
         except:
-
-                print(self.Fixity.ExceptionHandler.getExceptionDetails())
-                print(self.Fixity.ExceptionHandler.getTraceBack())
-                pass
+            pass
 
         if self.get() == 'true':
             self.is_debugger_on = True
@@ -58,9 +55,6 @@ class Debugger(object):
                 if(len(more_information) > 0):
 
                     for key in more_information:
-
-                        print(key)
-                        print(more_information[key])
 
                         self.loger.debug(str(key) + '::' + str(more_information[key])+"\n")
 
@@ -82,9 +76,9 @@ class Debugger(object):
                     for key in more_information:
                         self.loger.info(key + '::' + more_information[key]+"\n")
         except:
-            print(self.Fixity.ExceptionHandler.getExceptionDetails())
-            print(self.Fixity.ExceptionHandler.getTraceBack())
+
             self.is_debugger_on = False
+            pass
 
     #Function to Log Warning
     #@param msg Message to log
@@ -100,9 +94,9 @@ class Debugger(object):
                         self.loger.warning(key + '::' + more_information[key]+"\n")
 
         except:
-            print(self.Fixity.ExceptionHandler.getExceptionDetails())
-            print(self.Fixity.ExceptionHandler.getTraceBack())
+
             self.is_debugger_on = False
+            pass
 
     def set(self, status):
         os.remove(self.config_file_path)

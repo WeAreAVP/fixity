@@ -69,7 +69,7 @@ if __name__ == '__main__':
                 error_information['line_no'] = exc_tb.tb_lineno
             except:
                 pass
-            print(error_information)
+
 
             print("Could not run this Project "+str(Exception.message))
 
