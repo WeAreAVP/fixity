@@ -12,6 +12,8 @@ from Core import DatabaseLockHandler
 import threading
 import time
 
+from collections import defaultdict
+
 
 global verified_files
 class ProjectCore(object):
@@ -419,9 +421,6 @@ class ProjectCore(object):
         return False
 
     def launchThread(self):
-
-
-
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue.put(run_thread)
 
@@ -438,7 +437,10 @@ class ProjectCore(object):
     #
     # @return array
     def Run(self, check_for_changes = False, is_from_thread = False):
-        self.Database = Database.Database()
+        self.database = Database.Database()
+        missing_file = ('', '')
+        global verified_files
+        verified_files = list()
         report_content = ''
         history_content = ''
 
@@ -474,12 +476,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        try:
-            print('acquire')
-            lock.acquire()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    print('acquire')
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -505,9 +507,83 @@ class ProjectCore(object):
 
 
         history_content = ''
+        project_path_information = self.database.getProjectPathInfo(self.getID(),self.getVersion())
+        project_detail_information = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
+        if project_detail_information is False:
+            project_detail_information = self.database.getVersionDetailsLast(self.getID())
+
+        if len(project_detail_information) <= 0:
+            project_detail_information = self.database.getVersionDetailsLast(self.getID())
+        base_path_information ={}
+
+        for path_info in project_path_information:
+
+            Id_info = str(project_path_information[path_info]['pathID']).split('-')
+            index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
+            base_path_information[str(project_path_information[path_info]['pathID'])]= {'path':index_path_in_for,'code':str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
+
+
+        filters_array = {}
+        try:
+            filters_array = str(self.getFilters()).split(',')
+        except:
+            #print('no filters found')
+            pass
+
+        dict = defaultdict(list)
+        dict_hash = defaultdict(list)
+        dict_File = defaultdict(list)
+
+
+
+
+        #print('writing ::: Stared Worked')
+
+        old_dirs_information = {}
+        if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() != None:
+            last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
+
+            for last_dif_paths in last_dif_paths_array:
+                single_dir_information = last_dif_paths.split('||-||')
+                if single_dir_information[0] != None and single_dir_information[0] != '':
+                    old_dirs_information[single_dir_information[1]] = single_dir_information[0]
+
+        for l in project_detail_information:
+            try:
+                x = self.toTuple(project_detail_information[l])
+                if x is not None and x:
+
+                    path_information = str(x[1]).split('||')
+
+                    if path_information:
+                        try:
+                            base_old_file_path = old_dirs_information[str(path_information[0])]
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                        except:
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path'])) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                            pass
+
+                        # Parttren [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
+                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),False])
+
+                        # Parttren [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+
+                        # Parttren [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+
+            except:
+                self.Fixity.logger.LogException(Exception.message)
+                pass
+
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
-                result_score = self.directories[index].Run(self.getTitle())
+
+                #Run(self, project_name,dict, dict_hash, dict_File, filters_array )
+                result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files)
+
+                verified_files = result_score['verified_files']
+
                 try:confirmed = confirmed + int(result_score['confirmed'])
                 except:pass
 
@@ -532,6 +608,28 @@ class ProjectCore(object):
                 try:total = int(total) + int(result_score['total'])
                 except:pass
 
+
+        missing_files_total = 0
+        try:
+            print('checking for missing files FC')
+            missing_file = self.checkForMissingFiles(dict_hash)
+
+            report_content += r''+str(str(missing_file[0]))
+
+            try:
+                if missing_file[1] > 0:
+                    missing_files_total = int(missing_file[1])
+            except:
+                pass
+
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            total = int(total) + int(missing_files_total)
+        except:
+            pass
 
         history_text = ''
         try:
@@ -562,21 +660,21 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        information_for_report = {}
-        information_for_report['missing_file'] = missing_file
-        information_for_report['corrupted_or_changed']= corrupted_or_changed
-        information_for_report['created']= created
-        information_for_report['confirmed']= confirmed
-        information_for_report['moved']= moved
+        information_for_report = { }
+        information_for_report['missing_file'] = missing_files_total
+        information_for_report['corrupted_or_changed'] = corrupted_or_changed
+        information_for_report['created'] = created
+        information_for_report['confirmed'] = confirmed
+        information_for_report['moved'] = moved
         information_for_report['total'] = total
 
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
 
-        self.Database.update(self.Database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
         self.setLast_dif_paths('')
-        self.Database.update(self.Database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
+        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
         self.setProject_ran_before('1')
 
         try:
@@ -600,6 +698,9 @@ class ProjectCore(object):
             elif int(corrupted_or_changed) > 0:
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
 
+            elif missing_files_total > 0:
+                return {'file_changed_found': True, 'report_path': created_report_info['path']}
+
             else:
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
 
@@ -607,11 +708,9 @@ class ProjectCore(object):
             email_config = self.Fixity.Configuration.getEmailConfiguration()
             try:
                 if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
-                    email_address = str(self.getEmail_address()).split(',')
+
                     email_notification = EmailNotification.EmailNotification()
-                    for single_email_address in email_address:
-                        if single_email_address != '' and single_email_address is not None:
-                            email_notification.ReportEmail(single_email_address, created_report_info['path'], created_report_info['email_content'], email_config)
+                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
             except:
                 pass
         if is_from_thread:
@@ -814,3 +913,37 @@ class ProjectCore(object):
 
 
         return reports_text
+     #Method to find which files are missing in the scanned directory
+    #Input: defaultdict (from buildDict)
+    #Output: warning messages about missing files (one long string and printing to stdout)
+    #
+    #@param dict: Directory of all file exists in the scanned folder
+    #@param file: List of all directory with inode,  hash and path information  with indexed using Inode
+    #
+    #@return: removed Messgae if removed and count of removed file
+    def checkForMissingFiles(self, dict):
+
+        msg = ""
+        count = 0
+        global verified_files
+
+        ''' walks through the dict and returns all False flags '''
+        for keys in dict:
+            for obj in dict[keys]:
+                    if not obj[0] in verified_files:
+                        verified_files.append(obj[0])
+                        msg += "Removed Files\t" + obj[0] +"\n"
+                        count = count + 1
+        return msg, count
+
+    #Method to convert database line into tuple
+    #@param line: Information of a single File
+    #
+    #@return tuple: (hash, abspath, id)
+
+    def toTuple(self, line):
+        try:
+            return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            return None

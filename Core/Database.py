@@ -79,9 +79,9 @@ class Database(object):
                 counter_recursion = counter_recursion + 1
                 return self.getOne(query)
             counter_recursion = 0
-
             self.Fixity.logger.LogException(Exception.message)
-            return False
+            pass
+
 
 
 
@@ -187,44 +187,16 @@ class Database(object):
             return False
 
 
-
-   #def getVersionDetails(self, project_id, version_id, pathID, where, OrderBy=None):
-   # try:
-   #     query = "select VD.*, PP.* from `"+self._tableVersionDetail+"` as VD join `"+self._tableProjectPath+"` as PP on VD.projectPathID = PP.id where "+ where
-   #     response = {}
-   #     response_counter = 0
-   #     for r in self.dict_gen(self.cursor.execute(query)):
-   #         response[response_counter] = r
-   #         response_counter = response_counter + 1
-   #
-   #     return response
-   # except (sqlite3.OperationalError,Exception):
-   #     global counter_recursion
-   #     SharedApp.SharedApp.App.Database = Database()
-   #     if counter_recursion < 2:
-   #         counter_recursion = counter_recursion + 1
-   #         return self.getVersionDetails(project_id, version_id, pathID, where, OrderBy)
-   #     counter_recursion = 0
-   #
-   #     self.Fixity.logger.LogException(Exception.message)
-   #     return False
-    #Get Given Version Details
-    #@param project_id: Project ID
-    #@param version_id: ID of Version of Project who's detail to be fetched
-    #@param order_by: Order By
-    #
-    #@return project information
-
-    def getVersionDetails(self, project_id, version_id, pathID, where, OrderBy=None):
+    def getVersionDetails(self, project_id, version_id, OrderBy=None):
         try:
-            response = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"' and versionID='"+str(version_id)+"' and "+where,  OrderBy)
+            response = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"' and versionID='"+str(version_id)+"'" , OrderBy)
             return response
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
-                return self.getVersionDetails(project_id, version_id, pathID, where, OrderBy)
+                return self.getVersionDetails(project_id, version_id, OrderBy)
             counter_recursion = 0
 
             self.Fixity.logger.LogException(Exception.message)
@@ -264,21 +236,22 @@ class Database(object):
 
 
     #Get Last Inserted Version of given project
-    def getVersionDetailsLast(self, project_id, path_id, where):
+    def getVersionDetailsLast(self, project_id):
 
         try:
             response = {}
-            result_of_last_version = self.select(self._tableVersionDetail, '*', "projectID='" + str(project_id) +"' and "+ where, ' versionID DESC LIMIT 1')
-            if result_of_last_version is not None and result_of_last_version is not False:
-                if(len(result_of_last_version) > 0):
-                    response = self.getVersionDetails(project_id, result_of_last_version[0]['versionID'], path_id,  where, ' id DESC')
+            result_of_last_version = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"'", ' versionID DESC LIMIT 1')
+            if(len(result_of_last_version) > 0):
+
+                response = self.getVersionDetails(project_id,result_of_last_version[0]['versionID'],' id DESC')
+
             return response
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
-                return self.getVersionDetailsLast(project_id, path_id, where)
+                return self.getVersionDetailsLast(project_id)
             counter_recursion = 0
 
             self.Fixity.logger.LogException(Exception.message)
@@ -330,7 +303,7 @@ class Database(object):
                 query += ' WHERE ' + condition
             if(order_by is not None):
                 query += ' ORDER BY '+ order_by
-
+            print(query)
             response = {}
             response_counter = 0
             for r in self.dict_gen(self.cursor.execute(query)):

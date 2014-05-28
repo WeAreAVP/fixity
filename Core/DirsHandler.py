@@ -12,7 +12,7 @@ if os.name == 'nt':
 
 import fnmatch, hashlib
 
-from collections import defaultdict
+
 from Core import SharedApp
 from Core import Database
 
@@ -55,76 +55,15 @@ class DirsHandler(object):
     #@param check_for_changes: check For Changes
     #
     #@return: removed Message if removed and count of removed file
-    def Run(self, project_name):
+    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files):
 
-        global verified_files
 
         self.database = Database.Database()
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
-        project_detail_information = self.database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() + '%"', ' id DESC')
-        if project_detail_information is False:
-            project_detail_information = self.database.getVersionDetailsLast(project_core.getID(), self.getID(),'path like "%' + self.getPathID() + '%"')
-
-        if len(project_detail_information) <= 0:
-            project_detail_information = self.database.getVersionDetailsLast(project_core.getID(), self.getID(), 'path like "%' + self.getPathID() + '%"')
-
-        verified_files = list()
-
-        missing_file = ('', '')
-        filters_array = {}
-        try:
-            filters_array = str(project_core.getFilters()).split(',')
-        except:
-            #print('no filters found')
-            pass
-
-        dict = defaultdict(list)
-        dict_hash = defaultdict(list)
-        dict_File = defaultdict(list)
-
-        confirmed,  moved,  created,  corrupted_or_changed  = 0, 0, 0, 0
         file_changed_list = ""
-
-        #print('writing ::: Stared Worked')
-        check = 0
-        old_dirs_information = {}
-        if project_core.getLast_dif_paths() != 'None' and project_core.getLast_dif_paths() != '' and project_core.getLast_dif_paths() != None:
-            last_dif_paths_array = str(project_core.getLast_dif_paths()).split(',')
-
-            for last_dif_paths in last_dif_paths_array:
-                single_dir_information = last_dif_paths.split('||-||')
-                if single_dir_information[0] != None and single_dir_information[0] != '':
-                    old_dirs_information[single_dir_information[1]] = single_dir_information[0]
-
-        for l in project_detail_information:
-            try:
-
-                x = self.toTuple(project_detail_information[l])
-                if x is not None and x:
-
-                    path_information = str(x[1]).split('||')
-                    if path_information:
-                        try:
-                            base_old_file_path = old_dirs_information[str(self.getPathID())]
-                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
-                        except:
-                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(self.getPath())) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
-                            pass
-
-                        # Parttren [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
-                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),False])
-
-                        # Parttren [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
-                        dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
-
-                        # Parttren [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
-                        dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
-
-            except:
-                self.Fixity.logger.LogException(Exception.message)
-                pass
         history_content = ''
+        check, created, confirmed, moved, corrupted_or_changed = 0, 0, 0, 0, 0
         Algorithm = str(project_core.getAlgorithm())
 
         version_id = project_core.getVersion()
@@ -132,7 +71,7 @@ class DirsHandler(object):
         #Getting all files and directory  in side "single_directory" with detail information (inode, path and file hash)
         single_directory = self.getPath()
 
-        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(r''+single_directory,Algorithm)
+        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(r''+single_directory, Algorithm)
 
         for directories_inside_details_single in directories_inside_details:
 
@@ -173,15 +112,16 @@ class DirsHandler(object):
 
             if flag:
                 check += 1
-                try:
-                    response = []
-                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single)
-                    if not response or len(response) < 1:
-                            continue
+                #try:
+                response = []
+                response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files)
 
-                except:
-                    self.Fixity.logger.LogException(Exception.message)
-                    pass
+                if not response or len(response) < 1:
+                        continue
+
+                #except:
+                #    self.Fixity.logger.LogException(Exception.message)
+                #    pass
 
                 try:
                     file_changed_list += response[1] + "\n"
@@ -227,12 +167,6 @@ class DirsHandler(object):
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
-        try:
-            missing_file = self.checkForMissingFiles(dict_hash)
-            file_changed_list += str(missing_file[0])
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
 
         information_to_update = {}
         information_to_update['versionCurrentID'] = version_id
@@ -243,22 +177,18 @@ class DirsHandler(object):
         total += created
         total += corrupted_or_changed
 
-        try:
-            total += missing_file[1]
-        except:
-            missing_file = ('', '')
-            print('no missing file')
-            pass
+
 
         information = {}
         information['confirmed'] = confirmed
         information['moved'] = moved
         information['created'] = created
         information['corrupted_or_changed'] = corrupted_or_changed
-        information['missing_file'] = missing_file[1]
+
         information['content'] = file_changed_list
         information['history_content'] = history_content
         information['total'] = total
+        information['verified_files'] = verified_files
 
 
 
@@ -280,14 +210,20 @@ class DirsHandler(object):
     #
     #@return: List - list of result of scanning occurred in this file for a single file
 
-    def verifyFiles (self, dicty, dict_hash, dictFile, line,):
-        global verified_files
+    def verifyFiles (self,dicty ,dict_hash ,dictFile ,line ,verified_files):
+
         try:
             ''' Check if I-Node related information Exists in the Given Directory  '''
             current_directory = dicty.get(line[2])
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+        try:
+            if verified_files.index(line[1]):
+                return
+        except:
+            pass
+
         #print('Verfiy File ::::: '+str(line[1]))
         '''' IF Given File Exists'''
         if os.path.isfile(line[1].decode('utf-8')):
@@ -321,6 +257,7 @@ class DirsHandler(object):
                 if (not isHashSame) and isFilePathSame:
                     verified_files.append(line[1])
                     return line, self.Fixity.Configuration.change_file+":\t" + str(line[1])
+
 
                 '''Changed  FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
                 if (not isHashSame) and (not isFilePathSame):
@@ -356,17 +293,7 @@ class DirsHandler(object):
             verified_files.append(line[1])
             return line,  self.Fixity.Configuration.new_file+":\t" + str(line[1])
 
-    #Method to convert database line into tuple
-    #@param line: Information of a single File
-    #
-    #@return tuple: (hash, abspath, id)
 
-    def toTuple(self, line):
-        try:
-            return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            return None
 
 
 
@@ -583,24 +510,3 @@ class DirsHandler(object):
 
 
 
-    #Method to find which files are missing in the scanned directory
-    #Input: defaultdict (from buildDict)
-    #Output: warning messages about missing files (one long string and printing to stdout)
-    #
-    #@param dict: Directory of all file exists in the scanned folder
-    #@param file: List of all directory with inode,  hash and path information  with indexed using Inode
-    #
-    #@return: removed Messgae if removed and count of removed file
-    def checkForMissingFiles(self,dict):
-
-        msg = ""
-        count = 0
-        global verified_files
-        ''' walks through the dict and returns all False flags '''
-        for keys in dict:
-            for obj in dict[keys]:
-                    if not obj[0] in verified_files:
-                        verified_files.append(obj[0])
-                        msg += "Removed Files\t" + obj[0] +"\n"
-                        count = count + 1
-        return msg, count

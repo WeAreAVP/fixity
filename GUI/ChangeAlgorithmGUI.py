@@ -128,6 +128,9 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
         result_of_all_file_confirmed = project_core.Run(True)
+        print('result_of_all_file_confirmed')
+        print(result_of_all_file_confirmed)
+        print('result_of_all_file_confirmed')
         email_config = self.Fixity.Configuration.getEmailConfiguration()
 
         msgBox.close()
