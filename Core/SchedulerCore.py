@@ -375,77 +375,79 @@ class SchedulerCore(object):
     #Output : XML for Mac launhd scheduling
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
 
-
-        launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
-        scheduler_xml_text = ''
-        xmlsch = open(u''+launch_agent, "w")
-        # Months
-        if interval == 1:
-            template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_mac(), "r")
-            scheduler_xml_template_lines = template_monthly_file.readlines()
-            template_monthly_file.close()
-
-        # Weeks
-        elif interval == 2:
-            template_week_file = open(self.Fixity.Configuration.getSch_week_template_path_mac(), "r")
-            scheduler_xml_template_lines = template_week_file.readlines()
-            template_week_file.close()
-
-        # Days
-        elif interval == 3:
-            template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path_mac(), "r")
-            scheduler_xml_template_lines = template_days_file.readlines()
-            template_days_file.close()
-
-
-        infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-        trigger_information = str(infoTrigger[1]).split(':')
-        for scheduler_xml_template_line_single in scheduler_xml_template_lines:
-
-
-            scheduler_xml_template_line_single = self.Fixity.Configuration.CleanStringForBreaks(str(scheduler_xml_template_line_single))
-
-
-            response = False
-
-            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{fixity_path}}', str(self.Fixity.Configuration.getFixityLaunchPath()))
-
-            if response is False:
-                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{demon_name}}', "Com.fixity."+str(project_name)+".demon")
-
-            if response is False:
-                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{project_name}}', str(project_name))
-
-            if response is False:
-                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{debug_file_path}}', self.Fixity.Configuration.getDebugFilePath())
-
-            if response is False:
-                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{mins}}', str(trigger_information[1]))
-
-            if response is False:
-                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{hrs}}', str(trigger_information[0]))
-
-            if interval == 1:
-                if response is False:
-                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{day}}', str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']))
-
-            if interval == 2:
-                if response is False:
-                    WeekInformation = self.Fixity.Configuration.getWeekInformation()
-                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
-            print(response)
-
-            if response is False:
-                # if no value found to replace
-                scheduler_xml_text += str(scheduler_xml_template_line_single) +"\n"
-            else:
-                scheduler_xml_text += response
-        print(scheduler_xml_text)
         try:
-            xmlsch.write(scheduler_xml_text)
-        except:
-            pass
+            launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
+            scheduler_xml_text = ''
+            xmlsch = open(u''+launch_agent, "w")
+            # Months
+            if interval == 1:
+                template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_mac(), "r")
+                scheduler_xml_template_lines = template_monthly_file.readlines()
+                template_monthly_file.close()
 
+            # Weeks
+            elif interval == 2:
+                template_week_file = open(self.Fixity.Configuration.getSch_week_template_path_mac(), "r")
+                scheduler_xml_template_lines = template_week_file.readlines()
+                template_week_file.close()
+
+            # Days
+            elif interval == 3:
+                template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path_mac(), "r")
+                scheduler_xml_template_lines = template_days_file.readlines()
+                template_days_file.close()
+
+
+            infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
+            trigger_information = str(infoTrigger[1]).split(':')
+            for scheduler_xml_template_line_single in scheduler_xml_template_lines:
+
+
+                scheduler_xml_template_line_single = self.Fixity.Configuration.CleanStringForBreaks(str(scheduler_xml_template_line_single))
+
+
+                response = False
+
+                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{fixity_path}}', str(self.Fixity.Configuration.getFixityLaunchPath()))
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{demon_name}}', "Com.fixity."+str(project_name)+".demon")
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{project_name}}', str(project_name))
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{debug_file_path}}', self.Fixity.Configuration.getDebugFilePath())
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{mins}}', str(trigger_information[1]))
+
+                if response is False:
+                    response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{hrs}}', str(trigger_information[0]))
+
+                if interval == 1:
+                    if response is False:
+                        response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{day}}', str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']))
+
+                if interval == 2:
+                    if response is False:
+                        WeekInformation = self.Fixity.Configuration.getWeekInformation()
+                        response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
+                print(response)
+
+                if response is False:
+                    # if no value found to replace
+                    scheduler_xml_text += str(scheduler_xml_template_line_single) +"\n"
+                else:
+                    scheduler_xml_text += response
+            print(scheduler_xml_text)
+            try:
+                xmlsch.write(scheduler_xml_text)
+            except:
+                pass
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
         xmlsch.close()
         return launch_agent
 
