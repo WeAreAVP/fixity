@@ -134,10 +134,11 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
+            self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
+
             try:
                 if email_config['smtp'] != '' and email_config['smtp'] is not None:
                     email_notification = EmailNotification.EmailNotification()
-                    self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
                     if project_core.getEmail_address() !='' and project_core.getEmail_address() is not None:
                         email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config)
             except:

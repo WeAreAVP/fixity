@@ -39,6 +39,8 @@ messages['dir_dnt_exists'] = ' does not exist.\nPlease provide a valid path and 
 messages['save_other_projects'] =' Save All other unsaved Project(s) and then try again '
 messages['project_not_ran_before'] = "This project has not been scanned before, Please run the project and then try again."
 messages['alog_not_changed_mail'] = 'The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process. Thanks'
+messages['invalid_smtp_given'] = 'Invalid Smtp Server given'
+messages['invalid_port_given'] = 'Invalid Port given'
 
 
 

@@ -49,7 +49,7 @@ if __name__ == '__main__':
     else:
         try:
             print('Scanning is in progress!........')
-            Fixity.LaunchScheduler(args.autorun)
+            Fixity.LaunchCLI(args.autorun)
             sys.exit()
         except:
             exc_type, exc_obj, exc_tb = sys.exc_info()

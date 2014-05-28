@@ -10,7 +10,7 @@ import os
 if os.name == 'nt':
     import win32file, win32con, win32api
 
-import datetime, time, fnmatch, hashlib
+import fnmatch, hashlib
 
 from collections import defaultdict
 from Core import SharedApp
@@ -123,9 +123,6 @@ class DirsHandler(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
-        print('-------------------------------')
-        print(dict)
-        print('-------------------------------')
         history_content = ''
         Algorithm = str(project_core.getAlgorithm())
 
@@ -181,7 +178,7 @@ class DirsHandler(object):
                 check+= 1
                 try:
                     response = []
-                    response = self.verifyFiles(dict,dict_hash, dict_File, directories_inside_details_single)
+                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single)
                     if not response or len(response) < 1:
                             continue
 
@@ -318,53 +315,59 @@ class DirsHandler(object):
                 ''' Check For File Path Change '''
                 isFilePathSame = (current_directory[0] == line[1])
 
-                '''   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
+
+
+                '''Confirmed   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
                 if isHashSame and isFilePathSame:
                     verified_files.append(line[1])
-                    return line, "Confirmed File :\t" + str(line[1])
+                    return line, self.Fixity.Configuration.confirmed_file+":\t" + str(line[1])
 
-                '''   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
+
+                '''Moved   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
                 if isHashSame and (not isFilePathSame):
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
-                    return line, "Moved or Renamed File :\t" + str(current_directory[0]) + "\t changed to\t" + str(line[1])
+                    return line, self.Fixity.Configuration.move_or_renamed_file+":\t" + str(current_directory[0]) + "\t changed to\t" + str(line[1])
 
-                '''   FileExists::YES  ||SameHashOfFile::NO  ||SameFilePath::YES ||SameI-Node::YES  '''
+
+                '''Changed   FileExists::YES  ||SameHashOfFile::NO  ||SameFilePath::YES ||SameI-Node::YES  '''
                 if (not isHashSame) and isFilePathSame:
-
                     verified_files.append(line[1])
-                    return line, "Changed File :\t" + str(line[1])
+                    return line, self.Fixity.Configuration.change_file+":\t" + str(line[1])
 
-                '''   FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
+                '''Changed  FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
                 if (not isHashSame) and (not isFilePathSame):
-
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
-                    return line, "Changed File :\t" + str(line[1])
+                    return line, self.Fixity.Configuration.change_file+":\t" + str(current_directory[0]) + "\t changed to\t" + str(line[1])
             else :
                 for dictionary_single in dict_hash:
                     all_information_hash_related = dict_hash[dictionary_single]
-
                     for single_infor_hash_related in all_information_hash_related:
 
-                        '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::YES    #SameI-Node::NO  '''
+                        '''Confirmed  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::YES    #SameI-Node::NO  '''
                         if single_infor_hash_related[0] == line[1] and dictionary_single == line[0]:
                             verified_files.append(line[1])
-                            return line, "Confirmed File :\t" + str(line[1])
+                            return line, self.Fixity.Configuration.confirmed_file+":\t" + str(line[1])
 
-                            '''  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO  '''
+
+
+                            '''Changed  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO  '''
                         elif single_infor_hash_related[0] == line[1] and dictionary_single != line[0]:
                             verified_files.append(line[1])
-                            return line, 'Changed File :\t' + str(line[1])
+                            return line, self.Fixity.Configuration.change_file+":\t" + str(line[1])
 
-                            '''  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO  '''
+
+
+                            '''New  FileExists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO  '''
                         elif single_infor_hash_related[0] != line[1] and dictionary_single == line[0]:
                             verified_files.append(line[1])
-                            return line, 'New File :\t' + str(line[1])
+                            return line, self.Fixity.Configuration.new_file+":\t" + str(line[1])
 
-            '''  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
+
+            '''New  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
             verified_files.append(line[1])
-            return line, 'New File :\t' + str(line[1])
+            return line,  self.Fixity.Configuration.new_file+":\t" + str(line[1])
 
     #Method to convert database line into tuple
     #@param line: Information of a single File
@@ -404,8 +407,6 @@ class DirsHandler(object):
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         listOfValues = []
         fls = []
-
-
         try:
             for root, sub_folders, files in os.walk(r''+directory_path_to_be_scanned):
 

@@ -407,8 +407,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         if response:
-            project_core = self.Fixity.ProjectRepo.getSingleProject(self.projects.currentItem().text())
-            project_core.Delete()
+            try:
+                project_core = self.Fixity.ProjectRepo.getSingleProject(self.projects.currentItem().text())
+                project_core.Delete()
+            except:
+                pass
 
             self.projects.takeItem(self.projects.row(self.projects.currentItem()))
 
