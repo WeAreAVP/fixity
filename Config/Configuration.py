@@ -40,7 +40,7 @@ class Configuration(object):
             self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
-            self.config_file_path = self.Fixity.Configuration.getBasePath()+'conf.xml'
+            self.config_file_path = self.getBasePath()+'conf.xml'
 
         else:
             self.lib_agent_path = str(self.user_home_path)+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)

@@ -25,6 +25,7 @@ history/*
 reports
 reports/*
 bin
+schedules/*
 bin/*
 debug
 debug/*
