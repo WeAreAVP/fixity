@@ -351,9 +351,10 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         else:
             try:
                 self.notification.showError(self, 'Error',  GUILibraries.messages['testing_email_error'])
+                self.loader.hide()
             except:
+                self.loader.hide()
                 pass
-
 
 
     def GetLayout(self):

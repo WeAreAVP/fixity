@@ -135,7 +135,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
             self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
-
             try:
                 if email_config['smtp'] != '' and email_config['smtp'] is not None:
                     email_notification = EmailNotification.EmailNotification()

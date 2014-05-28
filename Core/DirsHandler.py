@@ -16,14 +16,17 @@ from collections import defaultdict
 from Core import SharedApp
 from Core import Database
 
+
 class DirsHandler(object):
+
+
     def __init__(self,path, path_id, ID):
         super(DirsHandler, self).__init__()
         self.Fixity = SharedApp.SharedApp.App
         self.path = path
         self.path_id= path_id
         self.ID = ID
-        self.Database = Database.Database()
+        self.database = Database.Database()
 
     def getPath(self):
         return self.path
@@ -43,8 +46,6 @@ class DirsHandler(object):
     def setPathID(self, path_id):
         self.path_id = path_id
 
-
-
     #Updating/Creating Manifest
     #With on the given directory
     #
@@ -57,20 +58,20 @@ class DirsHandler(object):
     def Run(self, project_name):
 
         global verified_files
-        self.Database = Database.Database()
+
+        self.database = Database.Database()
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
-        project_detail_information = self.Database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() +'%"' ,' id DESC')
+        project_detail_information = self.database.getVersionDetails(project_core.getID(), project_core.getPreviousVersion(), self.getID(), 'path like "%'+self.getPathID() + '%"', ' id DESC')
         if project_detail_information is False:
-            project_detail_information = self.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
+            project_detail_information = self.database.getVersionDetailsLast(project_core.getID(), self.getID(),'path like "%' + self.getPathID() + '%"')
 
         if len(project_detail_information) <= 0:
-            project_detail_information = self.Database.getVersionDetailsLast(project_core.getID(),  self.getID(),'path like "%'+self.getPathID() +'%"' )
-
+            project_detail_information = self.database.getVersionDetailsLast(project_core.getID(), self.getID(), 'path like "%' + self.getPathID() + '%"')
 
         verified_files = list()
 
-        missing_file = ('','')
+        missing_file = ('', '')
         filters_array = {}
         try:
             filters_array = str(project_core.getFilters()).split(',')
@@ -135,18 +136,17 @@ class DirsHandler(object):
 
         for directories_inside_details_single in directories_inside_details:
 
-            flag =True
+            flag = True
             directories_inside_details_single = list(directories_inside_details_single)
             file_path = str(directories_inside_details_single[1]).split('||')
             path_Info = self.getPath()
 
-
             directories_inside_details_single[1] = (str(path_Info)+str(file_path[1]))
             for filter in filters_array:
-                if filter !='' and directories_inside_details_single[1].find(str(filter).strip()) >= 0:
-                    flag =False
+                if filter != '' and directories_inside_details_single[1].find(str(filter).strip()) >= 0:
+                    flag = False
 
-            if(project_core.getIgnore_hidden_file() == 1 or project_core.getIgnore_hidden_file() == '1'):
+            if project_core.getIgnore_hidden_file() == 1 or project_core.getIgnore_hidden_file() == '1' :
 
                 try:
                     path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
@@ -159,23 +159,20 @@ class DirsHandler(object):
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
+                try:
+                    path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                    for single_directory_hidden in path_exploded:
+                        if fnmatch.fnmatch(single_directory_hidden, '.*'):
+                            flag = False
 
-
-                #try:
-                path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
-                for single_directory_hidden in path_exploded:
-                    if fnmatch.fnmatch(single_directory_hidden, '.*'):
-                        flag = False
-
-                    if self.isGivenFileHidden(single_directory_hidden):
-                        flag = False
-                #except:
-                #    self.Fixity.logger.LogException(Exception.message)
-                #    pass
-
+                        if self.isGivenFileHidden(single_directory_hidden):
+                            flag = False
+                except:
+                    self.Fixity.logger.LogException(Exception.message)
+                    pass
 
             if flag:
-                check+= 1
+                check += 1
                 try:
                     response = []
                     response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single)
@@ -210,8 +207,6 @@ class DirsHandler(object):
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
-
-
                 try:
                     version_detail_options = {}
                     version_detail_options['hashes'] = str(response[0][0])
@@ -221,21 +216,16 @@ class DirsHandler(object):
                     version_detail_options['projectID'] = project_core.getID()
                     version_detail_options['projectPathID'] = self.getID()
 
-                    self.Database.insert(self.Database._tableVersionDetail, version_detail_options)
+                    self.database.insert(self.database._tableVersionDetail, version_detail_options)
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
-
-
-
 
                 try:
                     history_content +=str(response[0][0]) + "\t" + str(response[0][1]) + "\t" + str(response[0][2]) + "\n"
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
-
-
 
         try:
             missing_file = self.checkForMissingFiles(dict_hash)
@@ -246,10 +236,9 @@ class DirsHandler(object):
 
         information_to_update = {}
         information_to_update['versionCurrentID'] = version_id
-        self.Database.update(self.Database._tableProject, information_to_update, " id= '" + str(project_core.getID()) + "'")
+        self.database.update(self.database._tableProject, information_to_update, " id= '" + str(project_core.getID()) + "'")
 
-
-        total =  confirmed
+        total = confirmed
         total += moved
         total += created
         total += corrupted_or_changed
@@ -257,11 +246,9 @@ class DirsHandler(object):
         try:
             total += missing_file[1]
         except:
-            missing_file = ('','')
+            missing_file = ('', '')
             print('no missing file')
             pass
-
-
 
         information = {}
         information['confirmed'] = confirmed

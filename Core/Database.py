@@ -72,7 +72,7 @@ class Database(object):
             self.con.commit()
             Row = self.cursor.fetchone()
             return Row
-        except (sqlite3.OperationalError,Exception):
+        except (sqlite3.OperationalError):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
@@ -188,7 +188,26 @@ class Database(object):
 
 
 
-
+   #def getVersionDetails(self, project_id, version_id, pathID, where, OrderBy=None):
+   # try:
+   #     query = "select VD.*, PP.* from `"+self._tableVersionDetail+"` as VD join `"+self._tableProjectPath+"` as PP on VD.projectPathID = PP.id where "+ where
+   #     response = {}
+   #     response_counter = 0
+   #     for r in self.dict_gen(self.cursor.execute(query)):
+   #         response[response_counter] = r
+   #         response_counter = response_counter + 1
+   #
+   #     return response
+   # except (sqlite3.OperationalError,Exception):
+   #     global counter_recursion
+   #     SharedApp.SharedApp.App.Database = Database()
+   #     if counter_recursion < 2:
+   #         counter_recursion = counter_recursion + 1
+   #         return self.getVersionDetails(project_id, version_id, pathID, where, OrderBy)
+   #     counter_recursion = 0
+   #
+   #     self.Fixity.logger.LogException(Exception.message)
+   #     return False
     #Get Given Version Details
     #@param project_id: Project ID
     #@param version_id: ID of Version of Project who's detail to be fetched

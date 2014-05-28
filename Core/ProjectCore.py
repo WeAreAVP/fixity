@@ -607,9 +607,11 @@ class ProjectCore(object):
             email_config = self.Fixity.Configuration.getEmailConfiguration()
             try:
                 if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
-
+                    email_address = str(self.getEmail_address()).split(',')
                     email_notification = EmailNotification.EmailNotification()
-                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
+                    for single_email_address in email_address:
+                        if single_email_address != '' and single_email_address is not None:
+                            email_notification.ReportEmail(single_email_address, created_report_info['path'], created_report_info['email_content'], email_config)
             except:
                 pass
         if is_from_thread:
