@@ -165,11 +165,14 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         if information :
             if(len(information)> 0):
-                email_addr = information['email']
-                Pass = str(information['pass'])
-                port = str(information['port'])
-                smtp = str(information['smtp'])
-                protocol = str(information['protocol'])
+                try:
+                    email_addr = information['email']
+                    Pass = str(information['pass'])
+                    port = str(information['port'])
+                    smtp = str(information['smtp'])
+                    protocol = str(information['protocol'])
+                except:
+                    pass
         self.email_addr_bar.setText(email_addr)
         self.password.setText(Pass)
 
