@@ -527,11 +527,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.decryption_manager_menu.setDisabled(status)
 
     def new(self):
-        self.togglerMenu(False)
+
         if self.unsaved == True:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['save_other_projects']))
             return
-
+        self.update_menu.setDisabled(False)
         QID =GUILibraries.QInputDialog(self)
         QID.setWindowModality(GUILibraries.Qt.WindowModal)
         name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
@@ -565,6 +565,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.old = new_item
 
     def Save(self, project = None):
+        self.togglerMenu(False)
         all_email_addres = ''
         is_recipient_email_address_set = False
         for mail_string in self.mail_text_fields:
