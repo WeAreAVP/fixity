@@ -221,9 +221,11 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
         try:
-            if verified_files.index(line[1]):
-                return
+            for single_verified_files in verified_files:
+                if str(single_verified_files) in str(line[1]):
+                    return
         except:
             pass
 
