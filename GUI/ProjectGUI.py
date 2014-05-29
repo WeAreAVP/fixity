@@ -18,7 +18,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def __init__(self):
 
         super(ProjectGUI, self).__init__()
-        self.isPathChanged = False
+        self.is_path_changed = False
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
         self.about_fixity_gui = AboutFixityGUI.AboutFixityGUI(self)
@@ -106,7 +106,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(True)
+            self.dirs_text_fields[n].setReadOnly(False)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
@@ -449,8 +449,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
-    #@param searchForPath: Path of a given base Dire
-    #@param code: Code of that specific path
+    #@param searchForPath: Path of a given base Dire in the view
+    #@param code: Code of that specific path in the view
     #
     #@return: None
 
@@ -464,10 +464,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     if str(directory_detail[directory_detail_single].getPathID().strip()) == str(code).strip():
                         if directory_detail[directory_detail_single].getPath().strip() != '' and  search_for_path != '':
                             if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
-                                self.isPathChanged = True
+                                self.is_path_changed = True
                                 self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
 
-            if (self.isPathChanged == True and (project_core.getLast_dif_paths() is None or project_core.getLast_dif_paths() == ''  or project_core.getLast_dif_paths() == 'None')):
+            if self.is_path_changed is True and (project_core.getLast_dif_paths() is None or project_core.getLast_dif_paths() == '' or project_core.getLast_dif_paths() == 'None'):
                     all_previous_paths = ''
 
                     for  directory_detail_single in directory_detail:
@@ -485,7 +485,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
                         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_inf, "id = '" + str(project_core.getID()) + "'")
                         project_core.setLast_dif_paths(all_previous_paths)
 
-                    self.isPathChanged = False
+                    self.is_path_changed = False
+
         except:
             self.Fixity.logger.LogException()
             pass
@@ -505,14 +506,46 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.path_change_gui.ShowDialog()
         self.setWindowTitle("Fixity " + self.Fixity.Configuration.getApplicationVersion())
 
+    def checkNumberOfDirsChange(self):
+        try:
+            number_of_current_dirs = 0
+            for directory_single in self.dirs_text_fields:
+                if directory_single.text().strip() != "":
+                    number_of_current_dirs += 1
+
+            num_if_path_in_db = 0
+
+            project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
+            directory_detail = project_core.getDirectories()
+
+            all_previous_paths = ''
+            for directory_detail_single in directory_detail:
+                if str(directory_detail[directory_detail_single].getPath()).strip() != "":
+                    if directory_detail[directory_detail_single].getPath() is not None:
+                        if all_previous_paths == '':
+                            all_previous_paths = str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
+                        else:
+                            all_previous_paths = all_previous_paths+','+str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
+                        num_if_path_in_db += 1
+
+
+            if int(num_if_path_in_db) > int(number_of_current_dirs) and (project_core.getLast_dif_paths() == '' or project_core.getLast_dif_paths() == 'None'):
+                update_inf = {}
+                update_inf['lastDifPaths'] = all_previous_paths
+                self.Fixity.Database.update(self.Fixity.Database._tableProject, update_inf, "id = '" + str(project_core.getID()) + "'")
+                project_core.setLast_dif_paths(all_previous_paths)
+        except:
+            pass
+
+
     def check_for_path_changes(self):
         num_if_path_scanned = 0
         for directory_single in self.dirs_text_fields:
 
             if directory_single.text().strip() != "":
                 num_if_path_scanned = num_if_path_scanned + 1
-        directory_increment = 1
 
+        directory_increment = 1
         for directory_single in self.dirs_text_fields:
             #if directory_single.text().strip() != "":
             self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
@@ -528,7 +561,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def new(self):
 
-        if self.unsaved == True:
+        if self.unsaved is True:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['save_other_projects']))
             return
         self.update_menu.setDisabled(False)
@@ -537,6 +570,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
 
         if not name[1]:
+            if len(self.Fixity.ProjectsList) <=0:
+                self.update_menu.setDisabled(True)
             return
 
         is_project_name_valid = self.Fixity.Validation.ValidateProjectName(name[0])
@@ -579,9 +614,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     return
 
         if is_recipient_email_address_set:
-
+                self.Fixity = SharedApp.SharedApp.App
                 email_info = self.Fixity.Configuration.getEmailConfiguration()
-
                 try:
                     if (email_info['email'] == '' and email_info['email'] is None)  and (email_info['smtp'] != '' or email_info['smtp'] is None):
                         self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
@@ -589,6 +623,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 except:
                     self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
                     return
+
         if all(d.text() == "" for d in self.dirs_text_fields):
             self.notification.showError(self, "Error", GUILibraries.messages['no_directories'])
             return
@@ -610,6 +645,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.project = ProjectCore.ProjectCore()
 
         self.check_for_path_changes()
+        self.checkNumberOfDirsChange()
         current_item = self.projects.currentItem().text()
 
         self.project.setTitle(current_item)
@@ -787,7 +823,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.bin_of_dirs[n].setDisabled(status)
             self.browse_dirs[n].setDisabled(status)
 
-
         self.timer.setDisabled(status)
         self.monthly.setDisabled(status)
         self.weekly.setDisabled(status)
@@ -810,20 +845,15 @@ class ProjectGUI(GUILibraries.QMainWindow):
             pass
 
 
-
-
-
-
     #Refresh Project Settings on the main Window
     def refreshProjectSettings(self):
-            
+            self.Fixity = SharedApp.SharedApp.App
             allProjects = self.Fixity.getProjectList()
+            print(allProjects)
             try:
                 self.projects.clear()
             except Exception as ex:
-
                 pass
-
             try:
                 if allProjects != None:
                     if(len(allProjects) > 0):

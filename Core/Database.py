@@ -57,7 +57,7 @@ class Database(object):
                 counter_recursion = counter_recursion + 1
                 return self.connect()
             counter_recursion = 0
-
+            return  SharedApp.SharedApp.App.Database.connect()
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -79,6 +79,10 @@ class Database(object):
                 counter_recursion = counter_recursion + 1
                 return self.getOne(query)
             counter_recursion = 0
+            try:
+                return  SharedApp.SharedApp.App.Database.getOne(query)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -98,11 +102,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.sqlQuery(query)
             counter_recursion = 0
-
+            try:
+                return  SharedApp.SharedApp.App.Database.sqlQuery(query)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -130,11 +138,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getProjectInfo(project_name, limit)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getProjectInfo(project_name, limit)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -155,11 +167,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getProjectPathInfo(project_id ,version_id)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getProjectPathInfo(project_id ,version_id)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -178,11 +194,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getConfiguration()
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getConfiguration()
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -194,11 +214,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getVersionDetails(project_id, version_id, OrderBy)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getVersionDetails(project_id, version_id, OrderBy)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -221,11 +245,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getConfigInfo(project)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getConfigInfo(project)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
         return {}
@@ -249,11 +277,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.getVersionDetailsLast(project_id)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.getVersionDetailsLast(project_id)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -272,11 +304,15 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.listToTuple(proveded_list)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.listToTuple(proveded_list)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -320,7 +356,10 @@ class Database(object):
                 counter_recursion = counter_recursion + 1
                 return self.select(table_name ,select, condition, order_by)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.select(table_name ,select, condition, order_by)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -340,11 +379,17 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 self.dict_gen(curs)
             counter_recursion = 0
+            try:
 
+                SharedApp.SharedApp.App.Database.dict_gen(curs)
+
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -385,11 +430,16 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.insert(table_name, information)
             counter_recursion = 0
 
+            try:
+                return SharedApp.SharedApp.App.Database.insert(table_name, information)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -404,16 +454,19 @@ class Database(object):
         try:
             query = 'DELETE FROM '+str(table_name) + ' WHERE '+ condition
             response = self.sqlQuery(query)
-            
             return response
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.delete(table_name ,condition)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.delete(table_name ,condition)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -436,7 +489,7 @@ class Database(object):
                         query += ' , '+ str(single_info) + "='" + str(information[single_info]) + "'"
                     counter = counter+1
             query += ' WHERE '+condition
-
+            print(query)
             response = self.cursor.execute(query)
             self.commit()
             return response
@@ -445,11 +498,15 @@ class Database(object):
             global counter_recursion
 
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.update(table_name, information, condition)
             counter_recursion = 0
-
+            try:
+                return SharedApp.SharedApp.App.Database.update(table_name, information, condition)
+            except:
+                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -487,10 +544,16 @@ class Database(object):
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
+            self = Database()
             if counter_recursion < 2:
                 counter_recursion = counter_recursion + 1
                 return self.implode(information , glue , is_column)
             counter_recursion = 0
+            try:
+                return SharedApp.SharedApp.App.Database.implode(information , glue , is_column)
+            except:
+                pass
+
 
 
             self.Fixity.logger.LogException(Exception.message)

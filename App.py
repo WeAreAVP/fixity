@@ -70,6 +70,7 @@ class App(object):
 
     def getProjectList(self):
         information = []
+        print(self.ProjectsList)
         if self.ProjectsList is not None and self.ProjectsList is not False:
             if len(self.ProjectsList) > 0:
                 for project in self.ProjectsList:

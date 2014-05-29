@@ -423,7 +423,7 @@ class ProjectCore(object):
     def ChangeTitle(self, new_title):
         information = {}
         information['title'] = new_title
-        self.Fixity.Database.update(self.Fixity.Database._tableProject,information, 'id="' + str(self.getID()) + '"')
+        self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id="' + str(self.getID()) + '"')
 
         return False
 
@@ -678,7 +678,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)

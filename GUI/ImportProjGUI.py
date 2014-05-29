@@ -167,6 +167,7 @@ class ImportProjectGUI(GUILibraries.QDialog):
             self.notification.showInformation(self, 'Project Imported', GUILibraries.messages['project_imported_sccuessfully'])
             self.parent_win.refreshProjectSettings()
             self.parent_win.toggler(False)
+            self.Cancel()
         else:
             self.notification.showError(self, 'Invalid Import File', GUILibraries.messages['invalid_import_file'])
             self.parent_win.refreshProjectSettings()

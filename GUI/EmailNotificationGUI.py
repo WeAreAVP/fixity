@@ -31,7 +31,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         except:
             pass
         try:
-            super(EmailNotificationGUI,self).reject()
+            super(EmailNotificationGUI, self).reject()
         except:
             pass
     #Distructor
@@ -398,6 +398,8 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         self.Fixity.Configuration.saveEmailConfiguration(information)
+        self.Fixity.Configuration.setEmailConfiguration(information)
+
         self.notification.showInformation(self, "Fixity", GUILibraries.messages['email_save_success'])
         self.Cancel()
     def getConfigInfo(self):
