@@ -46,7 +46,7 @@ messages['invalid_port_given'] = 'Invalid Port given'
 
 ''' About Fixity''' 
 ''' Description ''' 
-messages['description_heading'] = '<h1>DESCRIPTION</h1>.'
+messages['description_heading'] = '<h1>DESCRIPTION</h1>'
 messages['description_Content'] = '<p>AVPreserve Fixity 0.4</p> <p>Fixity was developed by AVPreserve and can be found at www.avpreserve.com/tools</p></br> <p>The GitHub repository for Fixity can be found at https://github.com/avpreserve/fixity</p> <p>Fixity is a utility for the documentation and regular review of stored files. Fixity scans a folder or directory, creating a manifest of the files including their file paths and their checksums, against which a regular comparative analysis can be run. Fixity monitors file integrity through generation and validation of checksums, and file attendance through monitoring and reporting on new, missing, moved and renamed files. Fixity emails a report to the user documenting flagged items along with the reason for a flag, such as that a file has been moved to a new location in the directory, has been edited, or has failed a checksum comparison for other reasons. Supplementing tools like BagIt that review files at points of exchange, when run regularly Fixity becomes a powerful tool for monitoring digital files in repositories, servers, and other long-term storage locations.</p>'
 
 ''' License ''' 
@@ -131,7 +131,7 @@ messages['License_Content'] = '''<p>Fixity Copyright and License</p>
 
 
 ''' Contact Us ''' 
-messages['Contact_heading'] = '<h1>Contact</h1>.'
+messages['Contact_heading'] = '<h1>Contact</h1>'
 messages['Contact_Content'] = '<p>Please post issues and feature requests at https://github.com/avpreserve/fixity/issues</p> <p>Please send questions, comments or feedback to info@avpreserve.com</p></br>'
 
 
