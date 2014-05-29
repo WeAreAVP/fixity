@@ -223,15 +223,17 @@ class Configuration(object):
         if config_exists is not None and config_exists is not False:
             if len(config_exists) <=0:
                 self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
+                self.setEmailConfiguration(information)
                 is_email_config_insert = True
             else:
                 is_email_config_insert = False
 
 
-        if is_email_config_insert is False:
-            self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+            if is_email_config_insert is False:
+                self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+                self.setEmailConfiguration(information)
 
-        self.setEmailConfiguration(information)
+
 
 
     def LogHistory(self):
