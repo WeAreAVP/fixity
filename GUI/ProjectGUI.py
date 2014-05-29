@@ -5,6 +5,7 @@
 
 
 # Custom Libraries
+from idlelib.tabbedpages import TabbedPageSet
 from GUI import GUILibraries, AboutFixityGUI, ApplyFiltersGUI, ChangeAlgorithmGUI, ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGUI
 from Core import SharedApp, ProjectCore
 
@@ -105,7 +106,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(False)
+            self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
