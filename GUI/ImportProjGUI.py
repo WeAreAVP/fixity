@@ -164,10 +164,13 @@ class ImportProjectGUI(GUILibraries.QDialog):
         self.parent_win.setWindowTitle('Importing Project ....')
 
         if project_core.ImportProject(self.project_selected.text(), file_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
-            self.notification.showInformation(self, 'Invalid Name', GUILibraries.messages['project_imported_sccuessfully'])
-        self.parent_win.refreshProjectSettings()
-        self.parent_win.toggler(False)
-        self.Cancel()
+            self.notification.showInformation(self, 'Project Imported', GUILibraries.messages['project_imported_sccuessfully'])
+            self.parent_win.refreshProjectSettings()
+            self.parent_win.toggler(False)
+        else:
+            self.notification.showError(self, 'Invalid Import File', GUILibraries.messages['invalid_import_file'])
+            self.parent_win.refreshProjectSettings()
+
 
     '''
     Close the Dialog Box

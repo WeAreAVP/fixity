@@ -52,7 +52,10 @@ class EmailNotification(object):
             msg.attach(part)
 
         protocol = str(information['protocol'])
-        port = int(str(information['port']).strip())
+        try:
+            port = int(str(information['port']).strip())
+        except:
+            return False
 
 
         try:

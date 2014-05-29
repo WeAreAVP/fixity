@@ -15,7 +15,7 @@ class App(object):
         self.setUp()
 
     def selfDestruct(self):
-        print('self destruct')
+        selfdis= ''
 
     @staticmethod
     def getInstance():

@@ -279,8 +279,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
                 if response:
                     self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                    self.unsaved = False
+                    self.unsaved = True
                     return
+                else:
+                    self.refreshProjectSettings()
 
 
         try:
@@ -369,7 +371,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.dayClick()
 
         try:
-            t = str(project_core.getRunTime()).split(':')
+            t = str(project_core.scheduler.getRunTime()).split(':')
         except:
             t = ['00', '00']
 
@@ -627,9 +629,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.project.scheduler.setRunTime(self.timer.time().toString())
         run_only_on_ac_power = '2'
 
-        if is_month == 99 and is_week == 99 :
+        if is_month == 99 and is_week == 99:
             run_only_on_ac_power = ''
-        elif is_month == 99 and is_week != 99 :
+        elif is_month == 99 and is_week != 99:
             run_only_on_ac_power = self.day_of_week.currentIndex()
 
         elif is_month != 99 and is_week == 99:

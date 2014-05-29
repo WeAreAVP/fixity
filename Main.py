@@ -36,7 +36,6 @@ if __name__ == '__main__':
         parser.add_argument('-a', '--autorun')
         args = parser.parse_args()
     except:
-        print("Could not run this Project "+str(Exception.message))
         pass
 
     # If Received argument (project name and run command), it with run the
@@ -48,7 +47,7 @@ if __name__ == '__main__':
 
     else:
         try:
-            print('Scanning is in progress!........')
+
             Fixity.LaunchCLI(args.autorun)
             sys.exit()
         except:

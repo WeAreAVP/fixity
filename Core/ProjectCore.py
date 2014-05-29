@@ -252,149 +252,154 @@ class ProjectCore(object):
         all_content = file_to_import_info_of.readlines()
 
         if(project_paths and  project_configuration):
-
-            config = {}
-            run_say_or_month = ''
-            duration_type = 0
-
-
-            config['title'] = str(project_name)
+            try:
+                config = {}
+                run_say_or_month = ''
+                duration_type = 0
 
 
-            information = project_configuration.split(' ')
-            is_month, is_week = 99, 99
-            run_time = str(information[1])
-            is_week = information[2]
-            is_month = str(self.Fixity.Configuration.CleanStringForBreaks(information[3]))
-
-            # 0 = Monthly, 1 = Weekly, 2 = Daily
-            if int(is_month) == 99 and int(is_week) == 99:
-                duration_type = 3
-                run_say_or_month = '-'
-            elif int(is_month) == 99 and int(is_week) != 99 :
-                duration_type = 2
-                run_say_or_month = is_week
-            elif int(is_month) != 99 and int(is_week) == 99 :
-                duration_type = 1
-                run_say_or_month = is_month
-
-            if algorithm_selected == '' or algorithm_selected is None:
-                algorithm_selected = self.checkForAlgoUsed(all_content)
-
-            if algorithm_selected == '' or algorithm_selected is None:
-                algorithm_selected = 'sha256'
-
-            config['lastRan'] = str(last_ran)
-
-            if flag_is_a_tsv_file:
-                config['filters'] = str(filters[0])
-                config['ignoreHiddenFiles'] = str(filters[1])
-                config['selectedAlgo'] = algorithm_selected
-            else:
-                config['filters'] = ''
-                config['ignoreHiddenFiles'] = 0
-                config['selectedAlgo'] = algorithm_selected
-
-            config['runTime'] = run_time
-            config['durationType'] = duration_type
-            config['runDayOrMonth']  = run_say_or_month
-            config['emailOnlyUponWarning'] = 0
-            config['ifMissedRunUponRestart'] = 0
-            config['emailOnlyUponWarning'] = 0
-            config['runWhenOnBattery'] = 1
-            config['extraConf'] = ''
-            config['lastDifPaths'] = ''
-            config['projectRanBefore'] = 0
-            config['emailAddress'] = self.Fixity.Configuration.CleanStringForBreaks(str(email_address).replace(';',''))
-
-            project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, config)
-            version_id = self.createNewVersion(project_id['id'], 'project')
-            config['versionCurrentID'] = version_id['id']
-            information_project_update = {}
-            information_project_update['versionCurrentID'] = version_id['id']
+                config['title'] = str(project_name)
 
 
-            self.Fixity.Database.update(self.Fixity.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
+                information = project_configuration.split(' ')
+                is_month, is_week = 99, 99
+                run_time = str(information[1])
+                is_week = information[2]
+                is_month = str(self.Fixity.Configuration.CleanStringForBreaks(information[3]))
 
-            all_project_paths = []
-            path_info = project_paths.split(';')
+                # 0 = Monthly, 1 = Weekly, 2 = Daily
+                if int(is_month) == 99 and int(is_week) == 99:
+                    duration_type = 3
+                    run_say_or_month = '-'
+                elif int(is_month) == 99 and int(is_week) != 99 :
+                    duration_type = 2
+                    run_say_or_month = is_week
+                elif int(is_month) != 99 and int(is_week) == 99 :
+                    duration_type = 1
+                    run_say_or_month = is_month
+
+                if algorithm_selected == '' or algorithm_selected is None:
+                    algorithm_selected = self.checkForAlgoUsed(all_content)
+
+                if algorithm_selected == '' or algorithm_selected is None:
+                    algorithm_selected = 'sha256'
+
+                config['lastRan'] = str(last_ran)
+
+                if flag_is_a_tsv_file:
+                    config['filters'] = str(filters[0])
+                    config['ignoreHiddenFiles'] = str(filters[1])
+                    config['selectedAlgo'] = algorithm_selected
+                else:
+                    config['filters'] = ''
+                    config['ignoreHiddenFiles'] = 0
+                    config['selectedAlgo'] = algorithm_selected
+
+                config['runTime'] = run_time
+                config['durationType'] = duration_type
+                config['runDayOrMonth']  = run_say_or_month
+                config['emailOnlyUponWarning'] = 0
+                config['ifMissedRunUponRestart'] = 0
+                config['emailOnlyUponWarning'] = 0
+                config['runWhenOnBattery'] = 1
+                config['extraConf'] = ''
+                config['lastDifPaths'] = ''
+                config['projectRanBefore'] = 0
+                config['emailAddress'] = self.Fixity.Configuration.CleanStringForBreaks(str(email_address).replace(';',''))
+
+                project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, config)
+                version_id = self.createNewVersion(project_id['id'], 'project')
+                config['versionCurrentID'] = version_id['id']
+                information_project_update = {}
+                information_project_update['versionCurrentID'] = version_id['id']
 
 
-            if '|-|-|' in file_to_import_info_of:
-                for single_path in path_info:
-                    single_path_detail = single_path.split('|-|-|')
+                self.Fixity.Database.update(self.Fixity.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
 
-                    if(len(single_path_detail) > 1):
-                        listing = []
-                        listing.append(str(single_path_detail[0]))
-                        listing.append(str(single_path_detail[1]))
-                        all_project_paths.append(listing)
-            else:
-                counter = 1
-                for  single_path in path_info:
-                    if single_path != '' and single_path is not None :
-                        listing = []
-                        listing.append(str(single_path))
-                        listing.append('Fixity-'+str(counter))
-                        all_project_paths.append(listing)
-                        counter = counter + 1
+                all_project_paths = []
+                path_info = project_paths.split(';')
 
-            if project_id:
-                for inform_path in all_project_paths:
 
-                    information_project_path = {}
-                    information_project_path['projectID'] = project_id['id']
-                    information_project_path['versionID'] = version_id['id']
-                    information_project_path['path'] = inform_path[0]
-                    information_project_path['pathID'] = inform_path[1]
+                if '|-|-|' in file_to_import_info_of:
+                    for single_path in path_info:
+                        single_path_detail = single_path.split('|-|-|')
 
-                    self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, information_project_path)
-            self.setID(project_id['id'])
-            self.setProjectInfo(config)
-            self.setVersion(information_project_update['versionCurrentID'])
+                        if(len(single_path_detail) > 1):
+                            listing = []
+                            listing.append(str(single_path_detail[0]))
+                            listing.append(str(single_path_detail[1]))
+                            all_project_paths.append(listing)
+                else:
+                    counter = 1
+                    for  single_path in path_info:
+                        if single_path != '' and single_path is not None :
+                            listing = []
+                            listing.append(str(single_path))
+                            listing.append('Fixity-'+str(counter))
+                            all_project_paths.append(listing)
+                            counter = counter + 1
 
-            if project_id and len(all_content) > 0:
-                flag_project_contain_detail = True
-                for single_content in all_content:
-
-                    fix_info = re.split(r'\t+', single_content)
-
-                    if fix_info is not None:
-                        if(len(fix_info) > 2):
-                            if len(str(fix_info[0])) == 32:
-                                hashes = fix_info[0]
-                            else:
-                                hashes = fix_info[0]
-                            information_of_path_id = {}
-                            if '||' in str(fix_info[1]):
-                                information_of_path_id = str(fix_info[1]).split('||')
-                            else:
-                                for inform_path in all_project_paths:
-                                    if str(inform_path[0]) in str(fix_info[1]):
-                                        information_of_path_id[0] = inform_path[1]
-                                        fix_info[1] = str(fix_info[1]).replace( str(inform_path[0]), str(inform_path[1]) + '||')
-
-                            information_version_detail = {}
-                            information_version_detail['projectID'] = project_id['id']
-                            information_version_detail['versionID'] = version_id['id']
-                            information_version_detail['projectPathID'] = information_of_path_id[0]
-                            information_version_detail['hashes'] = self.Fixity.Configuration.CleanStringForBreaks(hashes)
-                            information_version_detail['path'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[1])
-                            information_version_detail['inode'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[2])
-                            self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, information_version_detail)
-
-            if flag_project_contain_detail:
                 if project_id:
-                    information_to_upate = {}
-                    information_to_upate['projectRanBefore'] = 1
-                    self.setProject_ran_before(1)
-                    self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
-            self.Fixity.ProjectsList[self.getTitle()] = self
-        try:
-            file_to_import_info_of.close()
-        except:
-            pass
-        return True
+                    for inform_path in all_project_paths:
+
+                        information_project_path = {}
+                        information_project_path['projectID'] = project_id['id']
+                        information_project_path['versionID'] = version_id['id']
+                        information_project_path['path'] = inform_path[0]
+                        information_project_path['pathID'] = inform_path[1]
+
+                        self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, information_project_path)
+                self.setID(project_id['id'])
+                self.setProjectInfo(config)
+                self.setVersion(information_project_update['versionCurrentID'])
+
+                if project_id and len(all_content) > 0:
+                    flag_project_contain_detail = True
+                    for single_content in all_content:
+
+                        fix_info = re.split(r'\t+', single_content)
+
+                        if fix_info is not None:
+                            if(len(fix_info) > 2):
+                                if len(str(fix_info[0])) == 32:
+                                    hashes = fix_info[0]
+                                else:
+                                    hashes = fix_info[0]
+                                information_of_path_id = {}
+                                if '||' in str(fix_info[1]):
+                                    information_of_path_id = str(fix_info[1]).split('||')
+                                else:
+                                    for inform_path in all_project_paths:
+                                        if str(inform_path[0]) in str(fix_info[1]):
+                                            information_of_path_id[0] = inform_path[1]
+                                            fix_info[1] = str(fix_info[1]).replace( str(inform_path[0]), str(inform_path[1]) + '||')
+
+                                information_version_detail = {}
+                                information_version_detail['projectID'] = project_id['id']
+                                information_version_detail['versionID'] = version_id['id']
+                                information_version_detail['projectPathID'] = information_of_path_id[0]
+                                information_version_detail['hashes'] = self.Fixity.Configuration.CleanStringForBreaks(hashes)
+                                information_version_detail['path'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[1])
+                                information_version_detail['inode'] = self.Fixity.Configuration.CleanStringForBreaks(fix_info[2])
+                                self.Fixity.Database.insert(self.Fixity.Database._tableVersionDetail, information_version_detail)
+
+                if flag_project_contain_detail:
+                    if project_id:
+                        information_to_upate = {}
+                        information_to_upate['projectRanBefore'] = 1
+                        self.setProject_ran_before(1)
+                        self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
+                self.Fixity.ProjectsList[self.getTitle()] = self
+                try:
+                    file_to_import_info_of.close()
+                except:
+                    pass
+                return True
+            except:
+                return False
+                pass
+
+
 
 
     #Check For Algorithm Used
