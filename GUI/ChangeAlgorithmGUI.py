@@ -104,7 +104,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         selected_project = self.projects.currentText()
         algo_value_selected = self.methods.currentText()
-        print(algo_value_selected)
+
 
         if selected_project is None or selected_project == '':
             self.notification.showError(self, "Warning", GUILibraries.messages['no_project_selected'])
@@ -128,9 +128,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
         result_of_all_file_confirmed = project_core.Run(True)
-        print('result_of_all_file_confirmed')
-        print(result_of_all_file_confirmed)
-        print('result_of_all_file_confirmed')
+
         email_config = self.Fixity.Configuration.getEmailConfiguration()
 
         msgBox.close()

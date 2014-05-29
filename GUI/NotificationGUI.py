@@ -73,7 +73,7 @@ class NotificationGUI(QMessageBox):
                   self.Cancel:False
                   }
         
-        print(result[response])
+
         return result[response]
         
         

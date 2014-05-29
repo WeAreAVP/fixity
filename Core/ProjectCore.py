@@ -849,7 +849,7 @@ class ProjectCore(object):
             pass
 
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
-        print(reports_text)
+
         try:
             r = open(rn, 'w+')
             try:
