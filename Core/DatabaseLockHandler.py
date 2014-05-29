@@ -64,7 +64,7 @@ class DatabaseLockHandler(object):
             except:
                 pass
             
-            print(str(self.lockfile)+' process released')
+
             os.unlink(self.lockfile)
             self.is_locked = False
             

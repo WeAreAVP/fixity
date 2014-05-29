@@ -145,6 +145,8 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.SSL_protocol.click()
         self.SetWindowLayout()
         information = self.Fixity.Configuration.getEmailConfiguration()
+        self.out_going_mail_server.setText('smtp.gmail.com')
+        self.setInformation(information)
         try:
                 if information is not None and len(information) > 0 and information['smtp'] != None:
                     self.setInformation(information)
@@ -163,14 +165,18 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         if information :
             if(len(information)> 0):
-                email_addr = information['email']
-                Pass = str(information['pass'])
-                port = str(information['port'])
-                smtp = str(information['smtp'])
-                protocol = str(information['protocol'])
+                try:
+                    email_addr = information['email']
+                    Pass = str(information['pass'])
+                    port = str(information['port'])
+                    smtp = str(information['smtp'])
+                    protocol = str(information['protocol'])
+                except:
+                    pass
         self.email_addr_bar.setText(email_addr)
         self.password.setText(Pass)
-        if((smtp is not None) and (smtp !='')):
+
+        if smtp is not None and smtp != '':
             self.out_going_mail_server.setText(smtp)
         else:
             self.out_going_mail_server.setText('smtp.gmail.com')
@@ -309,17 +315,29 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         Pass = self.password.text()
         port = self.port.text()
         out_going_mail_server = self.out_going_mail_server.text()
-        if(self.SSL_protocol.isChecked()):
+
+        if self.SSL_protocol.isChecked():
             protocol = 'SSL'
-        elif(self.TLS_protocol.isChecked()):
+        elif self.TLS_protocol.isChecked():
             protocol = 'TLS'
         else:
             protocol = 'NONE'
+
+        if self.out_going_mail_server.text() is None or self.out_going_mail_server.text() == '':
+            self.notification.showWarning(self, 'Error', GUILibraries.messages['invalid_smtp_given'])
+            self.loader.hide()
+            return
+
+        if self.port.text() is None or self.port.text() == '':
+            self.notification.showWarning(self, 'Error', GUILibraries.messages['invalid_port_given'])
+            self.loader.hide()
+            return
 
         if not GUILibraries.re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             self.notification.showWarning(self, 'Error', GUILibraries.messages['invalid_email_given'])
             self.loader.hide()
             return False
+
         information = {}
         information['pass'] = Pass
         information['port'] = port
@@ -336,9 +354,10 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         else:
             try:
                 self.notification.showError(self, 'Error',  GUILibraries.messages['testing_email_error'])
+                self.loader.hide()
             except:
+                self.loader.hide()
                 pass
-
 
 
     def GetLayout(self):
@@ -357,6 +376,13 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         else:
             protocol = 'NONE'
 
+        if self.out_going_mail_server.text() is None or self.out_going_mail_server.text() == '':
+            self.notification.showWarning(self, 'Error', GUILibraries.messages['invalid_smtp_given'])
+            return
+
+        if self.port.text() is None or self.port.text() == '':
+            self.notification.showWarning(self, 'Error', GUILibraries.messages['invalid_port_given'])
+            return
         errorMsg = self.validateInformation(Email, Pass)
 
         if errorMsg is not True:

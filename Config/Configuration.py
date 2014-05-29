@@ -21,8 +21,12 @@ class Configuration(object):
         self.Fixity = SharedApp.App
         self.application_name = 'Fixity'
         self.application_version = '0.4'
-
+        self.change_file = 'Changed File'
+        self.move_or_renamed_file = 'Moved or Renamed File'
+        self.confirmed_file = 'Confirmed File'
+        self.new_file = 'New File'
         self.user_home_path = os.path.expanduser('~')
+
         if self.OsType == 'Windows':
             self.base_path = str(os.getcwd())+str(os.sep)
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
@@ -71,6 +75,10 @@ class Configuration(object):
             self.sch_daily_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacDaily.xml')
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
+
+
+
+
 
             print('base_path)')
             print(self.base_path)
@@ -215,15 +223,17 @@ class Configuration(object):
         if config_exists is not None and config_exists is not False:
             if len(config_exists) <=0:
                 self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
+                self.setEmailConfiguration(information)
                 is_email_config_insert = True
             else:
                 is_email_config_insert = False
 
 
-        if is_email_config_insert is False:
-            self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+            if is_email_config_insert is False:
+                self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
+                self.setEmailConfiguration(information)
 
-        self.setEmailConfiguration(information)
+
 
 
     def LogHistory(self):

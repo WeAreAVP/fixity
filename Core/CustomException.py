@@ -44,7 +44,6 @@ class CustomException(object):
 
     def getTraceBack(self):
         stack_errro = repr(traceback.extract_stack())
-        print(stack_errro)
         return stack_errro
 
 
