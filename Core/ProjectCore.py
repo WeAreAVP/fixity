@@ -437,7 +437,10 @@ class ProjectCore(object):
     #
     # @return array
     def Run(self, check_for_changes = False, is_from_thread = False):
-        self.database = Database.Database()
+        if is_from_thread:
+            self.database = Database.Database()
+        else:
+            self.database = self.Fixity.Database
         missing_file = ('', '')
         global verified_files
         verified_files = list()
@@ -580,7 +583,7 @@ class ProjectCore(object):
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
 
                 #Run(self, project_name,dict, dict_hash, dict_File, filters_array )
-                result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files)
+                result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
 
                 verified_files = result_score['verified_files']
 

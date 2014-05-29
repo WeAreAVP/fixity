@@ -55,10 +55,13 @@ class DirsHandler(object):
     #@param check_for_changes: check For Changes
     #
     #@return: removed Message if removed and count of removed file
-    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files):
+    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False ):
 
+        if is_from_thread:
+            self.database = Database.Database()
+        else:
+            self.database = self.Fixity.Database
 
-        self.database = Database.Database()
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
         file_changed_list = ""
