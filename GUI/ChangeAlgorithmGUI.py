@@ -104,7 +104,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         selected_project = self.projects.currentText()
         algo_value_selected = self.methods.currentText()
-        print(algo_value_selected)
+
 
         if selected_project is None or selected_project == '':
             self.notification.showError(self, "Warning", GUILibraries.messages['no_project_selected'])

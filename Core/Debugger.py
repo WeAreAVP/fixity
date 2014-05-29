@@ -59,8 +59,7 @@ class Debugger(object):
                         self.loger.debug(str(key) + '::' + str(more_information[key])+"\n")
 
         except:
-                print(Exception.message)
-                pass
+            pass
 
 
     #Function to Log Information

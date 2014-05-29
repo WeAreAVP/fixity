@@ -309,10 +309,12 @@ class Configuration(object):
                 bits = 64
             except:
                 bits = 32
+                pass
 
             WindowsInformation['bitType'] = "Win{0}".format(bits)
         except:
-            print(Exception.message)
+
+            pass
         return WindowsInformation
 
     #CleanStringForBreaks

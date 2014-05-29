@@ -40,7 +40,9 @@ class ProjectCore(object):
     def setDirectories(self, directories):
         for n in directories:
             try: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'], directories[n]['id'])
-            except: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'],'')
+            except:
+                self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'],'')
+                pass
 
     def setID(self, ID):self.ID = ID
 
@@ -456,6 +458,7 @@ class ProjectCore(object):
             process_id = os.getpid()
         except:
             process_id = None
+            pass
 
         # Get File Locker and check for dead lock
         try:
