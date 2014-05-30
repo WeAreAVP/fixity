@@ -109,7 +109,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(False)
+            self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
@@ -566,7 +566,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if self.unsaved is True:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['save_other_projects']))
             return
-        self.update_menu.setDisabled(False)
+
         QID = GUILibraries.QInputDialog(self)
         QID.setWindowModality(GUILibraries.Qt.WindowModal)
         name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
@@ -587,7 +587,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
             return
 
+        self.update_menu.setDisabled(False)
         new_item = GUILibraries.QListWidgetItem(name[0], self.projects)
+
         self.projects.setCurrentItem(new_item)
         self.monthly.setChecked(True)
         self.monthClick()
@@ -602,7 +604,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.old = new_item
 
     def Save(self, project = None):
-        self.togglerMenu(False)
+
         all_email_address = ''
         is_recipient_email_address_set = False
         for mail_string in self.mail_text_fields:
@@ -658,6 +660,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             check_for_duplicate_path[counter] = value.text()
             counter += 1
+        self.Fixity = SharedApp.SharedApp.App
 
         if project:
             self.project = project
@@ -672,9 +675,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if self.project is None or self.project is False:
             self.project = ProjectCore.ProjectCore()
-
-        self.check_for_path_changes()
-        self.checkNumberOfDirsChange()
+        if len(self.Fixity.ProjectsList) >  0 :
+            self.check_for_path_changes()
+            self.checkNumberOfDirsChange()
         current_item = self.projects.currentItem().text()
 
         self.project.setTitle(current_item)
@@ -765,6 +768,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.project.setDirectories(information)
         self.project.Save()
         self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
+        self.togglerMenu(False)
         self.unsaved = False
         return self.project
 
@@ -851,6 +855,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_text_fields[n].setDisabled(status)
             self.bin_of_dirs[n].setDisabled(status)
             self.browse_dirs[n].setDisabled(status)
+            self.lastrun.setDisabled(status)
 
         self.timer.setDisabled(status)
         self.monthly.setDisabled(status)

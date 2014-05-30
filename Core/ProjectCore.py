@@ -138,6 +138,7 @@ class ProjectCore(object):
     # @return Project ID Created
 
     def Save(self):
+        print(self.Fixity.ProjectsList)
         project_information = {}
         #self = self.Fixity.ProjectsList[self.getTitle()]
         project_information['title'] = self.getTitle()
@@ -217,11 +218,15 @@ class ProjectCore(object):
     #
     # @return Bool
     def Delete(self):
+
         self.scheduler.delTask(self.getTitle())
         self.Fixity.Database.delete(self.Fixity.Database._tableProjectPath, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableVersionDetail, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableProject, 'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
+        print('after delete ')
+        print(self.Fixity.ProjectsList)
+        print('after delete ')
         return True
 
 
@@ -476,12 +481,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        #try:
-        #    print('acquire')
-        #    lock.acquire()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            print('acquire')
+            lock.acquire()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -566,8 +571,6 @@ class ProjectCore(object):
 
                     path_information = str(x[1]).split('||')
 
-                    #print(old_dirs_information)
-                    #exit()
                     if path_information:
                         try:
                             base_old_file_path = old_dirs_information[str(path_information[0])]
