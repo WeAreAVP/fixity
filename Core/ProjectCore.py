@@ -1,16 +1,13 @@
 #!/usr/bin/env python
-
+# -*- coding: UTF-8 -*-
 from Core import DirsHandler
-from Core import SharedApp, SchedulerCore, EmailNotification, Database
-
+from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
 
 import datetime
 import re
 import os
 import thread
-from Core import DatabaseLockHandler
-import threading
-import time
+
 
 from collections import defaultdict
 
@@ -123,7 +120,7 @@ class ProjectCore(object):
         if get_old_version is not None and get_old_version is not False:
             if len(get_old_version) > 0:
                 version_id = int(get_old_version[0]['versionID'])
-                version_id + 1
+                version_id += 1
 
         information = {}
         current_date = str(datetime.datetime.now()).split('.')
@@ -221,7 +218,9 @@ class ProjectCore(object):
     # @return Bool
     def Delete(self):
         self.scheduler.delTask(self.getTitle())
-        self.Fixity.Database.delete(self.Fixity.Database._tableProject,'id ="' + str(self.getID()) + '"')
+        self.Fixity.Database.delete(self.Fixity.Database._tableProjectPath, 'projectID="' + str(self.getID()) + '"')
+        self.Fixity.Database.delete(self.Fixity.Database._tableVersionDetail, 'projectID="' + str(self.getID()) + '"')
+        self.Fixity.Database.delete(self.Fixity.Database._tableProject, 'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
         return True
 
@@ -257,9 +256,7 @@ class ProjectCore(object):
                 run_say_or_month = ''
                 duration_type = 0
 
-
                 config['title'] = str(project_name)
-
 
                 information = project_configuration.split(' ')
                 is_month, is_week = 99, 99
@@ -319,7 +316,6 @@ class ProjectCore(object):
                 all_project_paths = []
                 path_info = project_paths.split(';')
 
-
                 if '|-|-|' in file_to_import_info_of:
                     for single_path in path_info:
                         single_path_detail = single_path.split('|-|-|')
@@ -337,7 +333,7 @@ class ProjectCore(object):
                             listing.append(str(single_path))
                             listing.append('Fixity-'+str(counter))
                             all_project_paths.append(listing)
-                            counter = counter + 1
+                            counter += 1
 
                 if project_id:
                     for inform_path in all_project_paths:
@@ -398,9 +394,6 @@ class ProjectCore(object):
             except:
                 return False
                 pass
-
-
-
 
     #Check For Algorithm Used
     #@param content: Content line containing Algorithm
@@ -504,7 +497,7 @@ class ProjectCore(object):
         for index in self.directories:
             if self.directories[index].getPath() != '':
                 all_paths += str(self.directories[index].getPath())+';'
-            number_of_path = number_of_path + 1
+            number_of_path += 1
 
         keep_time = ''
 
@@ -595,19 +588,19 @@ class ProjectCore(object):
 
                 verified_files = result_score['verified_files']
 
-                try:confirmed = confirmed + int(result_score['confirmed'])
+                try:confirmed += int(result_score['confirmed'])
                 except:pass
 
-                try:moved = moved + int(result_score['moved'])
+                try:moved += int(result_score['moved'])
                 except:pass
 
-                try:created = created + int(result_score['created'])
+                try:created +=  int(result_score['created'])
                 except:pass
 
-                try:corrupted_or_changed = corrupted_or_changed + int(result_score['corrupted_or_changed'])
+                try:corrupted_or_changed += int(result_score['corrupted_or_changed'])
                 except:pass
 
-                try:missing_file = missing_file + int(result_score['missing_file'])
+                try:missing_file += int(result_score['missing_file'])
                 except:pass
 
                 try:report_content += str(result_score['content'])
@@ -616,7 +609,7 @@ class ProjectCore(object):
                 try:history_content += str(result_score['history_content'])
                 except:pass
 
-                try:total = int(total) + int(result_score['total'])
+                try:total += int(result_score['total'])
                 except:pass
 
 
@@ -943,8 +936,8 @@ class ProjectCore(object):
             for obj in dict[keys]:
                     if not obj[0] in verified_files:
                         verified_files.append(obj[0])
-                        msg += "Removed Files\t" + obj[0] +"\n"
-                        count = count + 1
+                        msg += "Removed Files\t" + obj[0] + "\n"
+                        count += 1
         return msg, count
 
     #Method to convert database line into tuple

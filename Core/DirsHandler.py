@@ -74,7 +74,7 @@ class DirsHandler(object):
         #Getting all files and directory  in side "single_directory" with detail information (inode, path and file hash)
         single_directory = self.getPath()
 
-        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(r''+single_directory, Algorithm)
+        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm)
 
         for directories_inside_details_single in directories_inside_details:
 
@@ -224,8 +224,6 @@ class DirsHandler(object):
 
         try:
             for single_verified_files in verified_files:
-                print(line[1])
-                print(verified_files[single_verified_files])
                 if verified_files[single_verified_files] in line[1]:
                     return
         except:
@@ -328,14 +326,17 @@ class DirsHandler(object):
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         listOfValues = []
         fls = []
+        print('===================')
+        print(directory_path_to_be_scanned)
+        print('===================')
         try:
-            for root, sub_folders, files in os.walk(r''+directory_path_to_be_scanned):
-
+            for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files :
 
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         single_file = self.specialCharacterHandler(single_file)
-                    fls.append(os.path.join(root, single_file))
+
+                    fls.append(os.path.join(root, self.specialCharacterHandler(single_file)))
                     #print('Listing ::::: '+str(os.path.join(root, single_file)))
         except:
                 self.Fixity.logger.LogException(Exception.message)

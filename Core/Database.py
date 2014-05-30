@@ -54,7 +54,7 @@ class Database(object):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.connect()
             counter_recursion = 0
             return  SharedApp.SharedApp.App.Database.connect()
@@ -76,7 +76,7 @@ class Database(object):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getOne(query)
             counter_recursion = 0
             try:
@@ -104,7 +104,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.sqlQuery(query)
             counter_recursion = 0
             try:
@@ -140,7 +140,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getProjectInfo(project_name, limit)
             counter_recursion = 0
             try:
@@ -169,7 +169,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getProjectPathInfo(project_id ,version_id)
             counter_recursion = 0
             try:
@@ -196,7 +196,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getConfiguration()
             counter_recursion = 0
             try:
@@ -216,7 +216,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getVersionDetails(project_id, version_id, OrderBy)
             counter_recursion = 0
             try:
@@ -247,7 +247,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getConfigInfo(project)
             counter_recursion = 0
             try:
@@ -279,7 +279,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.getVersionDetailsLast(project_id)
             counter_recursion = 0
             try:
@@ -306,7 +306,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.listToTuple(proveded_list)
             counter_recursion = 0
             try:
@@ -344,7 +344,7 @@ class Database(object):
             response_counter = 0
             for r in self.dict_gen(self.cursor.execute(query)):
                 response[response_counter] = r
-                response_counter = response_counter + 1
+                response_counter += 1
             self.commit()
             return response
         except (sqlite3.OperationalError,Exception):
@@ -353,7 +353,7 @@ class Database(object):
             self = Database()
             if counter_recursion < 2:
 
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.select(table_name ,select, condition, order_by)
             counter_recursion = 0
             try:
@@ -381,7 +381,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 self.dict_gen(curs)
             counter_recursion = 0
             try:
@@ -416,7 +416,7 @@ class Database(object):
                     columnName[str(counter)] = index
                     values[str(counter)]  = str(information[index])
 
-                    counter = counter + 1
+                    counter += 1
                 except:
                     pass
 
@@ -432,7 +432,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.insert(table_name, information)
             counter_recursion = 0
 
@@ -460,7 +460,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.delete(table_name ,condition)
             counter_recursion = 0
             try:
@@ -500,7 +500,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.update(table_name, information, condition)
             counter_recursion = 0
             try:
@@ -535,9 +535,9 @@ class Database(object):
                         if(counter == 0):
                             string_glued = string_glued + ' "'+ str(information[info])+ '" '
                         else:
-                            string_glued =  string_glued + ' , "' + information[info]+ '" '
-                    counter = counter + 1
-                except Exception as e:
+                            string_glued = string_glued + ' , "' + information[info]+ '" '
+                    counter += 1
+                except:
                     pass
 
             return string_glued
@@ -546,7 +546,7 @@ class Database(object):
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
-                counter_recursion = counter_recursion + 1
+                counter_recursion += 1
                 return self.implode(information , glue , is_column)
             counter_recursion = 0
             try:

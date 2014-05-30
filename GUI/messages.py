@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 '''
 Created on May 14, 2014
  
@@ -42,6 +43,11 @@ messages['alog_not_changed_mail'] = 'The process of changing the checksum algori
 messages['invalid_smtp_given'] = 'Invalid Smtp Server given'
 messages['invalid_port_given'] = 'Invalid Port given'
 messages['invalid_import_file'] = "*Invalid File given. \n*File given to import contains curupted information ."
+messages['duplicate_path'] = "Duplicate paths found, please enter unique paths and try again"
+messages['empty_directory_first'] = "First directory can not be empty, Please enter paths in first directory and try again."
+messages['empty_directory_after_filled'] = "There can't be empty directory(s) between filled directory(s), Please fill those empty directory(s) and try again"
+messages['path_not_found'] = "Invalid path or path dose not exists "
+
 
 
 ''' About Fixity''' 

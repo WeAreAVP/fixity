@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 from Core import SharedApp
 
 import email, datetime, os

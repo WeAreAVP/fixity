@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 #Created on May 14, 2014
 #
 #@author: Furqan Wasi <furqan@avpreserve.com>
@@ -5,12 +6,13 @@
 
 
 # Custom Libraries
-from idlelib.tabbedpages import TabbedPageSet
+
 from GUI import GUILibraries, AboutFixityGUI, ApplyFiltersGUI, ChangeAlgorithmGUI, ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGUI
 from Core import SharedApp, ProjectCore
 
 # Built-in Libraries
 import datetime
+import os
 
 ''' Project GUI Class '''
 class ProjectGUI(GUILibraries.QMainWindow):
@@ -324,7 +326,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.mail_text_fields[(countEmail)].setText(str(email).strip())
             except:
                 pass
-            countEmail = countEmail + 1
+            countEmail += 1
 
         directories = project_core.getDirectories()
         for n in directories:
@@ -543,13 +545,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
         for directory_single in self.dirs_text_fields:
 
             if directory_single.text().strip() != "":
-                num_if_path_scanned = num_if_path_scanned + 1
+                num_if_path_scanned += 1
 
         directory_increment = 1
         for directory_single in self.dirs_text_fields:
             #if directory_single.text().strip() != "":
             self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
-            directory_increment = directory_increment + 1
+            directory_increment += 1
 
     def togglerMenu(self, status):
         self.save_menu.setDisabled(status)
@@ -565,7 +567,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['save_other_projects']))
             return
         self.update_menu.setDisabled(False)
-        QID =GUILibraries.QInputDialog(self)
+        QID = GUILibraries.QInputDialog(self)
         QID.setWindowModality(GUILibraries.Qt.WindowModal)
         name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
 
@@ -601,12 +603,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def Save(self, project = None):
         self.togglerMenu(False)
-        all_email_addres = ''
+        all_email_address = ''
         is_recipient_email_address_set = False
         for mail_string in self.mail_text_fields:
             SingleEmail = mail_string.text().strip()
             if SingleEmail != "":
-                all_email_addres = all_email_addres + str(SingleEmail) + ','
+                all_email_address = all_email_address + str(SingleEmail) + ','
                 is_recipient_email_address_set = True
                 error_msg = self.Fixity.Validation.ValidateEmail(SingleEmail)
                 if not error_msg:
@@ -617,7 +619,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.Fixity = SharedApp.SharedApp.App
                 email_info = self.Fixity.Configuration.getEmailConfiguration()
                 try:
-                    if (email_info['email'] == '' and email_info['email'] is None)  and (email_info['smtp'] != '' or email_info['smtp'] is None):
+                    if (email_info['email'] == '' and email_info['email'] is None) and (email_info['smtp'] != '' or email_info['smtp'] is None):
                         self.notification.showWarning(self, "Email Validation", GUILibraries.messages['configure_email_pref'])
                         return
                 except:
@@ -628,6 +630,34 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Error", GUILibraries.messages['no_directories'])
             return
 
+        check_for_duplicate_path = {}
+        counter = 0
+        empty_dir_found = False
+        for value in self.dirs_text_fields:
+            if counter == 0:
+                if value.text() == '':
+                    self.notification.showError(self, "Error", GUILibraries.messages['empty_directory_first'])
+                    return
+            if value.text() == '':
+                empty_dir_found = True
+
+            if empty_dir_found is True and value.text() != '':
+                self.notification.showError(self, "Error", GUILibraries.messages['empty_directory_after_filled'])
+                return
+        
+            if not os.path.isdir(value.text()) and value.text() != '':
+                self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + str(value.text()))
+                return
+
+            for single_path in check_for_duplicate_path:
+                if check_for_duplicate_path[single_path] != '' and check_for_duplicate_path[single_path] is not None:
+                    if check_for_duplicate_path[single_path] == value.text():
+
+                        self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'] + " \n*Path: " + str(value.text()))
+                        return
+
+            check_for_duplicate_path[counter] = value.text()
+            counter += 1
 
         if project:
             self.project = project
@@ -674,7 +704,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         elif is_month != 99 and is_week == 99:
             run_only_on_ac_power = self.day_of_month.value()
 
-        self.project.setEmail_address(all_email_addres)
+        self.project.setEmail_address(all_email_address)
         self.project.scheduler.setRun_day_or_month(run_only_on_ac_power)
 
         if self.run_only_on_ac_power.isChecked():
@@ -727,7 +757,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         for n in xrange(0,self.Fixity.Configuration.getNumberOfPathDirectories()):
             path_info = str(self.dirs_text_fields[n].text())
-            ID = 'Fixity-'+ str(n+1)
+            ID = 'Fixity-' + str(n+1)
             information[n]['projectID'] = self.project.getID()
             information[n]['versionID'] = self.project.getVersion()
             information[n]['path'] = path_info
@@ -849,7 +879,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def refreshProjectSettings(self):
             self.Fixity = SharedApp.SharedApp.App
             allProjects = self.Fixity.getProjectList()
-            print(allProjects)
+
             try:
                 self.projects.clear()
             except Exception as ex:
