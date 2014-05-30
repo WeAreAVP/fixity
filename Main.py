@@ -26,6 +26,7 @@ class Main (object):
 
     def LaunchCLI(self, project_name):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
+        project_core.Save()
         project_core.Run()
 
 

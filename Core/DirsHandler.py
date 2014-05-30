@@ -5,7 +5,7 @@ Created on May 14, 2014
 @author: Furqan Wasi
 
 '''
-import os
+import os, fnmatch
 
 if os.name == 'nt':
     import win32file, win32con, win32api
@@ -117,6 +117,8 @@ class DirsHandler(object):
                 check += 1
                 #try:
                 response = []
+
+
                 response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files)
 
                 if not response or len(response) < 1:
@@ -144,7 +146,9 @@ class DirsHandler(object):
 
 
                 try:
-                    new_coded_path = str(response[0][1]).replace(single_directory, path_code+"||")
+
+                    single_directory = str(single_directory).replace('\\\\', '\\').replace('\\', '\\\\')
+                    new_coded_path = str(repr(response[0][1])).replace(single_directory, path_code+"||")
                 except:
                     new_coded_path = ' '
                     self.Fixity.logger.LogException(Exception.message)
@@ -153,7 +157,7 @@ class DirsHandler(object):
                 try:
                     version_detail_options = {}
                     version_detail_options['hashes'] = str(response[0][0])
-                    version_detail_options['path'] = new_coded_path
+                    version_detail_options['path'] = eval(new_coded_path)
                     version_detail_options['inode'] = str(response[0][2])
                     version_detail_options['versionID'] = str(version_id)
                     version_detail_options['projectID'] = project_core.getID()
@@ -224,6 +228,7 @@ class DirsHandler(object):
 
         try:
             for single_verified_files in verified_files:
+
                 if verified_files[single_verified_files] in line[1]:
                     return
         except:
@@ -326,40 +331,37 @@ class DirsHandler(object):
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         listOfValues = []
         fls = []
-        print('===================')
-        print(directory_path_to_be_scanned)
-        print('===================')
         try:
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
-                for single_file in files :
-
-                    if self.Fixity.Configuration.getOsType() == 'Windows':
-                        single_file = self.specialCharacterHandler(single_file)
-
-                    fls.append(os.path.join(root, self.specialCharacterHandler(single_file)))
-                    #print('Listing ::::: '+str(os.path.join(root, single_file)))
+                for single_file in files:
+                    single_file = self.specialCharacterHandler(single_file)
+                    fls.append(str(root) + str(os.sep) + single_file)
         except:
-                self.Fixity.logger.LogException(Exception.message)
-                pass
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
 
 
         try:
             for f in xrange(len(fls)):
-                #print('get Details of File ::::: '+str(os.path.abspath(fls[f])))
-                path_of_the_file = r''+os.path.abspath(fls[f])
-                encoded_base_path = self.getPathID()
-                given_path = str(path_of_the_file).replace(directory_path_to_be_scanned, encoded_base_path + '||')
-                hash_of_this_file_content = self.getFilesHash(path_of_the_file, algorithm_used_for_this_project )
 
-                if(self.Fixity.Configuration.getOsType() == 'Windows'):
+                path_of_the_file = str(fls[f])
+                encoded_base_path = self.getPathID()
+
+                directory_path_to_be_scanned = str(directory_path_to_be_scanned).replace('\\\\', '\\').replace('\\', '\\\\')
+                given_path = repr(path_of_the_file).replace(directory_path_to_be_scanned, encoded_base_path + '||')
+                hash_of_this_file_content = self.getFilesHash(path_of_the_file, algorithm_used_for_this_project)
+
+                if self.Fixity.Configuration.getOsType() == 'Windows':
                     inode = self.inodeForWin(path_of_the_file)
                 else:
                     inode = self.inodeForMac(path_of_the_file)
-                listOfValues.append((hash_of_this_file_content, given_path, inode))
+
+                listOfValues.append((hash_of_this_file_content, eval(given_path), inode))
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
 
         return listOfValues
 

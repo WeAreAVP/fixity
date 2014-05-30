@@ -294,7 +294,7 @@ class ProjectCore(object):
 
                 config['runTime'] = run_time
                 config['durationType'] = duration_type
-                config['runDayOrMonth']  = run_say_or_month
+                config['runDayOrMonth'] = run_say_or_month
                 config['emailOnlyUponWarning'] = 0
                 config['ifMissedRunUponRestart'] = 0
                 config['emailOnlyUponWarning'] = 0
@@ -320,14 +320,14 @@ class ProjectCore(object):
                     for single_path in path_info:
                         single_path_detail = single_path.split('|-|-|')
 
-                        if(len(single_path_detail) > 1):
+                        if len(single_path_detail) > 1:
                             listing = []
                             listing.append(str(single_path_detail[0]))
                             listing.append(str(single_path_detail[1]))
                             all_project_paths.append(listing)
                 else:
                     counter = 1
-                    for  single_path in path_info:
+                    for single_path in path_info:
                         if single_path != '' and single_path is not None :
                             listing = []
                             listing.append(str(single_path))
@@ -412,19 +412,15 @@ class ProjectCore(object):
                     return algo
         return algo
 
-
     def ChangeTitle(self, new_title):
         information = {}
         information['title'] = new_title
         self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id="' + str(self.getID()) + '"')
-
         return False
 
     def launchThread(self):
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue.put(run_thread)
-
-
 
     def launchRun(self):
         import App
@@ -509,7 +505,6 @@ class ProjectCore(object):
         elif int(self.getScheduler().getDurationType()) == 1:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
 
-
         history_content = ''
         project_path_information = self.database.getProjectPathInfo(self.getID(),self.getVersion())
         project_detail_information = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
@@ -526,7 +521,6 @@ class ProjectCore(object):
             index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
             base_path_information[str(project_path_information[path_info]['pathID'])]= {'path':index_path_in_for,'code':str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
 
-
         filters_array = {}
         try:
             filters_array = str(self.getFilters()).split(',')
@@ -537,10 +531,6 @@ class ProjectCore(object):
         dict = defaultdict(list)
         dict_hash = defaultdict(list)
         dict_File = defaultdict(list)
-
-
-
-
         #print('writing ::: Stared Worked')
 
         old_dirs_information = {}
@@ -564,26 +554,26 @@ class ProjectCore(object):
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
-                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path'])) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path']) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))))
+
+
                             pass
 
-                        # Parttren [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
-                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),False])
+                        # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
+                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path, self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False])
 
-                        # Parttren [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
+                        # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
                         dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
 
-                        # Parttren [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
+                        # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
                         dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
-
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
-
-                #Run(self, project_name,dict, dict_hash, dict_File, filters_array )
                 result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
 
                 verified_files = result_score['verified_files']

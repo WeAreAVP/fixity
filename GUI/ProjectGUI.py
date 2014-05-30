@@ -16,10 +16,11 @@ import os
 
 ''' Project GUI Class '''
 class ProjectGUI(GUILibraries.QMainWindow):
+
     #Constructor
     def __init__(self):
-
         super(ProjectGUI, self).__init__()
+
         self.is_path_changed = False
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
@@ -55,19 +56,19 @@ class ProjectGUI(GUILibraries.QMainWindow):
         #create Directories and email Listing view
         self.createDirectories()
 
-
         if len(self.Fixity.ProjectsList) > 0:
             for project in self.Fixity.ProjectsList:
                 GUILibraries.QListWidgetItem(str(self.Fixity.ProjectsList[project].getTitle()), self.projects)
 
         self.projects.setCurrentRow(0)
-        #self.update(False)
+
         try:
             self.old = self.projects.itemAt(0, 0)
             self.update(self.old)
             self.old.setSelected(True)
         except:
             pass
+
         self.unsaved = False
         self.toggler((self.projects.count() == 0))
         self.show()
