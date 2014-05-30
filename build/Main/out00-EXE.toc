@@ -1,9 +1,0 @@
-('d:\\python\\Fixity Project\\dist\\Main.exe',
- False,
- False,
- 'assets\\icon.ico',
- None,
- [],
- None,
- False,
- 1401437732L)
