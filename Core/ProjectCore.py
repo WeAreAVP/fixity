@@ -123,7 +123,7 @@ class ProjectCore(object):
         if get_old_version is not None and get_old_version is not False:
             if len(get_old_version) > 0:
                 version_id = int(get_old_version[0]['versionID'])
-                version_id = version_id + 1
+                version_id + 1
 
         information = {}
         current_date = str(datetime.datetime.now()).split('.')

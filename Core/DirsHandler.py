@@ -224,7 +224,9 @@ class DirsHandler(object):
 
         try:
             for single_verified_files in verified_files:
-                if str(single_verified_files) in str(line[1]):
+                print(line[1])
+                print(verified_files[single_verified_files])
+                if verified_files[single_verified_files] in line[1]:
                     return
         except:
             pass
