@@ -34,4 +34,7 @@ scheduler/*
 __pycache__
 __pycache__/*
 test.py
-
+build
+build/*
+dist/*
+dist

@@ -644,7 +644,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             if empty_dir_found is True and value.text() != '':
                 self.notification.showError(self, "Error", GUILibraries.messages['empty_directory_after_filled'])
                 return
-        
+
             if not os.path.isdir(value.text()) and value.text() != '':
                 self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + str(value.text()))
                 return
@@ -665,7 +665,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         else:
 
             try:
-
                 self.project = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
             except:
                 self.project = ProjectCore.ProjectCore()
