@@ -144,7 +144,7 @@ class ProjectCore(object):
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
         project_information['projectRanBefore'] = self.getProject_ran_before()
-        project_information['lastDifPaths'] = self.getLast_dif_paths()
+
         project_information['selectedAlgo'] = self.getAlgorithm()
         project_information['filters'] = self.getFilters()
 
@@ -506,14 +506,31 @@ class ProjectCore(object):
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
 
         history_content = ''
-        project_path_information = self.database.getProjectPathInfo(self.getID(),self.getVersion())
-        project_detail_information = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
-        if project_detail_information is False:
-            project_detail_information = self.database.getVersionDetailsLast(self.getID())
 
+        project_detail_information_array = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
+
+
+        if project_detail_information_array is False:
+            project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
+
+        if len(project_detail_information_array) <= 0:
+            project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
+
+        project_detail_information = {}
+
+        try:
+            project_detail_information = project_detail_information_array['response']
+        except:
+            project_detail_information  = {}
+            pass
         if len(project_detail_information) <= 0:
-            project_detail_information = self.database.getVersionDetailsLast(self.getID())
-        base_path_information ={}
+            project_path_information = self.database.getProjectPathInfo(self.getID(),self.getVersion())
+        else:
+            version_id_this = project_detail_information_array['version_id']
+            project_path_information = self.database.getProjectPathInfo(self.getID(),version_id_this)
+
+
+        base_path_information = {}
 
         for path_info in project_path_information:
 
@@ -549,15 +566,15 @@ class ProjectCore(object):
 
                     path_information = str(x[1]).split('||')
 
+                    #print(old_dirs_information)
+                    #exit()
                     if path_information:
                         try:
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
-
+                            print('else')
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path']) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))))
-
-
                             pass
 
                         # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
@@ -572,6 +589,11 @@ class ProjectCore(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
+
+        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        self.setLast_dif_paths('')
+        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
+        self.setProject_ran_before('1')
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
@@ -661,15 +683,12 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-        print(report_content)
+
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
 
-        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
-        self.setLast_dif_paths('')
-        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
-        self.setProject_ran_before('1')
+
 
         try:
             lock.release()

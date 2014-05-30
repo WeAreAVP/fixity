@@ -515,7 +515,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
             for directory_single in self.dirs_text_fields:
                 if directory_single.text().strip() != "":
                     number_of_current_dirs += 1
-
             num_if_path_in_db = 0
 
             project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
@@ -529,8 +528,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
                             all_previous_paths = str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
                         else:
                             all_previous_paths = all_previous_paths+','+str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
-                        num_if_path_in_db += 1
 
+                        num_if_path_in_db += 1
 
             if int(num_if_path_in_db) > int(number_of_current_dirs) and (project_core.getLast_dif_paths() == '' or project_core.getLast_dif_paths() == 'None'):
                 update_inf = {}

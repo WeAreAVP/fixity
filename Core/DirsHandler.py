@@ -115,18 +115,16 @@ class DirsHandler(object):
 
             if flag:
                 check += 1
-                #try:
-                response = []
+                try:
+                    response = []
+                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files)
 
+                    if not response or len(response) < 1:
+                            continue
 
-                response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files)
-
-                if not response or len(response) < 1:
-                        continue
-
-                #except:
-                #    self.Fixity.logger.LogException(Exception.message)
-                #    pass
+                except:
+                    self.Fixity.logger.LogException(Exception.message)
+                    pass
 
                 try:
                     file_changed_list += response[1] + "\n"

@@ -210,7 +210,11 @@ class Database(object):
     def getVersionDetails(self, project_id, version_id, OrderBy=None):
         try:
             response = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"' and versionID='"+str(version_id)+"'" , OrderBy)
-            return response
+            if len(response) <=0 or response is False:
+                return {}
+            else:
+                return  {'version_id':version_id, 'response':response}
+
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
@@ -345,6 +349,7 @@ class Database(object):
             for r in self.dict_gen(self.cursor.execute(query)):
                 response[response_counter] = r
                 response_counter += 1
+
             self.commit()
             return response
         except (sqlite3.OperationalError,Exception):
