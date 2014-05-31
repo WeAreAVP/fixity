@@ -15,7 +15,7 @@ class SchedulerCore(object):
 
 
     #Deletes the SCHTASK entry and its corresponding files
-    #@param project: project Name
+    #@param project: project Namer
     #
     #@return: None
     def delTask(self, project):
