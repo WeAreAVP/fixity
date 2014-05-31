@@ -66,6 +66,9 @@ class ImportProjectGUI(GUILibraries.QDialog):
     All design Management Done in Here
     '''
     def SetDesgin(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         self.GetLayout().addStrut(200)
         self.projects = GUILibraries.QPushButton('Select Project')
 
@@ -104,6 +107,9 @@ class ImportProjectGUI(GUILibraries.QDialog):
     @return: None
     '''
     def pickDir(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         path = self.Fixity.Configuration.getBasePath()
         fileInformation  = list(GUILibraries.QFileDialog.getOpenFileName(self,"Select File",str(path)))
         self.project_selected.setText(str(fileInformation[0]))
@@ -118,6 +124,8 @@ class ImportProjectGUI(GUILibraries.QDialog):
 
 
     def ImportInformation(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         project_core = ProjectCore.ProjectCore()
         file_path = str(self.project_selected.text())

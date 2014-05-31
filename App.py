@@ -1,4 +1,3 @@
-# -*- coding: UTF-8 -*-
 '''
 Created on May 14, 2014
 
@@ -16,7 +15,7 @@ class App(object):
         self.setUp()
 
     def selfDestruct(self):
-        selfdis= ''
+        e= ''
 
     @staticmethod
     def getInstance():
@@ -71,7 +70,6 @@ class App(object):
 
     def getProjectList(self):
         information = []
-        print(self.ProjectsList)
         if self.ProjectsList is not None and self.ProjectsList is not False:
             if len(self.ProjectsList) > 0:
                 for project in self.ProjectsList:
@@ -83,6 +81,7 @@ class App(object):
         try:
 
             selected_project_object = self.ProjectsList[project_name]
+
 
             return selected_project_object
         except:

@@ -31,7 +31,7 @@ class DatabaseLockHandler(object):
             an exception.
     """
     def acquire(self):
-        
+
         start_time = time.time()
         while True:
             try:

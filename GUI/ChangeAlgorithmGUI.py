@@ -32,6 +32,9 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
     # Reject'''
     def reject(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         super(ChangeAlgorithmGUI,self).reject()
 
@@ -100,6 +103,8 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
 
     def Save(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         msgBox = GUILibraries.QLabel('Loading')
 
@@ -168,6 +173,9 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
 
     def ProjectChanged(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         selected_project = self.projects.currentText()
         try:
             project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
@@ -189,5 +197,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
     # Launch Dialog
     def LaunchDialog(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         self.SetDesgin()
         self.ShowDialog()

@@ -19,6 +19,9 @@ class SchedulerCore(object):
     #
     #@return: None
     def delTask(self, project):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         if self.Fixity.Configuration.getOsType() == 'Windows':
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -77,7 +80,8 @@ class SchedulerCore(object):
     #@return: None
 
     def schedule(self, title):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         timeSch = self.getRunTime()
         version = self.Fixity.Configuration.getApplicationVersion()
 
@@ -261,7 +265,8 @@ class SchedulerCore(object):
     #Input: Information of all scheduler information wit project information
     #Output : XML for Window 7 scheduler
     def CreateXML(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         Months = self.Fixity.Configuration.getMonths()
         schedule_path = self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + "-sch.xml"
         xmlsch = open(schedule_path, "w")
@@ -375,6 +380,8 @@ class SchedulerCore(object):
     #Input: Information of all scheduler information with project information
     #Output : XML for Mac launhd scheduling
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         try:
             launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
@@ -467,7 +474,8 @@ class SchedulerCore(object):
     def getEmail_only_upon_warning(self): return self.email_only_upon_warning
 
     def setValuesForScheduler(self, string, find_string, replace_with_string):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         string = str(string)
         find_string = str(find_string)
         replace_with_string = str(replace_with_string)

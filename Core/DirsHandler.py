@@ -216,7 +216,8 @@ class DirsHandler(object):
     #@return: List - list of result of scanning occurred in this file for a single file
 
     def verifyFiles (self,dicty ,dict_hash ,dictFile ,line ,verified_files):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         try:
             ''' Check if I-Node related information Exists in the Given Directory  '''
             current_directory = dicty.get(line[2])
@@ -327,6 +328,8 @@ class DirsHandler(object):
 
 
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         listOfValues = []
         fls = []
         try:
@@ -370,6 +373,8 @@ class DirsHandler(object):
     #@param string_to_be_handled: String To Be Handled
     #@return:  String - Fixed characters String
     def specialCharacterHandler(self, string_to_be_handled):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         try:
             string_to_be_handled = string_to_be_handled.decode('cp1252')
         except:
@@ -391,7 +396,8 @@ class DirsHandler(object):
     #Input: File Path, Algorithm.
     #Output: Hexadecimal Value Of Hashed File.
     def getFilesHash(self, file_path, algorithm):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         try:
             if algorithm =='md5':
                 fixmd5 = hashlib.md5()
@@ -447,6 +453,8 @@ class DirsHandler(object):
     #(volume number, high index, low index)
 
     def inodeForMac (self, file):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         id_node = ''
         try:
             target = os.open(file,  os.O_RDWR | os.O_CREAT )
@@ -471,7 +479,8 @@ class DirsHandler(object):
     #(volume number, high index, low index)
 
     def inodeForWin(self, file_path):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         id_node = '';
         try:
             target = open(file_path.decode('utf-8'), 'rb')
@@ -500,7 +509,8 @@ class DirsHandler(object):
     #@return: 0 if hidden and 2 if not in windows and in MAC true if hidden and false if not
 
     def isGivenFileHidden(self, path_of_file):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         if os.name == 'nt':
             if '\\' in path_of_file:
                 '''Windows Condition'''

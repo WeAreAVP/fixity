@@ -32,6 +32,9 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         
     # QDailog Reject Tigger over writen'''
     def reject(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         super(ChangeNameGUI,self).reject()
         
@@ -53,7 +56,6 @@ class ChangeNameGUI(GUILibraries.QDialog ):
     def GetLayout(self):
         return self.change_name_layout
 
-        
     # Set Window Layout'''
     def SetWindowLayout(self):
         self.setLayout(self.change_name_layout)

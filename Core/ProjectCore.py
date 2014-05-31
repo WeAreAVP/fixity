@@ -16,7 +16,8 @@ global verified_files
 class ProjectCore(object):
     def __init__(self):
         super(ProjectCore, self).__init__()
-        self.Fixity = SharedApp.SharedApp.App
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         self.ID = ''
         self.title = ''
         self.version = {}
@@ -37,6 +38,8 @@ class ProjectCore(object):
         self.is_saved = False
 
     def setDirectories(self, directories):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         for n in directories:
             try: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'], directories[n]['id'])
             except:
@@ -113,8 +116,9 @@ class ProjectCore(object):
     #
     # @return Version ID Created
     def createNewVersion(self, project_id, version_type ):
-
-        get_old_version  = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+        get_old_version = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
 
         version_id = 1
         if get_old_version is not None and get_old_version is not False:
@@ -138,17 +142,16 @@ class ProjectCore(object):
     # @return Project ID Created
 
     def Save(self):
-        print(self.Fixity.ProjectsList)
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         project_information = {}
         #self = self.Fixity.ProjectsList[self.getTitle()]
         project_information['title'] = self.getTitle()
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
-        project_information['projectRanBefore'] = self.getProject_ran_before()
 
         project_information['selectedAlgo'] = self.getAlgorithm()
         project_information['filters'] = self.getFilters()
-
         project_information['durationType'] = self.scheduler.getDurationType()
         project_information['runTime'] = self.scheduler.getRunTime()
         project_information['runDayOrMonth'] = self.scheduler.getRun_day_or_month()
@@ -218,15 +221,14 @@ class ProjectCore(object):
     #
     # @return Bool
     def Delete(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         self.scheduler.delTask(self.getTitle())
         self.Fixity.Database.delete(self.Fixity.Database._tableProjectPath, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableVersionDetail, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableProject, 'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
-        print('after delete ')
-        print(self.Fixity.ProjectsList)
-        print('after delete ')
         return True
 
 
@@ -238,7 +240,8 @@ class ProjectCore(object):
     #
     # @return Bool
     def ImportProject(self, file_path, project_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         flag_project_contain_detail = False
         file_to_import_info_of = open(file_path,'rb')
 
@@ -388,7 +391,7 @@ class ProjectCore(object):
                     if project_id:
                         information_to_upate = {}
                         information_to_upate['projectRanBefore'] = 1
-                        self.setProject_ran_before(1)
+                        self.setProject_ran_before('1')
                         self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
                 self.Fixity.ProjectsList[self.getTitle()] = self
                 try:
@@ -405,6 +408,8 @@ class ProjectCore(object):
     #
     #@return: Algorithm Used
     def checkForAlgoUsed(self,content):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         algo = 'sha256'
         for single_content in content:
             fix_info = re.split(r'\t+', single_content)
@@ -418,12 +423,16 @@ class ProjectCore(object):
         return algo
 
     def ChangeTitle(self, new_title):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         information = {}
         information['title'] = new_title
         self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id="' + str(self.getID()) + '"')
         return False
 
     def launchThread(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue.put(run_thread)
 
@@ -438,6 +447,9 @@ class ProjectCore(object):
     #
     # @return array
     def Run(self, check_for_changes = False, is_from_thread = False):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         if is_from_thread:
             self.database = Database.Database()
         else:
@@ -520,7 +532,6 @@ class ProjectCore(object):
 
         if len(project_detail_information_array) <= 0:
             project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
-
         project_detail_information = {}
 
         try:
@@ -528,6 +539,7 @@ class ProjectCore(object):
         except:
             project_detail_information  = {}
             pass
+
         if len(project_detail_information) <= 0:
             project_path_information = self.database.getProjectPathInfo(self.getID(),self.getVersion())
         else:
@@ -556,7 +568,20 @@ class ProjectCore(object):
         #print('writing ::: Stared Worked')
 
         old_dirs_information = {}
-        if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() != None:
+        try:
+            id = self.getID()
+        except:
+            id = 0
+            pass
+        last_dif_paths_info = self.database.select(self.database._tableProject,'*',"`id` = '" + str(id) + "' OR `title` like '" + self.getTitle() + "'")
+        try:
+            self.setLast_dif_paths(str(last_dif_paths_info[0]['lastDifPaths']))
+            self.setFilters(str(last_dif_paths_info[0]['filters']))
+            self.setAlgorithm(str(last_dif_paths_info[0]['selectedAlgo']))
+        except:
+            pass
+
+        if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() is not None:
             last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
 
             for last_dif_paths in last_dif_paths_array:
@@ -573,6 +598,7 @@ class ProjectCore(object):
 
                     if path_information:
                         try:
+                            print('if')
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
@@ -592,11 +618,6 @@ class ProjectCore(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
-
-        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
-        self.setLast_dif_paths('')
-        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
-        self.setProject_ran_before('1')
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
@@ -627,6 +648,10 @@ class ProjectCore(object):
                 try:total += int(result_score['total'])
                 except:pass
 
+        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        self.setLast_dif_paths('')
+        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
+        self.setProject_ran_before('1')
 
         missing_files_total = 0
         try:
@@ -686,7 +711,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -738,6 +763,9 @@ class ProjectCore(object):
     #
     # @return bool
     def applyFilter(self,filters ,is_ignore_hidden_files):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         self.filters = filters
         if is_ignore_hidden_files == 1 or is_ignore_hidden_files is True:
             self.setIgnore_hidden_file(1)
@@ -759,6 +787,8 @@ class ProjectCore(object):
     #
     # @return bool
     def SaveSchedule(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         self.scheduler.delTask(self.getTitle())
         self.scheduler.schedule(self.getTitle())
 
@@ -768,6 +798,8 @@ class ProjectCore(object):
 
     # @return None
     def setProjectInfo(self, projects_info):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         try:
             self.setID(projects_info['id'])
@@ -817,6 +849,9 @@ class ProjectCore(object):
 
 
     def writerHistoryFile(self, Content):
+
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
         try:
             history_file_obj = open(history_file, 'w+')
@@ -827,7 +862,8 @@ class ProjectCore(object):
             pass
 
     def writerReportFile(self, information, detail_output_of_all_files_changes):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         try:
             reports_file = open(self.Fixity.Configuration.getReportTemplatePath(), 'r')
             reports_lines = reports_file.readlines()
@@ -885,6 +921,8 @@ class ProjectCore(object):
 
 
     def setReportInformation(self, report_text ,information, detail_output_of_all_files_changes, email_report = False):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         reports_text = str(report_text)
 
         if '{{project_name}}' in reports_text:
@@ -938,12 +976,12 @@ class ProjectCore(object):
     #
     #@return: removed Messgae if removed and count of removed file
     def checkForMissingFiles(self, dict):
-
+        print('missing')
         msg = ""
         count = 0
         global verified_files
-
-        ''' walks through the dict and returns all False flags '''
+        print(verified_files)
+        # walks through the dict and returns all False flags '''
         for keys in dict:
             for obj in dict[keys]:
                     if not obj[0] in verified_files:
@@ -958,6 +996,8 @@ class ProjectCore(object):
     #@return tuple: (hash, abspath, id)
 
     def toTuple(self, line):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         try:
             return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
         except:

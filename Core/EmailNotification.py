@@ -28,7 +28,8 @@ class EmailNotification(object):
 
     def SendEmail(self, recipients, text, attachment, information, project_name=''):
 
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         addr = str(information['email'])
         pas = str(information['pass'])
 
@@ -96,11 +97,16 @@ class EmailNotification(object):
 
 
     def TestingEmail(self,recipients, text, information):
-
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         return self.SendEmail(recipients, text, None, information)
 
     def ReportEmail(self, recipients, attachment, text, information):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         return self.SendEmail(recipients, text, attachment, information)
 
     def ErrorEmail(self, recipients, attachment, text, information):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         return self.SendEmail(recipients, text, attachment, information)

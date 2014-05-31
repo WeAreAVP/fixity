@@ -167,6 +167,8 @@ class AboutFixityGUI(GUILibraries.QDialog):
     Close the Dialog Box
     '''
     def Cancel(self):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.destroy()
         self.close()

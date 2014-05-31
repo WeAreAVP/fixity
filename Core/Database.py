@@ -343,7 +343,7 @@ class Database(object):
                 query += ' WHERE ' + condition
             if(order_by is not None):
                 query += ' ORDER BY '+ order_by
-
+            print(query)
             response = {}
             response_counter = 0
             for r in self.dict_gen(self.cursor.execute(query)):

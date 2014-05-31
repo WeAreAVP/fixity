@@ -133,6 +133,8 @@ class Debugger(object):
 
     def LogException(self, message=''):
 
+        self.Fixity = SharedApp.SharedApp.App
+
 
         ExceptionDetail = {}
         try:

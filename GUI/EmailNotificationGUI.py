@@ -228,6 +228,9 @@ class EmailNotificationGUI(GUILibraries.QDialog):
     @return: String Message of success or failure
     '''
     def validateInformation(self, Email, Pass):
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         msgEmailValidation = None
         if Pass == '':
             msgEmailValidation = GUILibraries.messages['provide_valid_pass']
@@ -293,6 +296,10 @@ class EmailNotificationGUI(GUILibraries.QDialog):
     @return: None
     '''
     def none_protocolConif(self):
+
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
+
         information = self.getConfigInfo()
         try:
             port = str(information['port'])
@@ -309,6 +316,9 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         del self
 
     def checkIsEmailValid(self):
+
+        try:self.Fixity = SharedApp.SharedApp.App
+        except:pass
 
         self.loader.show()
         GUILibraries.QCoreApplication.processEvents()
