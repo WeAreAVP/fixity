@@ -330,13 +330,21 @@ class DirsHandler(object):
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        listOfValues = []
+        list_of_values = []
         fls = []
+
         try:
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files:
-                    single_file = self.specialCharacterHandler(single_file)
-                    fls.append(str(root) + str(os.sep) + single_file)
+
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        single_file = self.specialCharacterHandler(single_file)
+
+                    print(single_file)
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        fls.append(str(root) + str(os.sep) + single_file)
+                    else:
+                        fls.append(os.path.join(str(root), single_file))
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -358,13 +366,13 @@ class DirsHandler(object):
                 else:
                     inode = self.inodeForMac(path_of_the_file)
 
-                listOfValues.append((hash_of_this_file_content, eval(given_path), inode))
+                list_of_values.append((hash_of_this_file_content, eval(given_path), inode))
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
 
 
-        return listOfValues
+        return list_of_values
 
 
 

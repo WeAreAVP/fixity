@@ -602,7 +602,7 @@ class ProjectCore(object):
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
-                            print('else')
+
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path']) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))))
                             pass
 
