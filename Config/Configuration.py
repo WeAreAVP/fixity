@@ -56,7 +56,7 @@ class Configuration(object):
 
             self.base_path = pathInfo
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
-            self.fixity_launch_path = str(self.fixity_launch_path).replace(' ', '\ ')
+            # self.fixity_launch_path = str(self.fixity_launch_path).replace(' ', '\ ')
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
             self.schedules_path = r''+(os.path.join(os.getcwd(), 'schedules'+str(os.sep)))
             self.config_file_path = r''+(os.path.join(os.getcwd(), 'conf.xml'))
@@ -66,7 +66,7 @@ class Configuration(object):
             self.lock_file_path = r''+(os.path.join(os.getcwd(), 'dblocker.log'))
 
             self.log_file_path = r''+(os.path.join(os.getcwd(), 'debug.log'))
-            self.log_file_path = str(self.log_file_path).replace(' ', '\ ')
+            # self.log_file_path = str(self.log_file_path).replace(' ', '\ ')
 
             self.database_file_path = r''+(os.path.join(os.getcwd(),'Fixity.db'))
             self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
