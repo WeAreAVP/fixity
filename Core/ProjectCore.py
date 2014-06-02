@@ -919,7 +919,7 @@ class ProjectCore(object):
             pass
 
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
-        print(detail_output_of_all_files_changes)
+        
         try:
             r = open(rn, 'w+')
             try:
