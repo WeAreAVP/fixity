@@ -39,9 +39,10 @@ class Debugger(object):
             pass
 
         if self.get() == 'true':
-            self.is_debugger_on = True
-        else:
             self.is_debugger_on = False
+        else:
+            self.is_debugger_on = True
+
 
     #Function to Log Errors
     #@param msg Message to log

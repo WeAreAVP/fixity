@@ -454,7 +454,7 @@ class ProjectCore(object):
             self.database = Database.Database()
         else:
             self.database = self.Fixity.Database
-        missing_file = ('',     '')
+        missing_file = ('', '')
         global verified_files
         verified_files = list()
         report_content = ''
@@ -493,12 +493,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        # try:
-        #     print('acquire')
-        #     lock.acquire()
-        # except:
-        #     self.Fixity.logger.LogException(Exception.message)
-        #     pass
+        #try:
+        #    print('acquire')
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -598,7 +598,7 @@ class ProjectCore(object):
 
                     if path_information:
                         try:
-
+                            print('if')
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
@@ -619,7 +619,6 @@ class ProjectCore(object):
                 self.Fixity.logger.LogException(Exception.message)
                 pass
         for index in self.directories:
-
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
 
@@ -639,38 +638,27 @@ class ProjectCore(object):
 
                 try:missing_file += int(result_score['missing_file'])
                 except:pass
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    try:report_content += result_score['content']
-                    except:pass
-                else:
-                    try:report_content += result_score['content']
-                    except:pass
 
+                try:report_content += str(result_score['content'])
+                except:pass
 
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    try:history_content += str(result_score['history_content'])
-                    except:pass
-                else:
-                    try:history_content += result_score['history_content']
-                    except:pass
+                try:history_content += str(result_score['history_content'])
+                except:pass
 
                 try:total += int(result_score['total'])
                 except:pass
 
-        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        data = str(datetime.datetime.now()).split('.')
+        self.database.update(self.database._tableProject, {'lastDifPaths':'','projectRanBefore':'1','lastRan':str(data[0])}, "`id` = '"+str(self.getID())+"'")
         self.setLast_dif_paths('')
-        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
         self.setProject_ran_before('1')
+
         missing_files_total = 0
-        missing_file = ('','')
         try:
             print('checking for missing files FC')
             missing_file = self.checkForMissingFiles(dict_hash)
-            try:
-                report_content += missing_file[0].decode('utf-8')
-            except:
-                report_content += missing_file[0]
-                pass
+
+            report_content += r''+str(str(missing_file[0]))
 
             try:
                 if missing_file[1] > 0:
@@ -686,6 +674,7 @@ class ProjectCore(object):
             total = int(total) + int(missing_files_total)
         except:
             pass
+
         history_text = ''
         try:
             for history_line_single in history_lines:
@@ -709,10 +698,7 @@ class ProjectCore(object):
                     history_text += str(history_line_single).replace('{{algo}}', str(self.getAlgorithm()))+"\n"
 
                 if '{{content}}' in history_line_single:
-                    if self.Fixity.Configuration.getOsType() == 'Windows':
-                        history_text += str(history_line_single).replace('{{content}}', str(history_content))+"\n"
-                    else:
-                        history_text += history_line_single.replace('{{content}}', history_content)+"\n"
+                    history_text += str(history_line_single).replace('{{content}}', str(history_content))+"\n"
 
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -725,7 +711,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -765,7 +751,12 @@ class ProjectCore(object):
                 if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
 
                     email_notification = EmailNotification.EmailNotification()
-                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
+                    try:
+                        project_name = self.getTitle()
+                    except:
+                        project_name = ''
+
+                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
             except:
                 pass
         if is_from_thread:
@@ -867,16 +858,13 @@ class ProjectCore(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
-        # try:
-        history_file_obj = open(history_file,'w+')
         try:
-            history_file_obj.write(Content.encode('utf-8').strip())
-        except:
+            history_file_obj = open(history_file, 'w+')
             history_file_obj.write(Content)
-        history_file_obj.close()
-        # except:
-        #     self.Fixity.logger.LogException(Exception.message)
-        #     pass
+            history_file_obj.close()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
     def writerReportFile(self, information, detail_output_of_all_files_changes):
         try:self.Fixity = SharedApp.SharedApp.App
@@ -922,13 +910,15 @@ class ProjectCore(object):
         try:
             r = open(rn, 'w+')
             try:
-                r.write(reports_text.encode('utf-8'))
+                r.write(reports_text.decode('utf8'))
             except:
-                r.write(reports_text)
 
+                try:
+                    r.write(reports_text.encode('utf8'))
+                except:
+                    pass
 
             r.close()
-            print(reports_text)
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -941,30 +931,30 @@ class ProjectCore(object):
         reports_text = str(report_text)
 
         if '{{project_name}}' in reports_text:
-            reports_text = reports_text.replace('{{project_name}}', str(self.getTitle()))
+            reports_text = str(reports_text).replace('{{project_name}}', str(self.getTitle()))
         elif '{{algo}}' in reports_text:
-            reports_text = reports_text.replace('{{algo}}', self.getAlgorithm())
+            reports_text = str(reports_text).replace('{{algo}}', self.getAlgorithm())
 
         elif '{{date}}' in reports_text:
-            reports_text = reports_text.replace('{{date}}', str(datetime.date.today()))
+            reports_text = str(reports_text).replace('{{date}}', str(datetime.date.today()))
 
         elif '{{total_files}}' in reports_text:
-            reports_text = reports_text.replace('{{total_files}}', str(information['total']))
+            reports_text = str(reports_text).replace('{{total_files}}', str(information['total']))
 
         elif '{{confirmed_files}}' in reports_text:
-            reports_text = reports_text.replace('{{confirmed_files}}', str(information['confirmed']))
+            reports_text = str(reports_text).replace('{{confirmed_files}}', str(information['confirmed']))
 
         elif '{{moved_or_renamed_files}}' in reports_text:
-            reports_text = reports_text.replace('{{moved_or_renamed_files}}', str(information['moved']))
+            reports_text = str(reports_text).replace('{{moved_or_renamed_files}}', str(information['moved']))
 
         elif '{{new_files}}' in reports_text:
-            reports_text = reports_text.replace('{{new_files}}', str(information['created']))
+            reports_text = str(reports_text).replace('{{new_files}}', str(information['created']))
 
         elif '{{changed_files}}' in reports_text:
-            reports_text = reports_text.replace('{{changed_files}}', str(information['corrupted_or_changed']))
+            reports_text = str(reports_text).replace('{{changed_files}}', str(information['corrupted_or_changed']))
 
         elif '{{removed_files}}' in reports_text:
-            reports_text = reports_text.replace('{{removed_files}}', str(information['missing_file']))
+            reports_text = str(reports_text).replace('{{removed_files}}', str(information['missing_file']))
 
         elif '{{details}}' in reports_text and email_report is False:
             utf_encode = False
@@ -995,14 +985,11 @@ class ProjectCore(object):
         msg = ""
         count = 0
         global verified_files
+        print(verified_files)
         # walks through the dict and returns all False flags '''
-        print(len(dict))
-        print(len(verified_files))
         for keys in dict:
             for obj in dict[keys]:
-                # for single_verified_file in verified_files:
-                #     print(single_verified_file)
-                    if (obj[0].decode('utf-8') in verified_files):
+                    if not obj[0] in verified_files:
                         verified_files.append(obj[0])
                         msg += "Removed Files\t" + obj[0] + "\n"
                         count += 1

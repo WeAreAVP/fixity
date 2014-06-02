@@ -47,7 +47,7 @@ messages['duplicate_path'] = "Duplicate paths found, please enter unique paths a
 messages['empty_directory_first'] = "First directory can not be empty, Please enter paths in first directory and try again."
 messages['empty_directory_after_filled'] = "There can't be empty directory(s) between filled directory(s), Please fill those empty directory(s) and try again"
 messages['path_not_found'] = "Invalid path or path dose not exists "
-
+messages['email_test_content'] = 'Testing email access for Fixity reporting...'
 
 
 ''' About Fixity''' 

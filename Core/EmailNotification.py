@@ -101,12 +101,12 @@ class EmailNotification(object):
         except:pass
         return self.SendEmail(recipients, text, None, information)
 
-    def ReportEmail(self, recipients, attachment, text, information):
+    def ReportEmail(self, recipients, attachment, text, information,project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        return self.SendEmail(recipients, text, attachment, information)
+        return self.SendEmail(recipients, text, attachment, information, project_name)
 
-    def ErrorEmail(self, recipients, attachment, text, information):
+    def ErrorEmail(self, recipients, attachment, text, information, project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        return self.SendEmail(recipients, text, attachment, information)
+        return self.SendEmail(recipients, text, attachment, information, project_name)

@@ -461,9 +461,6 @@ class DirsHandler(object):
 
         return list_of_values
 
-
-
-
     #Method to handle all special characters
     #@param string_to_be_handled: String To Be Handled
     #@return:  String - Fixed characters String
@@ -482,10 +479,6 @@ class DirsHandler(object):
             pass
 
         return string_to_be_handled
-
-
-
-
 
     #Checksum Generation Method.
     #Input: File Path, Algorithm.
@@ -563,12 +556,6 @@ class DirsHandler(object):
             pass
         return id_node
 
-
-
-
-
-
-
     #File ID for NTFS
     #Returns the complete file ID as a single long string
     #(volume number, high index, low index)
@@ -593,11 +580,6 @@ class DirsHandler(object):
             pass
 
         return id_node
-
-
-
-
-
 
     #Check weather this file is Hidden or Not
     #@param path_of_file: Path Of File or Directory to be checked

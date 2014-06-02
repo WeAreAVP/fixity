@@ -726,7 +726,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         data = str(datetime.datetime.now()).split('.')
 
-        self.project.setLast_ran(data[0])
+        #self.project.setLast_ran(data[0])
 
         if self.run_only_on_ac_power.isChecked():
             self.project.scheduler.setRun_when_on_battery(1)
