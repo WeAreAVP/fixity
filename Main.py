@@ -48,6 +48,9 @@ if __name__ == '__main__':
         Fixity.LaunchGUI(sys.argv)
     else:
         try:
+            file_test = open('test.txt','w+')
+            file_test.write(str(args.autorun))
+            file_test.close()
             Fixity.LaunchCLI(args.autorun)
             sys.exit()
         except:
@@ -69,7 +72,9 @@ if __name__ == '__main__':
             except:
                 pass
 
-
+            file_test = open('test1.txt','w+')
+            file_test.write(str("Could not run this Project "+str(Exception.message)))
+            file_test.close()
             print("Could not run this Project "+str(Exception.message))
 
 

@@ -171,6 +171,7 @@ class ImportProjectGUI(GUILibraries.QDialog):
 
         self.setWindowTitle('Importing Project ....')
         self.parent_win.setWindowTitle('Importing Project ....')
+        self.parent_win.togglerMenu(False)
 
         if project_core.ImportProject(self.project_selected.text(), file_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
             self.notification.showInformation(self, 'Project Imported', GUILibraries.messages['project_imported_sccuessfully'])
