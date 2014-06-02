@@ -141,11 +141,12 @@ class ProjectCore(object):
     #
     # @return Project ID Created
 
-    def Save(self):
+    def Save(self, save_schedule = True):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         project_information = {}
-        #self = self.Fixity.ProjectsList[self.getTitle()]
+        # self = self.Fixity.ProjectsList[self.getTitle()]
         project_information['title'] = self.getTitle()
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
@@ -173,9 +174,7 @@ class ProjectCore(object):
             project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
             project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, project_information)
             self.setPreviousVersion('')
-
         else:
-
 
             # Update Project
             project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
@@ -210,12 +209,14 @@ class ProjectCore(object):
             self.directories[dirs_objects].setID(dir_path_id['id'])
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
-        self.SaveSchedule()
+        if save_schedule:
+            self.SaveSchedule()
 
-        if project_id['id'] :
+        if project_id['id']:
             self.Fixity.ProjectsList[self.getTitle()] = self
 
         return project_id['id']
+
 
     # Delete this project
     #
