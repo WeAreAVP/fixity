@@ -55,7 +55,7 @@ class SchedulerCore(object):
 
 
             try:
-                p = subprocess.Popen(["launchctl", "unload", launch_agent], stdout=subprocess.PIPE)
+                p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent], stdout=subprocess.PIPE)
                 output, err = p.communicate()
             except:
                 self.Fixity.logger.LogException(Exception.message)
