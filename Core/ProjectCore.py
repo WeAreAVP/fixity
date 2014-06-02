@@ -881,6 +881,7 @@ class ProjectCore(object):
     def writerReportFile(self, information, detail_output_of_all_files_changes):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         try:
             reports_file = open(self.Fixity.Configuration.getReportTemplatePath(), 'r')
             reports_lines = reports_file.readlines()
@@ -918,7 +919,7 @@ class ProjectCore(object):
             pass
 
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
-
+        print(detail_output_of_all_files_changes)
         try:
             r = open(rn, 'w+')
             try:
@@ -928,6 +929,10 @@ class ProjectCore(object):
                 try:
                     r.write(reports_text.encode('utf8'))
                 except:
+                    try:
+                        r.write(reports_text)
+                    except:
+                        pass
                     pass
 
             r.close()

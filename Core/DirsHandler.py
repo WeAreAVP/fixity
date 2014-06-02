@@ -392,17 +392,17 @@ class DirsHandler(object):
 
 
 
-    #---------------------------------------------------------------------------------------------------------
-    #Logic For Selection of Scheduler time In History or Depreciated Manifest Functionality                  |
-    #---------------------------------------------------------------------------------------------------------
-    #If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly     |  Result
-    #(day of week to                                                        (day of month to
-    #run on if none 99)                                                     run on if none 99)
-    #==========================================================================================================
-    #==========================================================================================================
-    #     99           ----    00:00:00    ----         99            ----        99              |  Daily    |
-    #     1            ----    00:00:00    ----         1             ----        99              |  weekly   |
-    #     99           ----    00:00:00    ----         99             ----        2              |  Monthly  |
+    #------------------------------------------------------------------------------- --------------------------
+    #Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
+    #------------------------------------------------------------------------------- --------------------------
+    #If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loo p Is Monthly     |  Result
+    #(day of week to                                                         (day of month to
+    #run on if none 99)                                                      run on if none 99)
+    #================================================================================ ==========================
+    #================================================================================ ==========================
+    #     99           ----    00:00:00    ----         99            ----        99               |  Daily    |
+    #     1            ----    00:00:00    ----         1             ----        99               |  weekly   |
+    #     99           ----    00:00:00    ----         99             ----        2               |  Monthly  |
     #----------------------------------------------------------------------------------------------------------
 
     #Method to create (hash, path, id) tables from file root
@@ -464,7 +464,7 @@ class DirsHandler(object):
 
         return list_of_values
 
-    #Method to handle all special characters
+     #Method to handle all special characters
     #@param string_to_be_handled: String To Be Handled
     #@return:  String - Fixed characters String
     def specialCharacterHandler(self, string_to_be_handled):
@@ -473,12 +473,11 @@ class DirsHandler(object):
         try:
             string_to_be_handled = string_to_be_handled.decode('cp1252')
         except:
-            #print('specialCharacterHandler :::: cp1252 not helping')
             pass
+
         try:
             string_to_be_handled = string_to_be_handled.encode('utf8')
         except:
-            #print('specialCharacterHandler :::: utf8')
             pass
 
         return string_to_be_handled
