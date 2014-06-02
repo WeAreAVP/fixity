@@ -26,7 +26,7 @@ class Main (object):
 
     def LaunchCLI(self, project_name):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
-        project_core.Save()
+        # project_core.Save()
         project_core.Run()
 
 
@@ -47,34 +47,34 @@ if __name__ == '__main__':
     if args.autorun is None or args.autorun == '':
         Fixity.LaunchGUI(sys.argv)
     else:
-        try:
+        # try:
             file_test = open('test.txt','w+')
             file_test.write(str(args.autorun))
             file_test.close()
             Fixity.LaunchCLI(args.autorun)
-            sys.exit()
-        except:
-            exc_type, exc_obj, exc_tb = sys.exc_info()
-            file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-            error_information = {}
-            try:
-                error_information['file_name'] = file_name
-            except:
-                pass
 
-            try:
-                error_information['error_type'] = exc_type
-            except:
-                pass
-
-            try:
-                error_information['line_no'] = exc_tb.tb_lineno
-            except:
-                pass
-
-            file_test = open('test1.txt','w+')
-            file_test.write(str("Could not run this Project "+str(Exception.message)))
-            file_test.close()
-            print("Could not run this Project "+str(Exception.message))
+        # except:
+        #     exc_type, exc_obj, exc_tb = sys.exc_info()
+        #     file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        #     error_information = {}
+        #     try:
+        #         error_information['file_name'] = file_name
+        #     except:
+        #         pass
+        #
+        #     try:
+        #         error_information['error_type'] = exc_type
+        #     except:
+        #         pass
+        #
+        #     try:
+        #         error_information['line_no'] = exc_tb.tb_lineno
+        #     except:
+        #         pass
+        #
+        #     file_test = open('test1.txt','w+')
+        #     file_test.write(str("Could not run this Project "+str(Exception.message)))
+        #     file_test.close()
+        #     print("Could not run this Project "+str(Exception.message))
 
 

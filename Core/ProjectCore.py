@@ -499,6 +499,7 @@ class ProjectCore(object):
         except:
            self.Fixity.logger.LogException(Exception.message)
            pass
+        print('1')
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -506,14 +507,14 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
+        print('2')
         for index in self.directories:
             if self.directories[index].getPath() != '':
                 all_paths += str(self.directories[index].getPath())+';'
             number_of_path += 1
 
         keep_time = ''
-
+        print('3')
         # - 1 = Monthly  - 2 = Week  - 3 = Daily
         if int(self.getScheduler().getDurationType()) == 3:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 99'
@@ -521,7 +522,7 @@ class ProjectCore(object):
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime()))+ ' ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month())) + ' 99'
         elif int(self.getScheduler().getDurationType()) == 1:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
-
+        print('4')
         history_content = ''
 
         project_detail_information_array = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
@@ -533,7 +534,7 @@ class ProjectCore(object):
         if len(project_detail_information_array) <= 0:
             project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
         project_detail_information = {}
-
+        print('5')
         try:
             project_detail_information = project_detail_information_array['response']
         except:
@@ -554,7 +555,7 @@ class ProjectCore(object):
             Id_info = str(project_path_information[path_info]['pathID']).split('-')
             index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
             base_path_information[str(project_path_information[path_info]['pathID'])]= {'path':index_path_in_for,'code':str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
-
+        print('6')
         filters_array = {}
         try:
             filters_array = str(self.getFilters()).split(',')
@@ -581,7 +582,7 @@ class ProjectCore(object):
             self.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
         except:
             pass
-
+        print('7')
         if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() is not None:
             last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
 
@@ -619,6 +620,7 @@ class ProjectCore(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
+        print('8')
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
