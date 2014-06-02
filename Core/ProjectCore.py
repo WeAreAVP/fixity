@@ -499,6 +499,7 @@ class ProjectCore(object):
         except:
            self.Fixity.logger.LogException(Exception.message)
            pass
+        print('1')
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -511,7 +512,7 @@ class ProjectCore(object):
             if self.directories[index].getPath() != '':
                 all_paths += str(self.directories[index].getPath())+';'
             number_of_path += 1
-
+        print('2')
         keep_time = ''
 
         # - 1 = Monthly  - 2 = Week  - 3 = Daily
@@ -525,7 +526,7 @@ class ProjectCore(object):
         history_content = ''
 
         project_detail_information_array = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
-
+        print('3')
 
         if project_detail_information_array is False:
             project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
@@ -546,7 +547,7 @@ class ProjectCore(object):
             version_id_this = project_detail_information_array['version_id']
             project_path_information = self.database.getProjectPathInfo(self.getID(),version_id_this)
 
-
+        print('6')
         base_path_information = {}
 
         for path_info in project_path_information:
@@ -566,7 +567,7 @@ class ProjectCore(object):
         dict_hash = defaultdict(list)
         dict_File = defaultdict(list)
         #print('writing ::: Stared Worked')
-
+        print('7')
         old_dirs_information = {}
         try:
             id = self.getID()
@@ -581,7 +582,7 @@ class ProjectCore(object):
             self.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
         except:
             pass
-
+        print('8')
         if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() is not None:
             last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
 
@@ -589,7 +590,7 @@ class ProjectCore(object):
                 single_dir_information = last_dif_paths.split('||-||')
                 if single_dir_information[0] != None and single_dir_information[0] != '':
                     old_dirs_information[single_dir_information[1]] = single_dir_information[0]
-
+        print('5')
         for l in project_detail_information:
             try:
                 x = self.toTuple(project_detail_information[l])
@@ -619,6 +620,7 @@ class ProjectCore(object):
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
+        print('15')
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
@@ -648,7 +650,7 @@ class ProjectCore(object):
 
                 try:total += int(result_score['total'])
                 except:pass
-
+        print('10')
         data = str(datetime.datetime.now()).split('.')
         self.database.update(self.database._tableProject, {'lastDifPaths':'','projectRanBefore':'1','lastRan':str(data[0])}, "`id` = '"+str(self.getID())+"'")
         self.setLast_dif_paths('')
@@ -678,7 +680,7 @@ class ProjectCore(object):
             total = int(total) + int(missing_files_total)
         except:
             pass
-
+        print('11')
         history_text = ''
         try:
             for history_line_single in history_lines:
@@ -707,7 +709,7 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
+        print('12')
         information_for_report = { }
         information_for_report['missing_file'] = missing_files_total
         information_for_report['corrupted_or_changed'] = corrupted_or_changed
@@ -719,7 +721,7 @@ class ProjectCore(object):
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
-
+        print('13')
 
 
         try:
