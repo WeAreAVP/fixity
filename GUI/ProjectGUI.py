@@ -109,7 +109,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(False)
+            self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
@@ -726,7 +726,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         data = str(datetime.datetime.now()).split('.')
 
-        self.project.setLast_ran(data[0])
+        #self.project.setLast_ran(data[0])
 
         if self.run_only_on_ac_power.isChecked():
             self.project.scheduler.setRun_when_on_battery(1)

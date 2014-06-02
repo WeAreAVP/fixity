@@ -493,12 +493,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        try:
-            print('acquire')
-            lock.acquire()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    print('acquire')
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -648,9 +648,9 @@ class ProjectCore(object):
                 try:total += int(result_score['total'])
                 except:pass
 
-        self.database.update(self.database._tableProject, {'lastDifPaths':''}, "`id` = '"+str(self.getID())+"'")
+        data = str(datetime.datetime.now()).split('.')
+        self.database.update(self.database._tableProject, {'lastDifPaths':'','projectRanBefore':'1','lastRan':str(data[0])}, "`id` = '"+str(self.getID())+"'")
         self.setLast_dif_paths('')
-        self.database.update(self.database._tableProject, {'projectRanBefore':'1'}, "`id` = '"+str(self.getID())+"'")
         self.setProject_ran_before('1')
 
         missing_files_total = 0
@@ -751,7 +751,12 @@ class ProjectCore(object):
                 if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
 
                     email_notification = EmailNotification.EmailNotification()
-                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config)
+                    try:
+                        project_name = self.getTitle()
+                    except:
+                        project_name = ''
+
+                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
             except:
                 pass
         if is_from_thread:

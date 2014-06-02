@@ -356,12 +356,12 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         information['email'] = Email
         information['protocol'] = protocol
 
-
-        text = 'Testing email access for Fixity reporting...'
+        text = GUILibraries.messages['email_test_content']
 
         flag = self.email_notification.TestingEmail(Email,text, information)
         if flag:
             self.notification.showInformation(self, 'check credentials ',  GUILibraries.messages['got_testing_email'])
+            self.loader.hide()
         else:
             try:
                 self.notification.showError(self, 'Error',  GUILibraries.messages['testing_email_error'])

@@ -145,8 +145,12 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
             try:
                 if email_config['smtp'] != '' and email_config['smtp'] is not None:
                     email_notification = EmailNotification.EmailNotification()
-                    if project_core.getEmail_address() !='' and project_core.getEmail_address() is not None:
-                        email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config)
+                    if project_core.getEmail_address() != '' and project_core.getEmail_address() is not None:
+                        try:
+                            project_name = project_core.getTitle()
+                        except:
+                            project_name = ''
+                        email_notification.ErrorEmail(project_core.getEmail_address(), result_of_all_file_confirmed['report_path'], GUILibraries.messages['alog_not_changed_mail'], email_config, project_name)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
