@@ -64,7 +64,10 @@ class Configuration(object):
             self.bin_path = r''+(os.path.join(self.base_path, 'bin'+str(os.sep)))
             self.assets_path = r''+(os.path.join(os.getcwd(), 'assets'+str(os.sep)))
             self.lock_file_path = r''+(os.path.join(os.getcwd(), 'dblocker.log'))
+
             self.log_file_path = r''+(os.path.join(os.getcwd(), 'debug.log'))
+            self.log_file_path = str(self.log_file_path).replace(' ', '\ ')
+
             self.database_file_path = r''+(os.path.join(os.getcwd(),'Fixity.db'))
             self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
             self.report_template_path = r''+(os.path.join(self.template_path)+'Report.txt')

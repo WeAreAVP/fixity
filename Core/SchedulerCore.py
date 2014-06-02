@@ -389,69 +389,7 @@ class SchedulerCore(object):
         try:
             launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
             scheduler_xml_text = ''
-
-            xmlsch = open(launch_agent, "w")
-            try:
-                xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
-                xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
-                xmlsch.write("    <plist version=\"1.0\">\n")
-                xmlsch.write("        <dict>\n")
-
-                xmlsch.write("            <key>Program</key>\n")
-                xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
-                xmlsch.write("            <key>Label</key>\n")
-                xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
-                xmlsch.write("            <key>ProgramArguments</key>\n")
-
-                xmlsch.write("            <array>\n")
-                xmlsch.write("                <string>"+str(self.Fixity.Configuration.getFixityLaunchPath())+"</string>\n")
-                xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
-                xmlsch.write("            </array>\n")
-
-                xmlsch.write("            <key>StandardOutPath</key>\n")
-                xmlsch.write("            <string>" + self.Fixity.Configuration.getDebugFilePath() +"</string>\n")
-                xmlsch.write("            <key>StandardErrorPath</key>\n")
-                xmlsch.write("            <string>" + self.Fixity.Configuration.getDebugFilePath() +"</string>\n")
-                xmlsch.write("            <key>StartCalendarInterval</key>\n")
-                xmlsch.write("            <dict>\n")
-
-                infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-                TriggerInformation = str(infoTrigger[1]).split(':')
-
-                if interval == 1:
-                    xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-                    xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
-                    xmlsch.write("            <key>Day</key>\n")
-                    xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
-
-                if interval == 2:
-                    WeekInformation = {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 }
-                    print(WeekInformation[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']])
-
-                    xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-                    xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
-                    xmlsch.write("            <key>Weekday</key>\n")
-                    xmlsch.write("            <integer>" + str(WeekInformation[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
-
-                if interval == 3:
-                    xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
-                    xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
-
-                xmlsch.write("            </dict>\n")
-                xmlsch.write("        </dict>\n")
-                xmlsch.write("    </plist>\n")
-            except:
-                pass
-
-            xmlsch.close()
-            return launch_agent
-
+            xmlsch = open(u''+launch_agent, "w")
             # Months
             if interval == 1:
                 template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_mac(), "r")
