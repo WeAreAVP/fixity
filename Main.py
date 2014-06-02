@@ -48,9 +48,6 @@ if __name__ == '__main__':
         Fixity.LaunchGUI(sys.argv)
     else:
         try:
-            file_test = open('test.txt','w+')
-            file_test.write(str(args.autorun))
-            file_test.close()
             Fixity.LaunchCLI(args.autorun)
 
         except:
