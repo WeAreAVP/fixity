@@ -138,6 +138,8 @@ class DirsHandler(object):
 
                     response = []
                     response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files)
+
+
                     if not response or len(response) < 1:
                         continue
 
@@ -433,6 +435,7 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
 
         try:
             for f in xrange(len(fls)):

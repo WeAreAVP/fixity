@@ -598,7 +598,7 @@ class ProjectCore(object):
 
                     if path_information:
                         try:
-                            print('if')
+
                             base_old_file_path = old_dirs_information[str(path_information[0])]
                             this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                         except:
@@ -639,10 +639,10 @@ class ProjectCore(object):
                 try:missing_file += int(result_score['missing_file'])
                 except:pass
 
-                try:report_content += str(result_score['content'])
+                try:report_content += result_score['content']
                 except:pass
 
-                try:history_content += str(result_score['history_content'])
+                try:history_content += result_score['history_content']
                 except:pass
 
                 try:total += int(result_score['total'])
@@ -657,8 +657,11 @@ class ProjectCore(object):
         try:
             print('checking for missing files FC')
             missing_file = self.checkForMissingFiles(dict_hash)
-
-            report_content += r''+str(str(missing_file[0]))
+            try:
+                report_content += missing_file[0].decode('utf-8')
+            except:
+                report_content += missing_file[0]
+                pass
 
             try:
                 if missing_file[1] > 0:
@@ -698,7 +701,7 @@ class ProjectCore(object):
                     history_text += str(history_line_single).replace('{{algo}}', str(self.getAlgorithm()))+"\n"
 
                 if '{{content}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{content}}', str(history_content))+"\n"
+                    history_text += history_line_single.replace('{{content}}', history_content)+"\n"
 
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -765,6 +768,7 @@ class ProjectCore(object):
 
     # Apply Filter For This project
     # @param filters: sav filters againts this project
+    #
     #
     # @return bool
     def applyFilter(self,filters ,is_ignore_hidden_files):
@@ -858,13 +862,21 @@ class ProjectCore(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
+        # try:
+        history_file_obj = open(history_file, 'w+')
         try:
-            history_file_obj = open(history_file, 'w+')
-            history_file_obj.write(Content)
-            history_file_obj.close()
+            history_file_obj.write(Content.decode('utf-8'))
         except:
-            self.Fixity.logger.LogException(Exception.message)
+            try:
+                history_file_obj.write(Content.encode('utf-8'))
+            except:
+                history_file_obj.write(Content)
+                pass
             pass
+        history_file_obj.close()
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
 
     def writerReportFile(self, information, detail_output_of_all_files_changes):
         try:self.Fixity = SharedApp.SharedApp.App
@@ -972,7 +984,6 @@ class ProjectCore(object):
 
 
         return reports_text
-     #Method to find which files are missing in the scanned directory
     #Input: defaultdict (from buildDict)
     #Output: warning messages about missing files (one long string and printing to stdout)
     #
@@ -985,14 +996,23 @@ class ProjectCore(object):
         msg = ""
         count = 0
         global verified_files
-        print(verified_files)
         # walks through the dict and returns all False flags '''
+
         for keys in dict:
             for obj in dict[keys]:
-                    if not obj[0] in verified_files:
+
+                try:
+                    if not obj[0].decode('utf-8') in verified_files and not obj[0] in verified_files :
                         verified_files.append(obj[0])
+                        verified_files.append(obj[0].decode('utf-8'))
                         msg += "Removed Files\t" + obj[0] + "\n"
                         count += 1
+
+                    print('id')
+                except Exception:
+                    print(Exception.message)
+                    pass
+
         return msg, count
 
     #Method to convert database line into tuple
