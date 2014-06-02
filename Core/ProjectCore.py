@@ -141,81 +141,90 @@ class ProjectCore(object):
     #
     # @return Project ID Created
 
-    def Save(self):
+    def Save(self, save_schedule = True):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        project_information = {}
-        #self = self.Fixity.ProjectsList[self.getTitle()]
-        project_information['title'] = self.getTitle()
-        project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
+        try:
+            project_information = {}
+            self = self.Fixity.ProjectsList[self.getTitle()]
+            project_information['title'] = self.getTitle()
+            project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
 
-        project_information['selectedAlgo'] = self.getAlgorithm()
-        project_information['filters'] = self.getFilters()
-        project_information['durationType'] = self.scheduler.getDurationType()
-        project_information['runTime'] = self.scheduler.getRunTime()
-        project_information['runDayOrMonth'] = self.scheduler.getRun_day_or_month()
-        project_information['runWhenOnBattery'] = self.scheduler.getRun_when_on_battery()
-        project_information['ifMissedRunUponRestart'] = self.scheduler.getIf_missed_run_upon_restart()
-        project_information['emailOnlyUponWarning'] = self.scheduler.getEmail_only_upon_warning()
+            project_information['selectedAlgo'] = self.getAlgorithm()
+            project_information['filters'] = self.getFilters()
+            project_information['durationType'] = self.scheduler.getDurationType()
+            project_information['runTime'] = self.scheduler.getRunTime()
+            project_information['runDayOrMonth'] = self.scheduler.getRun_day_or_month()
+            project_information['runWhenOnBattery'] = self.scheduler.getRun_when_on_battery()
+            project_information['ifMissedRunUponRestart'] = self.scheduler.getIf_missed_run_upon_restart()
+            project_information['emailOnlyUponWarning'] = self.scheduler.getEmail_only_upon_warning()
 
-        project_information['emailAddress'] = self.getEmail_address()
-        project_information['extraConf'] = self.getExtra_conf()
-        project_information['lastRan'] = self.getLast_ran()
+            project_information['emailAddress'] = self.getEmail_address()
+            project_information['extraConf'] = self.getExtra_conf()
+            project_information['lastRan'] = self.getLast_ran()
 
-        project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
-
-        project_id = {}
-        project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
-
-        if len(project_exists) <= 0:
-            # Insert Project
-            project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-            project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, project_information)
-            self.setPreviousVersion('')
-
-        else:
-
-
-            # Update Project
             project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
-            self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
+
+            project_id = {}
+            project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
+
+            if len(project_exists) <= 0:
+                # Insert Project
+                project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
+                project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, project_information)
+                self.setPreviousVersion('')
+            else:
+
+                # Update Project
+                project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
+                self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
 
 
-            project_id['id'] = project_exists[0]['id']
+                project_id['id'] = project_exists[0]['id']
+                self.setID(project_id['id'])
+                self.setPreviousVersion(project_exists[0]['versionCurrentID'])
+
+
+
             self.setID(project_id['id'])
-            self.setPreviousVersion(project_exists[0]['versionCurrentID'])
+            version_id = self.createNewVersion(project_id['id'], 'project')
+            self.setVersion(version_id['id'])
+
+            # Update version
+            update_version = {}
+            update_version['versionCurrentID'] = version_id['id']
+            self.setVersion(update_version['versionCurrentID'])
 
 
+            for dirs_objects in self.directories:
+                dir_information = {}
+                dir_information['path'] = self.directories[dirs_objects].getPath()
+                dir_information['pathID'] = self.directories[dirs_objects].getPathID()
+                dir_information['projectID'] = project_id['id']
+                dir_information['versionID'] = version_id['id']
+                dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
+                dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
+                dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
+                self.directories[dirs_objects].setID(dir_path_id['id'])
 
-        self.setID(project_id['id'])
-        version_id = self.createNewVersion(project_id['id'], 'project')
-        self.setVersion(version_id['id'])
+            self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
+            if save_schedule:
+                self.SaveSchedule()
 
-        # Update version
-        update_version = {}
-        update_version['versionCurrentID'] = version_id['id']
-        self.setVersion(update_version['versionCurrentID'])
+            if project_id['id']:
+                self.Fixity.ProjectsList[self.getTitle()] = self
 
+            return project_id['id']
 
-        for dirs_objects in self.directories:
-            dir_information = {}
-            dir_information['path'] = self.directories[dirs_objects].getPath()
-            dir_information['pathID'] = self.directories[dirs_objects].getPathID()
-            dir_information['projectID'] = project_id['id']
-            dir_information['versionID'] = version_id['id']
-            dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
-            dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-            dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
-            self.directories[dirs_objects].setID(dir_path_id['id'])
-
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
-        self.SaveSchedule()
-
-        if project_id['id'] :
-            self.Fixity.ProjectsList[self.getTitle()] = self
-
-        return project_id['id']
+        except:
+            try:
+                file_bug = open('bug.txt', 'w+')
+                file_bug.write(Exception.message)
+                file_bug.close()
+            except:
+                pass
+            pass
 
     # Delete this project
     #
