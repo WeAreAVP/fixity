@@ -121,7 +121,14 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         if project_core.getAlgorithm() == algo_value_selected:
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
             return
-
+        last_dif_paths_info = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*',"`id` = '" + str(id) + "' OR `title` like '" + project_core.getTitle() + "'")
+        try:
+            project_core.setLast_dif_paths(str(last_dif_paths_info[0]['lastDifPaths']))
+            project_core.setFilters(str(last_dif_paths_info[0]['filters']))
+            project_core.setAlgorithm(str(last_dif_paths_info[0]['selectedAlgo']))
+            project_core.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
+        except:
+            pass
 
         if project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None :
             self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])

@@ -53,9 +53,7 @@ class Configuration(object):
             pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
             pathInfo = str(pathInfo).replace('Fixity.app', '')
             pathInfo = str(pathInfo).replace('Main.app', '')
-            print('Home Path')
-            print(os.getcwd())
-            print('Home Path')
+
             self.base_path = pathInfo
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Main"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
@@ -75,37 +73,6 @@ class Configuration(object):
             self.sch_daily_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacDaily.xml')
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
-
-
-
-
-
-            print('base_path)')
-            print(self.base_path)
-
-            print('fixity_launch_path')
-            print(self.fixity_launch_path)
-
-            print('reports_path')
-            print(self.reports_path)
-
-            print('schedules_path')
-            print(self.schedules_path)
-
-            print('history_path')
-            print(self.history_path)
-
-            print('sch_daily_template_path_mac')
-            print(self.sch_daily_template_path_mac)
-
-            print('sch_month_template_path_mac')
-            print(self.sch_month_template_path_mac)
-
-            print('template_path')
-            print(self.template_path)
-
-            print('log_file_path')
-            print(self.log_file_path)
 
 
 

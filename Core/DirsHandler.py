@@ -274,7 +274,7 @@ class DirsHandler(object):
         except:
             pass
 
-        #print('Verfiy File ::::: '+str(line[1]))
+
         if self.Fixity.Configuration.getOsType() == 'Windows':
             path_info = os.path.isfile(line[1].decode('utf-8'))
         else:

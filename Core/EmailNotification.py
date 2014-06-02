@@ -67,20 +67,20 @@ class EmailNotification(object):
                 server.ehlo
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-                print('sending email')
+
                 return True
             if protocol == 'TLS' or protocol == 'tls' :
                 server = SMTP(str(information['smtp']), port)
                 server.starttls()
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-                print('sending email')
+
                 return True
             else:
                 server = SMTP(str(information['smtp']), port)
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-                print('sending email')
+
                 return True
 
 
@@ -99,14 +99,32 @@ class EmailNotification(object):
     def TestingEmail(self,recipients, text, information):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         return self.SendEmail(recipients, text, None, information)
 
     def ReportEmail(self, recipients, attachment, text, information,project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        return self.SendEmail(recipients, text, attachment, information, project_name)
+        all_recipents = str(recipients).split(',')
+        flag = True
+        for single_recipents in all_recipents:
+
+            if single_recipents.strip() != '' and single_recipents is not None:
+                if self.SendEmail(single_recipents, text, attachment, information, project_name) and flag is True:
+                    flag = True
+                else:
+                    flag = False
+        return flag
 
     def ErrorEmail(self, recipients, attachment, text, information, project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        return self.SendEmail(recipients, text, attachment, information, project_name)
+        flag = True
+        all_recipents = str(recipients).split(',')
+        for single_recipents in all_recipents:
+            if single_recipents.strip() != '' and single_recipents is not None:
+                if self.SendEmail(single_recipents, text, attachment, information, project_name) and flag is True:
+                    flag = True
+                else:
+                    flag = False
+        return flag

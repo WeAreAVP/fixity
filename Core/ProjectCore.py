@@ -454,7 +454,7 @@ class ProjectCore(object):
             self.database = Database.Database()
         else:
             self.database = self.Fixity.Database
-        missing_file = ('', '')
+
         global verified_files
         verified_files = list()
         report_content = ''
@@ -493,12 +493,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        #try:
-        #    print('acquire')
-        #    lock.acquire()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+           print('acquire')
+           lock.acquire()
+        except:
+           self.Fixity.logger.LogException(Exception.message)
+           pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -578,6 +578,7 @@ class ProjectCore(object):
             self.setLast_dif_paths(str(last_dif_paths_info[0]['lastDifPaths']))
             self.setFilters(str(last_dif_paths_info[0]['filters']))
             self.setAlgorithm(str(last_dif_paths_info[0]['selectedAlgo']))
+            self.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
         except:
             pass
 
@@ -620,7 +621,7 @@ class ProjectCore(object):
                 pass
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
-                result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
+                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
 
                 verified_files = result_score['verified_files']
 
@@ -655,17 +656,17 @@ class ProjectCore(object):
 
         missing_files_total = 0
         try:
-            print('checking for missing files FC')
-            missing_file = self.checkForMissingFiles(dict_hash)
+            missing_file_detail = ('', '')
+            missing_file_detail = self.checkForMissingFiles(dict_hash)
             try:
-                report_content += missing_file[0].decode('utf-8')
+                report_content += missing_file_detail[0].decode('utf-8')
             except:
-                report_content += missing_file[0]
+                report_content += missing_file_detail[0]
                 pass
 
             try:
-                if missing_file[1] > 0:
-                    missing_files_total = int(missing_file[1])
+                if missing_file_detail[1] > 0:
+                    missing_files_total = int(missing_file_detail[1])
             except:
                 pass
 
@@ -723,7 +724,7 @@ class ProjectCore(object):
 
         try:
             lock.release()
-            print('relased the file')
+
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -919,7 +920,7 @@ class ProjectCore(object):
             pass
 
         rn = self.Fixity.Configuration.getReportsPath() + 'fixity_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S%f')) + '_' + str(self.getTitle())  + '.tsv'
-        
+
         try:
             r = open(rn, 'w+')
             try:
@@ -997,7 +998,7 @@ class ProjectCore(object):
     #
     #@return: removed Messgae if removed and count of removed file
     def checkForMissingFiles(self, dict):
-        print('missing')
+
         msg = ""
         count = 0
         global verified_files
@@ -1013,9 +1014,8 @@ class ProjectCore(object):
                         msg += "Removed Files\t" + obj[0] + "\n"
                         count += 1
 
-                    print('id')
+
                 except Exception:
-                    print(Exception.message)
                     pass
 
         return msg, count
