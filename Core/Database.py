@@ -56,8 +56,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.connect()
+
+
             counter_recursion = 0
-            return  SharedApp.SharedApp.App.Database.connect()
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -78,11 +79,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getOne(query)
+
+
             counter_recursion = 0
-            try:
-                return  SharedApp.SharedApp.App.Database.getOne(query)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -106,11 +105,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.sqlQuery(query)
+
+
             counter_recursion = 0
-            try:
-                return  SharedApp.SharedApp.App.Database.sqlQuery(query)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -142,11 +139,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getProjectInfo(project_name, limit)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getProjectInfo(project_name, limit)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -171,11 +166,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getProjectPathInfo(project_id ,version_id)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getProjectPathInfo(project_id ,version_id)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -198,11 +191,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getConfiguration()
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getConfiguration()
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -222,11 +213,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getVersionDetails(project_id, version_id, OrderBy)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getVersionDetails(project_id, version_id, OrderBy)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -253,11 +242,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getConfigInfo(project)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getConfigInfo(project)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
         return {}
@@ -285,11 +272,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getVersionDetailsLast(project_id)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.getVersionDetailsLast(project_id)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -312,11 +297,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.listToTuple(proveded_list)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.listToTuple(proveded_list)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -343,7 +326,7 @@ class Database(object):
                 query += ' WHERE ' + condition
             if(order_by is not None):
                 query += ' ORDER BY '+ order_by
-            print(query)
+
             response = {}
             response_counter = 0
             for r in self.dict_gen(self.cursor.execute(query)):
@@ -360,11 +343,9 @@ class Database(object):
 
                 counter_recursion += 1
                 return self.select(table_name ,select, condition, order_by)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.select(table_name ,select, condition, order_by)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -388,13 +369,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 self.dict_gen(curs)
+
+
             counter_recursion = 0
-            try:
-
-                SharedApp.SharedApp.App.Database.dict_gen(curs)
-
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -411,23 +388,31 @@ class Database(object):
 
 
     def insert(self, table_name, information):
+
         try:
             query = 'INSERT INTO '+str(table_name)
             values = {}
             columnName = {}
             counter = 0
+
             for index in information:
                 try:
                     columnName[str(counter)] = index
-                    values[str(counter)]  = str(information[index])
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        values[str(counter)] = str(information[index])
+                    else:
+                        try:
+                            values[str(counter)] = str(information[index])
+                        except:
+                            values[str(counter)] = information[index]
+                            pass
+
 
                     counter += 1
                 except:
                     pass
 
             query = query + ' ( '+self.implode ( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
-
-
 
             self.cursor.execute(query)
             self.commit()
@@ -439,12 +424,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.insert(table_name, information)
-            counter_recursion = 0
 
-            try:
-                return SharedApp.SharedApp.App.Database.insert(table_name, information)
-            except:
-                pass
+
+            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -467,11 +449,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.delete(table_name ,condition)
+
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.delete(table_name ,condition)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -507,11 +487,8 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.update(table_name, information, condition)
+
             counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.update(table_name, information, condition)
-            except:
-                pass
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -553,12 +530,9 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.implode(information , glue , is_column)
-            counter_recursion = 0
-            try:
-                return SharedApp.SharedApp.App.Database.implode(information , glue , is_column)
-            except:
-                pass
 
+
+            counter_recursion = 0
 
 
             self.Fixity.logger.LogException(Exception.message)

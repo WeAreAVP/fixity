@@ -100,7 +100,7 @@ class ChangeNameGUI(GUILibraries.QDialog ):
 
     def Save(self):
 
-        if(self.change_name_field.text() == '' and self.change_name_field.text() == None):
+        if self.change_name_field.text() == '' and self.change_name_field.text() is None:
             self.notification.showError(self, "Failure", GUILibraries.messages['no_project_selected'])
             return
 
