@@ -55,7 +55,7 @@ class Configuration(object):
             pathInfo = str(pathInfo).replace('Main.app', '')
 
             self.base_path = pathInfo
-            self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Main"
+            self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
             self.schedules_path = r''+(os.path.join(os.getcwd(), 'schedules'+str(os.sep)))
             self.config_file_path = r''+(os.path.join(os.getcwd(), 'conf.xml'))
