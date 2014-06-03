@@ -5,13 +5,11 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 ./build (Stores file required to create stand alone application)
 
-./debug (Logging of errors and their details )
-
 ./dist (contains Stand Alone app after creating using py2app or pyinstaller)
 
 ./history (Contain Manifest files of the project as history)
 
-./images (images using in Fixity)
+./assets (images using in Fixity and templates for scheduler xml templates)
 
 ./reports (Contains generated Reports)
 
@@ -64,13 +62,13 @@ For eclipse from install new update , install pydev from python.org/updates and 
 5) if having problem of missing library download and install them from python.org using python setup.py install (setup.py file will be provided in the given library package )
 
 #App/Executable File Creation
-python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" FileName.py
+python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="assets\icon.ico" FileName.py
 
 In Fixity two Files are created
 
-python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" Fixity.py
+python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="assets\icon.ico" Fixity.py
 
-python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="images\icon.ico" AutoFixity.py
+python /path/to/pyinstaller/pyinstaller.py --onefile --noconsole --icon="assets\icon.ico" AutoFixity.py
 
 These files are placed in "dist" directory after complilation of above commands
 
