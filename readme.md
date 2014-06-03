@@ -1,7 +1,6 @@
 Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 #Directory Structure
-./bin (Contains Database and configuration files)
 
 ./build (Stores file required to create stand alone application)
 
