@@ -26,9 +26,9 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 +---GUI    (Files Contains all GUI for Fixity )
 
 #Files information
-conf.xml (contain information is debugging on or off )
-Fixity.db (Database of Fixity contains all information except dubugging is on or off)
-debug.log (Exceptions and error Logging )
+./conf.xml (contain information is debugging on or off )
+./Fixity.db (Database of Fixity contains all information except dubugging is on or off)
+./debug.log (Exceptions and error Logging )
 
 
 
