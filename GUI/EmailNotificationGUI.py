@@ -414,7 +414,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.notification.showInformation(self, "Fixity", GUILibraries.messages['email_save_success'])
         self.Cancel()
     def getConfigInfo(self):
-        print('getConfigInfo')
+        getConfigInfo = ''
 
 
     '''

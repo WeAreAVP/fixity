@@ -390,12 +390,6 @@ class SchedulerCore(object):
             launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
             scheduler_xml_text = ''
             xmlsch = open(u''+launch_agent, "w")
-
-
-
-
-
-            xmlsch = open(u''+launch_agent, "w")
             try:
                 xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
                 xmlsch.write("<!DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd\">\n")
@@ -432,15 +426,14 @@ class SchedulerCore(object):
                     xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
 
                 if interval == 2:
-                    WeekInformation = {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 }
-                    print(WeekInformation[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']])
+                    week_information = {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 }
 
                     xmlsch.write("            <key>Minute</key>\n")
                     xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
                     xmlsch.write("            <key>Hour</key>\n")
                     xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
                     xmlsch.write("            <key>Weekday</key>\n")
-                    xmlsch.write("            <integer>" + str(WeekInformation[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(week_information[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
 
                 if interval == 3:
                     xmlsch.write("            <key>Minute</key>\n")
@@ -455,7 +448,7 @@ class SchedulerCore(object):
                 pass
 
             xmlsch.close()
-            return lunchAject
+            return launch_agent
             # Months
             if interval == 1:
                 template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_mac(), "r")
@@ -508,8 +501,8 @@ class SchedulerCore(object):
 
                 if interval == 2:
                     if response is False:
-                        WeekInformation = self.Fixity.Configuration.getWeekInformation()
-                        response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(WeekInformation[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
+                        week_information = self.Fixity.Configuration.getWeekInformation()
+                        response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(week_information[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
 
 
                 if response is False:

@@ -90,7 +90,6 @@ class PathChangeGUI(GUILibraries.QDialog):
     @return: None
     '''
     def CloseClick(self):
-        print('close')
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.change_the_path_information = False
         if self.code >=0:

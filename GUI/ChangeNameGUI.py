@@ -149,7 +149,7 @@ class ChangeNameGUI(GUILibraries.QDialog ):
 
 
     def project_changed(self):
-        print('project_changed')
+        project_changed = ''
 
 
     '''

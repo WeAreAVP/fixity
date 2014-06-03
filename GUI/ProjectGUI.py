@@ -635,20 +635,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         check_for_duplicate_path = {}
         counter = 0
-        empty_dir_found = False
         for value in self.dirs_text_fields:
-            if counter == 0:
-                if value.text() == '':
-                    self.notification.showError(self, "Error", GUILibraries.messages['empty_directory_first'])
-                    return
-            if value.text() == '':
-                empty_dir_found = True
 
-            if empty_dir_found is True and value.text() != '':
-                self.notification.showError(self, "Error", GUILibraries.messages['empty_directory_after_filled'])
-                return
-
-            if not os.path.isdir(value.text()) and value.text() != '':
+            if not os.path.isdir(value.text()) and str(value.text()).strip() != '':
                 self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + str(value.text()))
                 return
 
@@ -724,10 +713,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.project.scheduler.setEmail_only_upon_warning(1)
         else:
             self.project.scheduler.setEmail_only_upon_warning(0)
-
-        data = str(datetime.datetime.now()).split('.')
-
-        #self.project.setLast_ran(data[0])
 
         if self.run_only_on_ac_power.isChecked():
             self.project.scheduler.setRun_when_on_battery(1)
@@ -887,17 +872,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             try:
                 self.projects.clear()
-            except Exception as ex:
+            except Exception:
                 pass
             try:
                 if allProjects != None:
                     if(len(allProjects) > 0):
                         for p in allProjects:
                             self.projects.addItem(p)
-            except Exception as ex:
-
+            except Exception:
                 pass
             self.unsaved = False
-
-
-

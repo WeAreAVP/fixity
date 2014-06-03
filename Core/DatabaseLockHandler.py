@@ -44,11 +44,9 @@ class DatabaseLockHandler(object):
                 break;
             except OSError as e:
                 if e.errno != errno.EEXIST:
-                    # print('process slept for 20 sec')
                     time.sleep(self.delay)
 
                 if (time.time() - start_time) >= self.timeout:
-                    # print('process slept for 20 sec')
                     time.sleep(self.delay)
 
         self.is_locked = True

@@ -157,8 +157,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
     Triggers on project changed from drop down and sets related information in filters Field
     '''
     def projectChanged(self):
-        print('projectChanged')
-
         selected_project = self.projects.currentText()
         project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
         try:
