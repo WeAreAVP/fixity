@@ -15,6 +15,24 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 ./schedules (contains files used in scheduling process)
 
+#Code Structure
+
++---assets (Images and templates )
+   ---template (templates of scheduler xml file creation)
+
++---Config (Files mentaion Fixity Setting up and Configuration )
+
++---Core   (Files Contains all business logic for Fixity )
+
++---GUI    (Files Contains all GUI for Fixity )
+
+#Files information
+conf.xml (contain information is debugging on or off )
+Fixity.db (Database of Fixity contains all information except dubugging is on or off)
+debug.log (Exceptions and error Logging )
+
+
+
 #MAC CONFIGURATION
 1) Download and install latest Xcode
 
