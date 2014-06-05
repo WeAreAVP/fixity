@@ -48,7 +48,8 @@ messages['empty_directory_first'] = "First directory can not be empty, Please en
 messages['empty_directory_after_filled'] = "There can't be empty directory(s) between filled directory(s), Please fill those empty directory(s) and try again"
 messages['path_not_found'] = "Invalid path or path dose not exists "
 messages['email_test_content'] = 'Testing email access for Fixity reporting...'
-
+messages['close_unsaved'] = 'There are unsaved changes for one of the project.\nThese will be discarded when closing the App.\nWould you like to stay on this project?'
+messages['new_project_unsaved'] = 'There are unsaved changes for one of the project.\nThese will be discarded when opening a new project.\nWould you like to stay on this project?'
 
 ''' About Fixity''' 
 ''' Description ''' 

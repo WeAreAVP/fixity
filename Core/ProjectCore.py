@@ -13,7 +13,11 @@ from collections import defaultdict
 
 
 global verified_files
+
+
 class ProjectCore(object):
+
+
     def __init__(self):
         super(ProjectCore, self).__init__()
         try:self.Fixity = SharedApp.SharedApp.App
@@ -108,7 +112,6 @@ class ProjectCore(object):
 
     def setPreviousVersion(self, previous_version): self.previous_version = previous_version
 
-
     # Creates New Version
     #
     # @param project_id: Project ID
@@ -150,7 +153,6 @@ class ProjectCore(object):
         project_information['title'] = self.getTitle()
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
-
         project_information['selectedAlgo'] = self.getAlgorithm()
         project_information['filters'] = self.getFilters()
         project_information['durationType'] = self.scheduler.getDurationType()
@@ -185,16 +187,21 @@ class ProjectCore(object):
             self.setID(project_id['id'])
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
 
-
-
         self.setID(project_id['id'])
         version_id = self.createNewVersion(project_id['id'], 'project')
-        self.setVersion(version_id['id'])
 
-        # Update version
-        update_version = {}
-        update_version['versionCurrentID'] = version_id['id']
-        self.setVersion(update_version['versionCurrentID'])
+        try:
+            self.setVersion(version_id['id'])
+        except:
+            pass
+
+        try:
+            # Update version
+            update_version = {}
+            update_version['versionCurrentID'] = version_id['id']
+            self.setVersion(update_version['versionCurrentID'])
+        except:
+             pass
 
 
         for dirs_objects in self.directories:
@@ -217,7 +224,6 @@ class ProjectCore(object):
 
         return project_id['id']
 
-
     # Delete this project
     #
     # @return Bool
@@ -231,7 +237,6 @@ class ProjectCore(object):
         self.Fixity.Database.delete(self.Fixity.Database._tableProject, 'id ="' + str(self.getID()) + '"')
         self.Fixity.removeProject(str(self.getTitle()))
         return True
-
 
     # Import New project
     # @param file_path: file Path of imported File
@@ -354,6 +359,7 @@ class ProjectCore(object):
                         information_project_path['pathID'] = inform_path[1]
 
                         self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, information_project_path)
+
                 self.setID(project_id['id'])
                 self.setProjectInfo(config)
                 self.setVersion(information_project_update['versionCurrentID'])
@@ -576,6 +582,7 @@ class ProjectCore(object):
             self.setFilters(str(last_dif_paths_info[0]['filters']))
             self.setAlgorithm(str(last_dif_paths_info[0]['selectedAlgo']))
             self.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
+            self.scheduler.setEmail_only_upon_warning(str(last_dif_paths_info[0]['emailOnlyUponWarning']))
         except:
             pass
 
@@ -712,7 +719,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -747,19 +754,22 @@ class ProjectCore(object):
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
 
         else:
-            email_config = self.Fixity.Configuration.getEmailConfiguration()
-            try:
-                if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
+            if self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0:
+                print('sending email')
+                email_config = self.Fixity.Configuration.getEmailConfiguration()
+                try:
+                    if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
 
-                    email_notification = EmailNotification.EmailNotification()
-                    try:
-                        project_name = self.getTitle()
-                    except:
-                        project_name = ''
+                        email_notification = EmailNotification.EmailNotification()
+                        try:
+                            project_name = self.getTitle()
+                        except:
+                            project_name = ''
 
-                    email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
-            except:
-                pass
+                        email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
+                except:
+                    pass
+
         if is_from_thread:
             self.Fixity.selfDestruct()
 

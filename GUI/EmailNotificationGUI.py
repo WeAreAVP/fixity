@@ -142,12 +142,14 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.TLS_protocol.clicked.connect(self.TLS_protocolConif)
         self.none_protocol.clicked.connect(self.none_protocolConif)
 
-        self.SSL_protocol.setChecked(True)
-        self.SSL_protocol.click()
+
         self.SetWindowLayout()
         information = self.Fixity.Configuration.getEmailConfiguration()
         self.out_going_mail_server.setText('smtp.gmail.com')
         self.setInformation(information)
+
+        self.TLS_protocol.setChecked(True)
+        self.TLS_protocol.click()
         try:
                 if information is not None and len(information) > 0 and information['smtp'] != None:
                     self.setInformation(information)

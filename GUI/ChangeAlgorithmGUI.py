@@ -130,25 +130,33 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         except:
             pass
 
-        if project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None :
-            self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])
-            return
+
 
         msgBox.setWindowTitle("Processing ....")
         msgBox.setText("Reading Files, please wait ...")
         msgBox.show()
 
-        GUILibraries.QCoreApplication.processEvents()
-        project_core.SaveSchedule()
-        result_of_all_file_confirmed = project_core.Run(True)
 
-        email_config = self.Fixity.Configuration.getEmailConfiguration()
+        #self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])
+        #return
+
+        GUILibraries.QCoreApplication.processEvents()
+
+        project_core.SaveSchedule()
+        result_of_all_file_confirmed = {}
+        if not (project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None) :
+            result_of_all_file_confirmed = project_core.Run(True)
+        else:
+            result_of_all_file_confirmed['file_changed_found'] = False
+
+
 
         msgBox.close()
 
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
             self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
+            email_config = self.Fixity.Configuration.getEmailConfiguration()
             try:
                 if email_config['smtp'] != '' and email_config['smtp'] is not None:
                     email_notification = EmailNotification.EmailNotification()

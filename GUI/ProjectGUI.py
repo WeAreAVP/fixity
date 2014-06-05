@@ -154,7 +154,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.debuging_menu = GUILibraries.QAction('&Turn Debuging Off', self)
         self.import_menu = GUILibraries.QAction('&Import Project', self)
 
-
     def setShortCuts(self):
         self.save_menu.setShortcut('CTRL+R')
         self.new_menu.setShortcut('CTRL+N')
@@ -189,7 +188,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.new_menu.triggered.connect(self.new)
         self.save_menu.triggered.connect(self.run)
         self.update_menu.triggered.connect(self.Save)
-        self.quit_menu.triggered.connect(self.close)
+        self.quit_menu.triggered.connect(self.Close)
         self.debuging_menu.triggered.connect(self.switchDebugger)
         self.about_fixity_menu.triggered.connect(self.AboutFixity)
         self.config_email_menu.triggered.connect(self.setEmailConfiguration)
@@ -201,8 +200,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def creatSchedulingOptions(self):
         self.scheduling_groupBox = GUILibraries.QGroupBox("Scheduling")
         self.monthly =GUILibraries.QRadioButton("Monthly")
-        self.weekly =GUILibraries.QRadioButton("Weekly")
-        self.daily =GUILibraries.QRadioButton("Daily")
+        self.weekly = GUILibraries.QRadioButton("Weekly")
+        self.daily = GUILibraries.QRadioButton("Daily")
 
         self.run_only_on_ac_power = GUILibraries.QCheckBox("Run when on battery power")
         self.start_when_available  = GUILibraries.QCheckBox("If missed, run upon restart")
@@ -215,6 +214,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.monthly.clicked.connect(self.monthClick)
         self.weekly.clicked.connect(self.weekClick)
         self.daily.clicked.connect(self.dayClick)
+
         self.switchDebugger(True)
         self.scheduling_layout = GUILibraries.QVBoxLayout()
 
@@ -223,8 +223,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_layout.addWidget(self.daily)
 
         self.timer = GUILibraries.QTimeEdit(GUILibraries.QTime())
+
         self.timer.setDisplayFormat(self.Fixity.Configuration.getTimeFormat())
         self.scheduling_layout.addWidget(self.timer)
+
 
         self.day_of_week = GUILibraries.QComboBox()
         self.day_of_week.addItems(self.Fixity.Configuration.getWeekDays())
@@ -254,8 +256,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def changed(self):
         self.unsaved = True
 
-
-
     def createProjectListingOption(self):
         self.widget = GUILibraries.QWidget(self)
         self.pgroup = GUILibraries.QGroupBox("Projects")
@@ -266,28 +266,42 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.project_layout.addWidget(self.projects)
         self.pgroup.setLayout(self.project_layout)
         self.projects.itemClicked.connect(self.update)
-
+        self.projects.itemChanged.connect(self.update)
+        self.projects.itemSelectionChanged.connect(self.update)
 
     #Updates Fields When Project Is Selected In List
     #@Slot(str)
     #@param new: Is New Project
     #@param projetName: projet Name If Not Selected
 
-
-    def update(self, new, projet_name_force = None):
-
+    def Close(self):
         if self.unsaved:
-                message = "There are unsaved changes to this project.\n"
-                message += "These will be discarded when opening a new project.\nWould you like to stay on this project?"
-                response = self.notification.showQuestion(self, 'un-saved Project', message)
+
+                response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
 
                 if response:
                     self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                     self.unsaved = True
                     return
                 else:
-                    self.refreshProjectSettings()
+                    self.close()
 
+    def update(self, new='', projet_name_force = None):
+
+        if self.unsaved:
+
+                response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['new_project_unsaved'])
+
+                if response:
+
+                    self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                    self.unsaved = True
+                    return
+                else:
+                    selected = int(self.projects.currentIndex().row())
+                    self.refreshProjectSettings()
+                    print(selected)
+                    self.projects.setCurrentRow(selected)
 
         try:
             project_name = self.projects.currentItem().text()
@@ -295,7 +309,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
             project_name = ''
         try:
             project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
-
 
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -305,8 +318,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 return
         except:
             return
-
-
 
         for n in range(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
             self.dirs_text_fields[(n)].setText("")
@@ -380,7 +391,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             t = ['00', '00']
 
         self.timer.setTime(GUILibraries.QTime(int(t[0]), int(t[1])))
-        self.lastrun.setText("Last checked:\n" + last_run_label)
+        if last_run_label:
+            self.lastrun.setText("Last checked:\n" + '')
         self.old = new
         self.unsaved = False
 
@@ -827,7 +839,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def pickDir(self):
 
         n = self.browse_dirs.index(self.sender())
-        path_selected = GUILibraries.QFileDialog.getExistingDirectory(dir=str(self.Fixity.Configuration.getUserHomePath())+str(GUILibraries.os.sep)+'Desktop'+str(GUILibraries.os.sep))
+        path_selected = GUILibraries.QFileDialog.getExistingDirectory(self, dir=self.Fixity.Configuration.getUserHomePath() + GUILibraries.os.sep + 'Desktop' + GUILibraries.os.sep)
         if path_selected and path_selected != '':
             self.dirs_text_fields[n].setText(path_selected)
 

@@ -152,7 +152,7 @@ class Configuration(object):
 
     def getTimeFormat(self): return self.time_format
 
-    def getUserHomePath(self): self.user_home_path = os.path.expanduser('~')
+    def getUserHomePath(self): return str(os.path.expanduser('~'))
 
     def getDebugFilePath(self):return str(self.log_file_path)
 
