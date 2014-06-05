@@ -186,6 +186,7 @@ class ProjectCore(object):
             project_id['id'] = project_exists[0]['id']
             self.setID(project_id['id'])
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
+        print(project_id)
 
         self.setID(project_id['id'])
         version_id = self.createNewVersion(project_id['id'], 'project')
@@ -212,7 +213,13 @@ class ProjectCore(object):
             dir_information['versionID'] = version_id['id']
             dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
+            print('++++++++++++++++++++++++')
+            print(dir_information)
+            print('++++++++++++++++++++++++')
+
             dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
+
+
             self.directories[dirs_objects].setID(dir_path_id['id'])
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')

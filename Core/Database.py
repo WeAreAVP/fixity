@@ -388,6 +388,7 @@ class Database(object):
 
 
     def insert(self, table_name, information):
+        print(information)
 
         try:
             query = 'INSERT INTO '+str(table_name)
@@ -399,7 +400,7 @@ class Database(object):
                 try:
                     columnName[str(counter)] = index
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        values[str(counter)] = str(information[index])
+                        values[str(counter)] = information[index]
                     else:
                         try:
                             values[str(counter)] = str(information[index])
@@ -411,8 +412,9 @@ class Database(object):
                     counter += 1
                 except:
                     pass
-
+            print(values)
             query = query + ' ( '+self.implode ( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
+            print(query)
 
             self.cursor.execute(query)
             self.commit()
@@ -515,7 +517,7 @@ class Database(object):
 
                     else:
                         if(counter == 0):
-                            string_glued = string_glued + ' "'+ str(information[info])+ '" '
+                            string_glued = string_glued + ' "'+ information[info]+ '" '
                         else:
                             string_glued = string_glued + ' , "' + information[info]+ '" '
                     counter += 1

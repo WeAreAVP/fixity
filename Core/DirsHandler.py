@@ -409,29 +409,25 @@ class DirsHandler(object):
         fls = []
 
 
-        #try:
-        for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
-            for single_file in files:
+        try:
+            for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
+                for single_file in files:
 
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    single_file = self.specialCharacterHandler(single_file)
-                    root = self.specialCharacterHandler(root)
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        single_file = self.specialCharacterHandler(single_file)
+                        root = self.specialCharacterHandler(root)
+                        fls.append(root + str(os.sep) + single_file)
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
 
-
-                    fls.append(root + str(os.sep) + single_file)
-
-
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
-        print(fls)
         try:
             for f in xrange(len(fls)):
                 if self.Fixity.Configuration.getOsType() == 'Windows':
                     path_of_the_file = fls[f]
                 else:
                     path_of_the_file = fls[f]
-                print(path_of_the_file)
+
                 encoded_base_path = self.getPathID()
                 if self.Fixity.Configuration.getOsType() == 'Windows':
                     directory_path_to_be_scanned = str(directory_path_to_be_scanned).replace('\\\\', '\\').replace('\\', '\\\\')
