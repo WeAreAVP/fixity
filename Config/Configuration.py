@@ -304,7 +304,7 @@ class Configuration(object):
     #@return: CleanString
 
     def CleanStringForBreaks(self,StringToBeCleaned):
-        CleanString = str(StringToBeCleaned).strip()
+        CleanString = StringToBeCleaned.strip()
         try:
             CleanString = CleanString.replace('\r\n', '')
             CleanString = CleanString.replace('\n', '')

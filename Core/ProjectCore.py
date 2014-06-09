@@ -42,15 +42,18 @@ class ProjectCore(object):
         self.is_saved = False
 
     def setDirectories(self, directories):
-        try:self.Fixity = SharedApp.SharedApp.App
+        try: self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         for n in directories:
-            try: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'], directories[n]['id'])
+            try: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
+                                                                 directories[n]['pathID'], directories[n]['id'])
             except:
-                self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'],'')
+                self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
+                                                                directories[n]['pathID'], '')
                 pass
 
-    def setID(self, ID):self.ID = ID
+    def setID(self, ID): self.ID = ID
 
     def getID(self ):return self.ID
 
@@ -121,7 +124,8 @@ class ProjectCore(object):
     def createNewVersion(self, project_id, version_type ):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        get_old_version = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*','projectID="'+ str(project_id) + '"','versionID DESC ' )
+        get_old_version = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*',
+                                                      'projectID="'+ str(project_id) + '"','versionID DESC ')
 
         version_id = 1
         if get_old_version is not None and get_old_version is not False:
@@ -137,6 +141,7 @@ class ProjectCore(object):
         information['versionType'] = version_type
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
+
 
         return self.Fixity.Database.insert(self.Fixity.Database._tableVersions, information)
 
@@ -169,7 +174,8 @@ class ProjectCore(object):
         project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
 
         project_id = {}
-        project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*','title like "' + str(self.getTitle()) + '"')
+        project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*',
+                                                     'title like "' + str(self.getTitle()) + '"')
 
         if len(project_exists) <= 0:
             # Insert Project
@@ -180,13 +186,13 @@ class ProjectCore(object):
 
             # Update Project
             project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
-            self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information, 'id ="' + str(project_exists[0]['id']) + '"')
-
+            self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information,
+                                        'id ="' + str(project_exists[0]['id']) + '"')
 
             project_id['id'] = project_exists[0]['id']
             self.setID(project_id['id'])
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
-        print(project_id)
+
 
         self.setID(project_id['id'])
         version_id = self.createNewVersion(project_id['id'], 'project')
@@ -213,14 +219,14 @@ class ProjectCore(object):
             dir_information['versionID'] = version_id['id']
             dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-            print('++++++++++++++++++++++++')
-            print(dir_information)
-            print('++++++++++++++++++++++++')
+
+
 
             dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
 
 
-            self.directories[dirs_objects].setID(dir_path_id['id'])
+            self.directories[dirs_objects].setID(
+                dir_path_id['id'])
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
         if save_schedule:
@@ -332,7 +338,8 @@ class ProjectCore(object):
                 information_project_update['versionCurrentID'] = version_id['id']
 
 
-                self.Fixity.Database.update(self.Fixity.Database._tableProject,information_project_update,'id = "'+ str(project_id['id']) +'"')
+                self.Fixity.Database.update(self.Fixity.Database._tableProject,
+                                            information_project_update,'id = "' + str(project_id['id']) +'"')
 
                 all_project_paths = []
                 path_info = project_paths.split(';')
@@ -406,7 +413,8 @@ class ProjectCore(object):
                         information_to_upate = {}
                         information_to_upate['projectRanBefore'] = 1
                         self.setProject_ran_before('1')
-                        self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate, "id='" + str(project_id['id']) + "'")
+                        self.Fixity.Database.update(self.Fixity.Database._tableProject, information_to_upate,
+                                                    "id='" + str(project_id['id']) + "'")
                 self.Fixity.ProjectsList[self.getTitle()] = self
                 try:
                     file_to_import_info_of.close()
@@ -441,7 +449,8 @@ class ProjectCore(object):
         except:pass
         information = {}
         information['title'] = new_title
-        self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id="' + str(self.getID()) + '"')
+        self.Fixity.Database.update(self.Fixity.Database._tableProject,
+                                    information, 'id="' + str(self.getID()) + '"')
         return False
 
     def launchThread(self):
@@ -507,11 +516,11 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        try:
-            lock.acquire()
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        #try:
+        #    lock.acquire()
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -522,7 +531,11 @@ class ProjectCore(object):
 
         for index in self.directories:
             if self.directories[index].getPath() != '':
-                all_paths += str(self.directories[index].getPath())+';'
+                try:
+                    all_paths += self.directories[index].getPath()+';'
+                except:
+                    all_paths += str(self.directories[index].getPath())+';'
+                    pass
             number_of_path += 1
 
         keep_time = ''
@@ -564,8 +577,12 @@ class ProjectCore(object):
         for path_info in project_path_information:
 
             Id_info = str(project_path_information[path_info]['pathID']).split('-')
-            index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
-            base_path_information[str(project_path_information[path_info]['pathID'])]= {'path':index_path_in_for,'code':str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
+            try:
+                index_path_in_for = project_path_information[path_info]['path']
+            except:
+                index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
+            base_path_information[str(project_path_information[path_info]['pathID'])] = {'path': index_path_in_for,
+                                                                                        'code': str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
 
         filters_array = {}
         try:
@@ -583,7 +600,8 @@ class ProjectCore(object):
         except:
             id = 0
             pass
-        last_dif_paths_info = self.database.select(self.database._tableProject,'*',"`id` = '" + str(id) + "' OR `title` like '" + self.getTitle() + "'")
+        last_dif_paths_info = self.database.select(self.database._tableProject,'*',
+                                                   "`id` = '" + str(id) + "' OR `title` like '" + self.getTitle() + "'")
         try:
             self.setLast_dif_paths(str(last_dif_paths_info[0]['lastDifPaths']))
             self.setFilters(str(last_dif_paths_info[0]['filters']))
@@ -593,46 +611,68 @@ class ProjectCore(object):
         except:
             pass
 
-        if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() is not None:
-            last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
+        is_path_change = False
 
+        if self.getLast_dif_paths() != 'None' and self.getLast_dif_paths() != '' and self.getLast_dif_paths() is not None:
+            try:
+                last_dif_paths_array = self.getLast_dif_paths().encode('utf-8').split(',')
+            except:
+                last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
+                pass
+
+
+            is_path_change = True
             for last_dif_paths in last_dif_paths_array:
                 single_dir_information = last_dif_paths.split('||-||')
                 if single_dir_information[0] != None and single_dir_information[0] != '':
                     old_dirs_information[single_dir_information[1]] = single_dir_information[0]
 
-        for l in project_detail_information:
-            try:
-                x = self.toTuple(project_detail_information[l])
-                if x is not None and x:
+        if len(project_detail_information) > 0:
+            for l in project_detail_information:
+                try:
+                    x = self.toTuple(project_detail_information[l])
 
-                    path_information = str(x[1]).split('||')
+                    if x is not None and x:
 
-                    if path_information:
-                        try:
-                            base_old_file_path = old_dirs_information[str(path_information[0])]
-                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
-                        except:
+                        path_information = str(x[1]).split('||')
 
-                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_path_information[str(path_information[0])]['path']) + self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1]))))
-                            pass
+                        base_path = ''
+                        if path_information:
+                            try:
 
-                        # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
-                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path, self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False])
+                                base_old_file_path = old_dirs_information[str(path_information[0])]
+                                this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) +
+                                                     self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                                base_path = base_old_file_path
 
-                        # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
-                        dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+                            except:
 
-                        # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
-                        dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False])
+                                this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] +
+                                                     self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
+                                base_path = base_path_information[str(path_information[0])]['path']
 
-            except:
-                self.Fixity.logger.LogException(Exception.message)
-                pass
+                                pass
+
+                            # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
+                            dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,
+                                                                                                    self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False, base_path])
+
+                            # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
+                            dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
+
+                            # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
+                            dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),
+                                                              self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
+
+                except:
+                    self.Fixity.logger.LogException(Exception.message)
+                    pass
 
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
-                result_score = self.directories[index].Run(self.getTitle(),dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread)
+
+                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array,
+                                                           verified_files, is_from_thread, is_path_change)
 
                 verified_files = result_score['verified_files']
 
@@ -661,7 +701,8 @@ class ProjectCore(object):
                 except:pass
 
         data = str(datetime.datetime.now()).split('.')
-        self.database.update(self.database._tableProject, {'lastDifPaths':'','projectRanBefore':'1','lastRan':str(data[0])}, "`id` = '"+str(self.getID())+"'")
+        self.database.update(self.database._tableProject, {'lastDifPaths': '', 'projectRanBefore': '1',
+                                                           'lastRan': str(data[0])}, "`id` = '" + str(self.getID()) + "'")
         self.setLast_dif_paths('')
         self.setProject_ran_before('1')
 
@@ -670,9 +711,13 @@ class ProjectCore(object):
             missing_file_ = ('', '')
             missing_file = self.checkForMissingFiles(dict_hash)
             try:
-                report_content += missing_file[0].decode('utf-8')
+                report_content += missing_file[0].encode('utf-8')
             except:
-                report_content += missing_file[0]
+                try:
+                    report_content += missing_file[0].decode('utf-8')
+                except:
+                    report_content += missing_file[0]
+                    pass
                 pass
 
             try:
@@ -695,30 +740,40 @@ class ProjectCore(object):
             for history_line_single in history_lines:
                 history_line_single = str(history_line_single).replace('\n', '')
                 if '{{base_directory}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{base_directory}}', self.Fixity.Configuration.CleanStringForBreaks(str(all_paths)))+"\n"
+
+                    history_text += history_line_single.encode('utf-8').replace('{{base_directory}}',
+                                                                                self.Fixity.Configuration.CleanStringForBreaks(all_paths.encode('utf-8')))+"\n"
 
                 if '{{email_address}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{email_address}}', self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
+                    history_text += history_line_single.replace('{{email_address}}',
+                                                                self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
+
 
                 if '{{schedule}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{schedule}}', self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
+                    history_text += history_line_single.replace('{{schedule}}',
+                                                                self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
+
 
                 if '{{last_ran}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{last_ran}}', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
+                    history_text += history_line_single.replace('{{last_ran}}',
+                                                                datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
+
 
                 if '{{filters}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{filters}}', str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+                    history_text += history_line_single.replace('{{filters}}',
+                                                                str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+
 
                 if '{{algo}}' in history_line_single:
-                    history_text += str(history_line_single).replace('{{algo}}', str(self.getAlgorithm()))+"\n"
+                    history_text += history_line_single.replace('{{algo}}',
+                                                                str(self.getAlgorithm()))+"\n"
 
                 if '{{content}}' in history_line_single:
-                    history_text += history_line_single.replace('{{content}}', history_content)+"\n"
+                    history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content)+"\n"
 
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
         information_for_report = { }
         information_for_report['missing_file'] = missing_files_total
         information_for_report['corrupted_or_changed'] = corrupted_or_changed
@@ -726,12 +781,10 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-        print(report_content)
+
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
-
-
 
         try:
             lock.release()
@@ -762,7 +815,6 @@ class ProjectCore(object):
 
         else:
             if self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0:
-                print('sending email')
                 email_config = self.Fixity.Configuration.getEmailConfiguration()
                 try:
                     if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
@@ -773,7 +825,8 @@ class ProjectCore(object):
                         except:
                             project_name = ''
 
-                        email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
+                        email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'],
+                                                       created_report_info['email_content'], email_config, project_name)
                 except:
                     pass
 
@@ -803,7 +856,8 @@ class ProjectCore(object):
         else:
             information['ignoreHiddenFiles'] = 0
         self.setIgnore_hidden_file(str(information['ignoreHiddenFiles']))
-        response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id = "' + str(self.getID()) + '"')
+        response = self.Fixity.Database.update(self.Fixity.Database._tableProject,
+                                               information, 'id = "' + str(self.getID()) + '"')
         return response
 
     # Save Setting
@@ -868,6 +922,7 @@ class ProjectCore(object):
 
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
 
+
         self.setDirectories(directories)
 
 
@@ -908,8 +963,17 @@ class ProjectCore(object):
         reports_text = ''
         try:
             for reports_single_line in reports_lines:
-                reports_single_line = str(reports_single_line).replace('\n','')
-                reports_text += self.setReportInformation(reports_single_line, information, detail_output_of_all_files_changes) +"\n"
+                try:
+                    reports_single_line = reports_single_line.decode('utf-8').replace('\n', '')
+                except:
+                    reports_single_line = str(reports_single_line).replace('\n', '')
+                    pass
+                try:
+                    reports_text += self.setReportInformation(reports_single_line.decode('utf-8'), information, detail_output_of_all_files_changes.encode('utf-8')) + "\n"
+                except:
+                    reports_text += self.setReportInformation(reports_single_line, information, detail_output_of_all_files_changes) + "\n"
+                    pass
+
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -1007,7 +1071,7 @@ class ProjectCore(object):
 
     #Method to find which files are missing in the scanned directory
     #Input: defaultdict (from buildDict)
-    #Output: warning messages about missing files (one long string and printing to stdout)
+    #Output: warning messages about missing files (one long string and  printing to stdout)
     #
     #@param dict: Directory of all file exists in the scanned folder
     #@param file: List of all directory with inode,  hash and path information  with indexed using Inode
@@ -1017,18 +1081,49 @@ class ProjectCore(object):
 
         msg = ""
         count = 0
+
         global verified_files
         # walks through the dict and returns all False flags '''
+
         for keys in dict:
             for obj in dict[keys]:
+                is_file_removed = False
+
                 if self.Fixity.Configuration.getOsType() == 'Windows':
+                    for single_line in verified_files:
+
+                        try:
+                            is_file_removed = obj[0] in single_line
+                        except:
+
+                            try:
+                                is_file_removed = obj[0].decode('utf-8') in single_line
+                            except:
+                                pass
+
+                            pass
+
+                        if is_file_removed:
+                            break
                     try:
-                        if not obj[0] in verified_files:
-                            verified_files.append(obj[0])
-                            msg += "Removed Files\t" + obj[0] + "\n"
-                            count += 1
+                        try:
+                            if not is_file_removed:
+                                verified_files.append(obj[0])
+                                verified_files.append(obj[0].decode('utf-8'))
+                                msg += "Removed Files\t" + obj[0] + "\n"
+                                count += 1
+                        except:
+                            pass
+
                     except:
-                        pass
+                            path_info = (obj[0].decode('utf-8') == verified_files)
+                            if path_info is False:
+                                verified_files.append(obj[0])
+                                verified_files.append(obj[0].decode('utf-8'))
+                                msg += "Removed Files\t" + obj[0] + "\n"
+                                count += 1
+                            pass
+
                 else:
                     try:
                         if not obj[0].decode('utf-8') in verified_files and not obj[0] in verified_files:

@@ -15,7 +15,7 @@ class App(object):
         self.setUp()
 
     def selfDestruct(self):
-        e= ''
+        del self
 
     @staticmethod
     def getInstance():
@@ -38,7 +38,6 @@ class App(object):
         self.Setup.createTables()
         self.ProjectRepo = ProjectRepository.ProjectRepository()
 
-
         email_configuration = self.Database.getConfiguration()
 
         try:
@@ -55,6 +54,7 @@ class App(object):
 
     def loadAllProjects(self):
         all_projects = self.ProjectRepo.getAll()
+
         if all_projects is not None and all_projects is not False:
             if len(all_projects) > 0:
                 for single_project in all_projects:
@@ -76,13 +76,10 @@ class App(object):
                     information.append(str(self.ProjectsList[project].getTitle()))
         return information
 
-    # TODO MOVE repo
+
     def getSingleProject(self, project_name):
         try:
-
             selected_project_object = self.ProjectsList[project_name]
-
-
             return selected_project_object
         except:
             return False

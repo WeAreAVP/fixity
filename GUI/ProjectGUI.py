@@ -344,7 +344,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
         directories = project_core.getDirectories()
         for n in directories:
             try:
-                self.dirs_text_fields[(n)].setText(str(directories[(n)].getPath()).strip())
+                try:
+                    self.dirs_text_fields[(n)].setText(directories[(n)].getPath())
+                except:
+                    self.dirs_text_fields[(n)].setText(str(directories[(n)].getPath()).strip())
+                    pass
+
             except:
                 try:
                     self.dirs_text_fields[(n)].setText("")
@@ -472,36 +477,38 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def checkForChanges(self, search_for_path, code):
         try:
-
+            self.Fixity = SharedApp.SharedApp.App
             project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
+            project_info = self.Fixity.Database.getProjectInfo(str(self.projects.currentItem().text()))
+            project_core.setProjectInfo(project_info[0])
             directory_detail = project_core.getDirectories()
+
             if len(directory_detail) > 0:
                 for directory_detail_single in directory_detail:
                     if str(directory_detail[directory_detail_single].getPathID().strip()) == str(code).strip():
                         if directory_detail[directory_detail_single].getPath().strip() != '' and  search_for_path != '':
-                            if directory_detail[directory_detail_single].getPath().strip() != search_for_path :
+                            if directory_detail[directory_detail_single].getPath().strip() != search_for_path:
                                 self.is_path_changed = True
                                 self.ChangeRootDirectoryInformation(directory_detail[directory_detail_single].getPath(), search_for_path, code )
 
             if self.is_path_changed is True and (project_core.getLast_dif_paths() is None or project_core.getLast_dif_paths() == '' or project_core.getLast_dif_paths() == 'None'):
-                    all_previous_paths = ''
+                all_previous_paths = ''
+                for directory_detail_single in directory_detail:
+                    if (directory_detail[directory_detail_single].getPath() is not None):
+                        if all_previous_paths == '':
+                            all_previous_paths = directory_detail[directory_detail_single].getPath()+'||-||'+directory_detail[directory_detail_single].getPathID()
+                        else:
+                            all_previous_paths = all_previous_paths+','+directory_detail[directory_detail_single].getPath() + '||-||' + directory_detail[directory_detail_single].getPathID()
 
-                    for  directory_detail_single in directory_detail:
+                self.is_path_changed_global = True
 
-                        if (directory_detail[directory_detail_single].getPath() is not None):
-                            if all_previous_paths == '':
-                                all_previous_paths = str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
-                            else:
-                                all_previous_paths = all_previous_paths+','+str(directory_detail[directory_detail_single].getPath())+'||-||'+str(directory_detail[directory_detail_single].getPathID())
+                if len(directory_detail) > 0:
+                    update_inf = {}
+                    update_inf['lastDifPaths'] = all_previous_paths
+                    self.Fixity.Database.update(self.Fixity.Database._tableProject, update_inf, "id = '" + str(project_core.getID()) + "'")
+                    project_core.setLast_dif_paths(all_previous_paths)
 
-                    self.is_path_changed_global = True
-                    if len(directory_detail) > 0:
-                        update_inf = {}
-                        update_inf['lastDifPaths'] = all_previous_paths
-                        self.Fixity.Database.update(self.Fixity.Database._tableProject, update_inf, "id = '" + str(project_core.getID()) + "'")
-                        project_core.setLast_dif_paths(all_previous_paths)
-
-                    self.is_path_changed = False
+                self.is_path_changed = False
 
         except:
             self.Fixity.logger.LogException()
@@ -662,13 +669,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             check_for_duplicate_path[counter] = value.text()
             counter += 1
+
         self.Fixity = SharedApp.SharedApp.App
 
         if project:
             self.project = project
-
         else:
-
             try:
                 self.project = self.Fixity.getSingleProject(str(self.projects.currentItem().text()))
             except:
@@ -677,7 +683,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if self.project is None or self.project is False:
             self.project = ProjectCore.ProjectCore()
-        if len(self.Fixity.ProjectsList) >  0 :
+        if len(self.Fixity.ProjectsList) > 0:
             self.check_for_path_changes()
             self.checkNumberOfDirsChange()
         current_item = self.projects.currentItem().text()

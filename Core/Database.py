@@ -17,13 +17,12 @@ class Database(object):
         self._tableProject = 'project'
         self._tableProjectPath = 'projectPath'
         self._tableVersionDetail = 'versionDetail'
-        self._tableVersions ='versions'
+        self._tableVersions = 'versions'
 
         self.con = None
         self.cursor = None
         self.timeSpan = 1
         self.connect()
-
 
     @staticmethod
     def getInstance():
@@ -44,7 +43,6 @@ class Database(object):
 
     def selfDestruct(self):
         del self
-
 
     def connect(self):
         try:
@@ -85,9 +83,6 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
-
-
     #SQL Query Runner
     #@param query: SQL Raw Query
     #
@@ -105,7 +100,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.sqlQuery(query)
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -172,13 +166,8 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-
-
-
-
     #Get SMTP and User Email Configuration
     #@return Configuration
-
 
     def getConfiguration(self):
         try:
@@ -196,7 +185,6 @@ class Database(object):
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
-
 
     def getVersionDetails(self, project_id, version_id, OrderBy=None):
         try:
@@ -249,11 +237,6 @@ class Database(object):
             return False
         return {}
 
-
-
-
-
-
     #Get Last Inserted Version of given project
     def getVersionDetailsLast(self, project_id):
 
@@ -278,10 +261,6 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-
-
-
-
     #Convert List to Tuple Data type
     def listToTuple(self, proveded_list):
         try:
@@ -305,10 +284,6 @@ class Database(object):
 
     def commit(self):
         self.con.commit()
-
-
-
-
 
     #SQL Select Query
     #@param table_name: Table Name
@@ -349,7 +324,6 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-
     #Query Result to list converter
 
     def dict_gen(self,curs):
@@ -375,11 +349,6 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
-
-
-
-
     #SQL Insert Query
     #@param table_name: Table Name
     #@param information: List of columns with Values (index as Column and Value as Column Value)
@@ -388,7 +357,6 @@ class Database(object):
 
 
     def insert(self, table_name, information):
-        print(information)
 
         try:
             query = 'INSERT INTO '+str(table_name)
@@ -402,19 +370,19 @@ class Database(object):
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         values[str(counter)] = information[index]
                     else:
+
                         try:
                             values[str(counter)] = str(information[index])
                         except:
                             values[str(counter)] = information[index]
                             pass
 
-
                     counter += 1
                 except:
                     pass
-            print(values)
-            query = query + ' ( '+self.implode ( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
-            print(query)
+
+            query = query + ' ( '+self.implode( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
+
 
             self.cursor.execute(query)
             self.commit()
@@ -427,11 +395,9 @@ class Database(object):
                 counter_recursion += 1
                 return self.insert(table_name, information)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
-
 
     #SQL Delete Query
     #@param table_name: Table Name
@@ -452,17 +418,16 @@ class Database(object):
                 counter_recursion += 1
                 return self.delete(table_name ,condition)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-      #SQL Update Query
-      #@param table_name: Table Name
-      #@param information: List of columns with Values (index as Column and Value as Column Value)
-      #@param condition: Condition of which row will deleted
-      #
-      #@return: Response of Query Result
+    #SQL Update Query
+    #@param table_name: Table Name
+    #@param information: List of columns with Values (index as Column and Value as Column Value)
+    #@param condition: Condition of which row will deleted
+    #
+    #@return: Response of Query Result
 
     def update(self, table_name, information, condition):
         try:
@@ -471,11 +436,20 @@ class Database(object):
             for single_info in information:
 
                     if counter == 0:
-                        query += str(single_info) + "='" + str(information[single_info]) + "'"
+                        try:
+                            query += str(single_info) + "='" + information[single_info].encode('utf-8') + "'"
+                        except:
+                            query += str(single_info) + "='" + str(information[single_info]) + "'"
+                            pass
                     else:
-                        query += ' , '+ str(single_info) + "='" + str(information[single_info]) + "'"
+                        try:
+                            query += ' , '+ str(single_info) + "='" + information[single_info].encode('utf-8') + "'"
+                        except:
+                            query += ' , '+ str(single_info) + "='" + str(information[single_info]) + "'"
+                            pass
                     counter = counter+1
             query += ' WHERE '+condition
+
 
             response = self.cursor.execute(query)
             self.commit()
@@ -493,7 +467,6 @@ class Database(object):
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
-
 
     #  Columns and records Implode for query
     #  @param information: Array of Value to be imploded
@@ -516,10 +489,19 @@ class Database(object):
                             string_glued =  string_glued + ' , ' + information[info]
 
                     else:
+
                         if(counter == 0):
-                            string_glued = string_glued + ' "'+ information[info]+ '" '
+                            try:
+                                string_glued = string_glued + ' "'+ str(information[info]) + '" '
+                            except:
+                                string_glued = string_glued + ' "'+ information[info] + '" '
+                                pass
                         else:
-                            string_glued = string_glued + ' , "' + information[info]+ '" '
+                            try:
+                                string_glued = string_glued + ' , "' + str(information[info]) + '" '
+                            except:
+                                string_glued = string_glued + ' , "' + information[info] + '" '
+                                pass
                     counter += 1
                 except:
                     pass
@@ -532,10 +514,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.implode(information , glue , is_column)
-
-
             counter_recursion = 0
-
-
             self.Fixity.logger.LogException(Exception.message)
             return False
