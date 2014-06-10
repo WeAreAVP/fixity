@@ -253,6 +253,16 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_groupBox.setLayout(self.scheduling_layout)
         self.scheduling_groupBox.setFixedSize(255, 269)
 
+    def closeEvent(self, evnt):
+        if self.unsaved:
+            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
+            if response:
+                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                self.unsaved = True
+                return
+            else:
+                self.close()
+
     def changed(self):
         self.unsaved = True
 
