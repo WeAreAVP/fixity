@@ -256,7 +256,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
     def closeEvent(self, event):
         if self.unsaved:
             response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
-            print(response)
             if response:
                 self.unsaved = True
                 event.ignore()

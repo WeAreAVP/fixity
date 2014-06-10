@@ -1,1 +1,0 @@
-Could not run this Project <attribute 'message' of 'exceptions.BaseException' objects>

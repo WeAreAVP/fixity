@@ -286,7 +286,7 @@ class DirsHandler(object):
             pass
 
 
-        print(self.Fixity.Configuration.getOsType())
+
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
                 path_info = os.path.isfile(line[1])
@@ -298,7 +298,7 @@ class DirsHandler(object):
                     try:
                         path_info = os.path.isfile(line[1].encode('utf-8'))
                     except:
-                        print(Exception.message)
+                        pass
                     pass
         else:
             path_info = os.path.isfile(line[1])
