@@ -330,7 +330,14 @@ class DirsHandler(object):
                     verified_files.append(current_directory[0])
 
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                        try:
+                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                        except:
+                            try:
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                            except:
+                                pass
+                            pass
                     else:
                         return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
 
@@ -361,7 +368,15 @@ class DirsHandler(object):
 
                     verified_files.append(line[1])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                        try:
+                            return line, self.Fixity.Configuration.change_file+":\t" + line[1]
+                        except:
+                            try:
+                                return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                            except:
+                                pass
+                            pass
+
                     else:
                         return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
 
@@ -371,7 +386,16 @@ class DirsHandler(object):
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        return line, self.Fixity.Configuration.change_file+":\t" + current_directory[0] + "\t changed to\t" + line[1]
+
+
+                        try:
+                            return line, self.Fixity.Configuration.change_file+":\t" + current_directory[0] + "\t changed to\t" + line[1]
+                        except:
+                            try:
+                                return line, self.Fixity.Configuration.change_file+":\t" + current_directory[0] + "\t changed to\t" + line[1].decode('utf-8')
+                            except:
+                                pass
+                            pass
                     else:
                         try:
                             return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0].decode("utf-16")) + "\t changed to\t" + line[1]
@@ -409,7 +433,6 @@ class DirsHandler(object):
                             try:
                                 is_same_file_path = single_infor_hash_related[0] in line[1]
                             except:
-
                                 try:
                                     is_same_file_path = single_infor_hash_related[0].encode('utf-8') in line[1]
                                 except:
@@ -425,7 +448,14 @@ class DirsHandler(object):
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
                         if self.Fixity.Configuration.getOsType() == 'Windows':
-                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                            try:
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
+                                pass
                         else:
                             return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
 
@@ -435,7 +465,14 @@ class DirsHandler(object):
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
                         if self.Fixity.Configuration.getOsType() == 'Windows':
-                            return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
+                            try:
+                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
+                                pass
                         else:
                             return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
 
@@ -445,7 +482,15 @@ class DirsHandler(object):
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
                         if self.Fixity.Configuration.getOsType() == 'Windows':
-                            return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                            try:
+                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
+                                pass
+
                         else:
                             return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
 
@@ -453,7 +498,14 @@ class DirsHandler(object):
 
             verified_files.append(line[1])
             if self.Fixity.Configuration.getOsType() == 'Windows':
-                return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
+                try:
+                    return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
+                except:
+                    try:
+                        return line,  self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                    except:
+                        pass
+                    pass
             else:
                 return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
 

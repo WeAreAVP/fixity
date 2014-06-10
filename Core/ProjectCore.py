@@ -220,8 +220,6 @@ class ProjectCore(object):
             dir_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             dir_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
 
-
-
             dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
 
 
@@ -516,11 +514,11 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        #try:
-        #    lock.acquire()
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
+        try:
+            lock.acquire()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
         try:
             reports_file = open(self.Fixity.Configuration.getHistoryTemplatePath(), 'r')
             history_lines = reports_file.readlines()
@@ -707,28 +705,28 @@ class ProjectCore(object):
         self.setProject_ran_before('1')
 
         missing_files_total = 0
+        #try:
+        missing_file_ = ('', '')
+        missing_file = self.checkForMissingFiles(dict_hash)
         try:
-            missing_file_ = ('', '')
-            missing_file = self.checkForMissingFiles(dict_hash)
-            try:
-                report_content += missing_file[0].encode('utf-8')
-            except:
-                try:
-                    report_content += missing_file[0].decode('utf-8')
-                except:
-                    report_content += missing_file[0]
-                    pass
-                pass
-
-            try:
-                if missing_file[1] > 0:
-                    missing_files_total = int(missing_file[1])
-            except:
-                pass
-
+            report_content += missing_file[0].encode('utf-8')
         except:
-            self.Fixity.logger.LogException(Exception.message)
+            try:
+                report_content += missing_file[0].decode('utf-8')
+            except:
+                report_content += missing_file[0]
+                pass
             pass
+
+        try:
+            if missing_file[1] > 0:
+                missing_files_total = int(missing_file[1])
+        except:
+            pass
+
+        #except:
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    pass
 
         try:
             total = int(total) + int(missing_files_total)
@@ -1105,12 +1103,28 @@ class ProjectCore(object):
 
                         if is_file_removed:
                             break
+
                     try:
                         try:
                             if not is_file_removed:
                                 verified_files.append(obj[0])
-                                verified_files.append(obj[0].decode('utf-8'))
-                                msg += "Removed Files\t" + obj[0] + "\n"
+                                try:
+                                    verified_files.append(obj[0].decode('utf-8'))
+                                except:
+                                    try:
+                                        verified_files.append(obj[0].encode('utf-8'))
+                                    except:
+                                        pass
+                                    pass
+
+                                try:
+                                    msg += "Removed Files\t" + obj[0] + "\n"
+                                except:
+                                    try:
+                                        msg += "Removed Files\t" + obj[0].decode('utf-8') + "\n"
+                                    except:
+                                        pass
+                                    pass
                                 count += 1
                         except:
                             pass
