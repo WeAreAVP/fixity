@@ -93,13 +93,16 @@ class DirsHandler(object):
 
             if self.Fixity.Configuration.getOsType() == 'Windows':
                 try:
-                    directories_inside_details_single[1] = path_Info.encode('utf-8') + file_path[1]
-                except:
-                    #try:
-
                     directories_inside_details_single[1] = path_Info + file_path[1]
-                    #except:
-                    #    pass
+                except:
+                    try:
+                        directories_inside_details_single[1] = path_Info.encode('utf-8') + file_path[1]
+                    except:
+                        try:
+                            directories_inside_details_single[1] = path_Info.decode('utf-8') + file_path[1]
+                        except:
+                            pass
+                        pass
                     pass
 
             else:
@@ -112,7 +115,18 @@ class DirsHandler(object):
 
                 try:
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                        try:
+                            path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                        except:
+                            try:
+                                path_exploded = directories_inside_details_single[1].split(str(os.sep))
+                            except:
+                                try:
+                                    path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                except:
+                                    path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
+                                    pass
+
                     else:
                         path_exploded = directories_inside_details_single[1].split(str(os.sep))
 
@@ -127,7 +141,17 @@ class DirsHandler(object):
 
                 try:
                     if self.Fixity.Configuration.getOsType() == 'Windows':
-                        path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                        try:
+                            path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
+                        except:
+                            try:
+                                path_exploded = directories_inside_details_single[1].split(str(os.sep))
+                            except:
+                                try:
+                                    path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                except:
+                                    path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
+                                    pass
                     else:
                         path_exploded = directories_inside_details_single[1].split(str(os.sep))
                     for single_directory_hidden in path_exploded:
@@ -813,7 +837,15 @@ class DirsHandler(object):
         if os.name == 'nt':
             if '\\' in path_of_file:
                 '''Windows Condition'''
-                path_of_file = repr(path_of_file).strip("'")
+                try:
+                    path_of_file = path_of_file.strip("'")
+                except:
+                    try:
+                        path_of_file = path_of_file.encode('utf-8').strip("'")
+                    except:
+                        path_of_file = path_of_file.decode('utf-8').strip("'")
+                        pass
+                    pass
 
                 attribute = win32api.GetFileAttributes(path_of_file)
                 return attribute & (win32con.FILE_ATTRIBUTE_HIDDEN | win32con.FILE_ATTRIBUTE_SYSTEM)

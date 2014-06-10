@@ -142,6 +142,7 @@ class ChangeNameGUI(GUILibraries.QDialog ):
 
         self.Fixity.ProjectsList[new_name] = project_core
         self.Fixity.removeProject(selected_project)
+        SharedApp.SharedApp.App = self.Fixity
 
         self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
         self.parent_win.refreshProjectSettings()

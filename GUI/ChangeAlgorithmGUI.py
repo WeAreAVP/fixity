@@ -186,7 +186,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         project_core.SaveSchedule()
         project_core.Run()
         msgBox.close()
-
+        SharedApp.SharedApp.App = self.Fixity
         self.notification.showInformation(self, "Success", selected_project+"'s " + GUILibraries.messages['algorithm_success'])
         self.Cancel()
 

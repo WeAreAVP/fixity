@@ -233,6 +233,7 @@ class ProjectCore(object):
         if project_id['id']:
             self.Fixity.ProjectsList[self.getTitle()] = self
 
+        SharedApp.SharedApp.App = self.Fixity
         return project_id['id']
 
     # Delete this project
@@ -246,6 +247,7 @@ class ProjectCore(object):
         self.Fixity.Database.delete(self.Fixity.Database._tableProjectPath, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableVersionDetail, 'projectID="' + str(self.getID()) + '"')
         self.Fixity.Database.delete(self.Fixity.Database._tableProject, 'id ="' + str(self.getID()) + '"')
+
         self.Fixity.removeProject(str(self.getTitle()))
         return True
 
@@ -259,6 +261,7 @@ class ProjectCore(object):
     def ImportProject(self, file_path, project_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         flag_project_contain_detail = False
         file_to_import_info_of = open(file_path,'rb')
 
@@ -458,9 +461,9 @@ class ProjectCore(object):
         self.Fixity.queue.put(run_thread)
 
     def launchRun(self):
-        import App
-        SharedApp.SharedApp.App = App.App()
+
         self.Fixity = SharedApp.SharedApp.App
+        self.Fixity.Database = Database.Database()
         self.Run(False, True)
 
     # Run This project
@@ -471,10 +474,13 @@ class ProjectCore(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
+        self.Fixity.Database = Database.Database()
+
         if is_from_thread:
             self.database = Database.Database()
         else:
             self.database = self.Fixity.Database
+
         missing_file = ('', '')
         global verified_files
         verified_files = list()
@@ -646,22 +652,19 @@ class ProjectCore(object):
 
                             except:
 
-                                this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] +
-                                                     self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
+                                this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] + self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
                                 base_path = base_path_information[str(path_information[0])]['path']
 
                                 pass
 
                             # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
-                            dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path,
-                                                                                                    self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False, base_path])
+                            dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path, self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False, base_path])
 
                             # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
                             dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
 
                             # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
-                            dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])),
-                                                              self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
+                            dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
 
                 except:
                     self.Fixity.logger.LogException(Exception.message)
@@ -700,8 +703,7 @@ class ProjectCore(object):
                 except:pass
 
         data = str(datetime.datetime.now()).split('.')
-        self.database.update(self.database._tableProject, {'lastDifPaths': '', 'projectRanBefore': '1',
-                                                           'lastRan': str(data[0])}, "`id` = '" + str(self.getID()) + "'")
+        self.database.update(self.database._tableProject, {'lastDifPaths': '', 'projectRanBefore': '1', 'lastRan': str(data[0])}, "`id` = '" + str(self.getID()) + "'")
         self.setLast_dif_paths('')
         self.setProject_ran_before('1')
 
@@ -784,7 +786,9 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        send_email_new = False
+        if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
+                send_email_new = True
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -816,7 +820,8 @@ class ProjectCore(object):
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
 
         else:
-            if self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0:
+
+            if (self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0) or  (self.scheduler.getEmail_only_upon_warning() == '1' or  self.scheduler.getEmail_only_upon_warning() == 1) and send_email_new :
                 email_config = self.Fixity.Configuration.getEmailConfiguration()
                 try:
                     if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
@@ -825,10 +830,12 @@ class ProjectCore(object):
                             project_name = self.getTitle()
                         except:
                             project_name = ''
-
+                            pass
+                        print('hello1')
                         email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'],
                                                        created_report_info['email_content'], email_config, project_name)
                 except:
+                    self.Fixity.logger.LogException(Exception.message)
                     pass
 
         if is_from_thread:

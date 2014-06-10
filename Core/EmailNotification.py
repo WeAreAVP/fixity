@@ -67,20 +67,20 @@ class EmailNotification(object):
                 server.ehlo
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-
+                print('sending Email....')
                 return True
             if protocol == 'TLS' or protocol == 'tls' :
                 server = SMTP(str(information['smtp']), port)
                 server.starttls()
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-
+                print('sending Email....')
                 return True
             else:
                 server = SMTP(str(information['smtp']), port)
                 server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
-
+                print('sending Email....')
                 return True
 
 
@@ -105,6 +105,7 @@ class EmailNotification(object):
     def ReportEmail(self, recipients, attachment, text, information,project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+        print('hello')
         all_recipents = str(recipients).split(',')
         flag = True
         for single_recipents in all_recipents:

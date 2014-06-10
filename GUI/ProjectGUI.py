@@ -685,7 +685,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 if check_for_duplicate_path[single_path] != '' and check_for_duplicate_path[single_path] is not None:
                     if check_for_duplicate_path[single_path] == value.text():
 
-                        self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'] + " \n*Path: " + str(value.text()))
+                        self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'])
                         return
 
             check_for_duplicate_path[counter] = value.text()

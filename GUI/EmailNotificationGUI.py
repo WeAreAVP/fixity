@@ -412,6 +412,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         self.Fixity.Configuration.saveEmailConfiguration(information)
         self.Fixity.Configuration.setEmailConfiguration(information)
+        SharedApp.SharedApp.App = self.Fixity
 
         self.notification.showInformation(self, "Fixity", GUILibraries.messages['email_save_success'])
         self.Cancel()

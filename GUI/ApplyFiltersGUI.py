@@ -145,7 +145,7 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         flag = True
         project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
         project_core.applyFilter(filters, Is_ignore_hidden_files)
-
+        SharedApp.SharedApp.App = self.Fixity
         if flag is not None:
             self.notification.showInformation(self, "Success", GUILibraries.messages['filter_success'])
             self.Cancel()
