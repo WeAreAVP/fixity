@@ -378,7 +378,17 @@ class DirsHandler(object):
                             pass
 
                     else:
-                        return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                        try:
+                            return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                        except:
+                            try:
+                                return line, self.Fixity.Configuration.change_file+":\t" + line[1].encode('utf-8')
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.change_file+":\t" + line[1]
+                                except:
+                                    pass
+                            pass
 
                 '''Changed  FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
                 if (not is_hash_same) and (not is_file_path_same):
@@ -400,7 +410,11 @@ class DirsHandler(object):
                         try:
                             return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0].decode("utf-16")) + "\t changed to\t" + line[1]
                         except:
-                            return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].decode('utf-8')
+                            try:
+                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].decode('utf-8')
+                            except:
+                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].encode('utf-8')
+                                pass
                             pass
 
             else :
@@ -457,7 +471,15 @@ class DirsHandler(object):
                                     pass
                                 pass
                         else:
-                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                            try:
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].encode('utf-8')
+                                pass
+
 
                         ''' Changed  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO '''
                     elif is_same_file_path and dictionary_single != line[0]:
@@ -474,7 +496,15 @@ class DirsHandler(object):
                                     pass
                                 pass
                         else:
-                            return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
+                            try:
+                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].encode('utf-8')
+                                    pass
+                                pass
 
                         ''' New  File Exists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO '''
                     elif (not is_same_file_path) and dictionary_single == line[0]:
@@ -492,7 +522,14 @@ class DirsHandler(object):
                                 pass
 
                         else:
-                            return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                            try:
+                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
+                                pass
 
             '''New  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
 
@@ -507,7 +544,14 @@ class DirsHandler(object):
                         pass
                     pass
             else:
-                return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
+                try:
+                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                except:
+                    try:
+                        return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                    except:
+                        return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
+                    pass
 
     #------------------------------------------------------------------------------- --------------------------#
     #Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
@@ -542,7 +586,8 @@ class DirsHandler(object):
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         single_file = self.specialCharacterHandler(single_file)
                         root = self.specialCharacterHandler(root)
-                        fls.append(root + str(os.sep) + single_file)
+
+                    fls.append(root + str(os.sep) + single_file)
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -573,7 +618,7 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
+        
         return list_of_values
 
     #Method to handle all special characters
@@ -615,13 +660,13 @@ class DirsHandler(object):
                 file_path = str(file_path)
                 with open(file_path.decode('utf-8'), 'rb') as target:
                     for piece in iter(lambda: target.read(4096), b''):
-                        if algorithm =='md5':
+                        if algorithm == 'md5':
                             fixmd5.update(piece)
                         else:
                             fixsha256.update(piece)
 
                     target.close()
-                    if algorithm =='md5':
+                    if algorithm == 'md5':
                         return fixmd5.hexdigest()
                     else:
                         return fixsha256.hexdigest()
@@ -630,12 +675,12 @@ class DirsHandler(object):
 
                 with open(file_path, 'rb') as target:
                     for piece in iter(lambda: target.read(4096), b''):
-                        if algorithm =='md5':
+                        if algorithm == 'md5':
                             fixmd5.update(piece)
                         else:
                             fixsha256.update(piece)
                     target.close()
-                    if algorithm =='md5':
+                    if algorithm == 'md5':
                         return fixmd5.hexdigest()
                     else:
                         return fixsha256.hexdigest()
@@ -647,7 +692,7 @@ class DirsHandler(object):
     #Returns the complete file ID as a single long string
     #(volume number, high index, low index)
 
-    def inodeForMac (self, file):
+    def inodeForMac(self, file):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         id_node = ''

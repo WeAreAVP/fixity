@@ -734,44 +734,48 @@ class ProjectCore(object):
             pass
 
         history_text = ''
-        try:
-            for history_line_single in history_lines:
-                history_line_single = str(history_line_single).replace('\n', '')
-                if '{{base_directory}}' in history_line_single:
+        # try:
+        for history_line_single in history_lines:
+            history_line_single = str(history_line_single).replace('\n', '')
+            if '{{base_directory}}' in history_line_single:
+                history_text += history_line_single.encode('utf-8').replace('{{base_directory}}', self.Fixity.Configuration.CleanStringForBreaks(all_paths.encode('utf-8')))+"\n"
 
-                    history_text += history_line_single.encode('utf-8').replace('{{base_directory}}',
-                                                                                self.Fixity.Configuration.CleanStringForBreaks(all_paths.encode('utf-8')))+"\n"
-
-                if '{{email_address}}' in history_line_single:
-                    history_text += history_line_single.replace('{{email_address}}',
-                                                                self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
+            if '{{email_address}}' in history_line_single:
+                history_text += history_line_single.replace('{{email_address}}', self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
 
 
-                if '{{schedule}}' in history_line_single:
-                    history_text += history_line_single.replace('{{schedule}}',
-                                                                self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
+            if '{{schedule}}' in history_line_single:
+                history_text += history_line_single.replace('{{schedule}}', self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
 
 
-                if '{{last_ran}}' in history_line_single:
-                    history_text += history_line_single.replace('{{last_ran}}',
-                                                                datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
+            if '{{last_ran}}' in history_line_single:
+                history_text += history_line_single.replace('{{last_ran}}', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
 
 
-                if '{{filters}}' in history_line_single:
-                    history_text += history_line_single.replace('{{filters}}',
-                                                                str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+            if '{{filters}}' in history_line_single:
+                history_text += history_line_single.replace('{{filters}}', str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
 
 
-                if '{{algo}}' in history_line_single:
-                    history_text += history_line_single.replace('{{algo}}',
-                                                                str(self.getAlgorithm()))+"\n"
+            if '{{algo}}' in history_line_single:
+                history_text += history_line_single.replace('{{algo}}', str(self.getAlgorithm()))+"\n"
 
-                if '{{content}}' in history_line_single:
-                    history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content)+"\n"
+            if '{{content}}' in history_line_single:
+                if self.Fixity.Configuration.getOsType() == 'Windows':
+                    try:
+                        history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content)+"\n"
+                    except:
+                        try:
+                            history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content.encode('utf-8'))+"\n"
+                        except:
+                            pass
+                        pass
+                else:
+                    history_text += history_line_single.replace('{{content}}',
+                                                                history_content.encode('utf-8'))+"\n"
 
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
         information_for_report = { }
         information_for_report['missing_file'] = missing_files_total
         information_for_report['corrupted_or_changed'] = corrupted_or_changed
@@ -779,7 +783,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -1139,15 +1143,64 @@ class ProjectCore(object):
                             pass
 
                 else:
+                    for single_line in verified_files:
+
+                        try:
+                            is_file_removed = obj[0] in single_line
+                        except:
+
+                            try:
+                                is_file_removed = obj[0].decode('utf-8') in single_line
+                            except:
+                                pass
+
+                            pass
+
+                        if is_file_removed:
+                            break
+
                     try:
-                        if not obj[0].decode('utf-8') in verified_files and not obj[0] in verified_files:
-                            verified_files.append(obj[0])
-                            verified_files.append(obj[0].decode('utf-8'))
-                            msg += "Removed Files\t" + obj[0] + "\n"
-                            count += 1
+                        try:
+                            if not is_file_removed:
+                                verified_files.append(obj[0])
+                                try:
+                                    verified_files.append(obj[0].decode('utf-8'))
+                                except:
+                                    try:
+                                        verified_files.append(obj[0].encode('utf-8'))
+                                    except:
+                                        pass
+                                    pass
+
+                                try:
+                                    msg += "Removed Files\t" + obj[0] + "\n"
+                                except:
+                                    try:
+                                        msg += "Removed Files\t" + obj[0].decode('utf-8') + "\n"
+                                    except:
+                                        pass
+                                    pass
+                                count += 1
+                        except:
+                            pass
 
                     except:
-                        pass
+                            path_info = (obj[0].decode('utf-8') == verified_files)
+                            if path_info is False:
+                                verified_files.append(obj[0])
+                                verified_files.append(obj[0].decode('utf-8'))
+                                msg += "Removed Files\t" + obj[0] + "\n"
+                                count += 1
+                            pass
+                    # try:
+                    #     if not obj[0].decode('utf-8') in verified_files and not obj[0] in verified_files:
+                    #         verified_files.append(obj[0])
+                    #         verified_files.append(obj[0].decode('utf-8'))
+                    #         msg += "Removed Files\t" + obj[0] + "\n"
+                    #         count += 1
+
+                    # except:
+                    #     pass
         return msg, count
 
     #Method to convert database line into tuple
