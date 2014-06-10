@@ -7,11 +7,12 @@ Usage:
 
 from setuptools import setup
 
-APP = ['Fixity.py']
+APP = ['Main.py']
 DATA_FILES = []
-OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PySide.QtCore','PySide.QtGui'], 'iconfile':'images/logo_sign_trans.icns','resources':'bin,schedules,debug,images'}
+OPTIONS = {'argv_emulation': True, 'includes': ['sip', 'PySide.QtCore','PySide.QtGui'], 'iconfile':'assets/logo_sign_trans.icns','resources':'assets'}
 setup(
     app=APP,
+    name='Fixity',
     data_files=DATA_FILES,
     options={'py2app': OPTIONS},
     setup_requires=['py2app'],
