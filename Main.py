@@ -49,7 +49,6 @@ if __name__ == '__main__':
     else:
         try:
             Fixity.LaunchCLI(args.autorun)
-
         except:
            exc_type, exc_obj, exc_tb = sys.exc_info()
            file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]

@@ -334,6 +334,7 @@ class Database(object):
                 rows = curs.fetchmany()
                 if not rows: return
                 for row in rows:
+
                     yield dict(itertools.izip(field_names, row))
 
         except (sqlite3.OperationalError,Exception):

@@ -20,7 +20,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #Constructor
     def __init__(self):
         super(ProjectGUI, self).__init__()
-
+        self.should_update = True
         self.is_path_changed = False
         self.Fixity = SharedApp.SharedApp.App
         self.unsaved = False
@@ -253,14 +253,16 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_groupBox.setLayout(self.scheduling_layout)
         self.scheduling_groupBox.setFixedSize(255, 269)
 
-    def closeEvent(self, evnt):
+    def closeEvent(self, event):
         if self.unsaved:
             response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
+            print(response)
             if response:
-                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
                 self.unsaved = True
-                return
+                event.ignore()
+                return False
             else:
+                event.accept()
                 self.close()
 
     def changed(self):
@@ -297,21 +299,26 @@ class ProjectGUI(GUILibraries.QMainWindow):
                     self.close()
 
     def update(self, new='', projet_name_force = None):
+        if self.should_update is False:
+            return
 
         if self.unsaved:
 
-                response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['new_project_unsaved'])
+            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['new_project_unsaved'])
 
-                if response:
+            if response:
 
-                    self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                    self.unsaved = True
-                    return
-                else:
-                    selected = int(self.projects.currentIndex().row())
-                    self.refreshProjectSettings()
+                self.unsaved = True
+                self.should_update = False
+                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                self.should_update = True
 
-                    self.projects.setCurrentRow(selected)
+                return
+            else:
+                selected = int(self.projects.currentIndex().row())
+                self.unsaved = False
+                self.refreshProjectSettings()
+                self.projects.setCurrentRow(selected)
 
         try:
             project_name = self.projects.currentItem().text()
@@ -410,6 +417,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.lastrun.setText("Last checked:\n" + '')
         self.old = new
         self.unsaved = False
+
 
 
     def switchDebugger(self, is_start=False):
@@ -528,8 +536,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #Pop Up to Change Root Directory If any change occured
     #@param orignalPathText: Path In Manifest
     #@param change_path_text: New Path Given in Fixity Tool
-
-
 
     def ChangeRootDirectoryInformation(self,orignal_path_text, change_path_text, code):
         self.path_change_gui.Cancel()
@@ -666,8 +672,14 @@ class ProjectGUI(GUILibraries.QMainWindow):
         counter = 0
         for value in self.dirs_text_fields:
 
-            if not os.path.isdir(value.text()) and str(value.text()).strip() != '':
-                self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + str(value.text()))
+            if not os.path.isdir(value.text()) and value.text().strip() != '':
+                try:
+                    self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + value.text())
+                except:
+                    try:
+                        self.notification.showError(self, "Error", GUILibraries.messages['path_not_found'] + " \n*Path: " + value.text().decode('utf-8'))
+                    except:
+                        pass
                 return
 
             for single_path in check_for_duplicate_path:
