@@ -67,10 +67,6 @@ if __name__ == '__main__':
                error_information['line_no'] = exc_tb.tb_lineno
            except:
                pass
-
-           file_test = open('test1.txt','w+')
-           file_test.write(str("Could not run this Project "+str(Exception.message)))
-           file_test.close()
            print("Could not run this Project "+str(Exception.message))
 
 
