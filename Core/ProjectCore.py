@@ -46,7 +46,7 @@ class ProjectCore(object):
         except:pass
 
         for n in directories:
-            try: self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
+            try:self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
                                                                  directories[n]['pathID'], directories[n]['id'])
             except:
                 self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
@@ -124,8 +124,8 @@ class ProjectCore(object):
     def createNewVersion(self, project_id, version_type ):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        get_old_version = self.Fixity.Database.select(self.Fixity.Database._tableVersions,'*',
-                                                      'projectID="'+ str(project_id) + '"','versionID DESC ')
+
+        get_old_version = self.Fixity.Database.select(self.Fixity.Database._tableVersions, '*', 'projectID="'+ str(project_id) + '"', 'versionID DESC ')
 
         version_id = 1
         if get_old_version is not None and get_old_version is not False:
@@ -141,7 +141,6 @@ class ProjectCore(object):
         information['versionType'] = version_type
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
-
 
         return self.Fixity.Database.insert(self.Fixity.Database._tableVersions, information)
 
@@ -176,23 +175,19 @@ class ProjectCore(object):
         project_id = {}
         project_exists = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*',
                                                      'title like "' + str(self.getTitle()) + '"')
-
         if len(project_exists) <= 0:
             # Insert Project
             project_information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
             project_id = self.Fixity.Database.insert(self.Fixity.Database._tableProject, project_information)
             self.setPreviousVersion('')
         else:
-
             # Update Project
             project_information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
             self.Fixity.Database.update(self.Fixity.Database._tableProject, project_information,
                                         'id ="' + str(project_exists[0]['id']) + '"')
-
             project_id['id'] = project_exists[0]['id']
             self.setID(project_id['id'])
             self.setPreviousVersion(project_exists[0]['versionCurrentID'])
-
 
         self.setID(project_id['id'])
         version_id = self.createNewVersion(project_id['id'], 'project')
@@ -209,7 +204,6 @@ class ProjectCore(object):
             self.setVersion(update_version['versionCurrentID'])
         except:
              pass
-
 
         for dirs_objects in self.directories:
             dir_information = {}
@@ -457,6 +451,7 @@ class ProjectCore(object):
     def launchThread(self):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue.put(run_thread)
 
@@ -520,7 +515,6 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
         try:
             lock.acquire()
         except:
@@ -545,15 +539,13 @@ class ProjectCore(object):
             number_of_path += 1
 
         keep_time = ''
-
-
         # 1 = Monthly  - 2 = Week  - 3 = Daily
         if int(self.getScheduler().getDurationType()) == 3:
             keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 99'
         elif int(self.getScheduler().getDurationType()) == 2:
-            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime()))+ ' ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month())) + ' 99'
+            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month())) + ' 99'
         elif int(self.getScheduler().getDurationType()) == 1:
-            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
+            keep_time += '99 ' + self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRunTime())) + ' 99 '+ self.Fixity.Configuration.CleanStringForBreaks(str(self.getScheduler().getRun_day_or_month()))
 
         history_content = ''
 
@@ -592,8 +584,13 @@ class ProjectCore(object):
 
         filters_array = {}
         try:
-            filters_array = str(self.getFilters()).split(',')
+            filters_array = self.getFilters().split(',')
         except:
+            try:
+                filters_array = self.getFilters().encode('utf-8').split(',')
+            except:
+                filters_array = self.getFilters().decode('utf-8').split(',')
+                pass
             pass
 
         dict = defaultdict(list)
@@ -673,34 +670,49 @@ class ProjectCore(object):
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
 
-                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array,
-                                                           verified_files, is_from_thread, is_path_change)
+                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change)
 
                 verified_files = result_score['verified_files']
 
-                try:confirmed += int(result_score['confirmed'])
-                except:pass
+                try:
+                    confirmed += int(result_score['confirmed'])
+                except:
+                    pass
 
-                try:moved += int(result_score['moved'])
-                except:pass
+                try:
+                    moved += int(result_score['moved'])
+                except:
+                    pass
 
-                try:created +=  int(result_score['created'])
-                except:pass
+                try:
+                    created += int(result_score['created'])
+                except:
+                    pass
 
-                try:corrupted_or_changed += int(result_score['corrupted_or_changed'])
-                except:pass
+                try:
+                    corrupted_or_changed += int(result_score['corrupted_or_changed'])
+                except:
+                    pass
 
-                try:missing_file += int(result_score['missing_file'])
-                except:pass
+                try:
+                    missing_file += int(result_score['missing_file'])
+                except:
+                    pass
 
-                try:report_content += result_score['content']
-                except:pass
+                try:
+                    report_content += result_score['content']
+                except:
+                    pass
 
-                try:history_content += result_score['history_content']
-                except:pass
+                try:
+                    history_content += result_score['history_content']
+                except:
+                    pass
 
-                try:total += int(result_score['total'])
-                except:pass
+                try:
+                    total += int(result_score['total'])
+                except:
+                    pass
 
         data = str(datetime.datetime.now()).split('.')
         self.database.update(self.database._tableProject, {'lastDifPaths': '', 'projectRanBefore': '1', 'lastRan': str(data[0])}, "`id` = '" + str(self.getID()) + "'")
@@ -737,6 +749,7 @@ class ProjectCore(object):
             pass
 
         history_text = ''
+        print(report_content)
         try:
             for history_line_single in history_lines:
                 history_line_single = str(history_line_single).replace('\n', '')
@@ -756,7 +769,23 @@ class ProjectCore(object):
 
 
                 if '{{filters}}' in history_line_single:
-                    history_text += history_line_single.replace('{{filters}}', str(self.getFilters())+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        try:
+                            history_text += history_line_single.replace('{{filters}}', self.getFilters()+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
+                        except:
+                            try:
+                                history_text += history_line_single.replace('{{filters}}', self.getFilters().encode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
+                            except:
+                                history_text += history_line_single.replace('{{filters}}', self.getFilters().decode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
+                                pass
+                            pass
+                    else:
+                        history_text += history_line_single.replace('{{content}}',history_content.encode('utf-8'))+"\n"
+                        try:
+                            history_text += history_line_single.replace('{{filters}}', self.getFilters()+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+                        except:
+                            history_text += history_line_single.replace('{{filters}}', self.getFilters().encode('utf-8')+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
+                            pass
 
 
                 if '{{algo}}' in history_line_single:
@@ -773,12 +802,11 @@ class ProjectCore(object):
                                 pass
                             pass
                     else:
-                        history_text += history_line_single.replace('{{content}}',
-                                                                    history_content.encode('utf-8'))+"\n"
-
+                        history_text += history_line_single.replace('{{content}}', history_content.encode('utf-8'))+"\n"
         except:
              self.Fixity.logger.LogException(Exception.message)
              pass
+
         information_for_report = {}
         information_for_report['missing_file'] = missing_files_total
         information_for_report['corrupted_or_changed'] = corrupted_or_changed
@@ -787,8 +815,10 @@ class ProjectCore(object):
         information_for_report['moved'] = moved
         information_for_report['total'] = total
         send_email_new = False
+
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
-                send_email_new = True
+            send_email_new = True
+
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -831,9 +861,8 @@ class ProjectCore(object):
                         except:
                             project_name = ''
                             pass
-                        print('hello1')
-                        email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'],
-                                                       created_report_info['email_content'], email_config, project_name)
+
+                        email_notification.ReportEmail(self.getEmail_address(), created_report_info['path'], created_report_info['email_content'], email_config, project_name)
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass

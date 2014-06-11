@@ -105,13 +105,13 @@ class EmailNotification(object):
     def ReportEmail(self, recipients, attachment, text, information,project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        print('hello')
-        all_recipents = str(recipients).split(',')
-        flag = True
-        for single_recipents in all_recipents:
 
-            if single_recipents.strip() != '' and single_recipents is not None:
-                if self.SendEmail(single_recipents, text, attachment, information, project_name) and flag is True:
+        all_recipients = str(recipients).split(',')
+        flag = True
+        for single_recipients in all_recipients:
+
+            if single_recipients.strip() != '' and single_recipients is not None:
+                if self.SendEmail(single_recipients, text, attachment, information, project_name) and flag is True:
                     flag = True
                 else:
                     flag = False
@@ -121,10 +121,10 @@ class EmailNotification(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         flag = True
-        all_recipents = str(recipients).split(',')
-        for single_recipents in all_recipents:
-            if single_recipents.strip() != '' and single_recipents is not None:
-                if self.SendEmail(single_recipents, text, attachment, information, project_name) and flag is True:
+        all_recipients = str(recipients).split(',')
+        for single_recipients in all_recipients:
+            if single_recipients.strip() != '' and single_recipients is not None:
+                if self.SendEmail(single_recipients, text, attachment, information, project_name) and flag is True:
                     flag = True
                 else:
                     flag = False

@@ -76,7 +76,6 @@ class DirsHandler(object):
 
         for directories_inside_details_single in directories_inside_details:
 
-
             flag = True
             directories_inside_details_single = list(directories_inside_details_single)
 
@@ -107,9 +106,24 @@ class DirsHandler(object):
 
             else:
                 directories_inside_details_single[1] = path_Info + file_path[1]
+
             for filter in filters_array:
-                if filter != '' and directories_inside_details_single[1].find(str(filter).strip()) >= 0:
-                    flag = False
+
+                try:
+                    if filter != '' and directories_inside_details_single[1].find(filter.strip()) >= 0:
+                        flag = False
+                except:
+                    try:
+                        if filter != '' and directories_inside_details_single[1].find(filter.encode('utf-8').strip()) >= 0:
+                            flag = False
+                    except:
+                        try:
+                            if filter != '' and directories_inside_details_single[1].find(filter.encode('utf-8').strip()) >= 0:
+                                flag = False
+                        except:
+                            pass
+                        pass
+                    pass
 
             if project_core.getIgnore_hidden_file() == 1 or project_core.getIgnore_hidden_file() == '1':
 
@@ -166,22 +180,21 @@ class DirsHandler(object):
 
             if flag:
                 check += 1
-                #try:
-                response = []
-
-                response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
-
-                if not response or len(response) < 1 or len(response) <= 0:
-                    continue
-
                 try:
-                    response[0][1]
-                    response[1]
+                    response = []
+                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
+
+                    if not response or len(response) < 1 or len(response) <= 0:
+                        continue
+
+                    try:
+                        response[0][1]
+                        response[1]
+                    except:
+                        continue
                 except:
-                    continue
-                #except:
-                #    self.Fixity.logger.LogException(Exception.message)
-                #    pass
+                    self.Fixity.logger.LogException(Exception.message)
+                    pass
 
                 try:
                     try:
@@ -853,9 +866,3 @@ class DirsHandler(object):
         else:
             '''linux'''
             return path_of_file.startswith('.')
-
-
-
-
-
-

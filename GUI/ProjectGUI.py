@@ -74,6 +74,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.show()
         self.unsaved = False
 
+        #if self.Fixity.Configuration.getOsType() == 'Windows':
+        # set Fixed Size(Width, Height)
+        self.setFixedSize(900, 300)
+
     def createDirectories(self):
         self.mail_layout = GUILibraries.QVBoxLayout()
         self.mail_layout.setSpacing(0)
@@ -109,7 +113,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
             self.mail_text_fields[n].textChanged.connect(self.changed)
-            self.dirs_text_fields[n].setReadOnly(False)
+            self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
@@ -199,13 +203,17 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def creatSchedulingOptions(self):
         self.scheduling_groupBox = GUILibraries.QGroupBox("Scheduling")
-        self.monthly =GUILibraries.QRadioButton("Monthly")
+        self.monthly = GUILibraries.QRadioButton("Monthly")
         self.weekly = GUILibraries.QRadioButton("Weekly")
         self.daily = GUILibraries.QRadioButton("Daily")
 
         self.run_only_on_ac_power = GUILibraries.QCheckBox("Run when on battery power")
         self.start_when_available  = GUILibraries.QCheckBox("If missed, run upon restart")
         self.email_only_when_something_changed = GUILibraries.QCheckBox("Email only upon warning or failure")
+
+        self.run_only_on_ac_power.clicked.connect(self.changed)
+        self.start_when_available.clicked.connect(self.changed)
+        self.email_only_when_something_changed.clicked.connect(self.changed)
 
         self.run_only_on_ac_power.setChecked(True)
         self.start_when_available.setChecked(True)
@@ -287,15 +295,17 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def Close(self):
         if self.unsaved:
-
-                response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
-
-                if response:
-                    self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
-                    self.unsaved = True
-                    return
-                else:
-                    self.close()
+            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
+            if response:
+                self.unsaved = False
+                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                self.unsaved = True
+                return
+            else:
+                self.unsaved = False
+                self.close()
+        else:
+            self.close()
 
     def update(self, new='', projet_name_force = None):
         if self.should_update is False:
@@ -412,11 +422,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
             t = ['00', '00']
 
         self.timer.setTime(GUILibraries.QTime(int(t[0]), int(t[1])))
+        self.timer.timeChanged.connect(self.changed)
+
         if last_run_label:
-            self.lastrun.setText("Last checked:\n" + '')
+            self.lastrun.setText("Last checked:\n" + last_run_label)
         self.old = new
         self.unsaved = False
-
 
 
     def switchDebugger(self, is_start=False):
@@ -453,9 +464,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 project_core.Delete()
             except:
                 pass
-
+            self.unsaved = False
             self.projects.takeItem(self.projects.row(self.projects.currentItem()))
-
+            self.unsaved = True
             for SingleRangeValue in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
                     self.dirs_text_fields[SingleRangeValue].setText("")
                     self.mail_text_fields[SingleRangeValue].setText("")
@@ -607,8 +618,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
         name = QID.getText(self, "Project Name", "Name for new Fixity project:", text="New_Project")
 
         if not name[1]:
-            if len(self.Fixity.ProjectsList) <=0:
+            if len(self.Fixity.ProjectsList) <= 0:
                 self.update_menu.setDisabled(True)
+                self.delete_menu.setDisabled(True)
             return
 
         is_project_name_valid = self.Fixity.Validation.ValidateProjectName(name[0])
@@ -623,6 +635,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         self.update_menu.setDisabled(False)
+        self.delete_menu.setDisabled(False)
         new_item = GUILibraries.QListWidgetItem(name[0], self.projects)
 
         self.projects.setCurrentItem(new_item)
@@ -833,6 +846,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #@return: None
 
     def dayClick(self):
+        self.changed()
         self.day_of_month.hide()
         self.day_of_week.hide()
         self.spacer.changeSize(30, 25)
@@ -843,6 +857,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #@return: None
 
     def weekClick(self):
+        self.changed()
         self.spacer.changeSize(0, 0)
         self.day_of_month.hide()
         self.day_of_week.show()
@@ -853,6 +868,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #@return: None
 
     def monthClick(self):
+        self.changed()
         self.spacer.changeSize(0, 0)
         self.day_of_week.hide()
         self.day_of_month.show()
@@ -867,6 +883,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         n = self.browse_dirs.index(self.sender())
         path_selected = GUILibraries.QFileDialog.getExistingDirectory(self, dir=self.Fixity.Configuration.getUserHomePath() + GUILibraries.os.sep + 'Desktop' + GUILibraries.os.sep)
+        duplicate_path = False
+        for single_index in xrange(self.Fixity.Configuration.getNumberOfPathDirectories()):
+             if self.dirs_text_fields[single_index].text() == path_selected:
+                 duplicate_path = True
+        if duplicate_path:
+            self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'])
+            return
         if path_selected and path_selected != '':
             self.dirs_text_fields[n].setText(path_selected)
 
