@@ -749,7 +749,6 @@ class ProjectCore(object):
             pass
 
         history_text = ''
-        print(report_content)
         try:
             for history_line_single in history_lines:
                 history_line_single = str(history_line_single).replace('\n', '')
