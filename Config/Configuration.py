@@ -56,7 +56,6 @@ class Configuration(object):
             path_info = str(path_info).replace('Main.app', '')
 
             self.base_path = path_info
-            print(self.base_path)
 
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
