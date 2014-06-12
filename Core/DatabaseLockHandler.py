@@ -79,13 +79,13 @@ class DatabaseLockHandler(object):
             pointing file as dead 
                      
             """
-            if(os.path.isfile(self.lockfile)):
+            if os.path.isfile(self.lockfile):
                 lockFile = open(self.lockfile,'r+')
                 oldprocess_id = lockFile.readline()
                 lockFile.close()
                 
                 # If process Exists then returns False else True
-                if(oldprocess_id !='' and oldprocess_id is not None ):
+                if oldprocess_id !='' and oldprocess_id is not None:
                     return self.check_pid(oldprocess_id)
                 else:
                     os.remove(self.lockfile)

@@ -272,7 +272,7 @@ class ProjectCore(object):
             filters = filters.split('||-||')
         all_content = file_to_import_info_of.readlines()
 
-        if(project_paths and  project_configuration):
+        if project_paths and  project_configuration:
             try:
                 config = {}
                 run_say_or_month = ''
@@ -380,7 +380,7 @@ class ProjectCore(object):
                         fix_info = re.split(r'\t+', single_content)
 
                         if fix_info is not None:
-                            if(len(fix_info) > 2):
+                            if len(fix_info) > 2:
                                 if len(str(fix_info[0])) == 32:
                                     hashes = fix_info[0]
                                 else:
@@ -508,7 +508,7 @@ class ProjectCore(object):
             pass
 
         try:
-            if(is_dead_lock):
+            if is_dead_lock:
                 lock.is_locked = True
                 lock.release()
         except:

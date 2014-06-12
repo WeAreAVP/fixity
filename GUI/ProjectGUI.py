@@ -933,7 +933,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 pass
             try:
                 if allProjects != None:
-                    if(len(allProjects) > 0):
+                    if len(allProjects) > 0:
                         for p in allProjects:
                             self.projects.addItem(p)
             except Exception:

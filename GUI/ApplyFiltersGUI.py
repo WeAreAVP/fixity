@@ -165,7 +165,7 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
 
             self.filter_field.setText(filters)
 
-            if(ignore_hidden_files == 1 or ignore_hidden_files == '1'):
+            if ignore_hidden_files == 1 or ignore_hidden_files == '1':
                 self.ignore_hidden_files.setChecked(True)
             else:
                 self.ignore_hidden_files.setChecked(False)

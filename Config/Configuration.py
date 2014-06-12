@@ -273,12 +273,12 @@ class Configuration(object):
             WindowsInformation['platform'] = windowDetailedName
             windowDetailedName = str(windowDetailedName).split('-')
 
-            if(windowDetailedName[0] is not  None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows')):
+            if windowDetailedName[0] is not  None and (str(windowDetailedName[0]) == 'Windows' or str(windowDetailedName[0]) == 'windows'):
                 WindowsInformation['isWindows'] =True
             else:
                 WindowsInformation['isWindows'] =False
 
-            if(windowDetailedName[1] is not None and (str(windowDetailedName[1]) != '')):
+            if windowDetailedName[1] is not None and (str(windowDetailedName[1]) != ''):
                 WindowsInformation['WindowsType'] =str(windowDetailedName[1])
             else:
                 WindowsInformation['WindowsType'] =None

@@ -50,11 +50,11 @@ class Debugger(object):
 
     def logError(self,msg,more_information = None):
         try:
-            if(self.is_debugger_on):
+            if self.is_debugger_on:
                 self.addTimeStamp()
                 self.loger.debug('')
                 self.loger.debug(msg)
-                if(len(more_information) > 0):
+                if len(more_information) > 0:
 
                     for key in more_information:
 
@@ -70,10 +70,10 @@ class Debugger(object):
 
     def logInfo(self,msg ,more_information = None):
         try:
-            if(self.is_debugger_on):
+            if self.is_debugger_on:
                 self.addTimeStamp()
                 self.loger.info(msg)
-                if(more_information):
+                if more_information:
                     for key in more_information:
                         self.loger.info(key + '::' + more_information[key]+"\n")
         except:
@@ -87,10 +87,10 @@ class Debugger(object):
 
     def logWarning(self,msg,more_information = None):
         try:
-            if(self.is_debugger_on):
+            if self.is_debugger_on:
                 self.addTimeStamp()
                 self.loger.warning(msg)
-                if(more_information):
+                if more_information:
                     for key in more_information:
                         self.loger.warning(key + '::' + more_information[key]+"\n")
 

@@ -266,7 +266,7 @@ class Database(object):
 
             response = {}
             result_of_last_version = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"'", ' versionID DESC LIMIT 1')
-            if(len(result_of_last_version) > 0):
+            if len(result_of_last_version) > 0:
 
                 response = self.getVersionDetails(project_id,result_of_last_version[0]['versionID'],' id DESC')
             counter_recursion = 0
@@ -321,9 +321,9 @@ class Database(object):
         global counter_recursion
         try:
             query = 'SELECT '+ str(select) +' FROM '+str(table_name)
-            if(condition is not None):
+            if condition is not None:
                 query += ' WHERE ' + condition
-            if(order_by is not None):
+            if order_by is not None:
                 query += ' ORDER BY '+ order_by
 
             response = {}
@@ -520,14 +520,14 @@ class Database(object):
             for info in information:
                 try:
                     if is_column:
-                        if(counter == 0):
+                        if counter == 0:
                             string_glued = string_glued + information[info]
                         else:
                             string_glued =  string_glued + ' , ' + information[info]
 
                     else:
 
-                        if(counter == 0):
+                        if counter == 0:
                             try:
                                 string_glued = string_glued + ' "'+ str(information[info]) + '" '
                             except:

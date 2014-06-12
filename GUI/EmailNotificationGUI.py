@@ -167,7 +167,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         protocol = ''
 
         if information :
-            if(len(information)> 0):
+            if len(information)> 0:
                 try:
                     email_addr = information['email']
                     Pass = str(information['pass'])
@@ -198,7 +198,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             self.TLS_protocol.setChecked(True)
             self.SSL_protocol.setChecked(False)
             self.none_protocol.setChecked(False)
-            if(port is not None and port !='' ):
+            if port is not None and port != '':
                 self.port.setText(port)
             else:
                 self.port.setText('587')
@@ -269,7 +269,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             port = ''
             pass
 
-        if(port is not None and port !='' ):
+        if port is not None and port != '':
             self.port.setText(port)
         else:
             self.port.setText('587')
@@ -286,7 +286,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             port = ''
             pass
 
-        if(port is not None and port !='' ):
+        if port is not None and port != '':
             self.port.setText(port)
         else:
             self.port.setText('465')
@@ -382,9 +382,9 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         Pass = self.password.text()
         out_going_mail_server = self.out_going_mail_server.text()
         port = self.port.text()
-        if(self.SSL_protocol.isChecked()):
+        if self.SSL_protocol.isChecked():
             protocol = 'SSL'
-        elif(self.TLS_protocol.isChecked()):
+        elif self.TLS_protocol.isChecked():
             protocol = 'TLS'
         else:
             protocol = 'NONE'
