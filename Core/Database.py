@@ -1,10 +1,8 @@
 # -*- coding: UTF-8 -*-
-'''
-Created on May 14, 2014
+#Created on May 14, 2014
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
 
-@author: Furqan Wasi
-
-'''
 
 from Core import SharedApp
 import sqlite3

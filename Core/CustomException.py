@@ -22,6 +22,7 @@ class CustomException(object):
         del self
 
     def getExceptionDetails(self):
+
         exc_type, exc_obj, exc_tb = sys.exc_info()
         file_name = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
         error_information = {}
@@ -29,7 +30,6 @@ class CustomException(object):
             error_information['file_name'] = file_name
         except:
             pass
-
 
         try:
             error_information['error_type'] = exc_type
@@ -41,7 +41,6 @@ class CustomException(object):
             pass
 
         return error_information
-
 
     def getTraceBack(self):
         stack_errro = repr(traceback.extract_stack())

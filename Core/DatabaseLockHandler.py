@@ -1,4 +1,6 @@
 # -- coding: utf-8 --
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
 import os
 import time
 import errno
@@ -85,7 +87,7 @@ class DatabaseLockHandler(object):
                 lockFile.close()
                 
                 # If process Exists then returns False else True
-                if oldprocess_id !='' and oldprocess_id is not None:
+                if oldprocess_id != '' and oldprocess_id is not None:
                     return self.check_pid(oldprocess_id)
                 else:
                     os.remove(self.lockfile)

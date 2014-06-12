@@ -1,4 +1,7 @@
 # -*- coding: UTF-8 -*-
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
+
 from Core import SharedApp
 
 import email, datetime, os

@@ -1,7 +1,8 @@
+# -*- coding: UTF-8 -*-
 '''
 Created on May 14, 2014
 
-@author: Furqan
+@author: Furqan Wasi <furqan@avpreserve.com>
 '''
 import os, traceback
 from Core import SharedApp

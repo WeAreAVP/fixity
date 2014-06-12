@@ -1,4 +1,6 @@
 # -*- coding: UTF-8 -*-
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
 import os, subprocess, time
 from Core import SharedApp
 

@@ -1,5 +1,7 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
 from Core import SharedApp
 
 class ProjectRepository(object):

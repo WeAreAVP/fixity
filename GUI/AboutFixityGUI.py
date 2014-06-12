@@ -2,7 +2,7 @@
 '''
 Created on May 14, 2014
 
-@author: Furqan
+@author: Furqan Wasi <furqan@avpreserve.com>
 '''
 
 from GUI import GUILibraries

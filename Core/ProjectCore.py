@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
+#
+#@author: Furqan Wasi <furqan@avpreserve.com>
+
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
 
@@ -8,9 +11,7 @@ import re
 import os
 import thread
 
-
 from collections import defaultdict
-
 
 global verified_files
 
@@ -22,6 +23,7 @@ class ProjectCore(object):
         super(ProjectCore, self).__init__()
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         self.ID = ''
         self.title = ''
         self.version = {}
@@ -758,50 +760,42 @@ class ProjectCore(object):
                 if '{{email_address}}' in history_line_single:
                     history_text += history_line_single.replace('{{email_address}}', self.Fixity.Configuration.CleanStringForBreaks(str(self.getEmail_address())))+"\n"
 
-
                 if '{{schedule}}' in history_line_single:
                     history_text += history_line_single.replace('{{schedule}}', self.Fixity.Configuration.CleanStringForBreaks(keep_time))+"\n"
-
 
                 if '{{last_ran}}' in history_line_single:
                     history_text += history_line_single.replace('{{last_ran}}', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))+"\n"
 
-
                 if '{{filters}}' in history_line_single:
-                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                    try:
+                        history_text += history_line_single.replace('{{filters}}', self.getFilters()+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
+                    except:
                         try:
-                            history_text += history_line_single.replace('{{filters}}', self.getFilters()+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
+                            history_text += history_line_single.replace('{{filters}}', self.getFilters().encode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
                         except:
-                            try:
-                                history_text += history_line_single.replace('{{filters}}', self.getFilters().encode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
-                            except:
-                                history_text += history_line_single.replace('{{filters}}', self.getFilters().decode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
-                                pass
+                            history_text += history_line_single.replace('{{filters}}', self.getFilters().decode('utf-8')+'||-||'+str(self.getIgnore_hidden_file())) + "\n"
                             pass
-                    else:
-                        history_text += history_line_single.replace('{{content}}',history_content.encode('utf-8'))+"\n"
-                        try:
-                            history_text += history_line_single.replace('{{filters}}', self.getFilters()+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
-                        except:
-                            history_text += history_line_single.replace('{{filters}}', self.getFilters().encode('utf-8')+'||-||'+str(self.getIgnore_hidden_file()))+"\n"
-                            pass
+                        pass
 
 
                 if '{{algo}}' in history_line_single:
                     history_text += history_line_single.replace('{{algo}}', str(self.getAlgorithm()))+"\n"
 
                 if '{{content}}' in history_line_single:
-                    if self.Fixity.Configuration.getOsType() == 'Windows':
+
+                    try:
+                        history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content)+"\n"
+                    except:
                         try:
-                            history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content)+"\n"
+                            history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content.encode('utf-8'))+"\n"
                         except:
                             try:
-                                history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content.encode('utf-8'))+"\n"
+                                history_text += history_line_single.encode('utf-8').replace('{{content}}', history_content.decode('utf-8'))+"\n"
                             except:
                                 pass
                             pass
-                    else:
-                        history_text += history_line_single.replace('{{content}}', history_content.encode('utf-8'))+"\n"
+                        pass
+
         except:
              self.Fixity.logger.LogException(Exception.message)
              pass
@@ -960,7 +954,9 @@ class ProjectCore(object):
 
         self.setDirectories(directories)
 
-
+    #function to write the History File
+    #
+    #@param Content
     def writerHistoryFile(self, Content):
 
         try:self.Fixity = SharedApp.SharedApp.App
@@ -1124,116 +1120,58 @@ class ProjectCore(object):
             for obj in dict[keys]:
                 is_file_removed = False
 
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    for single_line in verified_files:
 
-                        try:
-                            is_file_removed = obj[0] in single_line
-                        except:
-
-                            try:
-                                is_file_removed = obj[0].decode('utf-8') in single_line
-                            except:
-                                pass
-
-                            pass
-
-                        if is_file_removed:
-                            break
+                for single_line in verified_files:
 
                     try:
-                        try:
-                            if not is_file_removed:
-                                verified_files.append(obj[0])
-                                try:
-                                    verified_files.append(obj[0].decode('utf-8'))
-                                except:
-                                    try:
-                                        verified_files.append(obj[0].encode('utf-8'))
-                                    except:
-                                        pass
-                                    pass
-
-                                try:
-                                    msg += "Removed Files\t" + obj[0] + "\n"
-                                except:
-                                    try:
-                                        msg += "Removed Files\t" + obj[0].decode('utf-8') + "\n"
-                                    except:
-                                        pass
-                                    pass
-                                count += 1
-                        except:
-                            pass
-
+                        is_file_removed = obj[0] in single_line
                     except:
-                            path_info = (obj[0].decode('utf-8') == verified_files)
-                            if path_info is False:
-                                verified_files.append(obj[0])
-                                verified_files.append(obj[0].decode('utf-8'))
-                                msg += "Removed Files\t" + obj[0] + "\n"
-                                count += 1
-                            pass
-
-                else:
-                    for single_line in verified_files:
 
                         try:
-                            is_file_removed = obj[0] in single_line
+                            is_file_removed = obj[0].decode('utf-8') in single_line
                         except:
+                            pass
 
+                        pass
+
+                    if is_file_removed:
+                        break
+
+                try:
+                    try:
+                        if not is_file_removed:
+                            verified_files.append(obj[0])
                             try:
-                                is_file_removed = obj[0].decode('utf-8') in single_line
+                                verified_files.append(obj[0].decode('utf-8'))
                             except:
+                                try:
+                                    verified_files.append(obj[0].encode('utf-8'))
+                                except:
+                                    pass
                                 pass
 
-                            pass
-
-                        if is_file_removed:
-                            break
-
-                    try:
-                        try:
-                            if not is_file_removed:
-                                verified_files.append(obj[0])
-                                try:
-                                    verified_files.append(obj[0].decode('utf-8'))
-                                except:
-                                    try:
-                                        verified_files.append(obj[0].encode('utf-8'))
-                                    except:
-                                        pass
-                                    pass
-
-                                try:
-                                    msg += "Removed Files\t" + obj[0] + "\n"
-                                except:
-                                    try:
-                                        msg += "Removed Files\t" + obj[0].decode('utf-8') + "\n"
-                                    except:
-                                        pass
-                                    pass
-                                count += 1
-                        except:
-                            pass
-
-                    except:
-                            path_info = (obj[0].decode('utf-8') == verified_files)
-                            if path_info is False:
-                                verified_files.append(obj[0])
-                                verified_files.append(obj[0].decode('utf-8'))
+                            try:
                                 msg += "Removed Files\t" + obj[0] + "\n"
-                                count += 1
-                            pass
-                    # try:
-                    #     if not obj[0].decode('utf-8') in verified_files and not obj[0] in verified_files:
-                    #         verified_files.append(obj[0])
-                    #         verified_files.append(obj[0].decode('utf-8'))
-                    #         msg += "Removed Files\t" + obj[0] + "\n"
-                    #         count += 1
+                            except:
+                                try:
+                                    msg += "Removed Files\t" + obj[0].decode('utf-8') + "\n"
+                                except:
+                                    pass
+                                pass
+                            count += 1
+                    except:
+                        pass
 
-                    # except:
-                    #     pass
+                except:
+                    path_info = (obj[0].decode('utf-8') == verified_files)
+                    if path_info is False:
+                        verified_files.append(obj[0])
+                        verified_files.append(obj[0].decode('utf-8'))
+                        msg += "Removed Files\t" + obj[0] + "\n"
+                        count += 1
+                    pass
+
+
         return msg, count
 
     #Method to convert database line into tuple
@@ -1244,6 +1182,7 @@ class ProjectCore(object):
     def toTuple(self, line):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         try:
             return [line['hashes'], str(line['path'].encode('utf-8')).strip(), line['inode']]
         except:

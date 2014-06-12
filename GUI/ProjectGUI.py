@@ -3,11 +3,10 @@
 #
 #@author: Furqan Wasi <furqan@avpreserve.com>
 
-
-
 # Custom Libraries
 
-from GUI import GUILibraries, AboutFixityGUI, ApplyFiltersGUI, ChangeAlgorithmGUI, ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGUI
+from GUI import GUILibraries, AboutFixityGUI, ApplyFiltersGUI, ChangeAlgorithmGUI
+from GUI import ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGUI
 from Core import SharedApp, ProjectCore
 
 # Built-in Libraries
@@ -74,9 +73,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.show()
         self.unsaved = False
 
-        #if self.Fixity.Configuration.getOsType() == 'Windows':
-        # set Fixed Size(Width, Height)
-        self.setFixedSize(900, 300)
+        if self.Fixity.Configuration.getOsType() == 'Windows':
+            # set Fixed Size(Width, Height)
+            self.setFixedSize(900, 300)
+        else:
+            # set Fixed Size(Width, Height)
+            self.setFixedSize(1000, 282)
+
 
     def createDirectories(self):
         self.mail_layout = GUILibraries.QVBoxLayout()
@@ -181,7 +184,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.file_manu_fixity.addAction(self.quit_menu)
         self.preferences.addAction(self.filter_files_menu)
         self.preferences.addAction(self.debuging_menu)
-        #self.preferences.addAction(self.change_name_menu)
         self.preferences.addAction(self.import_menu)
         self.preferences.addAction(self.config_email_menu)
         self.preferences.addAction(self.decryption_manager_menu)
@@ -291,7 +293,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #Updates Fields When Project Is Selected In List
     #@Slot(str)
     #@param new: Is New Project
-    #@param projetName: projet Name If Not Selected
+    #@param projectName: project Name If Not Selected
 
     def Close(self):
         if self.unsaved:
@@ -307,7 +309,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         else:
             self.close()
 
-    def update(self, new='', projet_name_force = None):
+    def update(self, new='', project_name_force=None):
         if self.should_update is False:
             return
 
@@ -590,7 +592,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         directory_increment = 1
         for directory_single in self.dirs_text_fields:
-            #if directory_single.text().strip() != "":
             self.checkForChanges(directory_single.text(), 'Fixity-'+str(directory_increment))
             directory_increment += 1
 
@@ -868,7 +869,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.day_of_week.hide()
         self.day_of_month.show()
 
-
     #Pick Directory
     #(Trigger on Pick Directory Button Menu)
     #
@@ -921,7 +921,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         except:
             pass
 
-
     #Refresh Project Settings on the main Window
     def refreshProjectSettings(self):
             self.Fixity = SharedApp.SharedApp.App
@@ -932,7 +931,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             except Exception:
                 pass
             try:
-                if allProjects != None:
+                if allProjects is not None:
                     if len(allProjects) > 0:
                         for p in allProjects:
                             self.projects.addItem(p)
