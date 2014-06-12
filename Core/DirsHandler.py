@@ -310,9 +310,7 @@ class DirsHandler(object):
 
         try:
             ''' Check if I-Node related information Exists in the Given Directory  '''
-            print('getting information 9090909099')
-            print(line[2])
-            print('getting information 9090909099')
+
             current_directory = dicty.get(line[2])
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -346,11 +344,7 @@ class DirsHandler(object):
         '''' IF Given File Exists'''
         if path_info:
             '''' IF SAME INODE EXISTS '''
-            print('+++++++++++++++++')
-            print(current_directory)
-            print('+++++++++++++++++')
             if current_directory is not None:
-                print('if')
 
                 current_directory = current_directory[0]
 
@@ -490,7 +484,7 @@ class DirsHandler(object):
                             pass
 
             else:
-                print('else')
+
                 for dictionary_single in dict_hash:
 
                     all_information_hash_related = dict_hash[dictionary_single]
