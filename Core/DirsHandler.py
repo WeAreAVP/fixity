@@ -192,7 +192,11 @@ class DirsHandler(object):
                     try:
                         file_changed_list += response[1] + "\n"
                     except:
-                        file_changed_list += response[1].decode('utf-8') + "\n"
+                        try:
+                            file_changed_list += response[1].encode('utf-8') + "\n"
+                        except:
+                            file_changed_list += response[1].decode('utf-8') + "\n"
+                            pass
                         pass
 
                     if response[1].startswith('Confirmed'):
@@ -209,20 +213,20 @@ class DirsHandler(object):
 
                 path_code = self.getPathID()
 
+                new_coded_path = ' '
                 try:
-                    try:
-                        new_coded_path = response[0][1].replace(single_directory, path_code + "||")
-                    except:
-                        try:
-                            new_coded_path = response[0][1].replace(single_directory.encode('utf-8'), path_code + "||")
-                        except:
-                            new_coded_path = response[0][1].replace(single_directory.decode('utf-8'), path_code + "||")
-                            pass
-                        pass
+                    new_coded_path = response[0][1].replace(single_directory, path_code + "||")
                 except:
-                    new_coded_path = ' '
-                    self.Fixity.logger.LogException(Exception.message)
+                    try:
+                        new_coded_path = response[0][1].replace(single_directory.encode('utf-8'), path_code + "||")
+                    except:
+                        new_coded_path = response[0][1].replace(single_directory.decode('utf-8'), path_code + "||")
+                        pass
                     pass
+
+
+
+
 
                 try:
                     version_detail_options = {}
@@ -352,10 +356,10 @@ class DirsHandler(object):
                     old_file_path = current_directory[0].replace(current_directory[3], '')
 
                     try:
-                        is_file_path_same = old_file_path in new_file_path
+                        is_file_path_same = old_file_path == new_file_path
                     except:
                         try:
-                            is_file_path_same = old_file_path.encode('utf-8') in new_file_path
+                            is_file_path_same = old_file_path.encode('utf-8') == new_file_path
                         except:
                             pass
                         pass
@@ -363,12 +367,12 @@ class DirsHandler(object):
                 else:
 
                     try:
-                        is_file_path_same = (current_directory[0] in line[1])
+                        is_file_path_same = (current_directory[0] == line[1])
                     except:
                         try:
-                            is_file_path_same = (current_directory[0].decode('utf-8') in line[1])
+                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
                         except:
-                            is_file_path_same = (current_directory[0].encode("utf-8") in line[1])
+                            is_file_path_same = (current_directory[0].encode("utf-8") == line[1])
                             pass
                         pass
 
@@ -477,19 +481,19 @@ class DirsHandler(object):
                             old_file_path = single_infor_hash_related[0].replace(single_infor_hash_related[3], '')
 
                             try:
-                                is_same_file_path = old_file_path in new_file_path
+                                is_same_file_path = old_file_path == new_file_path
                             except:
                                 try:
-                                    is_same_file_path = old_file_path.encode('utf-8') in new_file_path
+                                    is_same_file_path = old_file_path.encode('utf-8') == new_file_path
                                 except:
                                     pass
                                 pass
                         else:
                             try:
-                                is_same_file_path = single_infor_hash_related[0] in line[1]
+                                is_same_file_path = single_infor_hash_related[0] == line[1]
                             except:
                                 try:
-                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') in line[1]
+                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') == line[1]
                                 except:
                                     pass
                                 pass
@@ -499,6 +503,10 @@ class DirsHandler(object):
 
                     ''' Confirmed  FileExists::YES #SameHashOfFile::YES #SameFilePath::YES #SameI-Node::NO  '''
                     if is_same_file_path and dictionary_single == line[0]:
+                        print('=====')
+                        print(dictionary_single)
+                        print(line)
+                        print('=====')
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
