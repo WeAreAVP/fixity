@@ -167,7 +167,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.change_name_menu.setShortcut("CTRL+U")
         self.decryption_manager_menu.setShortcut("CTRL+A")
         self.debuging_menu.setShortcut("CTRL+D")
-        self.import_menu.setShortcut("CTRL+I");
+        self.import_menu.setShortcut("CTRL+I")
         self.config_email_menu.setShortcut("CTRL+E")
         self.delete_menu.setShortcut(GUILibraries.QKeySequence.DeleteStartOfWord)
 
@@ -353,8 +353,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setChecked(False)
         self.email_only_when_something_changed .setChecked(False)
 
-
-
         emails = str(project_core.getEmail_address())
         emails = emails.split(',')
         last_run_label = project_core.getLast_ran()
@@ -429,7 +427,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.old = new
         self.unsaved = False
 
-
     def switchDebugger(self, is_start=False):
         status = self.Fixity.logger.get()
         if is_start:
@@ -448,8 +445,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             self.Fixity.logger.set(new_status)
         self.debuging_menu.setText(debug_text)
-
-
 
     def delete(self):
         try:
@@ -885,7 +880,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         path_selected = GUILibraries.QFileDialog.getExistingDirectory(self, dir=self.Fixity.Configuration.getUserHomePath() + GUILibraries.os.sep + 'Desktop' + GUILibraries.os.sep)
         duplicate_path = False
         for single_index in xrange(self.Fixity.Configuration.getNumberOfPathDirectories()):
-             if self.dirs_text_fields[single_index].text() == path_selected:
+             if self.dirs_text_fields[single_index].text() == path_selected and self.dirs_text_fields[single_index].text() != '' and path_selected != '':
                  duplicate_path = True
         if duplicate_path:
             self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'])
