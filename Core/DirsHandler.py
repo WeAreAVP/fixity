@@ -2,7 +2,7 @@
 '''
 Created on May 14, 2014
 
-@author: Furqan Wasi <furqan@avpreserve.com>
+@author: Furqan Wasi
 
 '''
 import os, fnmatch
@@ -79,28 +79,33 @@ class DirsHandler(object):
             flag = True
             directories_inside_details_single = list(directories_inside_details_single)
 
-            try:
+            if self.Fixity.Configuration.getOsType() == 'Windows':
+                try:
+                    file_path = directories_inside_details_single[1].split('||')
+                except:
+                    file_path = directories_inside_details_single[1].split('||')
+                    pass
+            else:
                 file_path = directories_inside_details_single[1].split('||')
-            except:
-                pass
 
             path_Info = self.getPath()
 
-
-            try:
-                directories_inside_details_single[1] = path_Info + file_path[1]
-            except:
+            if self.Fixity.Configuration.getOsType() == 'Windows':
                 try:
-                    directories_inside_details_single[1] = path_Info.encode('utf-8') + file_path[1]
+                    directories_inside_details_single[1] = path_Info + file_path[1]
                 except:
                     try:
-                        directories_inside_details_single[1] = path_Info.decode('utf-8') + file_path[1]
+                        directories_inside_details_single[1] = path_Info.encode('utf-8') + file_path[1]
                     except:
+                        try:
+                            directories_inside_details_single[1] = path_Info.decode('utf-8') + file_path[1]
+                        except:
+                            pass
                         pass
                     pass
-                pass
 
-
+            else:
+                directories_inside_details_single[1] = path_Info + file_path[1]
 
             for filter in filters_array:
 
@@ -123,19 +128,21 @@ class DirsHandler(object):
             if project_core.getIgnore_hidden_file() == 1 or project_core.getIgnore_hidden_file() == '1':
 
                 try:
-
-                    try:
-                        path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
-                    except:
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
-                            path_exploded = directories_inside_details_single[1].split(str(os.sep))
+                            path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
                         except:
                             try:
-                                path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                path_exploded = directories_inside_details_single[1].split(str(os.sep))
                             except:
-                                path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
-                                pass
+                                try:
+                                    path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                except:
+                                    path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
+                                    pass
 
+                    else:
+                        path_exploded = directories_inside_details_single[1].split(str(os.sep))
 
                     lastIndexName = path_exploded[len(path_exploded) - 1]
                     if fnmatch.fnmatch(lastIndexName, '.*'):
@@ -147,19 +154,20 @@ class DirsHandler(object):
                     pass
 
                 try:
-
-                    try:
-                        path_exploded = directories_inside_details_single[1].split(str(os.sep))
-                    except:
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             path_exploded = str(directories_inside_details_single[1]).split(str(os.sep))
                         except:
                             try:
-                                path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                path_exploded = directories_inside_details_single[1].split(str(os.sep))
                             except:
-                                path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
-                                pass
-
+                                try:
+                                    path_exploded = directories_inside_details_single[1].encode('utf-8').split(str(os.sep))
+                                except:
+                                    path_exploded = directories_inside_details_single[1].decode('utf-8').split(str(os.sep))
+                                    pass
+                    else:
+                        path_exploded = directories_inside_details_single[1].split(str(os.sep))
                     for single_directory_hidden in path_exploded:
                         if fnmatch.fnmatch(single_directory_hidden, '.*'):
                             flag = False
@@ -172,31 +180,27 @@ class DirsHandler(object):
 
             if flag:
                 check += 1
+                # try:
+                response = []
+                response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
+
+                if not response or len(response) < 1 or len(response) <= 0:
+                    continue
+
                 try:
-                    response = []
-                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
-
-                    if not response or len(response) < 1 or len(response) <= 0:
-                        continue
-
-                    try:
-                        response[0][1]
-                        response[1]
-                    except:
-                        continue
+                    response[0][1]
+                    response[1]
                 except:
-                    self.Fixity.logger.LogException(Exception.message)
-                    pass
+                    continue
+                # except:
+                #     self.Fixity.logger.LogException(Exception.message)
+                #     pass
 
                 try:
                     try:
                         file_changed_list += response[1] + "\n"
                     except:
-                        try:
-                            file_changed_list += response[1].encode('utf-8') + "\n"
-                        except:
-                            file_changed_list += response[1].decode('utf-8') + "\n"
-                            pass
+                        file_changed_list += response[1].decode('utf-8') + "\n"
                         pass
 
                     if response[1].startswith('Confirmed'):
@@ -213,32 +217,37 @@ class DirsHandler(object):
 
                 path_code = self.getPathID()
 
-                new_coded_path = ' '
                 try:
-                    new_coded_path = response[0][1].replace(single_directory, path_code + "||")
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+
+                        try:
+                            new_coded_path = response[0][1].replace(single_directory, path_code + "||")
+                        except:
+                            try:
+                                new_coded_path = response[0][1].replace(single_directory.encode('utf-8'), path_code + "||")
+                            except:
+                                new_coded_path = response[0][1].replace(single_directory.decode('utf-8'), path_code + "||")
+                                pass
+                            pass
+
+                    else:
+                        new_coded_path = response[0][1].replace(single_directory, path_code+"||")
                 except:
-                    try:
-                        new_coded_path = response[0][1].replace(single_directory.encode('utf-8'), path_code + "||")
-                    except:
-                        new_coded_path = response[0][1].replace(single_directory.decode('utf-8'), path_code + "||")
-                        pass
+                    new_coded_path = ' '
+                    self.Fixity.logger.LogException(Exception.message)
                     pass
-
-
-
-
 
                 try:
                     version_detail_options = {}
-                    try:
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
                         version_detail_options['hashes'] = str(response[0][0])
-                    except:
+                    else:
                         version_detail_options['hashes'] = response[0][0]
-                        pass
-
                     version_detail_options['path'] = ''
-
-                    version_detail_options['path'] = new_coded_path
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
+                        version_detail_options['path'] = new_coded_path
+                    else:
+                        version_detail_options['path'] = new_coded_path
 
                     version_detail_options['inode'] = str(response[0][2])
                     version_detail_options['versionID'] = str(version_id)
@@ -301,6 +310,9 @@ class DirsHandler(object):
 
         try:
             ''' Check if I-Node related information Exists in the Given Directory  '''
+            print('getting information 9090909099')
+            print(line[2])
+            print('getting information 9090909099')
             current_directory = dicty.get(line[2])
         except:
             self.Fixity.logger.LogException(Exception.message)
@@ -334,7 +346,11 @@ class DirsHandler(object):
         '''' IF Given File Exists'''
         if path_info:
             '''' IF SAME INODE EXISTS '''
+            print('+++++++++++++++++')
+            print(current_directory)
+            print('+++++++++++++++++')
             if current_directory is not None:
+                print('if')
 
                 current_directory = current_directory[0]
 
@@ -350,7 +366,7 @@ class DirsHandler(object):
                             new_file_path = line[1].replace(single_directory.encode('utf-8'), '')
                         except:
                             new_file_path = line[1].replace(single_directory.decode('utf-8'), '')
-                            pass
+
                         pass
 
                     old_file_path = current_directory[0].replace(current_directory[3], '')
@@ -358,10 +374,7 @@ class DirsHandler(object):
                     try:
                         is_file_path_same = old_file_path == new_file_path
                     except:
-                        try:
-                            is_file_path_same = old_file_path.encode('utf-8') == new_file_path
-                        except:
-                            pass
+                        is_file_path_same = old_file_path.encode('utf-8') == new_file_path
                         pass
 
                 else:
@@ -370,25 +383,29 @@ class DirsHandler(object):
                         is_file_path_same = (current_directory[0] == line[1])
                     except:
                         try:
-                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
-                        except:
                             is_file_path_same = (current_directory[0].encode("utf-8") == line[1])
+                        except:
+                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
                             pass
                         pass
+
 
                 '''Confirmed   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
                 if is_hash_same and is_file_path_same:
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
 
-                    try:
-                        return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
-                    except:
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
-                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
                         except:
+                            try:
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                            except:
+                                pass
                             pass
-                        pass
+                    else:
+                        return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
 
 
                 '''Moved   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
@@ -406,9 +423,15 @@ class DirsHandler(object):
                             pass
                     else:
                         try:
-                            return line, self.Fixity.Configuration.move_or_renamed_file+":\t" + current_directory[0].decode("utf-16") + "\t changed to\t" + line[1].decode('utf-8')
+                            return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1]
                         except:
-                            return line, self.Fixity.Configuration.move_or_renamed_file+":\t" + current_directory[0] + "\t changed to\t" + line[1].decode('utf-8')
+                            try:
+                                return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1].encode('utf-8')
+                            except:
+
+                                return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1].decode('utf-8')
+
+                                pass
                             pass
 
 
@@ -416,18 +439,27 @@ class DirsHandler(object):
                 if (not is_hash_same) and is_file_path_same:
 
                     verified_files.append(line[1])
-
-                    try:
-                        return line, self.Fixity.Configuration.change_file+":\t" + line[1]
-                    except:
+                    if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
-                            return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                            return line, self.Fixity.Configuration.change_file+":\t" + line[1]
+                        except:
+                            try:
+                                return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+                            except:
+                                pass
+                            pass
+
+                    else:
+                        try:
+                            return line, self.Fixity.Configuration.change_file+":\t" + line[1]
                         except:
                             try:
                                 return line, self.Fixity.Configuration.change_file+":\t" + line[1].encode('utf-8')
                             except:
-                                pass
-                        pass
+
+                                return line, self.Fixity.Configuration.change_file+":\t" + line[1].decode('utf-8')
+
+                            pass
 
                 '''Changed  FileExists::YES  #SameHashOfFile::NO  #SameFilePath::NO #SameI-Node::YES  '''
                 if (not is_hash_same) and (not is_file_path_same):
@@ -435,6 +467,7 @@ class DirsHandler(object):
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
+
 
                         try:
                             return line, self.Fixity.Configuration.change_file+":\t" + current_directory[0] + "\t changed to\t" + line[1]
@@ -446,16 +479,18 @@ class DirsHandler(object):
                             pass
                     else:
                         try:
-                            return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0].decode("utf-16")) + "\t changed to\t" + line[1]
+
+                            return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].encode('utf-8')
                         except:
                             try:
-                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].decode('utf-8')
+                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0].encode("utf-8")) + "\t changed to\t" + line[1].encode("utf-8")
                             except:
-                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].encode('utf-8')
+                                return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0].decode("utf-8")) + "\t changed to\t" + line[1].decode('utf-8')
                                 pass
                             pass
 
-            else :
+            else:
+                print('else')
                 for dictionary_single in dict_hash:
 
                     all_information_hash_related = dict_hash[dictionary_single]
@@ -503,22 +538,27 @@ class DirsHandler(object):
 
                     ''' Confirmed  FileExists::YES #SameHashOfFile::YES #SameFilePath::YES #SameI-Node::NO  '''
                     if is_same_file_path and dictionary_single == line[0]:
-                        print('=====')
-                        print(dictionary_single)
-                        print(line)
-                        print('=====')
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
-
-                        try:
-                            return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
-                        except:
+                        if self.Fixity.Configuration.getOsType() == 'Windows':
                             try:
-                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
                             except:
-                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].encode('utf-8')
-                            pass
+                                try:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
+                                pass
+                        else:
+                            try:
+                                return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].encode('utf-8')
+                                pass
 
 
                         ''' Changed  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO '''
@@ -526,43 +566,72 @@ class DirsHandler(object):
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
-
-                        try:
-                            return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
-                        except:
+                        if self.Fixity.Configuration.getOsType() == 'Windows':
                             try:
-                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1].decode('utf-8')
+                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
                             except:
-                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1].encode('utf-8')
+                                try:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
                                 pass
-                            pass
+                        else:
+                            try:
+                                return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.change_file + ":\t" + line[1].encode('utf-8')
+                                    pass
+                                pass
 
                         ''' New  File Exists::YES   #SameHashOfFile::YES   #SameFilePath::NO  #SameI-Node::NO '''
                     elif (not is_same_file_path) and dictionary_single == line[0]:
 
                         verified_files.append(line[1])
 
-                        try:
-                            return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
-                        except:
+                        if self.Fixity.Configuration.getOsType() == 'Windows':
                             try:
-                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
                             except:
-                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
-                            pass
+                                try:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    pass
+                                pass
+
+                        else:
+                            try:
+                                return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                            except:
+                                try:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                                except:
+                                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
+                                pass
 
             '''New  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
 
             verified_files.append(line[1])
-
-            try:
-                return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
-            except:
+            if self.Fixity.Configuration.getOsType() == 'Windows':
                 try:
-                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                    return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
                 except:
-                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
-                pass
+                    try:
+                        return line,  self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                    except:
+                        pass
+                    pass
+            else:
+                try:
+                    return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
+                except:
+                    try:
+                        return line, self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                    except:
+                        return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
+                    pass
 
     #------------------------------------------------------------------------------- --------------------------#
     #Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
@@ -623,19 +692,21 @@ class DirsHandler(object):
 
                 encoded_base_path = self.getPathID()
 
-                try:
-                    given_path = path_of_the_file. replace(directory_path_to_be_scanned, encoded_base_path + '||')
-                except:
+                if self.Fixity.Configuration.getOsType() == 'Windows':
                     try:
-                        given_path = path_of_the_file. replace(directory_path_to_be_scanned.decode('utf-8'), encoded_base_path.encode('utf-8') + '||')
+                        given_path = path_of_the_file. replace(directory_path_to_be_scanned, encoded_base_path + '||')
                     except:
                         try:
-                            given_path = path_of_the_file. replace(directory_path_to_be_scanned.encode('utf-8'), encoded_base_path.encode('utf-8') + '||')
+                            given_path = path_of_the_file. replace(directory_path_to_be_scanned.decode('utf-8'), encoded_base_path.encode('utf-8') + '||')
                         except:
+                            try:
+                                given_path = path_of_the_file. replace(directory_path_to_be_scanned.encode('utf-8'), encoded_base_path.encode('utf-8') + '||')
+                            except:
+                                pass
                             pass
                         pass
-                    pass
-
+                else:
+                    given_path = path_of_the_file.replace(directory_path_to_be_scanned, encoded_base_path + '||')
 
                 hash_of_this_file_content = self.getFilesHash(path_of_the_file, algorithm_used_for_this_project)
 
@@ -643,9 +714,10 @@ class DirsHandler(object):
                     inode = self.inodeForWin(path_of_the_file)
                 else:
                     inode = self.inodeForMac(path_of_the_file)
-
-
-                list_of_values.append((hash_of_this_file_content, given_path, inode))
+                if self.Fixity.Configuration.getOsType() == 'Windows':
+                    list_of_values.append((hash_of_this_file_content, given_path, inode))
+                else:
+                    list_of_values.append((hash_of_this_file_content, given_path, inode))
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
