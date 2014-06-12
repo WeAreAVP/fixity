@@ -45,18 +45,20 @@ class Configuration(object):
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
             self.config_file_path = self.getBasePath()+'conf.xml'
+            self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
 
         else:
             self.lib_agent_path = str(self.user_home_path)+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
             self.agent_path = str(self.user_home_path)+str(os.sep)+"Library"
-            pathInfo = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources', '')
-            pathInfo = str(pathInfo).replace('Fixity.app'+str(os.sep), '')
-            pathInfo = str(pathInfo).replace('Fixity.app', '')
-            pathInfo = str(pathInfo).replace('Main.app', '')
+            path_info = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources', '')
+            path_info = str(path_info).replace('Fixity.app'+str(os.sep), '')
+            path_info = str(path_info).replace('Fixity.app', '')
+            path_info = str(path_info).replace('Main.app', '')
 
-            self.base_path = pathInfo
+            self.base_path = path_info
+            print(self.base_path)
+
             self.fixity_launch_path = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources','') +str(os.sep)+"Contents"+str(os.sep)+"MacOS"+str(os.sep)+"Fixity"
-            # self.fixity_launch_path = str(self.fixity_launch_path).replace(' ', '\ ')
             self.reports_path = r''+(os.path.join(self.base_path, 'reports'+str(os.sep)))
             self.schedules_path = r''+(os.path.join(os.getcwd(), 'schedules'+str(os.sep)))
             self.config_file_path = r''+(os.path.join(os.getcwd(), 'conf.xml'))
@@ -66,7 +68,6 @@ class Configuration(object):
             self.lock_file_path = r''+(os.path.join(os.getcwd(), 'dblocker.log'))
 
             self.log_file_path = r''+(os.path.join(os.getcwd(), 'debug.log'))
-            # self.log_file_path = str(self.log_file_path).replace(' ', '\ ')
 
             self.database_file_path = r''+(os.path.join(os.getcwd(),'Fixity.db'))
             self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
@@ -77,10 +78,8 @@ class Configuration(object):
             self.sch_daily_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacDaily.xml')
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
+            self.avpreserve_img = r''+(os.path.join(self.assets_path,'avpreserve.png'))
 
-
-
-        self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7

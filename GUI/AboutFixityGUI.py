@@ -39,19 +39,19 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.pgroup = GUILibraries.QGroupBox()
         self.detail_layout = GUILibraries.QVBoxLayout()
 
-        self.description_btn =GUILibraries.QPushButton('Description')
-        self.authorand_license_btn =GUILibraries.QPushButton('Author and License')
-        self.contact_btn =GUILibraries.QPushButton('Contact')
-        self.close_btn =GUILibraries.QPushButton('Close')
+        self.description_btn = GUILibraries.QPushButton('Description')
+        self.author_and_license_btn = GUILibraries.QPushButton('Author and License')
+        self.contact_btn = GUILibraries.QPushButton('Contact')
+        self.close_btn = GUILibraries.QPushButton('Close')
 
         self.about_layout =GUILibraries.QGroupBox()
-        self.heading =GUILibraries.QTextEdit()
-        self.content =GUILibraries.QTextEdit()
+        self.heading = GUILibraries.QTextEdit()
+        self.content = GUILibraries.QTextEdit()
 
         self.heading.setReadOnly(True)
         self.content.setReadOnly(True)
 
-        self.main =GUILibraries.QHBoxLayout()
+        self.main = GUILibraries.QHBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
     ''' Distructor'''
@@ -80,7 +80,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
 
         self.content.setText(decriptionText)
         self.description_btn.setDisabled(True)
-        self.authorand_license_btn.setDisabled(False)
+        self.author_and_license_btn.setDisabled(False)
         self.contact_btn.setDisabled(False)
 
 
@@ -95,7 +95,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
 
         self.content.setText(LicenseText)
         self.description_btn.setDisabled(False)
-        self.authorand_license_btn.setDisabled(True)
+        self.author_and_license_btn.setDisabled(True)
         self.contact_btn.setDisabled(False)
 
 
@@ -106,7 +106,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
 
         self.content.setText(ContactText)
         self.description_btn.setDisabled(False)
-        self.authorand_license_btn.setDisabled(False)
+        self.author_and_license_btn.setDisabled(False)
         self.contact_btn.setDisabled(True)
 
 
@@ -114,11 +114,11 @@ class AboutFixityGUI(GUILibraries.QDialog):
     def SetDesgin(self):
         try:
             self.description_btn.setFixedSize(210, 30)
-            self.authorand_license_btn.setFixedSize(210, 30)
+            self.author_and_license_btn.setFixedSize(210, 30)
             self.contact_btn.setFixedSize(210, 30)
         except:
             self.description_btn =GUILibraries.QPushButton('Description')
-            self.authorand_license_btn =GUILibraries.QPushButton('Author and License')
+            self.author_and_license_btn =GUILibraries.QPushButton('Author and License')
             self.contact_btn =GUILibraries.QPushButton('Contact')
             self.close_btn =GUILibraries.QPushButton('Close')
 
@@ -129,12 +129,12 @@ class AboutFixityGUI(GUILibraries.QDialog):
         pic.setPixmap(GUILibraries.QPixmap(str(self.Fixity.Configuration.getAvpreserve_img())))
 
         self.description_btn.clicked.connect(self.showDescription)
-        self.authorand_license_btn.clicked.connect(self.showLicense)
+        self.author_and_license_btn.clicked.connect(self.showLicense)
         self.contact_btn.clicked.connect(self.showContact)
         self.close_btn.clicked.connect(self.Cancel)
 
         self.detail_layout.addWidget(self.description_btn)
-        self.detail_layout.addWidget(self.authorand_license_btn)
+        self.detail_layout.addWidget(self.author_and_license_btn)
         self.detail_layout.addWidget(self.contact_btn)
         self.detail_layout.addWidget(pic)
         self.pgroup.setLayout(self.detail_layout)
@@ -178,9 +178,3 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.SetDesgin()
         self.ShowDialog()
 
-        
-#app = GUILibraries.QApplication('asd')
-#AF = AboutFixity(GUILibraries.QDialog())
-#AF.SetDesgin()
-#AF.ShowDialog()
-#exit(app.exec_())

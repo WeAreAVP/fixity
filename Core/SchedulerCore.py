@@ -183,9 +183,8 @@ class SchedulerCore(object):
             triggers['CalendarTrigger']['ScheduleByWeek']['WeeksInterval'] = '1'
             triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'] = daysOfWeek[int(self.getRun_day_or_month())]
         if self.getDurationType() == 3:
+
             triggers['CalendarTrigger']['ScheduleByDay']['DaysInterval'] = '1'
-
-
         principals['Principal'] = {}
         principals['Principal']['UserId'] = 'Administrator'
         principals['Principal']['LogonType'] = 'InteractiveToken'
@@ -219,9 +218,11 @@ class SchedulerCore(object):
 
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
-            xml_file_name_with_dir_name = self.CreateXML(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
+            xml_file_name_with_dir_name = self.CreateXML(project_name,  version,  registration_info, triggers,
+                                                         principals,  settings,  actions, self.getDurationType())
         else:
-            xml_file_name_with_dir_name = self.CreateXMLOfMac(project_name,  version,  registration_info, triggers,  principals,  settings,  actions, self.getDurationType())
+            xml_file_name_with_dir_name = self.CreateXMLOfMac(project_name,  version,  registration_info, triggers,
+                                                              principals,  settings,  actions, self.getDurationType())
 
 
         xml_file_path = "\"" + xml_file_name_with_dir_name + "\""
@@ -235,10 +236,10 @@ class SchedulerCore(object):
             else:
                 command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + os.getcwd() + "\\schedules\\fixity-" + project_name + ".vbs\" /RU SYSTEM"
 
-        Information = {}
-        Information['versionType'] = 'save'
+        information = {}
+        information['versionType'] = 'save'
         current_date = time.strftime("%Y-%m-%d")
-        Information['name'] = self.Fixity.Configuration.EncodeInfo(str(current_date))
+        information['name'] = self.Fixity.Configuration.EncodeInfo(str(current_date))
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
@@ -262,12 +263,12 @@ class SchedulerCore(object):
 
     #Create XML for Window 7 task schedules
     #
-    #Input: Information of all scheduler information wit project information
+    #Input: information of all scheduler information wit project information
     #Output : XML for Window 7 scheduler
     def CreateXML(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        Months = self.Fixity.Configuration.getMonths()
+        # Months = self.Fixity.Configuration.getMonths()
         schedule_path = self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + "-sch.xml"
         xmlsch = open(schedule_path, "w")
         scheduler_xml_text = ''
@@ -377,7 +378,7 @@ class SchedulerCore(object):
 
     #Create XML for Mac launchd process
     #
-    #Input: Information of all scheduler information with project information
+    #Input: information of all scheduler information with project information
     #Output : XML for Mac launhd scheduling
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
         try:self.Fixity = SharedApp.SharedApp.App
@@ -412,13 +413,13 @@ class SchedulerCore(object):
                 xmlsch.write("            <dict>\n")
 
                 infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-                TriggerInformation = str(infoTrigger[1]).split(':')
+                trigger_information = str(infoTrigger[1]).split(':')
 
                 if interval == 1:
                     xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
                     xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
                     xmlsch.write("            <key>Day</key>\n")
                     xmlsch.write("            <integer>" + str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']) + "</integer>\n")
 
@@ -426,17 +427,17 @@ class SchedulerCore(object):
                     week_information = {"Sunday":0, "Monday":1, "Tuesday":2, "Wednesday":3, "Thursday":4, "Friday":5, "Saturday":6 }
 
                     xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
                     xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
                     xmlsch.write("            <key>Weekday</key>\n")
                     xmlsch.write("            <integer>" + str(week_information[triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek']]) + "</integer>\n")
 
                 if interval == 3:
                     xmlsch.write("            <key>Minute</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[1]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[1]) + "</integer>\n")
                     xmlsch.write("            <key>Hour</key>\n")
-                    xmlsch.write("            <integer>" + str(TriggerInformation[0]) + "</integer>\n")
+                    xmlsch.write("            <integer>" + str(trigger_information[0]) + "</integer>\n")
 
                 xmlsch.write("            </dict>\n")
                 xmlsch.write("        </dict>\n")

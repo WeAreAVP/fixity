@@ -29,9 +29,6 @@ class Main (object):
         project_core.Save(False)
         project_core.Run()
 
-
-
-
 if __name__ == '__main__':
     try:
         parser = ArgumentParser()
