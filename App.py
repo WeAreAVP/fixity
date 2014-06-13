@@ -24,11 +24,9 @@ class App(object):
             App._instance = object.__new__(App)
             SharedApp.SharedApp.App = App._instance
             App._instance.setUp()
-
         return App._instance
 
     def setUp(self):
-
         self.ExceptionHandler = CustomException.CustomException.getInstance()
         self.Configuration = Configuration()
         self.Validation = Validation
@@ -56,18 +54,14 @@ class App(object):
 
 
     def loadAllProjects(self):
-
         all_projects = self.ProjectRepo.getAll()
 
         if all_projects is not None and all_projects is not False:
-
-            for single_project in all_projects:
-                try:
+            if len(all_projects) > 0:
+                for single_project in all_projects:
                     project_logic = ProjectCore.ProjectCore()
                     project_logic.setProjectInfo(all_projects[single_project])
                     self.ProjectsList[all_projects[single_project]['title']] = project_logic
-                except:
-                    pass
 
     def getSingleThreadToQueue(self, thread_id):
         return self.queue.get(thread_id)
