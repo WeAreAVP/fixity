@@ -18,6 +18,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     #Constructor
     def __init__(self):
+
         super(ProjectGUI, self).__init__()
         self.should_update = True
         self.is_path_changed = False
@@ -79,6 +80,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         else:
             # set Fixed Size(Width, Height)
             self.setFixedSize(1000, 282)
+
 
 
     def createDirectories(self):
@@ -625,10 +627,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
 
         project_info = self.Fixity.Database.select(self.Fixity.Database._tableProject, 'id','title="'+name[0]+'"')
-
-        if len(project_info) > 0:
-            self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
-            return
+        try:
+            if len(project_info) > 0:
+                self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
+                return
+        except:
+            pass
 
         self.update_menu.setDisabled(False)
         self.delete_menu.setDisabled(False)

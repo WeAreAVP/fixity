@@ -131,9 +131,11 @@ class ProjectCore(object):
 
         version_id = 1
         if get_old_version is not None and get_old_version is not False:
-            if len(get_old_version) > 0:
+            try:
                 version_id = int(get_old_version[0]['versionID'])
                 version_id += 1
+            except:
+                pass
 
         information = {}
         current_date = str(datetime.datetime.now()).split('.')
@@ -275,7 +277,7 @@ class ProjectCore(object):
         all_content = file_to_import_info_of.readlines()
 
         if project_paths and  project_configuration:
-            try:
+            #try:
                 config = {}
                 run_say_or_month = ''
                 duration_type = 0
@@ -307,17 +309,34 @@ class ProjectCore(object):
 
                 config['lastRan'] = str(last_ran)
                 if len(filters) > 0:
-                    try:
-                        if flag_is_a_tsv_file:
+                    if flag_is_a_tsv_file:
+                        try:
                             config['filters'] = str(filters[0])
+                        except:
+                            pass
+
+                        try:
                             config['ignoreHiddenFiles'] = str(filters[1])
+                        except:
+                            pass
+
+                        try:
                             config['selectedAlgo'] = algorithm_selected
-                        else:
+                        except:
+                            pass
+                    else:
+                        try:
                             config['filters'] = ''
+                        except:
+                            pass
+                        try:
                             config['ignoreHiddenFiles'] = 0
+                        except:
+                            pass
+                        try:
                             config['selectedAlgo'] = algorithm_selected
-                    except:
-                        pass
+                        except:
+                            pass
 
                 config['runTime'] = run_time
                 config['durationType'] = duration_type
@@ -392,12 +411,51 @@ class ProjectCore(object):
                                     hashes = fix_info[0]
                                 information_of_path_id = {}
                                 if '||' in str(fix_info[1]):
-                                    information_of_path_id = str(fix_info[1]).split('||')
+                                    try:
+                                        information_of_path_id = fix_info[1].split('||')
+
+                                    except:
+                                        try:
+                                            information_of_path_id = fix_info[1].encode('utf-8').split('||')
+                                        except:
+                                            try:
+                                                information_of_path_id = fix_info[1].decode('utf-8').split('||')
+                                            except:
+                                                pass
+                                            pass
+                                        pass
                                 else:
                                     for inform_path in all_project_paths:
-                                        if str(inform_path[0]) in str(fix_info[1]):
+                                        try:
+                                            information_of_path_id = fix_info[1].split('||')
+                                        except:
+                                            try:
+                                                information_of_path_id = fix_info[1].decode('utf-8').split('||')
+                                            except:
+                                                information_of_path_id = fix_info[1].encode('utf-8').split('||')
+                                                pass
+                                            pass
+
+                                        try:
+                                            response_is_same_path = inform_path[0] in fix_info[1]
+                                        except:
+                                            try:
+                                                response_is_same_path = inform_path[0] in fix_info[1].encode('utf-8')
+                                            except:
+                                                response_is_same_path = inform_path[0] in fix_info[1].decode('utf-8')
+                                                pass
+                                            pass
+                                        if response_is_same_path:
                                             information_of_path_id[0] = inform_path[1]
-                                            fix_info[1] = str(fix_info[1]).replace( str(inform_path[0]), str(inform_path[1]) + '||')
+                                            try:
+                                                fix_info[1] = fix_info[1].replace( inform_path[0], inform_path[1] + '||')
+                                            except:
+                                                try:
+                                                    fix_info[1] = fix_info[1].encode('utf-8').replace( inform_path[0].encode('utf-8'), str(inform_path[1]) + '||')
+                                                except:
+                                                    fix_info[1] = fix_info[1].decode('utf-8').replace( inform_path[0].decode('utf-8'), str(inform_path[1]) + '||')
+                                                    pass
+                                                pass
 
                                 information_version_detail = {}
                                 information_version_detail['projectID'] = project_id['id']
@@ -421,9 +479,9 @@ class ProjectCore(object):
                 except:
                     pass
                 return True
-            except:
-                return False
-                pass
+            #except:
+            #    return False
+            #    pass
 
     #Check For Algorithm Used
     #@param content: Content line containing Algorithm
@@ -559,9 +617,11 @@ class ProjectCore(object):
 
         if project_detail_information_array is False:
             project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
-
-        if len(project_detail_information_array) <= 0:
-            project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
+        try:
+            if len(project_detail_information_array) <= 0:
+                project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
+        except:
+            pass
 
         try:
             project_detail_information = project_detail_information_array['response']
@@ -636,41 +696,45 @@ class ProjectCore(object):
 
         if len(project_detail_information) > 0:
             for l in project_detail_information:
-                try:
-                    x = self.toTuple(project_detail_information[l])
+                #try:
+                x = self.toTuple(project_detail_information[l])
 
-                    if x is not None and x:
+                if x is not None and x:
 
-                        path_information = str(x[1]).split('||')
+                    path_information = str(x[1]).split('||')
 
 
-                        if path_information:
-                            try:
+                    if path_information:
+                        try:
 
-                                base_old_file_path = old_dirs_information[str(path_information[0])]
-                                this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) +
-                                                     self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
-                                base_path = base_old_file_path
+                            base_old_file_path = old_dirs_information[str(path_information[0])]
+                            this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) +
+                                                 self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
+                            base_path = base_old_file_path
 
-                            except:
+                        except:
 
-                                this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] + self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
-                                base_path = base_path_information[str(path_information[0])]['path']
+                            this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] + self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
+                            base_path = base_path_information[str(path_information[0])]['path']
 
-                                pass
+                            pass
 
-                            # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
-                            dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path, self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False, base_path])
+                        # Pattern [inode:[['path With Out Code', 'Hash' ,'Boolean' ]], ..., ...]
+                        dict[self.Fixity.Configuration.CleanStringForBreaks(str(x[2]))].append([this_file_path, self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), False, base_path])
 
-                            # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
-                            dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
+                        # Pattern [Hash:[['path With Out Code', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_hash[x[0]].append([this_file_path,  self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
 
-                            # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
-                            dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
+                        # Pattern [Path:[['Hash', 'INode' ,'Boolean' ]], ..., ...]
+                        dict_File[this_file_path].append([self.Fixity.Configuration.CleanStringForBreaks(str(x[0])), self.Fixity.Configuration.CleanStringForBreaks(str(x[2])), False, base_path])
 
-                except:
-                    self.Fixity.logger.LogException(Exception.message)
-                    pass
+                #except:
+                #    self.Fixity.logger.LogException(Exception.message)
+                #    pass
+        print('------------------')
+        print(dict)
+        print('------------------')
+        print('')
 
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
@@ -814,7 +878,7 @@ class ProjectCore(object):
 
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
             send_email_new = True
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -934,8 +998,16 @@ class ProjectCore(object):
             self.setLast_dif_paths (projects_info['lastDifPaths'])
         except:
             pass
-        self.setAlgorithm (projects_info['selectedAlgo'])
-        self.setFilters (projects_info['filters'])
+        try:
+            self.setAlgorithm(projects_info['selectedAlgo'])
+        except:
+            self.setAlgorithm('sha256')
+            pass
+        try:
+            self.setFilters (projects_info['filters'])
+        except:
+            self.setFilters ('')
+            pass
 
         self.scheduler.setDurationType (projects_info['durationType'])
         self.scheduler.setRunTime(projects_info['runTime'])

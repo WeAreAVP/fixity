@@ -349,7 +349,7 @@ class DirsHandler(object):
                 current_directory = current_directory[0]
 
                 ''' Check For File Hash Change '''
-                is_hash_same = (current_directory[1] == line[0])
+                is_hash_same = (current_directory[1] in line[0])
                 is_file_path_same = False
 
                 if is_path_change:
@@ -366,20 +366,20 @@ class DirsHandler(object):
                     old_file_path = current_directory[0].replace(current_directory[3], '')
 
                     try:
-                        is_file_path_same = old_file_path == new_file_path
+                        is_file_path_same = old_file_path in new_file_path
                     except:
-                        is_file_path_same = old_file_path.encode('utf-8') == new_file_path
+                        is_file_path_same = old_file_path.encode('utf-8') in new_file_path
                         pass
 
                 else:
 
                     try:
-                        is_file_path_same = (current_directory[0] == line[1])
+                        is_file_path_same = (current_directory[0] in line[1])
                     except:
                         try:
-                            is_file_path_same = (current_directory[0].encode("utf-8") == line[1])
+                            is_file_path_same = (current_directory[0].encode("utf-8") in line[1])
                         except:
-                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
+                            is_file_path_same = (current_directory[0].decode('utf-8') in line[1])
                             pass
                         pass
 
@@ -500,30 +500,35 @@ class DirsHandler(object):
                                 try:
                                     new_file_path = line[1].replace(single_directory.encode('utf-8'), '')
                                 except:
-                                    try:
-                                        new_file_path = line[1].replace(single_directory.decode('utf-8'), '')
-                                    except:
-                                        pass
+                                    #try:
+                                    new_file_path = line[1].replace(single_directory.decode('utf-8'), '')
+                                    #except:
+                                    #    pass
                                     pass
                                 pass
 
                             old_file_path = single_infor_hash_related[0].replace(single_infor_hash_related[3], '')
 
                             try:
-                                is_same_file_path = old_file_path == new_file_path
+                                is_same_file_path = old_file_path in new_file_path
                             except:
                                 try:
-                                    is_same_file_path = old_file_path.encode('utf-8') == new_file_path
+                                    is_same_file_path = old_file_path.encode('utf-8') in new_file_path
                                 except:
+                                    #try:
+                                    is_same_file_path = old_file_path.decode('utf-8') in new_file_path
+                                    #except:
+                                    #    pass
                                     pass
                                 pass
                         else:
                             try:
-                                is_same_file_path = single_infor_hash_related[0] == line[1]
+                                is_same_file_path = single_infor_hash_related[0] in line[1]
                             except:
                                 try:
-                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') == line[1]
+                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') in line[1]
                                 except:
+                                    is_same_file_path = single_infor_hash_related[0].decode('utf-8') in line[1]
                                     pass
                                 pass
                         if is_same_file_path:
@@ -608,12 +613,17 @@ class DirsHandler(object):
             '''New  FileExists::YES   #SameHashOfFile::NO    #SameFilePath::NO     #SameI-Node::NO  '''
 
             verified_files.append(line[1])
+            print('===============')
+            print(line)
+            print(dict)
+            print('===============')
+            print('')
             if self.Fixity.Configuration.getOsType() == 'Windows':
                 try:
-                    return line,  self.Fixity.Configuration.new_file + ":\t" + line[1]
+                    return line,  self.Fixity.Configuration.new_file + "2:\t" + line[1]
                 except:
                     try:
-                        return line,  self.Fixity.Configuration.new_file + ":\t" + line[1].decode('utf-8')
+                        return line,  self.Fixity.Configuration.new_file + "2:\t" + line[1].decode('utf-8')
                     except:
                         pass
                     pass

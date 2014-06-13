@@ -49,7 +49,6 @@ class Database(object):
 
             self.con = sqlite3.connect(self.Fixity.Configuration.getDatabaseFilePath())
             self.cursor = self.con.cursor()
-            counter_recursion = 0
         except:
 
             SharedApp.SharedApp.App.Database = Database()
@@ -121,31 +120,29 @@ class Database(object):
 
     def getProjectInfo(self,project_name = None, limit = True):
         global counter_recursion
-        try:
-            information = {}
-            information['id'] = None
-            limit = ' '
-            condition = None
-            if limit:
-                limit  = " LIMIT 1"
+        #try:
+        information = {}
+        information['id'] = None
+        limit = ' '
+        condition = None
+        if limit:
+            limit  = " LIMIT 1"
 
-            if project_name:
-                condition ="title like '"+project_name+"' " + limit
+        if project_name:
+            condition ="title like '"+project_name+"' " + limit
 
-            return self.select(self._tableProject, '*', condition)
+        return self.select(self._tableProject, '*', condition)
 
-        except (sqlite3.OperationalError,Exception):
-
-            SharedApp.SharedApp.App.Database = Database()
-            self = Database()
-            if counter_recursion < 2:
-                counter_recursion += 1
-                return self.getProjectInfo(project_name, limit)
-
-
-            counter_recursion = 0
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+        #except (sqlite3.OperationalError,Exception):
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    SharedApp.SharedApp.App.Database = Database()
+        #    self = Database()
+        #    if counter_recursion < 2:
+        #        counter_recursion += 1
+        #        return self.getProjectInfo(project_name, limit)
+        #
+        #    self.Fixity.logger.LogException(Exception.message)
+        #    return False
 
     #Get Projects paths Information
     #@param project_id: Project ID
@@ -195,7 +192,7 @@ class Database(object):
                 return self.getConfiguration()
 
 
-            counter_recursion = 0
+
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -205,10 +202,10 @@ class Database(object):
 
             response = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"' and versionID='"+str(version_id)+"'" , OrderBy)
             if len(response) <=0 or response is False:
-                counter_recursion = 0
+
                 return {}
             else:
-                counter_recursion = 0
+
                 return  {'version_id':version_id, 'response':response}
 
         except (sqlite3.OperationalError,Exception):
@@ -220,7 +217,7 @@ class Database(object):
                 return self.getVersionDetails(project_id, version_id, OrderBy)
 
 
-            counter_recursion = 0
+
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -251,8 +248,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.getConfigInfo(project)
 
-
-            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
         return {}
@@ -277,8 +272,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.getVersionDetailsLast(project_id)
 
-
-            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -299,8 +292,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.listToTuple(proveded_list)
 
-
-            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -317,24 +308,26 @@ class Database(object):
 
     def select(self,table_name ,select = '*', condition=None, order_by = None):
         global counter_recursion
+
         try:
-            query = 'SELECT '+ str(select) +' FROM '+str(table_name)
+            query = 'SELECT ' + str(select) + ' FROM ' + str(table_name)
             if condition is not None:
                 query += ' WHERE ' + condition
             if order_by is not None:
                 query += ' ORDER BY '+ order_by
 
-            response = {}
+            response_result = {}
             response_counter = 0
-            for r in self.dict_gen(self.cursor.execute(query)):
-                response[response_counter] = r
+            response = self.cursor.execute(query)
+
+            for r in self.dict_gen(response):
+                response_result[response_counter] = r
                 response_counter += 1
 
             self.commit()
             counter_recursion = 0
-            return response
+            return response_result
         except (sqlite3.OperationalError,Exception):
-
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:
@@ -342,8 +335,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.select(table_name ,select, condition, order_by)
 
-
-            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -369,8 +360,6 @@ class Database(object):
                 counter_recursion += 1
                 self.dict_gen(curs)
 
-
-            counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             pass
 
@@ -483,7 +472,6 @@ class Database(object):
                     counter = counter+1
             query += ' WHERE '+condition
 
-
             response = self.cursor.execute(query)
             self.commit()
             counter_recursion = 0
@@ -511,8 +499,8 @@ class Database(object):
 
 
     def implode(self,information , glue , is_column = True):
+        global counter_recursion
         try:
-
             counter = 0
             string_glued = ''
             for info in information:

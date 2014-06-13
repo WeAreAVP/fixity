@@ -15,6 +15,7 @@ from argparse import ArgumentParser
 class Main (object):
 
     def __init__(self):
+
         SharedApp.SharedApp.App = App.App.getInstance()
         self.Fixity = SharedApp.SharedApp.App
 
@@ -30,19 +31,23 @@ class Main (object):
         project_core.Run()
 
 if __name__ == '__main__':
+
     try:
         parser = ArgumentParser()
         parser.add_argument('-a', '--autorun')
         args = parser.parse_args()
+
     except:
         pass
 
     # If Received argument (project name and run command), it with run the
     # scheduler other wise it will open Fixity Front end View)
-
     Fixity = Main()
+
     if args.autorun is None or args.autorun == '':
+
         Fixity.LaunchGUI(sys.argv)
+
     else:
         try:
             Fixity.LaunchCLI(args.autorun)
