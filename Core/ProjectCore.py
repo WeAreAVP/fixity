@@ -306,15 +306,18 @@ class ProjectCore(object):
                     algorithm_selected = 'sha256'
 
                 config['lastRan'] = str(last_ran)
-
-                if flag_is_a_tsv_file:
-                    config['filters'] = str(filters[0])
-                    config['ignoreHiddenFiles'] = str(filters[1])
-                    config['selectedAlgo'] = algorithm_selected
-                else:
-                    config['filters'] = ''
-                    config['ignoreHiddenFiles'] = 0
-                    config['selectedAlgo'] = algorithm_selected
+                if len(filters) > 0:
+                    try:
+                        if flag_is_a_tsv_file:
+                            config['filters'] = str(filters[0])
+                            config['ignoreHiddenFiles'] = str(filters[1])
+                            config['selectedAlgo'] = algorithm_selected
+                        else:
+                            config['filters'] = ''
+                            config['ignoreHiddenFiles'] = 0
+                            config['selectedAlgo'] = algorithm_selected
+                    except:
+                        pass
 
                 config['runTime'] = run_time
                 config['durationType'] = duration_type
@@ -913,10 +916,14 @@ class ProjectCore(object):
             projects_info['id'] = self.getID()
             pass
         self.setTitle (projects_info['title'])
-        if projects_info['ignoreHiddenFiles'] == True or projects_info['ignoreHiddenFiles'] == 1:
+        try:
+            if projects_info['ignoreHiddenFiles'] == True or projects_info['ignoreHiddenFiles'] == 1:
+                self.setIgnore_hidden_file(1)
+            else:
+                self.setIgnore_hidden_file(0)
+        except:
             self.setIgnore_hidden_file (1)
-        else:
-            self.setIgnore_hidden_file (0)
+            pass
 
         self.setVersion (projects_info['versionCurrentID'])
         try:
