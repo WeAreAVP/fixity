@@ -366,20 +366,20 @@ class DirsHandler(object):
                     old_file_path = current_directory[0].replace(current_directory[3], '')
 
                     try:
-                        is_file_path_same = old_file_path == new_file_path
+                        is_file_path_same = old_file_path in new_file_path
                     except:
-                        is_file_path_same = old_file_path.encode('utf-8') == new_file_path
+                        is_file_path_same = old_file_path.encode('utf-8') in new_file_path
                         pass
 
                 else:
 
                     try:
-                        is_file_path_same = (current_directory[0] == line[1])
+                        is_file_path_same = (current_directory[0] in line[1])
                     except:
                         try:
-                            is_file_path_same = (current_directory[0].encode("utf-8") == line[1])
+                            is_file_path_same = (current_directory[0].encode("utf-8") in line[1])
                         except:
-                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
+                            is_file_path_same = (current_directory[0].decode('utf-8') in line[1])
                             pass
                         pass
 
@@ -513,16 +513,16 @@ class DirsHandler(object):
                                 is_same_file_path = old_file_path == new_file_path
                             except:
                                 try:
-                                    is_same_file_path = old_file_path.encode('utf-8') == new_file_path
+                                    is_same_file_path = old_file_path.encode('utf-8') in new_file_path
                                 except:
                                     pass
                                 pass
                         else:
                             try:
-                                is_same_file_path = single_infor_hash_related[0] == line[1]
+                                is_same_file_path = single_infor_hash_related[0] in line[1]
                             except:
                                 try:
-                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') == line[1]
+                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') in line[1]
                                 except:
                                     pass
                                 pass
@@ -650,6 +650,7 @@ class DirsHandler(object):
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         list_of_values = []
         fls = []
 
