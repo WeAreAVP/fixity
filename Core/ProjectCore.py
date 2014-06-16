@@ -10,7 +10,6 @@ import datetime
 import re
 import os
 import thread
-
 from collections import defaultdict
 
 global verified_files
@@ -218,7 +217,6 @@ class ProjectCore(object):
 
             dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
 
-
             self.directories[dirs_objects].setID(
                 dir_path_id['id'])
 
@@ -261,7 +259,9 @@ class ProjectCore(object):
         flag_project_contain_detail = False
         file_to_import_info_of = open(file_path,'rb')
 
-        project_paths = str(file_to_import_info_of.readline())
+        project_paths = file_to_import_info_of.readline()
+
+
         email_address = str(file_to_import_info_of.readline())
 
         project_configuration = str(file_to_import_info_of.readline())
@@ -274,7 +274,7 @@ class ProjectCore(object):
             filters = filters.split('||-||')
         all_content = file_to_import_info_of.readlines()
 
-        if project_paths and  project_configuration:
+        if project_paths and project_configuration:
             try:
                 config = {}
                 run_say_or_month = ''
@@ -308,8 +308,8 @@ class ProjectCore(object):
                 config['lastRan'] = str(last_ran)
 
                 if flag_is_a_tsv_file:
-                    config['filters'] = str(filters[0])
-                    config['ignoreHiddenFiles'] = str(filters[1])
+                    config['filters'] = filters[0]
+                    config['ignoreHiddenFiles'] = filters[1]
                     config['selectedAlgo'] = algorithm_selected
                 else:
                     config['filters'] = ''
@@ -347,15 +347,15 @@ class ProjectCore(object):
 
                         if len(single_path_detail) > 1:
                             listing = []
-                            listing.append(str(single_path_detail[0]))
-                            listing.append(str(single_path_detail[1]))
+                            listing.append(single_path_detail[0])
+                            listing.append(single_path_detail[1])
                             all_project_paths.append(listing)
                 else:
                     counter = 1
                     for single_path in path_info:
                         if single_path != '' and single_path is not None :
                             listing = []
-                            listing.append(str(single_path))
+                            listing.append(single_path)
                             listing.append('Fixity-'+str(counter))
                             all_project_paths.append(listing)
                             counter += 1
@@ -377,24 +377,24 @@ class ProjectCore(object):
 
                 if project_id and len(all_content) > 0:
                     flag_project_contain_detail = True
+                    
                     for single_content in all_content:
-
                         fix_info = re.split(r'\t+', single_content)
 
                         if fix_info is not None:
                             if len(fix_info) > 2:
-                                if len(str(fix_info[0])) == 32:
+                                if len(fix_info[0]) == 32:
                                     hashes = fix_info[0]
                                 else:
                                     hashes = fix_info[0]
                                 information_of_path_id = {}
-                                if '||' in str(fix_info[1]):
-                                    information_of_path_id = str(fix_info[1]).split('||')
+                                if '||' in fix_info[1]:
+                                    information_of_path_id = fix_info[1].split('||')
                                 else:
                                     for inform_path in all_project_paths:
-                                        if str(inform_path[0]) in str(fix_info[1]):
+                                        if inform_path[0] in fix_info[1]:
                                             information_of_path_id[0] = inform_path[1]
-                                            fix_info[1] = str(fix_info[1]).replace( str(inform_path[0]), str(inform_path[1]) + '||')
+                                            fix_info[1] = fix_info[1].replace(inform_path[0], inform_path[1] + '||')
 
                                 information_version_detail = {}
                                 information_version_detail['projectID'] = project_id['id']
@@ -553,7 +553,6 @@ class ProjectCore(object):
 
         project_detail_information_array = self.database.getVersionDetails(self.getID(), self.getPreviousVersion(), ' id DESC')
 
-
         if project_detail_information_array is False:
             project_detail_information_array = self.database.getVersionDetailsLast(self.getID())
 
@@ -624,22 +623,22 @@ class ProjectCore(object):
                 last_dif_paths_array = str(self.getLast_dif_paths()).split(',')
                 pass
 
-
             is_path_change = True
             for last_dif_paths in last_dif_paths_array:
                 single_dir_information = last_dif_paths.split('||-||')
-                if single_dir_information[0] != None and single_dir_information[0] != '':
+                if single_dir_information[0] is not None and single_dir_information[0] != '':
                     old_dirs_information[single_dir_information[1]] = single_dir_information[0]
 
         if len(project_detail_information) > 0:
             for l in project_detail_information:
+
+
                 try:
                     x = self.toTuple(project_detail_information[l])
 
                     if x is not None and x:
 
                         path_information = str(x[1]).split('||')
-
 
                         if path_information:
                             try:
@@ -822,7 +821,6 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
         if check_for_changes:
             if int(moved) > 0:
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
@@ -841,10 +839,9 @@ class ProjectCore(object):
 
             else:
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
-
         else:
 
-            if (self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0) or  (self.scheduler.getEmail_only_upon_warning() == '1' or  self.scheduler.getEmail_only_upon_warning() == 1) and send_email_new :
+            if (self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0) or (self.scheduler.getEmail_only_upon_warning() == '1' or  self.scheduler.getEmail_only_upon_warning() == 1) and send_email_new:
                 email_config = self.Fixity.Configuration.getEmailConfiguration()
                 try:
                     if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
@@ -951,7 +948,6 @@ class ProjectCore(object):
 
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
 
-
         self.setDirectories(directories)
 
     #function to write the History File
@@ -989,7 +985,6 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
 
         reports_text = ''
         try:
@@ -1097,8 +1092,8 @@ class ProjectCore(object):
                 except:
                     pass
 
-
         return reports_text
+
 
     #Method to find which files are missing in the scanned directory
     #Input: defaultdict (from buildDict)
@@ -1170,7 +1165,6 @@ class ProjectCore(object):
                         msg += "Removed Files\t" + obj[0] + "\n"
                         count += 1
                     pass
-
 
         return msg, count
 

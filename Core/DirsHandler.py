@@ -323,8 +323,6 @@ class DirsHandler(object):
         except:
             pass
 
-
-
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
                 path_info = os.path.isfile(line[1])
@@ -383,7 +381,6 @@ class DirsHandler(object):
                             pass
                         pass
 
-
                 '''Confirmed   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
                 if is_hash_same and is_file_path_same:
                     verified_files.append(line[1])
@@ -400,7 +397,6 @@ class DirsHandler(object):
                             pass
                     else:
                         return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
-
 
                 '''Moved   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
                 if is_hash_same and (not is_file_path_same):
@@ -427,7 +423,6 @@ class DirsHandler(object):
 
                                 pass
                             pass
-
 
                 '''Changed   FileExists::YES  ||SameHashOfFile::NO  ||SameFilePath::YES ||SameI-Node::YES  '''
                 if (not is_hash_same) and is_file_path_same:
@@ -553,7 +548,6 @@ class DirsHandler(object):
                                 except:
                                     return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1].encode('utf-8')
                                 pass
-
 
                         ''' Changed  FileExists::YES   #SameHashOfFile::NO   #SameFilePath::YES   #SameI-Node::NO '''
                     elif is_same_file_path and dictionary_single != line[0]:

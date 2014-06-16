@@ -424,8 +424,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.timer.setTime(GUILibraries.QTime(int(t[0]), int(t[1])))
         self.timer.timeChanged.connect(self.changed)
 
-        if last_run_label:
+        if last_run_label and last_run_label is not None and last_run_label != 'None':
             self.lastrun.setText("Last checked:\n" + last_run_label)
+        else:
+            self.lastrun.setText("Last checked:\n --")
+
         self.old = new
         self.unsaved = False
 
@@ -450,7 +453,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def delete(self):
         try:
-            response = self.notification.showQuestion(self, 'Delete Project?', str(GUILibraries.messages['sure_delete'])+ self.projects.currentItem().text() + "?")
+            response = self.notification.showQuestion(self, 'Delete Project?', str(GUILibraries.messages['sure_delete']) + self.projects.currentItem().text() + "?")
         except:
             self.Fixity.logger.LogException(Exception.message)
             return
@@ -471,7 +474,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.monthly.setChecked(True)
             self.monthClick()
             self.timer.setTime(GUILibraries.QTime(0, 0))
-            self.lastrun.setText("Last checked:")
+            self.lastrun.setText("Last checked:\n --")
             self.toggler((self.projects.count() == 0))
             self.unsaved = False
             self.update(False)
@@ -504,7 +507,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
         try:
             self.Fixity = SharedApp.SharedApp.App
             project_core = self.Fixity.ProjectRepo.getSingleProject(str(self.projects.currentItem().text()))
+            if project_core is False:
+                return
             project_info = self.Fixity.Database.getProjectInfo(str(self.projects.currentItem().text()))
+
             project_core.setProjectInfo(project_info[0])
             directory_detail = project_core.getDirectories()
 
@@ -519,7 +525,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             if self.is_path_changed is True and (project_core.getLast_dif_paths() is None or project_core.getLast_dif_paths() == '' or project_core.getLast_dif_paths() == 'None'):
                 all_previous_paths = ''
                 for directory_detail_single in directory_detail:
-                    if (directory_detail[directory_detail_single].getPath() is not None):
+                    if directory_detail[directory_detail_single].getPath() is not None:
                         if all_previous_paths == '':
                             all_previous_paths = directory_detail[directory_detail_single].getPath()+'||-||'+directory_detail[directory_detail_single].getPathID()
                         else:
@@ -538,7 +544,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         except:
             self.Fixity.logger.LogException()
             pass
-
 
     #Pop Up to Change Root Directory If any change occured
     #@param orignalPathText: Path In Manifest
