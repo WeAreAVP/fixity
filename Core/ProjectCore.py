@@ -810,7 +810,7 @@ class ProjectCore(object):
 
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
             send_email_new = True
-
+        print(report_content)
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -841,7 +841,7 @@ class ProjectCore(object):
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
         else:
 
-            if (self.scheduler.getEmail_only_upon_warning() == '0' or  self.scheduler.getEmail_only_upon_warning() == 0) or (self.scheduler.getEmail_only_upon_warning() == '1' or  self.scheduler.getEmail_only_upon_warning() == 1) and send_email_new:
+            if (self.scheduler.getEmail_only_upon_warning() == '0' or self.scheduler.getEmail_only_upon_warning() == 0) or (self.scheduler.getEmail_only_upon_warning() == '1' or  self.scheduler.getEmail_only_upon_warning() == 1) and send_email_new:
                 email_config = self.Fixity.Configuration.getEmailConfiguration()
                 try:
                     if self.getEmail_address() != '' and self.getEmail_address() is not None and email_config['smtp'] != '' and email_config['smtp'] is not None:
@@ -865,7 +865,7 @@ class ProjectCore(object):
     # @param filters: sav filters againts this project
     #
     # @return bool
-    def applyFilter(self,filters ,is_ignore_hidden_files):
+    def applyFilter(self, filters, is_ignore_hidden_files):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -910,10 +910,10 @@ class ProjectCore(object):
             projects_info['id'] = self.getID()
             pass
         self.setTitle (projects_info['title'])
-        if projects_info['ignoreHiddenFiles'] == True or projects_info['ignoreHiddenFiles'] == 1:
-            self.setIgnore_hidden_file (1)
+        if projects_info['ignoreHiddenFiles'] is True or projects_info['ignoreHiddenFiles'] == 1:
+            self.setIgnore_hidden_file(1)
         else:
-            self.setIgnore_hidden_file (0)
+            self.setIgnore_hidden_file(0)
 
         self.setVersion (projects_info['versionCurrentID'])
         try:
@@ -924,8 +924,8 @@ class ProjectCore(object):
             self.setLast_dif_paths (projects_info['lastDifPaths'])
         except:
             pass
-        self.setAlgorithm (projects_info['selectedAlgo'])
-        self.setFilters (projects_info['filters'])
+        self.setAlgorithm(projects_info['selectedAlgo'])
+        self.setFilters(projects_info['filters'])
 
         self.scheduler.setDurationType (projects_info['durationType'])
         self.scheduler.setRunTime(projects_info['runTime'])
@@ -1016,7 +1016,7 @@ class ProjectCore(object):
         try:
 
             for email_reports_single_line in email_reports_lines:
-                reports_single_line = str(email_reports_single_line).replace('\n','')
+                reports_single_line = str(email_reports_single_line).replace('\n', '')
                 reports_email_text += self.setReportInformation(reports_single_line, information, detail_output_of_all_files_changes , True) +"\n"
         except:
             self.Fixity.logger.LogException(Exception.message)
