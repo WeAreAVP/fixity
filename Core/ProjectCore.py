@@ -810,7 +810,7 @@ class ProjectCore(object):
 
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
             send_email_new = True
-        print(report_content)
+        
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
