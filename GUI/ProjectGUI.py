@@ -120,12 +120,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,267)
-        self.mail =GUILibraries.QGroupBox("Recipient Email Addresses")
+        self.mail = GUILibraries.QGroupBox("Recipient Email Addresses")
 
         self.dirs.setLayout(self.dirs_layout)
         self.mail.setLayout(self.mail_layout)
 
-        self.main =GUILibraries.QHBoxLayout()
+        self.main = GUILibraries.QHBoxLayout()
 
         self.main.addWidget(self.pgroup)
         self.main.addWidget(self.scheduling_groupBox)
@@ -139,7 +139,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setDisabled(False)
         self.email_only_when_something_changed.setDisabled(False)
 
-        if len(self.Fixity.ProjectsList) <=0:
+        if len(self.Fixity.ProjectsList) <= 0:
             self.togglerMenu(True)
 
     def createMenu(self):
@@ -286,9 +286,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.projects.setCurrentRow(0)
         self.project_layout.addWidget(self.projects)
         self.pgroup.setLayout(self.project_layout)
-        self.projects.itemClicked.connect(self.update)
-        self.projects.itemChanged.connect(self.update)
+
+        # self.projects.itemChanged.connect(self.update)
+        # self.projects.itemClicked.connect(self.update)
+
+
         self.projects.itemSelectionChanged.connect(self.update)
+
 
     #Updates Fields When Project Is Selected In List
     #@Slot(str)
@@ -310,6 +314,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.close()
 
     def update(self, new='', project_name_force=None):
+
         if self.should_update is False:
             return
 
@@ -319,22 +324,38 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             if response:
 
-                self.unsaved = True
                 self.should_update = False
-                self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                self.unsaved = False
+
+                if self.old:
+                    try:
+                        self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
+                    except:
+                        self.projects.setCurrentRow(0)
+                        pass
+                else:
+                    self.projects.setCurrentRow(0)
+
                 self.should_update = True
 
+                self.unsaved = True
+                self.old = self.projects.currentItem()
                 return
+
+
             else:
+
                 selected = int(self.projects.currentIndex().row())
                 self.unsaved = False
                 self.refreshProjectSettings()
+                self.unsaved = False
                 self.projects.setCurrentRow(selected)
 
         try:
             project_name = self.projects.currentItem().text()
         except:
             project_name = ''
+
         try:
             project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
@@ -428,8 +449,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.lastrun.setText("Last checked:\n" + last_run_label)
         else:
             self.lastrun.setText("Last checked:\n --")
-
-        self.old = new
+        if new:
+            self.old = new
+        else:
+            self.old = self.projects.currentItem()
         self.unsaved = False
 
     def switchDebugger(self, is_start=False):
@@ -650,7 +673,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.mail_text_fields[SingleRangeValue].setText("")
         self.toggler(False)
         self.unsaved = True
-        self.old = new_item
+        if new_item:
+            self.old = new_item
 
     def Save(self, project = None):
 
@@ -757,7 +781,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         else:
             self.project.scheduler.setRun_when_on_battery(0)
 
-        if self.start_when_available.isChecked() :
+        if self.start_when_available.isChecked():
             self.project.scheduler.setIf_missed_run_upon_restart(1)
         else:
             self.project.scheduler.setIf_missed_run_upon_restart(0)

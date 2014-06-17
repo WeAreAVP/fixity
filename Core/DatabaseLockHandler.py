@@ -44,7 +44,7 @@ class DatabaseLockHandler(object):
                     os.write(self.fd, str(''))
                 
                 break
-                
+
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     time.sleep(self.delay)
