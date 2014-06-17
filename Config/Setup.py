@@ -129,6 +129,6 @@ class Setup(object):
 
     def checkIfTableExistsInDatabase(self, tableName):
             try:
-                return self.Fixity.Database.getOne("SELECT * FROM sqlite_master WHERE name ='" + tableName + "'");
+                return self.Fixity.Database.getOne("SELECT * FROM sqlite_master WHERE name ='" + tableName + "'")
             except:
                 pass

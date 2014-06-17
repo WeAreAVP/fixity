@@ -240,7 +240,7 @@ class Database(object):
                     information['port'] = queryResult[result]['port']
                     information['protocol'] = queryResult[result]['protocol']
                     information['debugger'] = queryResult[result]['debugger']
-                    break;
+                    break
                 counter_recursion = 0
                 return information
         except (sqlite3.OperationalError,Exception):
