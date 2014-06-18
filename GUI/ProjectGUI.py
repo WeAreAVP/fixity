@@ -522,9 +522,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
             pass
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
-            is_dead_lock = lock.isProcessLockFileIsDead()
+            is_dead_lock = lock.isLockFileExists()
         except:
             pass
+
+
         if is_dead_lock is False:
             project_core = self.Save()
 

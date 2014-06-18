@@ -813,7 +813,7 @@ class DirsHandler(object):
 
         try:
             try:
-                print(os.O_RDWR | os.O_CREAT)
+
                 target = os.open(file, os.O_RDWR | os.O_CREAT )
             except:
                 try:
