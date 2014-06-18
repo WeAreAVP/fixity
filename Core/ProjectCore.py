@@ -154,7 +154,7 @@ class ProjectCore(object):
         except:pass
 
         project_information = {}
-        # self = self.Fixity.ProjectsList[self.getTitle()]
+
         project_information['title'] = self.getTitle()
         project_information['ignoreHiddenFiles'] = self.getIgnore_hidden_file()
 
@@ -261,7 +261,6 @@ class ProjectCore(object):
 
         project_paths = file_to_import_info_of.readline()
 
-
         email_address = str(file_to_import_info_of.readline())
 
         project_configuration = str(file_to_import_info_of.readline())
@@ -333,7 +332,6 @@ class ProjectCore(object):
                 config['versionCurrentID'] = version_id['id']
                 information_project_update = {}
                 information_project_update['versionCurrentID'] = version_id['id']
-
 
                 self.Fixity.Database.update(self.Fixity.Database._tableProject,
                                             information_project_update,'id = "' + str(project_id['id']) +'"')
@@ -455,7 +453,7 @@ class ProjectCore(object):
         except:pass
 
         run_thread = thread.start_new_thread(self.launchRun, tuple())
-        self.Fixity.queue.put(run_thread)
+        self.Fixity.queue[len(self.Fixity.queue)] = run_thread
 
     def launchRun(self):
 
@@ -632,7 +630,6 @@ class ProjectCore(object):
         if len(project_detail_information) > 0:
             for l in project_detail_information:
 
-
                 try:
                     x = self.toTuple(project_detail_information[l])
 
@@ -776,7 +773,6 @@ class ProjectCore(object):
                             pass
                         pass
 
-
                 if '{{algo}}' in history_line_single:
                     history_text += history_line_single.replace('{{algo}}', str(self.getAlgorithm()))+"\n"
 
@@ -810,7 +806,7 @@ class ProjectCore(object):
 
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
             send_email_new = True
-        
+
         created_report_info = self.writerReportFile(information_for_report, report_content)
 
         self.writerHistoryFile(history_text)
@@ -822,21 +818,8 @@ class ProjectCore(object):
             pass
 
         if check_for_changes:
-            if int(moved) > 0:
+            if int(moved) > 0 or int(created) > 0 or int(moved) > 0 or int(corrupted_or_changed) > 0 or missing_files_total > 0:
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
-
-            elif int(created) > 0:
-                return {'file_changed_found': True, 'report_path': created_report_info['path']}
-
-            elif int(moved) > 0:
-                return {'file_changed_found': True, 'report_path': created_report_info['path']}
-
-            elif int(corrupted_or_changed) > 0:
-                return {'file_changed_found': True, 'report_path': created_report_info['path']}
-
-            elif missing_files_total > 0:
-                return {'file_changed_found': True, 'report_path': created_report_info['path']}
-
             else:
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
         else:
@@ -859,7 +842,6 @@ class ProjectCore(object):
 
         if is_from_thread:
             self.Fixity.selfDestruct()
-
 
     # Apply Filter For This project
     # @param filters: sav filters againts this project
@@ -894,7 +876,6 @@ class ProjectCore(object):
         except:pass
         self.scheduler.delTask(self.getTitle())
         self.scheduler.schedule(self.getTitle())
-
 
     # set Project Info from given array
     # @param projects_info: Array of Project information
@@ -1045,7 +1026,6 @@ class ProjectCore(object):
             pass
         return {'path': rn, 'email_content' : reports_email_text}
 
-
     def setReportInformation(self, report_text ,information, detail_output_of_all_files_changes, email_report = False):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -1094,7 +1074,6 @@ class ProjectCore(object):
 
         return reports_text
 
-
     #Method to find which files are missing in the scanned directory
     #Input: defaultdict (from buildDict)
     #Output: warning messages about missing files (one long string and  printing to stdout)
@@ -1114,7 +1093,6 @@ class ProjectCore(object):
         for keys in dict:
             for obj in dict[keys]:
                 is_file_removed = False
-
 
                 for single_line in verified_files:
 

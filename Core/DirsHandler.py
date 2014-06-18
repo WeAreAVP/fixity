@@ -366,7 +366,11 @@ class DirsHandler(object):
                     try:
                         is_file_path_same = old_file_path in new_file_path
                     except:
-                        is_file_path_same = old_file_path.encode('utf-8') in new_file_path
+                        try:
+                            is_file_path_same = old_file_path.encode('utf-8') in new_file_path
+                        except:
+                            is_file_path_same = old_file_path.decode('utf-8') in new_file_path
+                            pass
                         pass
 
                 else:
@@ -401,7 +405,7 @@ class DirsHandler(object):
                 '''Moved   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
                 if is_hash_same and (not is_file_path_same):
                     verified_files.append(line[1])
-                    #verified_files.append(current_directory[0])
+                    verified_files.append(current_directory[0])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1]
@@ -505,11 +509,15 @@ class DirsHandler(object):
                             old_file_path = single_infor_hash_related[0].replace(single_infor_hash_related[3], '')
 
                             try:
-                                is_same_file_path = old_file_path == new_file_path
+                                is_same_file_path = old_file_path in new_file_path
                             except:
                                 try:
                                     is_same_file_path = old_file_path.encode('utf-8') in new_file_path
                                 except:
+									try:
+										is_same_file_path = old_file_path.decode('utf-8') in new_file_path
+									except:
+									    pass
                                     pass
                                 pass
                         else:

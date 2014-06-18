@@ -48,7 +48,7 @@ class App(object):
             pass
 
         self.ProjectsList = {}
-        self.queue = Queue()
+        self.queue = {}
 
         self.loadAllProjects()
 

@@ -7,7 +7,8 @@
 
 from GUI import GUILibraries, AboutFixityGUI, ApplyFiltersGUI, ChangeAlgorithmGUI
 from GUI import ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGUI
-from Core import SharedApp, ProjectCore
+from Core import SharedApp, ProjectCore, DatabaseLockHandler
+
 
 # Built-in Libraries
 import datetime
@@ -490,11 +491,24 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if not(self.monthly.isChecked() or self.weekly.isChecked() or self.daily.isChecked()):
             self.notification.showError(self, "Error", GUILibraries.messages['project_schedule_not_set'])
             return
+        is_dead_lock = False
+        try:
+            process_id = os.getpid()
+        except:
+            process_id = None
+            pass
+        try:
+            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+            is_dead_lock = lock.isProcessLockFileIsDead()
+        except:
+            pass
+        if is_dead_lock is False:
+            project_core = self.Save()
 
-        project_core = self.Save()
-
-        project_core.launchThread()
-        self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
+            project_core.launchThread()
+            self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
+        else:
+            self.notification.showWarning(self, "Warning", "Scheduler is already in progress.please wait untill the")
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
