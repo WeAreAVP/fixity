@@ -88,12 +88,10 @@ class DatabaseLockHandler(object):
                 lock_file = open(self.lockfile,'r+')
                 oldprocess_id = lock_file.readline()
                 lock_file.close()
-                print('oldprocess_id')
-                print(oldprocess_id)
-                print('oldprocess_id')
+
                 # If process Exists then returns False else True
                 if oldprocess_id != '' and oldprocess_id is not None:
-                    print(self.check_pid(oldprocess_id))
+
                     return self.check_pid(oldprocess_id)
                 else:
                     os.remove(self.lock_file)
