@@ -510,20 +510,36 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if not(self.monthly.isChecked() or self.weekly.isChecked() or self.daily.isChecked()):
             self.notification.showError(self, "Error", GUILibraries.messages['project_schedule_not_set'])
             return
+        is_lock_exists = False
         is_dead_lock = False
         try:
             process_id = os.getpid()
         except:
             process_id = None
             pass
+        # Get File Locker and check for dead lock
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
-            lock.isProcessLockFileIsDead()
-            is_dead_lock = lock.isLockFileExists()
+
+            is_dead_lock = lock.isProcessLockFileIsDead()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            if is_dead_lock:
+                lock.is_locked = True
+                lock.release()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            is_lock_exists = lock.isLockFileExists()
         except:
             pass
 
-        if is_dead_lock is False:
+        if is_lock_exists is False:
             project_core = self.Save()
 
             project_core.launchThread()

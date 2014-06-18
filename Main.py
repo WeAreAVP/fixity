@@ -5,6 +5,7 @@ Created on May 14, 2014
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
 import sys
+import os
 from os import path
 from Core import SharedApp
 from GUI import GUILibraries
@@ -22,6 +23,7 @@ class Main (object):
         app = GUILibraries.QApplication(arg)
         app.MainFixityWindow = App.ProjectGUI.ProjectGUI()
         app.MainFixityWindow.show()
+        print(os.getpid())
         app.exec_()
 
     def LaunchCLI(self, project_name):
