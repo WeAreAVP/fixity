@@ -85,7 +85,7 @@ class DatabaseLockHandler(object):
                      
             """
             if os.path.isfile(self.lockfile):
-                lock_file = open(self.lockfile,'r+')
+                lock_file = open(self.lockfile, 'r+')
                 oldprocess_id = lock_file.readline()
                 lock_file.close()
 

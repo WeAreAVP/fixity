@@ -7,10 +7,11 @@ Created on May 14, 2014
 '''
 import sys, os, traceback
 
+
 class CustomException(object):
 
-    _instance = None
 
+    _instance = None
 
     @staticmethod
     def getInstance():
@@ -45,8 +46,4 @@ class CustomException(object):
     def getTraceBack(self):
         stack_errro = repr(traceback.extract_stack())
         return stack_errro
-
-
-
-
 

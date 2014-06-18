@@ -91,7 +91,6 @@ class Configuration(object):
         self.Months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
         self.is_debugging_on = False
 
-
     def getSch_daily_template_path(self): return self.sch_daily_template_path
 
     def getSch_week_template_path(self): return self.sch_week_template_path
@@ -168,8 +167,8 @@ class Configuration(object):
     def getAgentPath(self): return self.agent_path
 
     def getLibAgentPath(self): return self.lib_agent_path
-    def getFixityLaunchPath(self): return self.fixity_launch_path
 
+    def getFixityLaunchPath(self): return self.fixity_launch_path
 
     def getEmailConfiguration(self): return self.email_configuration
 
@@ -181,11 +180,9 @@ class Configuration(object):
             else:
                 return {}
 
-
     def setEmailConfiguration(self, email_configuration): self.email_configuration = email_configuration
 
     def saveEmailConfiguration(self, information):
-
 
         is_email_config_insert = False
         config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
@@ -198,13 +195,9 @@ class Configuration(object):
             else:
                 is_email_config_insert = False
 
-
             if is_email_config_insert is False:
                 self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
                 self.setEmailConfiguration(information)
-
-
-
 
     def LogHistory(self):
         """ generated source for method LogHistory """
@@ -217,7 +210,6 @@ class Configuration(object):
     def setReportsPath(self, parameter):
         return ""
 
-
     def setSchedulesPath(self):
         """ generated source for method setHistoryPath """
         #  TODO implement me
@@ -227,7 +219,6 @@ class Configuration(object):
         """ generated source for method setHistoryPath """
         #  TODO implement me
         return ""
-
 
     def setBinPath(self):
         """ generated source for method setBinPath """
@@ -244,7 +235,6 @@ class Configuration(object):
         #  TODO implement me
         return ""
 
-
     def setVersion(self):
         """ generated source for method setVersion """
         #  TODO implement me
@@ -256,7 +246,6 @@ class Configuration(object):
 
     #Gets Detail information of Windows
     #@return: tuple Windows Information
-
 
     def getWindowsInformation(self):
         WindowsInformation = {}

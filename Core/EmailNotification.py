@@ -46,7 +46,6 @@ class EmailNotification(object):
         else:
             msg["Subject"] = "Fixity Report: " + str(datetime.datetime.now()).rpartition('.')[0] + ' - ' + project_name
 
-
         msg.attach(email.MIMEText.MIMEText(text, 'plain'))
         part = email.mime.base.MIMEBase('application', "octet-stream")
 
@@ -61,7 +60,6 @@ class EmailNotification(object):
             port = int(str(information['port']).strip())
         except:
             return False
-
 
         try:
             if protocol == 'SSL' or protocol == 'ssl':
@@ -85,7 +83,6 @@ class EmailNotification(object):
                 server.sendmail(addr, recipients, msg.as_string())
                 print('sending Email....')
                 return True
-
 
         except (SMTPException, SMTPServerDisconnected,  SMTPResponseException,  SMTPSenderRefused,  SMTPRecipientsRefused,  SMTPDataError,  SMTPConnectError,  SMTPHeloError,  SMTPAuthenticationError,  Exception ):
 

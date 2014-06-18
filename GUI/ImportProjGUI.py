@@ -76,7 +76,6 @@ class ImportProjectGUI(GUILibraries.QDialog):
         self.project_selected = GUILibraries.QTextEdit()
         self.projects.clicked.connect(self.pickDir)
 
-
         self.GetLayout().addWidget(self.projects)
         self.project_selected = GUILibraries.QLineEdit()
         self.set_information = GUILibraries.QPushButton("Import")
@@ -114,7 +113,6 @@ class ImportProjectGUI(GUILibraries.QDialog):
         path = self.Fixity.Configuration.getBasePath()
         fileInformation  = list(GUILibraries.QFileDialog.getOpenFileName(self,"Select File",str(path)))
         self.project_selected.setText(str(fileInformation[0]))
-
 
     '''
     Reset form

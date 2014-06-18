@@ -53,7 +53,6 @@ class SchedulerCore(object):
             AgentPath = self.Fixity.Configuration.getLibAgentPath()
             launch_agent= AgentPath + "Com.fixity."+str(project) + ".demon.plist"
 
-
             try:
                 p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent], stdout=subprocess.PIPE)
                 output, err = p.communicate()

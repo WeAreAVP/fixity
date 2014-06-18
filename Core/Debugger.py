@@ -136,7 +136,6 @@ class Debugger(object):
 
         self.Fixity = SharedApp.SharedApp.App
 
-
         ExceptionDetail = {}
         try:
             ExceptionDetail = self.Fixity.ExceptionHandler.getExceptionDetails()
@@ -153,5 +152,3 @@ class Debugger(object):
             pass
 
         self.logError(message, ExceptionDetail)
-
-

@@ -238,7 +238,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.timer.setDisplayFormat(self.Fixity.Configuration.getTimeFormat())
         self.scheduling_layout.addWidget(self.timer)
 
-
         self.day_of_week = GUILibraries.QComboBox()
         self.day_of_week.addItems(self.Fixity.Configuration.getWeekDays())
         self.day_of_week.activated.connect(self.changed)
@@ -291,9 +290,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         # self.projects.itemChanged.connect(self.update)
         # self.projects.itemClicked.connect(self.update)
 
-
         self.projects.itemSelectionChanged.connect(self.update)
-
 
     #Updates Fields When Project Is Selected In List
     #@Slot(str)
@@ -342,7 +339,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.unsaved = True
                 self.old = self.projects.currentItem()
                 return
-
 
             else:
 
@@ -522,10 +518,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
             pass
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+            lock.isProcessLockFileIsDead()
             is_dead_lock = lock.isLockFileExists()
         except:
             pass
-
 
         if is_dead_lock is False:
             project_core = self.Save()
@@ -625,7 +621,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 project_core.setLast_dif_paths(all_previous_paths)
         except:
             pass
-
 
     def check_for_path_changes(self):
         num_if_path_scanned = 0
@@ -766,7 +761,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.project.setTitle(current_item)
 
         is_month, is_week = 99, 99
-
 
         if self.monthly.isChecked():
                 interval = 1
@@ -925,8 +919,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         path_selected = GUILibraries.QFileDialog.getExistingDirectory(self, dir=self.Fixity.Configuration.getUserHomePath() + GUILibraries.os.sep + 'Desktop' + GUILibraries.os.sep)
         duplicate_path = False
         for single_index in xrange(self.Fixity.Configuration.getNumberOfPathDirectories()):
-             if self.dirs_text_fields[single_index].text() == path_selected and self.dirs_text_fields[single_index].text() != '' and path_selected != '':
-                 duplicate_path = True
+            if self.dirs_text_fields[single_index].text() == path_selected and self.dirs_text_fields[single_index].text() != '' and path_selected != '':
+                duplicate_path = True
         if duplicate_path:
             self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'])
             return
@@ -973,13 +967,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
             try:
                 self.projects.clear()
-            except Exception:
+            except:
                 pass
             try:
                 if allProjects is not None:
                     if len(allProjects) > 0:
                         for p in allProjects:
                             self.projects.addItem(p)
-            except Exception:
+            except:
                 pass
             self.unsaved = False

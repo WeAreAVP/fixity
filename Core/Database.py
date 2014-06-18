@@ -277,7 +277,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.getVersionDetailsLast(project_id)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
@@ -298,7 +297,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.listToTuple(proveded_list)
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -342,7 +340,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.select(table_name ,select, condition, order_by)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
@@ -369,7 +366,6 @@ class Database(object):
                 counter_recursion += 1
                 self.dict_gen(curs)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             pass
@@ -379,7 +375,6 @@ class Database(object):
     #@param information: List of columns with Values (index as Column and Value as Column Value)
     #
     #@return: Insert Id of this record
-
 
     def insert(self, table_name, information):
         global counter_recursion
@@ -408,7 +403,6 @@ class Database(object):
                     pass
 
             query = query + ' ( '+self.implode( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
-
 
             self.cursor.execute(query)
             self.commit()
@@ -483,14 +477,12 @@ class Database(object):
                     counter = counter+1
             query += ' WHERE '+condition
 
-
             response = self.cursor.execute(query)
             self.commit()
             counter_recursion = 0
             return response
 
         except (sqlite3.OperationalError,Exception):
-
 
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
@@ -508,7 +500,6 @@ class Database(object):
     #  @param is_column: Given Information is of tables columns or Row
     #
     #  @return: Response of Query Result
-
 
     def implode(self,information , glue , is_column = True):
         try:

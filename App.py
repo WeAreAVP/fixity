@@ -52,7 +52,6 @@ class App(object):
 
         self.loadAllProjects()
 
-
     def loadAllProjects(self):
         all_projects = self.ProjectRepo.getAll()
 
@@ -76,7 +75,6 @@ class App(object):
                 for project in self.ProjectsList:
                     information.append(str(self.ProjectsList[project].getTitle()))
         return information
-
 
     def getSingleProject(self, project_name):
         try:

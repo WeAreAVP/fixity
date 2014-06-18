@@ -91,7 +91,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
             isEnable = False
             project_list.append('Create & Save Project')
 
-
         self.GetLayout().addStrut(200)
         self.projects = GUILibraries.QComboBox()
         self.projects.addItems(project_list)
@@ -106,8 +105,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
 
         self.ignore_hidden_files = GUILibraries.QCheckBox("Ignore Hidden Files")
 
-
-#         if OS_Info == 'linux':
         self.GetLayout().addWidget(self.ignore_hidden_files)
         self.GetLayout().addWidget(self.filter_field)
         self.GetLayout().addWidget(self.setInformation)

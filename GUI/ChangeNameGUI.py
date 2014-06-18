@@ -63,7 +63,6 @@ class ChangeNameGUI(GUILibraries.QDialog ):
     # All design Management Done in here  got the Change Name
     def SetDesgin(self):
 
-
         isEnable = True
         project_list = self.Fixity.getProjectList()
         if len(project_list) <= 0:

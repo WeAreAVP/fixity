@@ -130,7 +130,6 @@ class PathChangeGUI(GUILibraries.QDialog):
         self.orignalPath = GUILibraries.QTextEdit()
         self.changePathTo = GUILibraries.QTextEdit()
 
-
         # Set view text
         self.orignalPath.setText(self.orignal_path_text)
         self.changePathTo.setText(self.change_path_text)
@@ -157,7 +156,6 @@ class PathChangeGUI(GUILibraries.QDialog):
         self.setInformation.clicked.connect(self.changeRootDirInfo)
         self.cancel.clicked.connect(self.CloseClick)
         self.SetWindowLayout()
-
 
     #Points out to change the Path of Manifest or not
     #

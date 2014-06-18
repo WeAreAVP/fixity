@@ -461,7 +461,6 @@ class DirsHandler(object):
                     verified_files.append(current_directory[0])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
 
-
                         try:
                             return line, self.Fixity.Configuration.change_file+":\t" + current_directory[0] + "\t changed to\t" + line[1]
                         except:
@@ -531,7 +530,6 @@ class DirsHandler(object):
                                 pass
                         if is_same_file_path:
                             break
-
 
                     ''' Confirmed  FileExists::YES #SameHashOfFile::YES #SameFilePath::YES #SameI-Node::NO  '''
                     if is_same_file_path and dictionary_single == line[0]:
@@ -673,11 +671,8 @@ class DirsHandler(object):
                                 pass
                             pass
 
-
                     else:
                         fls.append(root + str(os.sep) + single_file)
-
-
 
         except:
             self.Fixity.logger.LogException(Exception.message)

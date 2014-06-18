@@ -150,10 +150,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         else:
             result_of_all_file_confirmed['file_changed_found'] = False
 
-
-
         msgBox.close()
-
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
             self.notification.showWarning(self, 'Failure', GUILibraries.messages['alog_not_changed_mail'])
@@ -175,7 +172,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         update_project_algo = {}
         update_project_algo['selectedAlgo'] = algo_value_selected
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_project_algo, "id='" + str(project_core.getID()) + "'")
-
 
         project_core.setAlgorithm(algo_value_selected)
 
