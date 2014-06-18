@@ -514,10 +514,10 @@ class DirsHandler(object):
                                 try:
                                     is_same_file_path = old_file_path.encode('utf-8') in new_file_path
                                 except:
-									try:
-										is_same_file_path = old_file_path.decode('utf-8') in new_file_path
-									except:
-									    pass
+                                    try:
+                                        is_same_file_path = old_file_path.decode('utf-8') in new_file_path
+                                    except:
+                                        pass
                                     pass
                                 pass
                         else:
