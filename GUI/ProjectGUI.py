@@ -531,7 +531,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             project_core.launchThread()
             self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
         else:
-            self.notification.showWarning(self, "Warning", "Scheduler is already in progress.please wait untill the")
+            self.notification.showWarning(self, "Warning", "Scheduler is already in progress, it may take several minutes. Please wait untill scheduler is completed")
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
