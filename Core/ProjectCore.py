@@ -291,10 +291,10 @@ class ProjectCore(object):
                 if int(is_month) == 99 and int(is_week) == 99:
                     duration_type = 3
                     run_say_or_month = '-'
-                elif int(is_month) == 99 and int(is_week) != 99 :
+                elif int(is_month) == 99 and int(is_week) != 99:
                     duration_type = 2
                     run_say_or_month = is_week
-                elif int(is_month) != 99 and int(is_week) == 99 :
+                elif int(is_month) != 99 and int(is_week) == 99:
                     duration_type = 1
                     run_say_or_month = is_month
 
@@ -351,7 +351,7 @@ class ProjectCore(object):
                 else:
                     counter = 1
                     for single_path in path_info:
-                        if single_path != '' and single_path is not None :
+                        if single_path != '' and single_path is not None:
                             listing = []
                             listing.append(single_path)
                             listing.append('Fixity-'+str(counter))
@@ -1024,7 +1024,7 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        return {'path': rn, 'email_content' : reports_email_text}
+        return {'path': rn, 'email_content': reports_email_text}
 
     def setReportInformation(self, report_text ,information, detail_output_of_all_files_changes, email_report = False):
         try:self.Fixity = SharedApp.SharedApp.App

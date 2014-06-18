@@ -167,8 +167,8 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         smtp = ''
         protocol = ''
 
-        if information :
-            if len(information)> 0:
+        if information:
+            if len(information) > 0:
                 try:
                     email_addr = information['email']
                     Pass = str(information['pass'])
@@ -190,7 +190,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             self.TLS_protocol.setChecked(False)
             self.none_protocol.setChecked(False)
 
-            if port is not None and port != '' :
+            if port is not None and port != '':
                 self.port.setText(port)
             else:
                 self.port.setText('465')
@@ -207,7 +207,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             self.none_protocol.setChecked(True)
             self.TLS_protocol.setChecked(False)
             self.SSL_protocol.setChecked(False)
-            if port is not None and port != '' :
+            if port is not None and port != '':
                 self.port.setText(port)
             else:
                 self.port.setText('25')
@@ -310,7 +310,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
             port = ''
             pass
 
-        if port is not None and port != '' :
+        if port is not None and port != '':
             self.port.setText(port)
         else:
             self.port.setText('587')

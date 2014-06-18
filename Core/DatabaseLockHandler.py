@@ -43,7 +43,8 @@ class DatabaseLockHandler(object):
                 else:
                     os.write(self.fd, str(''))
                 
-                break;
+                break
+
             except OSError as e:
                 if e.errno != errno.EEXIST:
                     time.sleep(self.delay)
@@ -52,6 +53,8 @@ class DatabaseLockHandler(object):
                     time.sleep(self.delay)
 
         self.is_locked = True
+
+
     """ Get rid of the lock by deleting the lockfile.
             When working in a `with` statement, this gets automatically
             called at the end.

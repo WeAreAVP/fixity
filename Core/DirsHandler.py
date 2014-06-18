@@ -683,41 +683,41 @@ class DirsHandler(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        try:
-            for f in xrange(len(fls)):
-                path_of_the_file = fls[f]
+        # try:
+        for f in xrange(len(fls)):
+            path_of_the_file = fls[f]
 
-                encoded_base_path = self.getPathID()
+            encoded_base_path = self.getPathID()
 
-                if self.Fixity.Configuration.getOsType() == 'Windows':
+            if self.Fixity.Configuration.getOsType() == 'Windows':
+                try:
+                    given_path = path_of_the_file. replace(directory_path_to_be_scanned, encoded_base_path + '||')
+                except:
                     try:
-                        given_path = path_of_the_file. replace(directory_path_to_be_scanned, encoded_base_path + '||')
+                        given_path = path_of_the_file. replace(directory_path_to_be_scanned.decode('utf-8'), encoded_base_path.encode('utf-8') + '||')
                     except:
                         try:
-                            given_path = path_of_the_file. replace(directory_path_to_be_scanned.decode('utf-8'), encoded_base_path.encode('utf-8') + '||')
+                            given_path = path_of_the_file. replace(directory_path_to_be_scanned.encode('utf-8'), encoded_base_path.encode('utf-8') + '||')
                         except:
-                            try:
-                                given_path = path_of_the_file. replace(directory_path_to_be_scanned.encode('utf-8'), encoded_base_path.encode('utf-8') + '||')
-                            except:
-                                pass
                             pass
                         pass
-                else:
-                    given_path = path_of_the_file.replace(directory_path_to_be_scanned, encoded_base_path + '||')
+                    pass
+            else:
+                given_path = path_of_the_file.replace(directory_path_to_be_scanned, encoded_base_path + '||')
 
-                hash_of_this_file_content = self.getFilesHash(path_of_the_file, algorithm_used_for_this_project)
+            hash_of_this_file_content = self.getFilesHash(path_of_the_file, algorithm_used_for_this_project)
 
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    inode = self.inodeForWin(path_of_the_file)
-                else:
-                    inode = self.inodeForMac(path_of_the_file)
-                if self.Fixity.Configuration.getOsType() == 'Windows':
-                    list_of_values.append((hash_of_this_file_content, given_path, inode))
-                else:
-                    list_of_values.append((hash_of_this_file_content, given_path, inode))
-        except:
-            self.Fixity.logger.LogException(Exception.message)
-            pass
+            if self.Fixity.Configuration.getOsType() == 'Windows':
+                inode = self.inodeForWin(path_of_the_file)
+            else:
+                inode = self.inodeForMac(path_of_the_file)
+            if self.Fixity.Configuration.getOsType() == 'Windows':
+                list_of_values.append((hash_of_this_file_content, given_path, inode))
+            else:
+                list_of_values.append((hash_of_this_file_content, given_path, inode))
+        # except:
+        #     self.Fixity.logger.LogException(Exception.message)
+        #     pass
 
         return list_of_values
 
@@ -808,9 +808,28 @@ class DirsHandler(object):
     def inodeForMac(self, file):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         id_node = ''
+
         try:
-            target = os.open(file,  os.O_RDWR | os.O_CREAT )
+            try:
+                print(os.O_RDWR | os.O_CREAT)
+                target = os.open(file, os.O_RDWR | os.O_CREAT )
+            except:
+                try:
+                    target = os.open(file, os.O_RDONLY)
+                except:
+                    try:
+                        target = os.open(file.decode('utf-8'), os.O_RDONLY)
+                    except:
+                        try:
+                            target = os.open(file.encode('utf-8'), os.O_RDONLY)
+                        except:
+                            pass
+                        pass
+                    pass
+                pass
+
             info = os.fstat(target)
             id_node = str(info.st_ino)
             os.close(target)
@@ -828,7 +847,9 @@ class DirsHandler(object):
     def inodeForWin(self, file_path):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        id_node = '';
+
+        id_node = ''
+
         try:
             target = open(file_path, 'rb')
         except:

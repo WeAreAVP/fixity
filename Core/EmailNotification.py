@@ -72,7 +72,7 @@ class EmailNotification(object):
                 server.sendmail(addr, recipients, msg.as_string())
                 print('sending Email....')
                 return True
-            if protocol == 'TLS' or protocol == 'tls' :
+            if protocol == 'TLS' or protocol == 'tls':
                 server = SMTP(str(information['smtp']), port)
                 server.starttls()
                 server.login(addr, pas)

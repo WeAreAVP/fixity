@@ -227,30 +227,30 @@ class Database(object):
     ''' Fetch information related to email configuration'''
     def getConfigInfo(self, project=None):
         global counter_recursion
-        queryResult = self.select(self._tableConfiguration)
+        query_result = self.select(self._tableConfiguration)
         try:
             global counter_recursion
-            if len(queryResult)>0 :
+            if len(query_result) > 0:
                 information = {}
-                for  result in queryResult:
-                    information['id'] = queryResult[result]['id']
-                    information['smtp'] = self.DecodeInfo(queryResult[result]['smtp'])
-                    information['email'] = self.DecodeInfo(queryResult[result]['email'])
-                    information['pass'] = self.DecodeInfo(queryResult[result]['pass'])
-                    information['port'] = queryResult[result]['port']
-                    information['protocol'] = queryResult[result]['protocol']
-                    information['debugger'] = queryResult[result]['debugger']
-                    break;
+                for result in query_result:
+                    information['id'] = query_result[result]['id']
+                    information['smtp'] = self.DecodeInfo(query_result[result]['smtp'])
+                    information['email'] = self.DecodeInfo(query_result[result]['email'])
+                    information['pass'] = self.DecodeInfo(query_result[result]['pass'])
+                    information['port'] = query_result[result]['port']
+                    information['protocol'] = query_result[result]['protocol']
+                    information['debugger'] = query_result[result]['debugger']
+                    break
                 counter_recursion = 0
                 return information
-        except (sqlite3.OperationalError,Exception):
 
+        except (sqlite3.OperationalError,Exception):
             SharedApp.SharedApp.App.Database = Database()
+
             self = Database()
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getConfigInfo(project)
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
