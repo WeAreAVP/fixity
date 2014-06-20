@@ -254,7 +254,7 @@ class DirsHandler(object):
                     version_detail_options['projectID'] = project_core.getID()
                     version_detail_options['projectPathID'] = self.getID()
 
-                    #self.database.insert(self.database._tableVersionDetail, version_detail_options)
+                    self.database.insert(self.database._tableVersionDetail, version_detail_options)
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
