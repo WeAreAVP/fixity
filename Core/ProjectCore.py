@@ -890,32 +890,32 @@ class ProjectCore(object):
         except:
             projects_info['id'] = self.getID()
             pass
-        self.setTitle (projects_info['title'])
+        self.setTitle(projects_info['title'])
         if projects_info['ignoreHiddenFiles'] is True or projects_info['ignoreHiddenFiles'] == 1:
             self.setIgnore_hidden_file(1)
         else:
             self.setIgnore_hidden_file(0)
 
-        self.setVersion (projects_info['versionCurrentID'])
+        self.setVersion(projects_info['versionCurrentID'])
         try:
             self.setProject_ran_before (projects_info['projectRanBefore'])
         except:
             pass
         try:
-            self.setLast_dif_paths (projects_info['lastDifPaths'])
+            self.setLast_dif_paths(projects_info['lastDifPaths'])
         except:
             pass
         self.setAlgorithm(projects_info['selectedAlgo'])
         self.setFilters(projects_info['filters'])
 
-        self.scheduler.setDurationType (projects_info['durationType'])
+        self.scheduler.setDurationType(projects_info['durationType'])
         self.scheduler.setRunTime(projects_info['runTime'])
-        self.scheduler.setRun_day_or_month (projects_info['runDayOrMonth'])
-        self.scheduler.setRun_when_on_battery (projects_info['runWhenOnBattery'])
-        self.scheduler.setIf_missed_run_upon_restart (projects_info['ifMissedRunUponRestart'])
-        self.scheduler.setEmail_only_upon_warning (projects_info['emailOnlyUponWarning'])
+        self.scheduler.setRun_day_or_month(projects_info['runDayOrMonth'])
+        self.scheduler.setRun_when_on_battery(projects_info['runWhenOnBattery'])
+        self.scheduler.setIf_missed_run_upon_restart(projects_info['ifMissedRunUponRestart'])
+        self.scheduler.setEmail_only_upon_warning(projects_info['emailOnlyUponWarning'])
 
-        self.setEmail_address (projects_info['emailAddress'])
+        self.setEmail_address(projects_info['emailAddress'])
         self.setExtra_conf(projects_info['extraConf'])
         self.setLast_ran(projects_info['lastRan'])
         try:

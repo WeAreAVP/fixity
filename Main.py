@@ -23,7 +23,7 @@ class Main (object):
         app = GUILibraries.QApplication(arg)
         app.MainFixityWindow = App.ProjectGUI.ProjectGUI()
         app.MainFixityWindow.show()
-        print(os.getpid())
+
         app.exec_()
 
     def LaunchCLI(self, project_name):

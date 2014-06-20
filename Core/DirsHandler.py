@@ -180,21 +180,21 @@ class DirsHandler(object):
 
             if flag:
                 check += 1
-                # try:
-                response = []
-                response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
-
-                if not response or len(response) < 1 or len(response) <= 0:
-                    continue
-
                 try:
-                    response[0][1]
-                    response[1]
+                    response = []
+                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
+
+                    if not response or len(response) < 1 or len(response) <= 0:
+                        continue
+
+                    try:
+                        response[0][1]
+                        response[1]
+                    except:
+                        continue
                 except:
-                    continue
-                # except:
-                #     self.Fixity.logger.LogException(Exception.message)
-                #     pass
+                     self.Fixity.logger.LogException(Exception.message)
+                     pass
 
                 try:
                     try:
@@ -254,13 +254,12 @@ class DirsHandler(object):
                     version_detail_options['projectID'] = project_core.getID()
                     version_detail_options['projectPathID'] = self.getID()
 
-                    self.database.insert(self.database._tableVersionDetail, version_detail_options)
+                    #self.database.insert(self.database._tableVersionDetail, version_detail_options)
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
 
                 try:
-
                     history_content += response[0][0] + "\t" + response[0][1] + "\t" + response[0][2] + "\n"
                 except:
                     self.Fixity.logger.LogException(Exception.message)
@@ -404,8 +403,10 @@ class DirsHandler(object):
 
                 '''Moved   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::NO ||SameI-Node::YES  '''
                 if is_hash_same and (not is_file_path_same):
+
                     verified_files.append(line[1])
-                    verified_files.append(current_directory[0])
+
+                    #verified_files.append(current_directory[0])
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1]

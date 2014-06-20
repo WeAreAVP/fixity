@@ -517,6 +517,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         except:
             process_id = None
             pass
+
         # Get File Locker and check for dead lock
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
