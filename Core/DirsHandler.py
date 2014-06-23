@@ -406,7 +406,16 @@ class DirsHandler(object):
 
                     verified_files.append(line[1])
 
-                    #verified_files.append(current_directory[0])
+                    saved_path_info = dictFile[current_directory[0]]
+                    dir_path_info = dictFile[line[1]]
+                    try:
+                        if dir_path_info[0][1] == saved_path_info[0][1]:
+                            verified_files.append(current_directory[0])
+                    except:
+                        verified_files.append(current_directory[0])
+                        pass
+
+
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             return line, self.Fixity.Configuration.move_or_renamed_file + ":\t" + current_directory[0] + "\t changed to\t" + line[1]
@@ -460,6 +469,7 @@ class DirsHandler(object):
 
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
+
                     if self.Fixity.Configuration.getOsType() == 'Windows':
 
                         try:
