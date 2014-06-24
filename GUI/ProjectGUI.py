@@ -147,7 +147,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
          #Creat All Menu
         self.menubar = self.menuBar()
         self.file_manu_fixity = self.menubar.addMenu('&File')
-        self.preferences = self.menubar.addMenu('&preferences')
+        self.preferences = self.menubar.addMenu('&Preferences')
         self.new_menu = GUILibraries.QAction('&New Project', self)
         self.save_menu = GUILibraries.QAction('&Run Now', self)
         self.update_menu = GUILibraries.QAction('&Save Settings', self)

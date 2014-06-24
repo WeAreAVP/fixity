@@ -92,7 +92,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.loader = GUILibraries.QLabel("Sending Email...")
 
         self.email_addr_bar.setPlaceholderText("email: user@domain.com")
-        self.password.setPlaceholderText("password")
+        self.password.setPlaceholderText("Password")
         self.out_going_mail_server.setPlaceholderText("smtp.gmail.com")
         self.port.setPlaceholderText("Port")
 
@@ -107,7 +107,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         self.SMTP_server_lable = GUILibraries.QLabel('SMTP Server')
         self.email_address_lable = GUILibraries.QLabel('Email Address')
-        self.password_lable = GUILibraries.QLabel('password')
+        self.password_lable = GUILibraries.QLabel('Password')
         self.port_lable = GUILibraries.QLabel('Port')
         self.encryption_lable = GUILibraries.QLabel('Encryption Method')
 
