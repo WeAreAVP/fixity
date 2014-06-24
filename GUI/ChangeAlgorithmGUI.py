@@ -181,7 +181,8 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
-        project_core.Run()
+
+        project_core.Run(False, False, True)
         msgBox.close()
         SharedApp.SharedApp.App = self.Fixity
         self.notification.showInformation(self, "Success", selected_project+"'s " + GUILibraries.messages['algorithm_success'])

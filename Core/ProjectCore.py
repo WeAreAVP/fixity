@@ -465,7 +465,8 @@ class ProjectCore(object):
     # @param check_for_changes: if only want to know is all file confirmed or not
     #
     # @return array
-    def Run(self, check_for_changes = False, is_from_thread = False):
+
+    def Run(self, check_for_changes = False, is_from_thread = False, mark_all_confirmed = False):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -668,7 +669,7 @@ class ProjectCore(object):
         for index in self.directories:
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
 
-                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change)
+                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change, mark_all_confirmed)
 
                 verified_files = result_score['verified_files']
 
@@ -1034,6 +1035,7 @@ class ProjectCore(object):
 
         if '{{project_name}}' in reports_text:
             reports_text = str(reports_text).replace('{{project_name}}', str(self.getTitle()))
+
         elif '{{algo}}' in reports_text:
             reports_text = str(reports_text).replace('{{algo}}', self.getAlgorithm())
 

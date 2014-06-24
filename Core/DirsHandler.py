@@ -53,7 +53,7 @@ class DirsHandler(object):
     #@param check_for_changes: check For Changes
     #
     #@return: removed Message if removed and count of removed file
-    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False, is_path_change = False ):
+    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False, is_path_change = False, mark_all_confirmed = False   ):
 
         if is_from_thread:
             self.database = Database.Database()
@@ -182,7 +182,7 @@ class DirsHandler(object):
                 check += 1
                 try:
                     response = []
-                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change)
+                    response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change, mark_all_confirmed)
 
                     if not response or len(response) < 1 or len(response) <= 0:
                         continue
@@ -302,7 +302,7 @@ class DirsHandler(object):
     #
     #@return: List - list of result of scanning occurred in this file for a single file
 
-    def verifyFiles(self, dicty ,dict_hash ,dictFile ,line ,verified_files, single_directory, is_path_change = False):
+    def verifyFiles(self, dicty ,dict_hash ,dictFile ,line ,verified_files, single_directory, is_path_change = False, mark_all_confirmed = False):
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -385,7 +385,7 @@ class DirsHandler(object):
                         pass
 
                 '''Confirmed   FileExists::YES  ||SameHashOfFile::YES  ||SameFilePath::YES ||SameI-Node::YES  '''
-                if is_hash_same and is_file_path_same:
+                if (is_hash_same and is_file_path_same) or mark_all_confirmed:
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
 
@@ -543,7 +543,7 @@ class DirsHandler(object):
                             break
 
                     ''' Confirmed  FileExists::YES #SameHashOfFile::YES #SameFilePath::YES #SameI-Node::NO  '''
-                    if is_same_file_path and dictionary_single == line[0]:
+                    if (is_same_file_path and dictionary_single == line[0]) or mark_all_confirmed:
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
