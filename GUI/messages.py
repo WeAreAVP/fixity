@@ -37,12 +37,12 @@ messages['select_manifest_file'] = "Please select valid Project/Manifest file pa
 messages['invalid_file_given'] = "Invalid File Given"
 messages['project_imported_sccuessfully'] = "Project have been imported successfully"
 messages['dir_dnt_exists'] = ' does not exist.\nPlease provide a valid path and try again.'
-messages['save_other_projects'] =' Save All other unsaved Project(s) and then try again '
-messages['project_not_ran_before'] = "This project has not been scanned before, Please run the project and then try again."
+messages['save_other_projects'] = ' Save All other unsaved Project(s) and then try again '
+messages['project_not_ran_before'] = 'This project has not been scanned before, Please run the project and then try again.'
 messages['alog_not_changed_mail'] = 'The process of changing the checksum algorithm requires that the all files have a status of Confirmed with the original checksum algorithm prior to updating files with the new checksum algorithm. Not all files met this criteria and the checksum change process was not completed. The report identifying the status of the verification can be found in your email or in the Fixity reports directory. Perform the operation once again to complete the process. Thanks'
 messages['invalid_smtp_given'] = 'Invalid Smtp Server given'
 messages['invalid_port_given'] = 'Invalid Port given'
-messages['invalid_import_file'] = "*Invalid File given. \n*File given to import contains curupted information ."
+messages['invalid_import_file'] = "*Invalid File given. \n*File given to import contains corrupted information ."
 messages['duplicate_path'] = "Duplicate paths found, please enter unique paths and try again"
 messages['empty_directory_first'] = "First directory can not be empty, Please enter paths in first directory and try again."
 messages['empty_directory_after_filled'] = "There can't be empty directory(s) between filled directory(s), Please fill those empty directory(s) and try again"
@@ -79,7 +79,6 @@ messages['License_Content'] = '''<p>Fixity Copyright and License</p>
                 <p> "Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."</p>
                 <p> "Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.</p>
             </li>
-        
             <li>
                 <p> Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.</p>
             </li>
