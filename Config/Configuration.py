@@ -70,6 +70,7 @@ class Configuration(object):
             self.log_file_path = r''+(os.path.join(os.getcwd(), 'debug.log'))
 
             self.database_file_path = r''+(os.path.join(os.getcwd(),'Fixity.db'))
+
             self.template_path = r''+(os.path.join(self.assets_path,'template')+str(os.sep))
             self.report_template_path = r''+(os.path.join(self.template_path)+'Report.txt')
             self.history_template_path = r''+(os.path.join(self.template_path)+'History.txt')
@@ -79,7 +80,7 @@ class Configuration(object):
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
             self.avpreserve_img = r''+(os.path.join(self.assets_path,'avpreserve.png'))
-
+        self.unit_test_folder = self.base_path + 'test'+os.sep
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7
@@ -100,6 +101,8 @@ class Configuration(object):
     def getSch_daily_template_path_mac(self): return self.sch_daily_template_path_mac
 
     def getSch_week_template_path_mac(self): return self.sch_week_template_path_mac
+
+    def getUnit_test_folder(self): return self.unit_test_folder
 
     def getSch_month_template_path_mac(self): return self.sch_month_template_path_mac
 

@@ -24,7 +24,7 @@ class Database(object):
         self.connect()
 
     @staticmethod
-    def getInstance():
+    def getInstance(is_unit_test = False):
         if not isinstance(Database._instance, Database):
             Database._instance = object.__new__(Database)
             Database._instance.Fixity = SharedApp.SharedApp.App
@@ -36,14 +36,14 @@ class Database(object):
             Database._instance.con = None
             Database._instance.cursor = None
             Database._instance.timeSpan = 1
-            Database._instance.connect()
+            Database._instance.connect(is_unit_test)
 
         return Database._instance
 
     def selfDestruct(self):
         del self
 
-    def connect(self):
+    def connect(self, is_unit_test = False):
         global counter_recursion
         try:
 
@@ -56,7 +56,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.connect()
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -82,7 +81,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getOne(query)
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -142,7 +140,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.getProjectInfo(project_name, limit)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
@@ -171,7 +168,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.getProjectPathInfo(project_id ,version_id)
 
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
@@ -193,7 +189,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getConfiguration()
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -218,7 +213,6 @@ class Database(object):
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.getVersionDetails(project_id, version_id, OrderBy)
-
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -261,7 +255,6 @@ class Database(object):
     def getVersionDetailsLast(self, project_id):
         global counter_recursion
         try:
-
             response = {}
             result_of_last_version = self.select(self._tableVersionDetail, '*'," projectID='"+str(project_id)+"'", ' versionID DESC LIMIT 1')
             if len(result_of_last_version) > 0:
@@ -330,6 +323,7 @@ class Database(object):
 
             self.commit()
             counter_recursion = 0
+            print(query)
             return response
         except (sqlite3.OperationalError,Exception):
 
@@ -513,9 +507,7 @@ class Database(object):
                             string_glued = string_glued + information[info]
                         else:
                             string_glued =  string_glued + ' , ' + information[info]
-
                     else:
-
                         if counter == 0:
                             try:
                                 string_glued = string_glued + ' "'+ str(information[info]) + '" '
@@ -534,7 +526,7 @@ class Database(object):
 
             return string_glued
         except (sqlite3.OperationalError,Exception):
-
+            global counter_recursion
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:

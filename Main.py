@@ -15,11 +15,15 @@ from argparse import ArgumentParser
 
 class Main (object):
 
-    def __init__(self):
-        SharedApp.SharedApp.App = App.App.getInstance()
+    def __init__(self, is_unit_test = False):
+        SharedApp.SharedApp.App = App.App.getInstance(is_unit_test)
         self.Fixity = SharedApp.SharedApp.App
+        self.Fixity.is_unit_test = is_unit_test
 
-    def LaunchGUI(self,arg):
+    def testing(self):
+        print('checking')
+
+    def LaunchGUI(self, arg):
         app = GUILibraries.QApplication(arg)
         app.MainFixityWindow = App.ProjectGUI.ProjectGUI()
         app.MainFixityWindow.show()
@@ -42,7 +46,7 @@ if __name__ == '__main__':
     # If Received argument (project name and run command), it with run the
     # scheduler other wise it will open Fixity Front end View)
 
-    Fixity = Main()
+    Fixity = Main(False)
     if args.autorun is None or args.autorun == '':
         Fixity.LaunchGUI(sys.argv)
     else:

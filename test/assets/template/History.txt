@@ -1,0 +1,7 @@
+{{base_directory}}
+{{email_address}}
+{{schedule}}
+{{last_ran}}
+{{filters}}
+{{algo}}
+{{content}}

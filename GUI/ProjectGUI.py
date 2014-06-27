@@ -680,7 +680,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name']))
             return
 
-        project_info = self.Fixity.Database.select(self.Fixity.Database._tableProject, 'id','title="'+name[0]+'"')
+        project_info = self.Fixity.Database.select(self.Fixity.Database._tableProject, 'id', 'title="'+name[0]+'"')
 
         if len(project_info) > 0:
             self.notification.showError(self, "Fixity", str(GUILibraries.messages['in_valid_project_name_detailed']))
@@ -696,11 +696,13 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.day_of_month.setValue(1)
         self.timer.setTime(GUILibraries.QTime(0, 0))
 
-        for SingleRangeValue  in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+        for SingleRangeValue in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
             self.dirs_text_fields[SingleRangeValue].setText("")
             self.mail_text_fields[SingleRangeValue].setText("")
+
         self.toggler(False)
         self.unsaved = True
+
         if new_item:
             self.old = new_item
 

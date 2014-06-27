@@ -19,22 +19,22 @@ class App(object):
         del self
 
     @staticmethod
-    def getInstance():
+    def getInstance(is_unit_test):
         if not isinstance(App._instance, App):
             App._instance = object.__new__(App)
             SharedApp.SharedApp.App = App._instance
-            App._instance.setUp()
+            App._instance.setUp(is_unit_test)
         return App._instance
 
-    def setUp(self):
+    def setUp(self, is_unit_test):
         self.ExceptionHandler = CustomException.CustomException.getInstance()
         self.Configuration = Configuration()
         self.Validation = Validation
         self.Setup = Setup.Setup()
         self.Setup.setupApp()
         self.logger = Debugger.Debugger.getInstance()
-        self.Database = Database.Database.getInstance()
-        self.Database.connect()
+        self.Database = Database.Database.getInstance(is_unit_test)
+        self.Database.connect(is_unit_test)
         self.ProjectGUI = ProjectGUI
         self.Setup.createTables()
         self.ProjectRepo = ProjectRepository.ProjectRepository()
@@ -54,6 +54,7 @@ class App(object):
 
     def loadAllProjects(self):
         all_projects = self.ProjectRepo.getAll()
+        print(all_projects)
 
         if all_projects is not None and all_projects is not False:
             if len(all_projects) > 0:
