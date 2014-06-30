@@ -537,9 +537,9 @@ class ProjectCore(object):
         for index in self.directories:
             if self.directories[index].getPath() != '':
                 try:
-                    all_paths += self.directories[index].getPath()+';'
+                    all_paths += self.directories[index].getPath() + ';'
                 except:
-                    all_paths += str(self.directories[index].getPath())+';'
+                    all_paths += str(self.directories[index].getPath()) + ';'
                     pass
             number_of_path += 1
 
@@ -565,7 +565,7 @@ class ProjectCore(object):
         try:
             project_detail_information = project_detail_information_array['response']
         except:
-            project_detail_information  = {}
+            project_detail_information = {}
             pass
 
         if len(project_detail_information) <= 0:

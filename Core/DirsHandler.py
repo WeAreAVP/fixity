@@ -334,12 +334,12 @@ class DirsHandler(object):
         if path_info:
             '''' IF SAME INODE EXISTS '''
             if current_directory is not None:
-
                 current_directory = current_directory[0]
 
                 ''' Check For File Hash Change '''
                 is_hash_same = (current_directory[1] == line[0])
                 is_file_path_same = False
+
                 if is_path_change:
                     try:
                         new_file_path = line[1].replace(single_directory, '')
@@ -376,7 +376,6 @@ class DirsHandler(object):
                 if (is_hash_same and is_file_path_same) or mark_all_confirmed:
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
-
                     try:
                         return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
                     except:
@@ -394,7 +393,6 @@ class DirsHandler(object):
                 if is_hash_same and (not is_file_path_same):
 
                     verified_files.append(line[1])
-
                     saved_path_info = dictFile[current_directory[0]]
                     dir_path_info = dictFile[line[1]]
                     try:
@@ -437,7 +435,6 @@ class DirsHandler(object):
 
                     verified_files.append(line[1])
                     verified_files.append(current_directory[0])
-
                     try:
 
                         return line, self.Fixity.Configuration.change_file+":\t" + (current_directory[0]) + "\t changed to\t" + line[1].encode('utf-8')
@@ -504,7 +501,6 @@ class DirsHandler(object):
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
-
                         try:
                             return line, self.Fixity.Configuration.confirmed_file + ":\t" + line[1]
                         except:
@@ -519,7 +515,6 @@ class DirsHandler(object):
 
                         verified_files.append(line[1])
                         verified_files.append(single_infor_hash_related[0])
-
                         try:
                             return line, self.Fixity.Configuration.change_file + ":\t" + line[1]
                         except:
@@ -534,7 +529,6 @@ class DirsHandler(object):
                     elif (not is_same_file_path) and dictionary_single == line[0]:
 
                         verified_files.append(line[1])
-
                         try:
                             return line, self.Fixity.Configuration.new_file + ":\t" + line[1]
                         except:
