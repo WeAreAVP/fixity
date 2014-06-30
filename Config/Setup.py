@@ -66,6 +66,23 @@ class Setup(object):
                 traceback.print_stack()
                 pass
 
+        if self.Fixity.Configuration.getOsType() == 'linux':
+            if not os.path.isdir(self.Fixity.Configuration.getAgentPath()):
+                try:
+                    os.mkdir(self.Fixity.Configuration.getAgentPath())
+                except:
+                    traceback.print_stack()
+                    pass
+
+            if not os.path.isdir(self.Fixity.Configuration.getLibAgentPath()):
+                try:
+                    os.mkdir(self.Fixity.Configuration.getLibAgentPath())
+                except:
+                    traceback.print_stack()
+                    pass
+
+
+
         # Create Schedules directory
         if not os.path.isdir(self.Fixity.Configuration.getSchedulesPath()):
             try:
