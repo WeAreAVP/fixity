@@ -23,24 +23,24 @@ class Test(unittest.TestCase):
         self.Fixtures = Fixtures()
         self.project_name = 'New_Project'
         self.Fixtures.create_new_project(self.project_name)
+        self.Fixtures.load_verification_algorithm_data()
         self.App = Main.Main()
         self.App.Fixity.loadAllProjects()
         pass
 
 
     def test_confirm_file(self):
-
-
         try:
             print('id')
         except:
             raise Exception("could not create new project")
             pass
         self.App.LaunchCLI(self.project_name)
+        self.Fixtures.del_file()
+        self.App.LaunchCLI(self.project_name)
 
-    #
+
     #def test_delete_file_verification(self):
-    #
     #    self.assertEqual(4 * 3, 12)
     #
     #

@@ -18,7 +18,7 @@ class ProjectRepository(object):
     def getSingleProject(self, project_name):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        print(self.Fixity.ProjectsList)
+
         try:
             selected_project_object = self.Fixity.ProjectsList[project_name]
             return selected_project_object

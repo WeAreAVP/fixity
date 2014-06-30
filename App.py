@@ -54,7 +54,7 @@ class App(object):
 
     def loadAllProjects(self):
         all_projects = self.ProjectRepo.getAll()
-        print(all_projects)
+
 
         if all_projects is not None and all_projects is not False:
             if len(all_projects) > 0:

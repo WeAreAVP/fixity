@@ -20,6 +20,11 @@ class Fixtures(object):
     def __init__(self):
         self.App = Main.Main()
         self.unit_test_folder = self.App.Fixity.Configuration.getUnit_test_folder()
+
+        self.test_file_one = self.unit_test_folder + '1.docx'
+        self.test_file_two = self.unit_test_folder + '2.docx'
+        self.test_file_three = self.unit_test_folder + '3.docx'
+        self.test_file_four = self.unit_test_folder + '4.docx'
         pass
 
     # Create New Project
@@ -41,6 +46,7 @@ class Fixtures(object):
         project_information['runDayOrMonth'] = '0'
         project_information['runWhenOnBattery'] = '1'
         project_information['ifMissedRunUponRestart'] = '1'
+        project_information['versionCurrentID'] = '1'
         project_information['emailOnlyUponWarning'] = '1'
 
         project_information['emailAddress'] = ''
@@ -66,17 +72,7 @@ class Fixtures(object):
 
         return dir_new_id
 
-    # Delete Testing Data
-    def delete_testing_data(self):
 
-        if os.path.exists(self.unit_test_folder):
-            shutil.rmtree(self.unit_test_folder)
-
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
-
-        pass
 
     # Load Verification Algorithm Data
     def load_verification_algorithm_data(self):
@@ -85,47 +81,20 @@ class Fixtures(object):
             shutil.rmtree(self.unit_test_folder)
         os.makedirs(self.unit_test_folder)
 
-        test_file_one = self.unit_test_folder + '1.docx'
-        test_file_two = self.unit_test_folder + '2.docx'
-        test_file_three = self.unit_test_folder + '3.docx'
-        test_file_four = self.unit_test_folder + '4.docx'
 
-        file_obj1 = open(test_file_one, 'w+')
+
+        file_obj1 = open(self.test_file_one, 'w+')
         file_obj1.write('1 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(test_file_two, 'w+')
+        file_obj1 = open(self.test_file_two, 'w+')
         file_obj1.write('2 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(test_file_three, 'w+')
+        file_obj1 = open(self.test_file_three, 'w+')
         file_obj1.write('3 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(test_file_four, 'w+')
+        file_obj1 = open(self.test_file_four, 'w+')
         file_obj1.write('4 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
-
-    # Del File
-    def del_file(self, path_to_be_deleted):
-        os.remove(path_to_be_deleted)
-        pass
-
-    # Rename File
-    def rename_file(self, path_to_be_renamed, new_name):
-        os.rename(new_name, path_to_be_renamed)
-        pass
-
-    # New File
-    def new_file(self, path_to_be_created):
-        file_obj = open(path_to_be_created, 'w')
-        file_obj.write('testing new file' + str(random.randrange(1, 10000)))
-        file_obj.close()
-        pass
-
-    # Change File
-    def change_file(self, path_to_be_changed):
-        file_obj = open(path_to_be_changed, 'w')
-        file_obj.write('testing new file '+str(random.randrange(1, 10000)))
-        file_obj.close()
-        pass

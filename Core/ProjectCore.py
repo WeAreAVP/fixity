@@ -47,11 +47,9 @@ class ProjectCore(object):
         except:pass
 
         for n in directories:
-            try:self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
-                                                                 directories[n]['pathID'], directories[n]['id'])
+            try:self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'], directories[n]['id'])
             except:
-                self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'],
-                                                                directories[n]['pathID'], '')
+                self.directories[(n)] = DirsHandler.DirsHandler(directories[n]['path'], directories[n]['pathID'], '')
                 pass
 
     def setID(self, ID): self.ID = ID
@@ -122,7 +120,9 @@ class ProjectCore(object):
     # @param version_type: Version is created For
     #
     # @return Version ID Created
+
     def createNewVersion(self, project_id, version_type ):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -150,6 +150,7 @@ class ProjectCore(object):
     # @return Project ID Created
 
     def Save(self, save_schedule = True):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -217,8 +218,7 @@ class ProjectCore(object):
 
             dir_path_id = self.Fixity.Database.insert(self.Fixity.Database._tableProjectPath, dir_information)
 
-            self.directories[dirs_objects].setID(
-                dir_path_id['id'])
+            self.directories[dirs_objects].setID(dir_path_id['id'])
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
         if save_schedule:
@@ -233,7 +233,9 @@ class ProjectCore(object):
     # Delete this project
     #
     # @return Bool
+
     def Delete(self):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -252,7 +254,9 @@ class ProjectCore(object):
     # @param flag_is_a_fxy_file: is File .fxy
     #
     # @return Bool
+
     def ImportProject(self, file_path, project_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -667,6 +671,7 @@ class ProjectCore(object):
                     pass
 
         for index in self.directories:
+
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
 
                 result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change, mark_all_confirmed)
@@ -929,6 +934,7 @@ class ProjectCore(object):
             pass
 
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
+
 
         self.setDirectories(directories)
 

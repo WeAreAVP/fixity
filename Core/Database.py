@@ -323,7 +323,7 @@ class Database(object):
 
             self.commit()
             counter_recursion = 0
-            print(query)
+
             return response
         except (sqlite3.OperationalError,Exception):
 
