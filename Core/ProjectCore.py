@@ -452,6 +452,37 @@ class ProjectCore(object):
                                     information, 'id="' + str(self.getID()) + '"')
         return False
 
+
+    # Change Project Name logic
+    #
+    #@param selected_project:string project name to be changed
+    #@param new_name:string project name changed with
+
+    def changeProjectName(self, selected_project, new_name):
+        try:
+            project_exists = self.Fixity.ProjectsList[str(new_name)]
+            project_exists.getID()
+            project_exists.getTitle()
+            return False
+        except:
+            pass
+
+        is_project_name_valid = self.Fixity.Validation.ValidateProjectName(new_name)
+        if is_project_name_valid is False:
+            return is_project_name_valid
+
+        self.ChangeTitle(new_name)
+        self.setTitle(new_name)
+
+        self.scheduler.delTask(selected_project)
+        self.scheduler.schedule(new_name)
+
+        self.Fixity.ProjectsList[new_name] = self
+        self.Fixity.removeProject(selected_project)
+        SharedApp.SharedApp.App = self.Fixity
+        return True
+
+
     def launchThread(self):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -470,7 +501,7 @@ class ProjectCore(object):
     #
     # @return array
 
-    def Run(self, check_for_changes = False, is_from_thread = False, mark_all_confirmed = False):
+    def Run(self, check_for_changes = False, is_from_thread = False, mark_all_confirmed = False, called_from = 'CLI'):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -583,6 +614,7 @@ class ProjectCore(object):
                 index_path_in_for = project_path_information[path_info]['path']
             except:
                 index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
+
             base_path_information[str(project_path_information[path_info]['pathID'])] = {'path': index_path_in_for,
                                                                                         'code': str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
 
@@ -646,6 +678,7 @@ class ProjectCore(object):
                             try:
 
                                 base_old_file_path = old_dirs_information[str(path_information[0])]
+
                                 this_file_path = str(self.Fixity.Configuration.CleanStringForBreaks(str(base_old_file_path)) +
                                                      self.Fixity.Configuration.CleanStringForBreaks(str(path_information[1])))
                                 base_path = base_old_file_path
@@ -653,6 +686,7 @@ class ProjectCore(object):
                             except:
 
                                 this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] + self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
+
                                 base_path = base_path_information[str(path_information[0])]['path']
 
                                 pass
@@ -808,6 +842,7 @@ class ProjectCore(object):
         information_for_report['confirmed'] = confirmed
         information_for_report['moved'] = moved
         information_for_report['total'] = total
+
         send_email_new = False
 
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
@@ -822,6 +857,9 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
+        if called_from == 'test':
+            return information_for_report
 
         if check_for_changes:
             if int(moved) > 0 or int(created) > 0 or int(moved) > 0 or int(corrupted_or_changed) > 0 or missing_files_total > 0:

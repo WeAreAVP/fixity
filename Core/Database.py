@@ -425,9 +425,11 @@ class Database(object):
         global counter_recursion
         try:
 
-            query = 'DELETE FROM '+str(table_name) + ' WHERE '+ condition
+            query = 'DELETE FROM '+str(table_name) + ' WHERE ' + condition
             response = self.sqlQuery(query)
+
             counter_recursion = 0
+
             return response
         except (sqlite3.OperationalError,Exception):
 

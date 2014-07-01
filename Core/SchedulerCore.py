@@ -210,7 +210,7 @@ class SchedulerCore(object):
         information['ifMissedRunUponRestart'] = self.getIf_missed_run_upon_restart()
         information['runWhenOnBattery'] = self.getRun_when_on_battery()
         information['RunInitialScan'] = 0
-
+        xml_file_name_with_dir_name = ''
         if self.Fixity.Configuration.getOsType() == 'Windows':
             xml_file_name_with_dir_name = self.CreateXML(project_name,  version,  registration_info, triggers,
                                                          principals,  settings,  actions, self.getDurationType())

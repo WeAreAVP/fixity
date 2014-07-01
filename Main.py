@@ -30,10 +30,13 @@ class Main (object):
 
         app.exec_()
 
-    def LaunchCLI(self, project_name):
+    def LaunchCLI(self, project_name, called_from = 'CLI'):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
         project_core.Save(False)
-        project_core.Run()
+        if called_from == 'test':
+            return project_core.Run(False, False, False, 'test')
+        else:
+            project_core.Run()
 
 if __name__ == '__main__':
     try:

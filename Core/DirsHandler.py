@@ -473,7 +473,7 @@ class DirsHandler(object):
                             old_file_path = single_infor_hash_related[0].replace(single_infor_hash_related[3], '')
 
                             try:
-                                is_same_file_path = old_file_path == new_file_path
+                                is_same_file_path = old_file_path in new_file_path
                             except:
                                 try:
                                     is_same_file_path = old_file_path.encode('utf-8') in new_file_path

@@ -132,20 +132,15 @@ class ChangeNameGUI(GUILibraries.QDialog ):
             pass
 
         project_core = self.Fixity.ProjectsList[selected_project]
+        flag_name_changed = project_core.changeProjectName(selected_project, new_name)
 
-        project_core.ChangeTitle(new_name)
-        project_core.setTitle(new_name)
-
-        project_core.scheduler.delTask(selected_project)
-        project_core.scheduler.schedule(new_name)
-
-        self.Fixity.ProjectsList[new_name] = project_core
-        self.Fixity.removeProject(selected_project)
-        SharedApp.SharedApp.App = self.Fixity
-
-        self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
-        self.parent_win.refreshProjectSettings()
-        self.Cancel()
+        if flag_name_changed:
+            self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
+            self.parent_win.refreshProjectSettings()
+            self.Cancel()
+        else:
+            self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
+            return
 
 
     def project_changed(self):
