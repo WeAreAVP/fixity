@@ -20,8 +20,6 @@ class Main (object):
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.is_unit_test = is_unit_test
 
-    def testing(self):
-        print('checking')
 
     def LaunchGUI(self, arg):
         app = GUILibraries.QApplication(arg)

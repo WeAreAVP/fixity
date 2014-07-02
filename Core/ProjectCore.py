@@ -286,6 +286,7 @@ class ProjectCore(object):
                 config['title'] = str(project_name)
 
                 information = project_configuration.split(' ')
+
                 is_month, is_week = 99, 99
                 run_time = str(information[1])
                 is_week = information[2]
@@ -421,6 +422,7 @@ class ProjectCore(object):
                     pass
                 return True
             except:
+                self.Fixity.logger.LogException(Exception.message)
                 return False
                 pass
 
@@ -863,8 +865,10 @@ class ProjectCore(object):
 
         if check_for_changes:
             if int(moved) > 0 or int(created) > 0 or int(moved) > 0 or int(corrupted_or_changed) > 0 or missing_files_total > 0:
+                print(1)
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
             else:
+                print(2)
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
         else:
 

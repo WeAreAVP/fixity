@@ -20,6 +20,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
     #Constructor
     def __init__(self):
         super(ProjectGUI, self).__init__()
+
         self.should_update = True
         self.is_path_changed = False
         self.Fixity = SharedApp.SharedApp.App
@@ -481,6 +482,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if response:
             try:
                 project_core = self.Fixity.ProjectRepo.getSingleProject(self.projects.currentItem().text())
+
                 project_core.Delete()
 
 

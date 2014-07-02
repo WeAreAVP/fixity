@@ -140,16 +140,19 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         if selected_project == '':
             self.notification.showError(self, "No Project Selected", GUILibraries.messages['no_project_selected'])
             return
+
         flag = True
         project_core = self.Fixity.ProjectRepo.getSingleProject(selected_project)
         project_core.applyFilter(filters, Is_ignore_hidden_files)
         SharedApp.SharedApp.App = self.Fixity
+
         if flag is not None:
             self.notification.showInformation(self, "Success", GUILibraries.messages['filter_success'])
             self.Cancel()
             return
         else:
             self.notification.showError(self, "Failure", GUILibraries.messages['filter_fail'])
+
 
     '''
     Triggers on project changed from drop down and sets related information in filters Field

@@ -22,6 +22,8 @@ class ProjectFixtures(Fixtures):
         self.App = Main.Main()
         super(ProjectFixtures, self).__init__()
         self.unit_test_folder = self.App.Fixity.Configuration.getUnit_test_folder()
+        self.filters = '.txt'
+        self.is_ignore_hidden_files = True
         pass
 
     # Del File

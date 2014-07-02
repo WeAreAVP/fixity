@@ -15,9 +15,11 @@ import sys
 base_path = os.getcwd()
 base_path = base_path.replace(r'\test', '')
 sys.path.append(base_path+os.sep)
+
 import Main
 from EmailFixtures import EmailFixtures
 from Core import EmailNotification
+
 
 class EmailTestCase(object):
 
@@ -29,17 +31,22 @@ class EmailTestCase(object):
         pass
 
     def test_testing_email(self):
-        return self.email_notification.TestingEmail(self.email_fixtures.recipients, 'Testing the Email', self.email_fixtures.EmailInformation())
+        print('Testing Email..........!')
+        response = self.email_notification.TestingEmail(self.email_fixtures.recipients, 'Testing the Email', self.email_fixtures.EmailInformation())
+        return [response, True, 'Failed Testing Email ................. !']
         pass
 
     def test_attachment_email(self):
+        print('Attachment Email..........!')
         self.email_fixtures.load_attachment()
         response = self.email_notification.ReportEmail(self.email_fixtures.recipients, self.email_fixtures.attachment ,'Testing the Email' ,self.email_fixtures.EmailInformation(), self.email_fixtures.project_name)
         self.email_fixtures.unload_attachment()
-        return response
+        return [response, True, 'Failed Attachment Email ................. !']
 
     def test_Error_email(self):
+        print('Error Email..........!')
         self.email_fixtures.load_attachment()
         response = self.email_notification.ErrorEmail(self.email_fixtures.recipients, self.email_fixtures.attachment ,'Testing the Email' ,self.email_fixtures.EmailInformation(), self.email_fixtures.project_name)
         self.email_fixtures.unload_attachment()
-        return response
+        return [response, True, 'Failed Error Email ................. !']
+

@@ -23,8 +23,8 @@ class EmailFixtures(Fixtures):
         super(EmailFixtures, self).__init__()
         self.information = {}
 
-        self.information['email'] = 'furqan@geekschicago.com'
-        self.information['pass'] = 'furqanwasi'
+        self.information['email'] = 'test.bf007@gmail.com'
+        self.information['pass'] = 'purelogics'
         self.information['smtp'] = 'smtp.gmail.com'
         self.information['protocol'] = 'ssl'
         self.information['port'] = '465'

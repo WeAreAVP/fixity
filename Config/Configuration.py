@@ -81,6 +81,7 @@ class Configuration(object):
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
             self.avpreserve_img = r''+(os.path.join(self.assets_path,'avpreserve.png'))
         self.unit_test_folder = self.base_path + 'test'+os.sep
+        self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7
@@ -103,6 +104,8 @@ class Configuration(object):
     def getSch_week_template_path_mac(self): return self.sch_week_template_path_mac
 
     def getUnit_test_folder(self): return self.unit_test_folder
+
+    def getUnit_test_folder_special(self): return self.unit_test_folder_special
 
     def getSch_month_template_path_mac(self): return self.sch_month_template_path_mac
 
