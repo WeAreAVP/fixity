@@ -79,7 +79,8 @@ class Configuration(object):
             self.sch_daily_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacDaily.xml')
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
-            self.avpreserve_img = r''+(os.path.join(self.assets_path,'avpreserve.png'))
+            self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
+            #self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
         self.unit_test_folder = self.base_path + 'test'+os.sep
         self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
         self.check_sum_methods = ['sha256', 'md5']
@@ -142,7 +143,9 @@ class Configuration(object):
         string_to_be_encoded = str(string_to_be_encoded).strip()
         return base64.b16encode(base64.b16encode(string_to_be_encoded))
 
-    def getLogoSignSmall(self):return str(self.getBasePath()) + 'assets' + (str(os.sep)) + str(self.logo_sign_small)
+    #def getLogoSignSmall(self):return str(self.getBasePath()) + 'assets' + (str(os.sep)) + str(self.logo_sign_small)
+
+    def getLogoSignSmall(self):return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
 
     def getOsType(self):return str(self.OsType)
 

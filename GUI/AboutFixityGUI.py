@@ -32,7 +32,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.parent_win.setWindowTitle('About Fixity')
 
         
-        self.setWindowIcon(GUILibraries.QIcon(r''+(str((self.Fixity.Configuration.getLogoSignSmall())))))
+        self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
         self.AboutFixityLayout =GUILibraries.QVBoxLayout()
 
         self.widget = GUILibraries.QWidget(self)
@@ -125,8 +125,10 @@ class AboutFixityGUI(GUILibraries.QDialog):
         pic =GUILibraries.QLabel(self)
         pic.setGeometry(30, 30, 500, 600)
         pic.setFixedSize(400,400)
+
         '''use full ABSOLUTE path to the image, not relative'''
-        pic.setPixmap(GUILibraries.QPixmap(str(self.Fixity.Configuration.getAvpreserve_img())))
+
+        pic.setPixmap(GUILibraries.QPixmap(self.Fixity.Configuration.getLogoSignSmall()))
 
         self.description_btn.clicked.connect(self.showDescription)
         self.author_and_license_btn.clicked.connect(self.showLicense)

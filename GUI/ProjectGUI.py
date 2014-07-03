@@ -33,7 +33,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.import_project_gui = ImportProjGUI.ImportProjectGUI(self)
         self.path_change_gui = PathChangeGUI.PathChangeGUI(self)
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
-        self.setWindowIcon(GUILibraries.QIcon(r''+(str((self.Fixity.Configuration.getLogoSignSmall())))))
+
+        self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
         self.setWindowTitle(self.Fixity.Configuration.getApplicationName())
 
         # create Menu
@@ -289,10 +290,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.projects.setCurrentRow(0)
         self.project_layout.addWidget(self.projects)
         self.pgroup.setLayout(self.project_layout)
-
-        # self.projects.itemChanged.connect(self.update)
-        # self.projects.itemClicked.connect(self.update)
-
         self.projects.itemSelectionChanged.connect(self.update)
 
     #Updates Fields When Project Is Selected In List
