@@ -129,7 +129,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
         '''use full ABSOLUTE path to the image, not relative'''
 
         pic.setPixmap(GUILibraries.QPixmap(self.Fixity.Configuration.getLogoSignSmall()))
-
+        print(self.Fixity.Configuration.getLogoSignSmall())
         self.description_btn.clicked.connect(self.showDescription)
         self.author_and_license_btn.clicked.connect(self.showLicense)
         self.contact_btn.clicked.connect(self.showContact)

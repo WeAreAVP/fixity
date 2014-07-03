@@ -45,8 +45,23 @@ class Setup(object):
                 pass
 
         if self.Fixity.Configuration.getOsType() == 'linux':
+            if not os.path.isdir(self.Fixity.Configuration.getLibAgentPath()):
+                os.makedirs(self.Fixity.Configuration.getLibAgentPath())
+
+
             if not os.path.isdir(self.Fixity.Configuration.getAgentPath()):
-                os.makedirs(self.Fixity.Configuration.getAgentPath())
+                try:
+                    os.mkdir(self.Fixity.Configuration.getAgentPath())
+                except:
+                    traceback.print_stack()
+                    pass
+
+            if not os.path.isdir(self.Fixity.Configuration.getLibAgentPath()):
+                try:
+                    os.mkdir(self.Fixity.Configuration.getLibAgentPath())
+                except:
+                    traceback.print_stack()
+                    pass
 
         # create Database file
         if not os.path.isfile(self.Fixity.Configuration.getDatabaseFilePath()):
@@ -66,20 +81,7 @@ class Setup(object):
                 traceback.print_stack()
                 pass
 
-        if self.Fixity.Configuration.getOsType() == 'linux':
-            if not os.path.isdir(self.Fixity.Configuration.getAgentPath()):
-                try:
-                    os.mkdir(self.Fixity.Configuration.getAgentPath())
-                except:
-                    traceback.print_stack()
-                    pass
 
-            if not os.path.isdir(self.Fixity.Configuration.getLibAgentPath()):
-                try:
-                    os.mkdir(self.Fixity.Configuration.getLibAgentPath())
-                except:
-                    traceback.print_stack()
-                    pass
 
 
 
