@@ -355,9 +355,9 @@ class DirsHandler(object):
                         is_file_path_same = old_file_path == new_file_path
                     except:
                         try:
-                            is_file_path_same = old_file_path.encode('utf-8') in new_file_path
+                            is_file_path_same = old_file_path.encode('utf-8') == new_file_path
                         except:
-                            is_file_path_same = old_file_path.decode('utf-8') in new_file_path
+                            is_file_path_same = old_file_path.decode('utf-8') == new_file_path
                             pass
                         pass
                 else:
@@ -365,10 +365,10 @@ class DirsHandler(object):
                         is_file_path_same = (current_directory[0] == line[1])
                     except:
                         try:
-                            is_file_path_same = (current_directory[0].encode("utf-8") in line[1])
+                            is_file_path_same = (current_directory[0].encode("utf-8") == line[1])
                         except:
 
-                            is_file_path_same = (current_directory[0].decode('utf-8') in line[1])
+                            is_file_path_same = (current_directory[0].decode('utf-8') == line[1])
                             pass
                         pass
 
@@ -473,13 +473,13 @@ class DirsHandler(object):
                             old_file_path = single_infor_hash_related[0].replace(single_infor_hash_related[3], '')
 
                             try:
-                                is_same_file_path = old_file_path in new_file_path
+                                is_same_file_path = old_file_path == new_file_path
                             except:
                                 try:
-                                    is_same_file_path = old_file_path.encode('utf-8') in new_file_path
+                                    is_same_file_path = old_file_path.encode('utf-8') == new_file_path
                                 except:
                                     try:
-                                        is_same_file_path = old_file_path.decode('utf-8') in new_file_path
+                                        is_same_file_path = old_file_path.decode('utf-8') == new_file_path
                                     except:
                                         pass
                                     pass
@@ -489,7 +489,7 @@ class DirsHandler(object):
                                 is_same_file_path = single_infor_hash_related[0] == line[1]
                             except:
                                 try:
-                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') in line[1]
+                                    is_same_file_path = single_infor_hash_related[0].encode('utf-8') == line[1]
                                 except:
                                     pass
                                 pass

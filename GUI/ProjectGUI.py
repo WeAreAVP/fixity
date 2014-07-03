@@ -254,7 +254,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.spacer = GUILibraries.QSpacerItem(125, 30)
         self.scheduling_layout.addItem(self.spacer)
-        if self.Fixity.Configuration.getOsType() == 'Windows':
+        system_information = self.Fixity.Configuration.getWindowsInformation()
+
+        if self.Fixity.Configuration.getOsType() == 'Windows' and str(system_information['WindowsType']) == '7':
             self.scheduling_layout.addWidget(self.run_only_on_ac_power)
             self.scheduling_layout.addWidget(self.start_when_available)
         self.scheduling_layout.addWidget(self.email_only_when_something_changed)
