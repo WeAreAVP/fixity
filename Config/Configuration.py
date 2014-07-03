@@ -80,7 +80,7 @@ class Configuration(object):
             self.sch_week_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacWeek.xml')
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
 
-            self.avpreserve_img = str(self.getBasePath())+'assets'+str(os.sep)+'avpreserve.png'
+            self.avpreserve_img = str(self.assets_path) + str(os.sep)+'avpreserve.png'
 
         self.unit_test_folder = self.base_path + 'test'+os.sep
         self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
