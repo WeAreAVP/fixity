@@ -150,7 +150,8 @@ class Configuration(object):
         if self.getOsType() == 'Windows':
             return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
         else:
-            return str(self.getBasePath()) + str(os.sep) +  'assets' + (str(os.sep)) + str(self.logo_sign_small)
+            os.path.join(self.assets_path)
+            return os.path.join(self.assets_path, str(self.logo_sign_small))
 
     def getOsType(self):return str(self.OsType)
 
