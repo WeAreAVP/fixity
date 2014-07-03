@@ -14,7 +14,7 @@ exe = EXE(pyz,
           debug=False,
           strip=None,
           upx=True,
-          console=True , icon='assets\\icon.ico')
+          console=False , icon='assets\\icon.ico')
 app = BUNDLE(exe,
              name=os.path.join('dist', 'Fixity.exe.app'))
 
