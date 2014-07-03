@@ -266,7 +266,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def closeEvent(self, event):
         if self.unsaved:
-            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
+            response = self.notification.showQuestion(self, 'Unsaved Project', GUILibraries.messages['close_unsaved'])
             if response:
                 self.unsaved = True
                 event.ignore()
@@ -300,7 +300,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
     def Close(self):
         if self.unsaved:
-            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['close_unsaved'])
+            response = self.notification.showQuestion(self, 'Unsaved Project', GUILibraries.messages['close_unsaved'])
             if response:
                 self.unsaved = False
                 self.projects.setCurrentRow(self.projects.indexFromItem(self.old).row())
@@ -319,7 +319,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if self.unsaved:
 
-            response = self.notification.showQuestion(self, 'un-saved Project', GUILibraries.messages['new_project_unsaved'])
+            response = self.notification.showQuestion(self, 'Unsaved Project', GUILibraries.messages['new_project_unsaved'])
 
             if response:
 
@@ -548,9 +548,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
             project_core = self.Save()
 
             project_core.launchThread()
-            self.notification.showInformation(self, "Success", "Run Now for "+self.projects.currentItem().text() + " has successfully started.")
+            self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
         else:
-            self.notification.showWarning(self, "Warning", "Scheduler is already in progress, it may take several minutes. Please wait untill scheduler is completed.")
+            self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name

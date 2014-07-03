@@ -164,7 +164,7 @@ class PathChangeGUI(GUILibraries.QDialog):
     def changeRootDirInfo(self):
         if not GUILibraries.os.path.exists(self.change_path_text):
 
-            self.notification.showWarning(self,'Path Dose Not Exists' ,self.change_path_text + GUILibraries.messages['dir_dnt_exists'])
+            self.notification.showWarning(self,'Path Does Not Exist' ,self.change_path_text + GUILibraries.messages['dir_dnt_exists'])
             self.change_the_path_information = False
 
         else:
