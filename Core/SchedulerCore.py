@@ -227,7 +227,7 @@ class SchedulerCore(object):
             if str(SystemInformation['WindowsType']) == '7':
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
-                command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + " /tr \"" + os.getcwd() + "\\schedules\\fixity-" + project_name + ".vbs\" /RU SYSTEM"
+                command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
 
         information = {}
         information['versionType'] = 'save'
