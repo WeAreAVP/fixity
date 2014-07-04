@@ -20,8 +20,10 @@ class Fixtures(object):
 
     def __init__(self):
         self.App = Main.Main()
+
         self.unit_test_folder = self.App.Fixity.Configuration.getUnit_test_folder()
         self.unit_test_folder_special = self.App.Fixity.Configuration.getUnit_test_folder_special()
+
         self.project_name = 'New_Project'
         self.test_file_one = self.unit_test_folder + '1.docx'
         self.test_file_two = self.unit_test_folder + '2.docx'
@@ -79,23 +81,24 @@ class Fixtures(object):
      # Load Verification Algorithm Data
     def load_special_verification_algorithm_data(self):
 
-        if os.path.exists(self.unit_test_folder):
-            shutil.rmtree(self.unit_test_folder)
-        os.makedirs(self.unit_test_folder)
+        if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
+            shutil.rmtree(self.unit_test_folder_special.decode('utf-8'))
+        os.makedirs(self.unit_test_folder_special.decode('utf-8'))
 
-        file_obj1 = open(self.test_file_one_special, 'w+')
+
+        file_obj1 = open(self.test_file_one_special.decode('utf-8'), 'w+')
         file_obj1.write('1 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(self.test_file_two_special, 'w+')
+        file_obj1 = open(self.test_file_two_special.decode('utf-8'), 'w+')
         file_obj1.write('2 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(self.test_file_three_special, 'w+')
+        file_obj1 = open(self.test_file_three_special.decode('utf-8'), 'w+')
         file_obj1.write('3 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(self.test_file_four_special, 'w+')
+        file_obj1 = open(self.test_file_four_special.decode('utf-8'), 'w+')
         file_obj1.write('4 document')
         file_obj1.close()
 
@@ -143,3 +146,12 @@ class Fixtures(object):
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass
 
+
+    # Delete Testing Data
+    def unload_verification_algorithm_data_special(self):
+
+        if os.path.exists(self.unit_test_folder_special):
+            shutil.rmtree(self.unit_test_folder_special)
+
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        pass

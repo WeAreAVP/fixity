@@ -29,7 +29,7 @@ class ProjectFixtures(Fixtures):
     # Del File
     #
     # @param project_name:string  Project Name
-    def create_new_project(self, project_name):
+    def create_new_project(self, project_name, is_special_chars = False):
 
         project_information = {}
 
@@ -53,7 +53,11 @@ class ProjectFixtures(Fixtures):
         project_id = self.App.Fixity.Database.insert(self.App.Fixity.Database._tableProject, project_information)
 
         dir_information = {}
-        dirs_path = self.unit_test_folder
+        if is_special_chars:
+            dirs_path = self.unit_test_folder_special
+        else:
+            dirs_path = self.unit_test_folder
+
         for n in range(self.App.Fixity.Configuration.number_of_path_directories):
 
             dir_information['path'] = dirs_path
@@ -65,5 +69,6 @@ class ProjectFixtures(Fixtures):
 
             dir_new_id = self.App.Fixity.Database.insert(self.App.Fixity.Database._tableProjectPath, dir_information)
             dirs_path = ''
+
         self.App.Fixity.loadAllProjects()
         return dir_new_id

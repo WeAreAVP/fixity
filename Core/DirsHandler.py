@@ -71,6 +71,7 @@ class DirsHandler(object):
 
         #Getting all files and directory  in side "single_directory" with detail information (inode, path and file hash)
         single_directory = self.getPath()
+
         directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm)
 
         for directories_inside_details_single in directories_inside_details:

@@ -27,7 +27,7 @@ class AlgorithmFixtures(Fixtures):
     #
     # @param path_to_be_changed:string  Path to be change for testing
     def del_file(self, path_to_be_deleted):
-        os.remove(path_to_be_deleted)
+        os.remove(path_to_be_deleted.decode('utf-8'))
         pass
 
     # Rename File
@@ -41,7 +41,7 @@ class AlgorithmFixtures(Fixtures):
     #
     # @param path_to_be_changed:string  Path to be change for testing
     def new_file(self, path_to_be_created, content = '4 document'):
-        file_obj = open(path_to_be_created, 'w')
+        file_obj = open(path_to_be_created.decode('utf-8'), 'w')
         file_obj.write(content)
         file_obj.close()
         pass
@@ -60,13 +60,13 @@ class AlgorithmFixtures(Fixtures):
     #
     # @param path_to_be_changed:string  Path to be change for testing
     def change_file(self, path_to_be_changed):
-        file_obj = open(path_to_be_changed, 'w')
+        file_obj = open(path_to_be_changed.decode('utf-8'), 'w')
         file_obj.write('testing new file '+str(random.randrange(1, 10000)))
         file_obj.close()
         pass
 
     def change_file_changed_hash_and_path(self, path_to_be_changed):
-        file_obj = open(path_to_be_changed, 'w')
+        file_obj = open(path_to_be_changed.decode('utf-8'), 'w')
         file_obj.write('testing new file '+str(random.randrange(1, 10000)))
         file_obj.close()
 
@@ -79,7 +79,8 @@ class AlgorithmFixtures(Fixtures):
     # @param path_to_be_changed:string  Path to be change for testing
     # @param new_path:string  Path to be changed with for testing
     def rename_file(self, path_to_be_changed , new_path):
-        os.rename(path_to_be_changed, new_path)
+
+        os.rename(path_to_be_changed.decode('utf-8'), new_path.decode('utf-8'))
         pass
 
 

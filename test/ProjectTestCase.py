@@ -38,7 +38,10 @@ class ProjectTestCase(object):
         print('Test Run Project.........!')
         self.project_fixtures.load_verification_algorithm_data()
 
+        self.project_fixtures.create_new_project(project_name)
+
         project_information = self.App.LaunchCLI(project_name, 'test')
+        print(project_information)
         self.project_fixtures.unload_verification_algorithm_data()
         return [4, project_information['created'], 'Failed Run Project Unit Test....!']
 
@@ -48,6 +51,7 @@ class ProjectTestCase(object):
     # @param string:project_name project name to be Deleted
 
     def delete_project(self, project_name):
+
         print('Test Delete Project.........!')
         project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
         deleted_project_id = project_core.getID()
