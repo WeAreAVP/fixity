@@ -5,7 +5,6 @@ Created on May 14, 2014
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
 
-
 # built-in libraries
 import os
 import random
@@ -35,25 +34,30 @@ class Fixtures(object):
         self.test_file_three_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ3.docx'
         self.test_file_four_special = self.unit_test_folder_special + 'Unidade_de_C@.#$%onservação4.txt'
 
-
         self.test_history_file = self.unit_test_folder + 'history.tsv'
         self.attachment = self.unit_test_folder + 'attachment.tsv'
         pass
-
-
 
     # Delete Testing Data
     def delete_testing_data(self):
 
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
+        try:
+            if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
+                shutil.rmtree(self.unit_test_folder)
+        except:
+            if os.path.exists(self.unit_test_folder_special):
+                shutil.rmtree(self.unit_test_folder)
+            pass
 
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
 
+        self.unload_verification_algorithm_data()
+        self.unload_verification_algorithm_data_special()
         pass
-
 
     # Load Verification Algorithm Data
     def load_verification_algorithm_data(self):
@@ -84,7 +88,6 @@ class Fixtures(object):
         if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
             shutil.rmtree(self.unit_test_folder_special.decode('utf-8'))
         os.makedirs(self.unit_test_folder_special.decode('utf-8'))
-
 
         file_obj1 = open(self.test_file_one_special.decode('utf-8'), 'w+')
         file_obj1.write('1 document' + str(random.randrange(1, 10000)))
@@ -117,11 +120,10 @@ class Fixtures(object):
         "sha256\n",
         r"de5450da6769fe7dc515439c235d92ca34b2f979e68ed5e97931fd9ad568fbfa	d:\python\Fixity Project\test\test\\1.docx	3803196084131072658628" + "\n",
         r"83426e9311b5942db5d3f55eb17dd00238f9def3aaa819949bc653bb595e1b08	d:\python\Fixity Project\test\test\\2.docx	3803196084131072658629" + "\n",
-        r"412eec9d4443bc26ae1e61c373e9768d44babf7d838d61cfd34e59647b88fa74	d:\python\Fixity Project\test\test\\3.docx	3803196084131072658630" + "\n" ]
+        r"412eec9d4443bc26ae1e61c373e9768d44babf7d838d61cfd34e59647b88fa74	d:\python\Fixity Project\test\test\\3.docx	3803196084131072658630" + "\n"]
 
         test_history_file.writelines(history_content)
         test_history_file.close()
-
 
     def load_attachment(self):
         if os.path.exists(self.unit_test_folder):
@@ -145,7 +147,6 @@ class Fixtures(object):
 
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass
-
 
     # Delete Testing Data
     def unload_verification_algorithm_data_special(self):

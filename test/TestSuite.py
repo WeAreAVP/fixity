@@ -20,8 +20,6 @@ from ProjectFixtures import ProjectFixtures
 from ProjectTestCase import ProjectTestCase
 from EmailTestCase import EmailTestCase
 from Fixtures import Fixtures
-
-
 import Main
 
 
@@ -35,7 +33,6 @@ class TestSuite(unittest.TestCase):
         self.algorithm_test_case = AlgorithmTestCase()
         self.project_test_case = ProjectTestCase()
         self.email_test_case = EmailTestCase()
-
 
         self.App = Main.Main()
         self.App.Fixity.loadAllProjects()
@@ -77,7 +74,6 @@ class TestSuite(unittest.TestCase):
         # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
         response_test_confirm_file_delete = self.algorithm_test_case.test_delete_file()
         self.assertEqual(response_test_confirm_file_delete[0], response_test_confirm_file_delete[1], response_test_confirm_file_delete[2])
-
 
         # ================================== Special Character Testing ================================
         #
@@ -139,7 +135,6 @@ class TestSuite(unittest.TestCase):
         response_test_import_project = self.project_test_case.import_project('Testing')
         self.assertEqual(response_test_import_project[0], response_test_import_project[1], response_test_import_project[2])
 
-
     def testEmailNotification(self):
 
         print('==================================================================')
@@ -158,8 +153,6 @@ class TestSuite(unittest.TestCase):
 
     def tearDown(self):
         print('Tear Down!')
-        self.Fixtures.unload_verification_algorithm_data()
-        self.Fixtures.unload_verification_algorithm_data_special()
         self.Fixtures.delete_testing_data()
         print('')
         pass

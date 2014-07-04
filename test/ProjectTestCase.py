@@ -41,8 +41,7 @@ class ProjectTestCase(object):
         self.project_fixtures.create_new_project(project_name)
 
         project_information = self.App.LaunchCLI(project_name, 'test')
-        print(project_information)
-        self.project_fixtures.unload_verification_algorithm_data()
+
         return [4, project_information['created'], 'Failed Run Project Unit Test....!']
 
 
