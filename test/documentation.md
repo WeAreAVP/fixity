@@ -4,7 +4,7 @@
 ### All unit test contains 
 ######Algorithum changes unit test for conditions mentioned below
 
-#####Confirm
+#####Confirm for Both Normal And Special Charachter
 
  1. Confirmed  FileExists::YES   ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
  2. Confirmed   FileExists::YES  ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
@@ -34,3 +34,9 @@
  6. Filter scanned files Unit test
  7. Import Project Unit test
 
+###Email Unit Test 
+ 1. Testing Email
+ 2. Attchment Email
+ 3. Error Email
+ 
+other in progress.....!
