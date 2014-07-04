@@ -40,24 +40,36 @@ class Fixtures(object):
 
     # Delete Testing Data
     def delete_testing_data(self):
+        try:
+            if os.path.exists(self.unit_test_folder):
+                shutil.rmtree(self.unit_test_folder)
+        except:
+            pass
 
-        if os.path.exists(self.unit_test_folder):
-            shutil.rmtree(self.unit_test_folder)
         try:
             if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
                 shutil.rmtree(self.unit_test_folder)
         except:
-            if os.path.exists(self.unit_test_folder_special):
-                shutil.rmtree(self.unit_test_folder)
+            try:
+                if os.path.exists(self.unit_test_folder_special):
+                    shutil.rmtree(self.unit_test_folder)
+            except:
+                pass
             pass
 
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
 
-        self.unload_verification_algorithm_data()
-        self.unload_verification_algorithm_data_special()
-        pass
+        try:
+            self.unload_verification_algorithm_data_special()
+        except:
+            pass
+
+        try:
+            self.unload_verification_algorithm_data_special()
+        except:
+            pass
 
     # Load Verification Algorithm Data
     def load_verification_algorithm_data(self):
@@ -93,17 +105,17 @@ class Fixtures(object):
         file_obj1.write('1 document' + str(random.randrange(1, 10000)))
         file_obj1.close()
 
-        file_obj1 = open(self.test_file_two_special.decode('utf-8'), 'w+')
-        file_obj1.write('2 document' + str(random.randrange(1, 10000)))
-        file_obj1.close()
+        file_obj2 = open(self.test_file_two_special.decode('utf-8'), 'w+')
+        file_obj2.write('2 document' + str(random.randrange(1, 10000)))
+        file_obj2.close()
 
-        file_obj1 = open(self.test_file_three_special.decode('utf-8'), 'w+')
-        file_obj1.write('3 document' + str(random.randrange(1, 10000)))
-        file_obj1.close()
+        file_obj3 = open(self.test_file_three_special.decode('utf-8'), 'w+')
+        file_obj3.write('3 document' + str(random.randrange(1, 10000)))
+        file_obj3.close()
 
-        file_obj1 = open(self.test_file_four_special.decode('utf-8'), 'w+')
-        file_obj1.write('4 document')
-        file_obj1.close()
+        file_obj4 = open(self.test_file_four_special.decode('utf-8'), 'w+')
+        file_obj4.write('4 document')
+        file_obj4.close()
 
     def load_history_file(self):
         if os.path.exists(self.unit_test_folder):
@@ -141,18 +153,20 @@ class Fixtures(object):
 
     # Delete Testing Data
     def unload_verification_algorithm_data(self):
+        try:
+            if os.path.exists(self.unit_test_folder):
+                shutil.rmtree(self.unit_test_folder)
 
-        if os.path.exists(self.unit_test_folder):
-            shutil.rmtree(self.unit_test_folder)
-
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
-        pass
+            self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        except:
+            pass
 
     # Delete Testing Data
     def unload_verification_algorithm_data_special(self):
-
-        if os.path.exists(self.unit_test_folder_special):
-            shutil.rmtree(self.unit_test_folder_special)
+        try:
+            if os.path.exists(self.unit_test_folder_special):
+                shutil.rmtree(self.unit_test_folder_special)
+        except:
+            pass
 
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
-        pass

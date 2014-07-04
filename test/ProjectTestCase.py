@@ -162,14 +162,12 @@ class ProjectTestCase(object):
 
         return [flag, False, "Failed Algo Change Unit Test."]
 
-
-
-
     # Filters Files
     #
     # @param string:selected_project project name to be filtered
 
     def filters_files(self, selected_project):
+
         print('Test Filters Project .........!')
         self.project_fixtures.load_verification_algorithm_data()
 
@@ -197,9 +195,11 @@ class ProjectTestCase(object):
     # @param string:project_name project name to be import Project
 
     def import_project(self, project_name):
+
         print('Test Import Project .........!')
         self.project_fixtures.load_history_file()
         flag = True
+
         project_core = ProjectCore.ProjectCore()
         response = project_core.ImportProject(self.project_fixtures.test_history_file, project_name, True, False)
         project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)

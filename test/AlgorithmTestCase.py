@@ -42,11 +42,14 @@ class AlgorithmTestCase(object):
         else:
             self.algorithm_fixtures.load_verification_algorithm_data()
 
+
         self.project_fixtures.create_new_project(self.algorithm_fixtures.project_name, is_special_chars)
 
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
+
+
 
         self.algorithm_fixtures.unload_verification_algorithm_data()
 
@@ -56,11 +59,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 4, 1: 0, 2: 0, 3: 0, 4: 0}, 'Failed Confirm File Unit Test']
-
-
-
 
     def test_confirm_if_inode_changed_of_file(self, is_special_chars = False):
 
@@ -91,7 +90,6 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
         return [{0:confirmed, 1:missing_file, 2:created, 3:moved, 4:corrupted_or_changed}, {0:4, 1: 0, 2: 0, 3: 0, 4: 0}, 'Failed Confirm File Unit Test']
 
 
@@ -123,7 +121,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
+
         return [{0:confirmed, 1:missing_file, 2:created, 3:moved, 4:corrupted_or_changed}, {0:3, 1: 1, 2: 0, 3: 0, 4: 0}, 'Failed Delete File Unit Test']
 
 
@@ -154,7 +152,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
+
         return [{0:confirmed, 1:missing_file, 2:created, 3:moved, 4:corrupted_or_changed}, {0:3, 1: 0, 2: 0, 3: 0, 4: 1}, 'Failed Change File {( Only Hash Changed )} Unit Test']
 
 
@@ -188,7 +186,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
+
 
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 3, 1: 0, 2: 0, 3: 0, 4: 1}, 'Failed Change File {( Hash and Path Changed )} Unit Test']
 
@@ -221,7 +219,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 3, 1: 0, 2: 0, 3: 0, 4: 1}, 'Failed Change File {( I-Node and Hash Changed )} Unit Test']
 
 
@@ -253,7 +251,6 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 4, 1: 0, 2: 1, 3: 0, 4: 0}, 'Failed New File Unit Test']
 
 
@@ -283,7 +280,6 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
-        self.algorithm_fixtures.delete_testing_data()
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 3, 1: 0, 2: 0, 3: 1, 4: 0}, 'Failed New File Unit Test']
 
 

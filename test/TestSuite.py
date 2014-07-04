@@ -12,7 +12,7 @@ import sys
 
 # Custom libraries
 base_path = os.getcwd()
-base_path = base_path.replace(r'\test', '')
+base_path = base_path.replace(str(os.sep) +'test', '')
 sys.path.append(base_path+os.sep)
 
 from AlgorithmTestCase import AlgorithmTestCase
@@ -119,7 +119,7 @@ class TestSuite(unittest.TestCase):
         response_test_run_project = self.project_test_case.run_project(self.Fixtures.project_name)
         self.assertEqual(response_test_run_project[0], response_test_run_project[1], response_test_run_project[2])
 
-        # Project Run Unit test
+        # Delete Run Unit test
         response_test_delete_project = self.project_test_case.delete_project(self.Fixtures.project_name)
         self.assertEqual(response_test_delete_project[0], response_test_delete_project[1], response_test_delete_project[2])
 
