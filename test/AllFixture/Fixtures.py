@@ -11,6 +11,11 @@ import random
 import shutil
 
 # Custom libraries
+import sys
+base_path = os.getcwd()
+base_path = base_path.replace(r'\test', '')
+base_path = base_path.replace(r'\Fixture', '')
+sys.path.append(base_path+os.sep)
 import Main
 
 
@@ -45,10 +50,15 @@ class Fixtures(object):
             shutil.rmtree(self.unit_test_folder)
         try:
             if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
-                shutil.rmtree(self.unit_test_folder)
+                try:
+                    shutil.rmtree(self.unit_test_folder_special.decode('utf-8'))
+                except:
+                    pass
+
+
         except:
             if os.path.exists(self.unit_test_folder_special):
-                shutil.rmtree(self.unit_test_folder)
+                shutil.rmtree(self.unit_test_folder_special)
             pass
 
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')

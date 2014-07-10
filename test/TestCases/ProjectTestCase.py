@@ -12,15 +12,18 @@ import os
 import sys
 
 # Custom libraries
+
+from AllFixture.ProjectFixtures import ProjectFixtures
+from Core import ProjectCore
+from AllFixture.EmailFixtures import EmailFixtures
+
+import ExpectedResults as ExpectedResults
+import FailedMessages as FailedMessages
+
 base_path = os.getcwd()
 base_path = base_path.replace(r'\test', '')
 sys.path.append(base_path+os.sep)
 import Main
-from ProjectFixtures import ProjectFixtures
-from Core import ProjectCore
-from EmailFixtures import EmailFixtures
-
-
 class ProjectTestCase(object):
 
 
@@ -41,8 +44,8 @@ class ProjectTestCase(object):
         self.project_fixtures.create_new_project(project_name)
 
         project_information = self.App.LaunchCLI(project_name, 'test')
-
-        return [4, project_information['created'], 'Failed Run Project Unit Test....!']
+        print("---------------------------------------------------------------------\n")
+        return [project_information['created'], ExpectedResults.ProjectTestCaseExpectedResult['run_project'], FailedMessages.ProjectTestCaseFailMessages['run_project']]
 
 
     # Delete Project
@@ -80,8 +83,8 @@ class ProjectTestCase(object):
 
         if len(result_project_detail) > 0:
             flag = False
-
-        return [flag, True, "Failed Save Project Unit Test"]
+        print("---------------------------------------------------------------------\n")
+        return [flag, ExpectedResults.ProjectTestCaseExpectedResult['delete_project'], FailedMessages.ProjectTestCaseFailMessages['delete_project']]
 
 
     # Change Project Name
@@ -103,9 +106,8 @@ class ProjectTestCase(object):
             project_core_new.getTitle()
         except:
             flag = False
-
-        return [flag, True, "Failed Save Project Unit Test"]
-
+        print("---------------------------------------------------------------------\n")
+        return [flag, ExpectedResults.ProjectTestCaseExpectedResult['change_project_name'], FailedMessages.ProjectTestCaseFailMessages['change_project_name']]
 
     # Save Project
     #
@@ -122,9 +124,8 @@ class ProjectTestCase(object):
             flag = True
         except:
             flag = False
-
-        return [flag, True, "Failed Save Project Unit Test."]
-
+        print("---------------------------------------------------------------------\n")
+        return [flag, ExpectedResults.ProjectTestCaseExpectedResult['save_project'], FailedMessages.ProjectTestCaseFailMessages['save_project']]
 
     # Change Algorithm
     #
@@ -140,11 +141,7 @@ class ProjectTestCase(object):
 
         project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
 
-
         result_of_all_file_confirmed = project_core.Run(True)
-
-
-
 
         if bool(result_of_all_file_confirmed['file_changed_found']):
             email_fixtures = EmailFixtures()
@@ -159,11 +156,8 @@ class ProjectTestCase(object):
 
         if bool(result_of_all_file_confirmed_second['file_changed_found']):
             flag = False
-
-        return [flag, False, "Failed Algo Change Unit Test."]
-
-
-
+        print("---------------------------------------------------------------------\n")
+        return [flag, ExpectedResults.ProjectTestCaseExpectedResult['change_algorithm'], FailedMessages.ProjectTestCaseFailMessages['change_algorithm']]
 
     # Filters Files
     #
@@ -189,8 +183,8 @@ class ProjectTestCase(object):
         created = result_of_run_after_filter['created']
         moved = result_of_run_after_filter['moved']
         corrupted_or_changed = result_of_run_after_filter['corrupted_or_changed']
-
-        return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, {0: 3, 1: 1, 2: 0, 3: 0, 4: 0}, 'Failed Filters Project files']
+        print("---------------------------------------------------------------------\n")
+        return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, ExpectedResults.ProjectTestCaseExpectedResult['filters_files'], FailedMessages.ProjectTestCaseFailMessages['filters_files']]
 
     # Import Project
     #
@@ -214,5 +208,5 @@ class ProjectTestCase(object):
         except:
             flag = False
             pass
-
-        return [flag, True, "Failed Import Project Unit Test."]
+        print("---------------------------------------------------------------------\n")
+        return [flag, ExpectedResults.ProjectTestCaseExpectedResult['import_project'], FailedMessages.ProjectTestCaseFailMessages['run_project']]
