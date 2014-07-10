@@ -46,9 +46,12 @@ class Configuration(object):
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
             self.config_file_path = self.getBasePath()+'conf.xml'
-            #self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
+            self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
+            self.unit_test_folder = self.base_path + 'test'+os.sep
+            self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
 
         else:
+            
             self.lib_agent_path = str(self.user_home_path)+str(os.sep)+"Library"+str(os.sep)+"LaunchAgents"+str(os.sep)
             self.agent_path = str(self.user_home_path)+str(os.sep)+"Library"
             path_info = str(os.getcwd()).replace(str(os.sep)+'Contents'+str(os.sep)+'Resources', '')
@@ -81,9 +84,11 @@ class Configuration(object):
             self.sch_month_template_path_mac = r''+(os.path.join(self.template_path)+'SchedulerMacMonth.xml')
 
             self.avpreserve_img = r''+(os.path.join(self.assets_path) + 'avpreserve.png')
+            self.unit_test_folder = self.base_path + os.sep + 'test'+os.sep
+            self.unit_test_folder_special = self.base_path + os.sep + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
 
-        self.unit_test_folder = self.base_path + 'test'+os.sep
-        self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
+
+
         self.check_sum_methods = ['sha256', 'md5']
         self.logo_sign_small = 'logo_sign_small.png'
         self.number_of_path_directories = 7
@@ -149,7 +154,7 @@ class Configuration(object):
     def getLogoSignSmall(self):
         if self.getOsType() == 'Windows':
             pass
-            #return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
+            return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
         else:
             os.path.join(self.assets_path)
             return os.path.join(self.assets_path, str(self.logo_sign_small))
