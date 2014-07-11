@@ -43,9 +43,9 @@ class TestSuite(unittest.TestCase):
     # Running Algorithm for Verification Test Cases
     def testARunAlgorithmTestCases(self):
 
-        #print('==================================================================')
-        #print(' Running Algorithm for Verification Test Cases ')
-        #print('==================================================================')
+        print('==================================================================')
+        print(' Running Algorithm for Verification Test Cases ')
+        print('==================================================================')
         #
         ## Confirmed  FileExists::YES   ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
         #response_test_confirm_file = self.algorithm_test_case.test_confirm_file()
@@ -111,23 +111,35 @@ class TestSuite(unittest.TestCase):
         ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
         #response_test_confirm_file_delete = self.algorithm_test_case.test_delete_file_is_special_chars()
         #self.assertEqual(response_test_confirm_file_delete[0], response_test_confirm_file_delete[1], response_test_confirm_file_delete[2])
-
+        #
         ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
         #response_test_moved_file_to_new_Directory = self.algorithm_test_case.test_moved_file_to_new_directory()
         #print(response_test_moved_file_to_new_Directory)
         #self.assertEqual(response_test_moved_file_to_new_Directory[0], response_test_moved_file_to_new_Directory[1], response_test_moved_file_to_new_Directory[2])
-
-        ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        #
+        ## Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::NO    ||SameI-Node::YES
         #response_test_moved_file_to_new_Directory = self.algorithm_test_case.test_moved_file_to_new_Directory_change_hash()
         #self.assertEqual(response_test_moved_file_to_new_Directory[0], response_test_moved_file_to_new_Directory[1], response_test_moved_file_to_new_Directory[2])
+        #
+        ## Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
+        #response_test_moved_new_Directory_change_name = self.algorithm_test_case.test_moved_file_to_new_Directory_change_name_as_old()
+        #self.assertEqual(response_test_moved_new_Directory_change_name[0], response_test_moved_new_Directory_change_name[1], response_test_moved_new_Directory_change_name[2])
+        #
+        ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        #response_test_moved_new_Directory_change_name_and_hash = self.algorithm_test_case.test_moved_to_new_Directory_change_name_as_old_and_content()
+        #self.assertEqual(response_test_moved_new_Directory_change_name_and_hash[0], response_test_moved_new_Directory_change_name_and_hash[1], response_test_moved_new_Directory_change_name_and_hash[2])
 
-        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-        response_test_moved_new_Directory_change_name = self.algorithm_test_case.test_moved_file_to_new_Directory_change_name_as_old()
-        self.assertEqual(response_test_moved_new_Directory_change_name[0], response_test_moved_new_Directory_change_name[1], response_test_moved_new_Directory_change_name[2])
+        ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        #response_test_change_base_path = self.algorithm_test_case.test_change_base_path()
+        #self.assertEqual(response_test_change_base_path[0], response_test_change_base_path[1], response_test_change_base_path[2])
 
-        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-        response_test_moved_new_Directory_change_name_and_hash = self.algorithm_test_case.test_moved_to_new_Directory_change_name_as_old_and_content()
-        self.assertEqual(response_test_moved_new_Directory_change_name_and_hash[0], response_test_moved_new_Directory_change_name_and_hash[1], response_test_moved_new_Directory_change_name_and_hash[2])
+        ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        #response_test_change_base_path = self.algorithm_test_case.test_change_base_path()
+        #self.assertEqual(response_test_change_base_path[0], response_test_change_base_path[1], response_test_change_base_path[2])
+
+        ## Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        #response_test_change_base_path = self.algorithm_test_case.test_change_base_path()
+        #self.assertEqual(response_test_change_base_path[0], response_test_change_base_path[1], response_test_change_base_path[2])
 
 
     ## Running Projects Operation Test Cases

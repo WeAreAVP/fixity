@@ -72,7 +72,7 @@ class AlgorithmTestCase(object):
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -129,7 +129,7 @@ class AlgorithmTestCase(object):
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
 
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -186,7 +186,7 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.del_file(self.algorithm_fixtures.test_file_one_special)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -240,7 +240,7 @@ class AlgorithmTestCase(object):
 
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -295,7 +295,7 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.change_file_changed_hash_and_path(self.algorithm_fixtures.test_file_one_special)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -351,7 +351,7 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.change_inode_and_hash(self.algorithm_fixtures.test_file_one_special)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -409,7 +409,7 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.new_file(self.algorithm_fixtures.test_file_one_special+'_new_file')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -559,9 +559,6 @@ class AlgorithmTestCase(object):
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, ExpectedResults.AlgorithmTestCaseExpectedResult['test_moved_to_new_Directory_change_name_as_old_and_content'], FailedMessages.AlgorithmTestCaseFailMessages['test_moved_to_new_Directory_change_name_as_old_and_content']]
 
 
-
-
-
     def test_moved_file_is_special_chars(self):
         print('Test Moved File .........!')
         is_special_chars= True
@@ -575,7 +572,7 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.rename_file(self.algorithm_fixtures.test_file_one_special, self.algorithm_fixtures.test_file_one_special + '_unit_test')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-        self.algorithm_fixtures.unload_verification_algorithm_data()
+        self.algorithm_fixtures.unload_verification_algorithm_data_special()
 
         confirmed = report_info_two['confirmed']
         missing_file = report_info_two['missing_file']
@@ -588,3 +585,32 @@ class AlgorithmTestCase(object):
         print("---------------------------------------------------------------------\n")
 
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, ExpectedResults.AlgorithmTestCaseExpectedResult['test_moved_file'], FailedMessages.AlgorithmTestCaseFailMessages['test_moved_file']]
+
+    def test_change_base_path(self):
+        print('Test Moved File .........!')
+
+        self.algorithm_fixtures.load_verification_algorithm_data()
+
+        self.project_fixtures.create_new_project(self.algorithm_fixtures.project_name)
+
+        print(self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test'))
+
+        self.algorithm_fixtures.change_directory_path()
+
+        report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
+
+        print(report_info_two)
+
+        self.algorithm_fixtures.unload_verification_algorithm_data()
+
+        confirmed = report_info_two['confirmed']
+        missing_file = report_info_two['missing_file']
+        created = report_info_two['created']
+        moved = report_info_two['moved']
+        corrupted_or_changed = report_info_two['corrupted_or_changed']
+
+        self.algorithm_fixtures.delete_testing_data()
+
+        print("---------------------------------------------------------------------\n")
+
+        return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_base_path'], FailedMessages.AlgorithmTestCaseFailMessages['test_change_base_path']]

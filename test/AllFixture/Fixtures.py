@@ -61,9 +61,9 @@ class Fixtures(object):
                 shutil.rmtree(self.unit_test_folder_special)
             pass
 
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
+        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
+        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
 
         self.unload_verification_algorithm_data()
         self.unload_verification_algorithm_data_special()
@@ -155,7 +155,7 @@ class Fixtures(object):
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
 
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass
 
     # Delete Testing Data
@@ -164,5 +164,5 @@ class Fixtures(object):
         if os.path.exists(self.unit_test_folder_special):
             shutil.rmtree(self.unit_test_folder_special)
 
-        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass

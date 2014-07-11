@@ -46,7 +46,10 @@ class Configuration(object):
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
             self.config_file_path = self.getBasePath()+'conf.xml'
-            self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
+            try:
+                self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
+            except:
+                pass
             self.unit_test_folder = self.base_path + 'test'+os.sep
             self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
 
@@ -149,12 +152,13 @@ class Configuration(object):
         string_to_be_encoded = str(string_to_be_encoded).strip()
         return base64.b16encode(base64.b16encode(string_to_be_encoded))
 
-    #def getLogoSignSmall(self):
 
     def getLogoSignSmall(self):
         if self.getOsType() == 'Windows':
-            pass
-            return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
+            try:
+                return os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) + str(self.logo_sign_small))
+            except:
+                pass
         else:
             os.path.join(self.assets_path)
             return os.path.join(self.assets_path, str(self.logo_sign_small))

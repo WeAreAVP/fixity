@@ -129,6 +129,29 @@ class AlgorithmFixtures(Fixtures):
         pass
 
 
+    # Changed Directory Path
+    #
+    # @param path_to_be_changed:string  Path to be change for testing
+    def change_directory_path(self):
+        last_different_paths = self.unit_test_folder+'||-||Fixity-1,||-||Fixity-2,||-||Fixity-3,||-||Fixity-4,||-||Fixity-5,||-||Fixity-6,||-||Fixity-7'
+        self.unit_test_folder = self.App.Fixity.Configuration.getBasePath()+'test2'
+
+        self.test_file_one = self.App.Fixity.Configuration.getBasePath()+'test2'+os.sep+ '1.docx'
+        self.test_file_two = self.App.Fixity.Configuration.getBasePath()+'test2'+os.sep+ '2.docx'
+        self.test_file_three = self.App.Fixity.Configuration.getBasePath()+'test2'+os.sep+ '3.docx'
+        self.test_file_four = self.App.Fixity.Configuration.getBasePath()+'test2'+os.sep+ '4.docx'
+
+        self.load_verification_algorithm_data()
+
+        information = {}
+        information['path'] = self.unit_test_folder
+        self.App.Fixity.Database.update(self.App.Fixity.Database._tableProjectPath, information, '1 = 1')
+        information_update_project = {}
+        information_update_project['lastDifPaths'] = last_different_paths
+        self.App.Fixity.Database.update(self.App.Fixity.Database._tableProject, information_update_project, '1 = 1')
+
+        pass
+
     # Rename File
     #
     # @param path_to_be_changed:string  Path to be change for testing

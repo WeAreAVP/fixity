@@ -69,7 +69,7 @@ class ProjectFixtures(Fixtures):
         for n in range(self.App.Fixity.Configuration.number_of_path_directories):
 
             dir_information['path'] = dirs_path
-            dir_information['pathID'] = 'Fixity-'+str(n)
+            dir_information['pathID'] = 'Fixity-'+str((n + 1))
             dir_information['projectID'] = project_id['id']
             dir_information['versionID'] = '1'
             dir_information['updatedAt'] = self.App.Fixity.Configuration.getCurrentTime()

@@ -472,6 +472,7 @@ class Database(object):
                             pass
                     counter = counter+1
             query += ' WHERE '+condition
+            print(query)
 
             response = self.cursor.execute(query)
             self.commit()
@@ -482,8 +483,10 @@ class Database(object):
 
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
+
             if counter_recursion < 2:
                 counter_recursion += 1
+
                 return self.update(table_name, information, condition)
 
             counter_recursion = 0

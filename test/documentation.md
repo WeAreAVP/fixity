@@ -24,6 +24,23 @@
 #####New
  1. New  FileExists::YES         ||SameHashOfFile::NO     ||SameFilePath::NO     ||SameI-Node::NO
 
+#####Scenarios of Algorithm change 
+ 1. Move file with in a directory  
+ 2. Move file with in a directory and change content 
+ 3. Copy , Paste a File 
+ 4. Copy , Paste a File , Then Remove old File also change name of the new file as old one 
+ 5. Copy , Paste a File , Then Remove old File and change content of New file also change name of the new file as old one 
+ 6. Change Directories Path
+ 7. Intersection of folder at a new place
+ 
+###Scenarios of Dir required
+ 1. Is Report Directory Exists
+ 2. Is Schedules Directory Exists
+ 3. Is Config File Exists
+ 4. Is Debug File Exists
+ 5. Is Database File Exists
+ 6. Is History Directory Exist 
+ 
 ###Project Operations
 
  1. Delete Run Unit test
