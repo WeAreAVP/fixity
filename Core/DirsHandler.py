@@ -32,8 +32,8 @@ class DirsHandler(object):
     def getID(self):
         return self.ID
 
-    def setPath(self):
-        return self.path
+    def setPath(self, path):
+        self.path = path
 
     def setID(self,ID ):
         self.ID = ID

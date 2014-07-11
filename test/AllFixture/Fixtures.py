@@ -34,18 +34,27 @@ class Fixtures(object):
         self.test_file_three = self.unit_test_folder + '3.docx'
         self.test_file_four = self.unit_test_folder + '4.txt'
 
-        self.test_file_one_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ1.docx'
-        self.test_file_two_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ2.docx'
-        self.test_file_three_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ3.docx'
-        self.test_file_four_special = self.unit_test_folder_special + 'Unidade_de_C@.#$%onservação4.txt'
+        self.test_file_one_special = self.unit_test_folder_special +\
+        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ1.docx'
+
+        self.test_file_two_special = self.unit_test_folder_special +\
+        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ2.docx'
+
+        self.test_file_three_special = self.unit_test_folder_special + \
+        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ3.docx'
+
+        self.test_file_four_special = self.unit_test_folder_special +\
+        'Unidade_de_C@.#$%onservação4.txt'
 
         self.test_history_file = self.unit_test_folder + 'history.tsv'
         self.attachment = self.unit_test_folder + 'attachment.tsv'
         pass
 
-    # Delete Testing Data
-    def delete_testing_data(self):
 
+    def delete_testing_data(self):
+        """
+        Delete Testing Data For Unit Test
+        """
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
         try:
@@ -54,47 +63,48 @@ class Fixtures(object):
                     shutil.rmtree(self.unit_test_folder_special.decode('utf-8'))
                 except:
                     pass
-
-
         except:
             if os.path.exists(self.unit_test_folder_special):
                 shutil.rmtree(self.unit_test_folder_special)
             pass
 
-        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
-        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
-        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
 
         self.unload_verification_algorithm_data()
         self.unload_verification_algorithm_data_special()
         pass
 
-    # Load Verification Algorithm Data
     def load_verification_algorithm_data(self):
-
+        """
+        Load Verification Algorithm Data For Unit Test
+        """
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
         os.makedirs(self.unit_test_folder)
 
         file_obj1 = open(self.test_file_one, 'w+')
-        file_obj1.write('1 document' + str(random.randrange(1, 10000)))
+        file_obj1.write('1 document')
         file_obj1.close()
 
         file_obj1 = open(self.test_file_two, 'w+')
-        file_obj1.write('2 document' + str(random.randrange(1, 10000)))
+        file_obj1.write('2 document')
         file_obj1.close()
 
         file_obj1 = open(self.test_file_three, 'w+')
-        file_obj1.write('3 document' + str(random.randrange(1, 10000)))
+        file_obj1.write('3 document')
         file_obj1.close()
 
         file_obj1 = open(self.test_file_four, 'w+')
         file_obj1.write('4 document')
         file_obj1.close()
 
-     # Load Verification Algorithm Data
-    def load_special_verification_algorithm_data(self):
 
+    def load_special_verification_algorithm_data(self):
+        """
+        Load Verification Algorithm Data For Unit Test
+        """
         if os.path.exists(self.unit_test_folder_special.decode('utf-8')):
             shutil.rmtree(self.unit_test_folder_special.decode('utf-8'))
         os.makedirs(self.unit_test_folder_special.decode('utf-8'))
@@ -116,6 +126,9 @@ class Fixtures(object):
         file_obj1.close()
 
     def load_history_file(self):
+        """
+        Load History File For Unit Test
+        """
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
         os.makedirs(self.unit_test_folder)
@@ -136,6 +149,9 @@ class Fixtures(object):
         test_history_file.close()
 
     def load_attachment(self):
+        """
+        Load Attachments For Unit Test
+        """
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
 
@@ -149,20 +165,30 @@ class Fixtures(object):
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
 
-    # Delete Testing Data
     def unload_verification_algorithm_data(self):
+        """
+        Delete Testing Data For Unit Test
+        """
 
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
 
-        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        try:
+            testing_new_dir = self.App.Fixity.Configuration.getBasePath()+'test3'
+            if os.path.exists(testing_new_dir):
+                shutil.rmtree(testing_new_dir)
+        except:
+            pass
+
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass
 
-    # Delete Testing Data
     def unload_verification_algorithm_data_special(self):
-
+        """
+        Unload Verification Algorithm Data Special For Unit Test
+        """
         if os.path.exists(self.unit_test_folder_special):
             shutil.rmtree(self.unit_test_folder_special)
 
-        #self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         pass

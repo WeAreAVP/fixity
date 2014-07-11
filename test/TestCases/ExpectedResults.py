@@ -43,4 +43,4 @@ AlgorithmTestCaseExpectedResult['test_moved_file_to_new_Directory_change_hash'] 
 AlgorithmTestCaseExpectedResult['test_moved_file_to_new_Directory_change_name_as_old'] = {0: 3, 1: 0, 2: 0, 3: 0, 4: 1}
 AlgorithmTestCaseExpectedResult['test_moved_to_new_Directory_change_name_as_old_and_content'] = {0: 3, 1: 0, 2: 0, 3: 0, 4: 1}
 AlgorithmTestCaseExpectedResult['test_change_base_path'] = {0: 4, 1: 0, 2: 0, 3: 0, 4: 0}
-
+AlgorithmTestCaseExpectedResult['test_intersection_of_dir'] = {0: 4, 1: 0, 2: 0, 3: 0, 4: 0}

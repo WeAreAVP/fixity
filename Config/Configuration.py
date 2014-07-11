@@ -224,55 +224,17 @@ class Configuration(object):
                 self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
                 self.setEmailConfiguration(information)
 
-    def LogHistory(self):
-        """ generated source for method LogHistory """
-        #  TODO
-
-    def Report(self):
-        """ generated source for method Report """
-        #  TODO
-
-    def setReportsPath(self, parameter):
-        return ""
-
-    def setSchedulesPath(self):
-        """ generated source for method setHistoryPath """
-        #  TODO implement me
-        return ""
-
-    def setHistoryPath(self):
-        """ generated source for method setHistoryPath """
-        #  TODO implement me
-        return ""
-
-    def setBinPath(self):
-        """ generated source for method setBinPath """
-        #  TODO implement me
-        return ""
-
-    def setImagesPath(self):
-        """ generated source for method setImagesPath """
-        #  TODO implement me
-        return ""
-
-    def setAppName(self):
-        """ generated source for method setAppName """
-        #  TODO implement me
-        return ""
-
-    def setVersion(self):
-        """ generated source for method setVersion """
-        #  TODO implement me
-        return ""
-
     def getCurrentTime(self):
+
         current_date = str(datetime.datetime.now()).split('.')
         return current_date[0]
 
-    #Gets Detail information of Windows
-    #@return: tuple Windows Information
 
     def getWindowsInformation(self):
+        """
+        Gets Detail information of Windows
+        @return: tuple Windows Information
+        """
         WindowsInformation = {}
         try:
             major,  minor,  build,  platformType,  servicePack = sys.getwindowsversion()
@@ -311,12 +273,14 @@ class Configuration(object):
             pass
         return WindowsInformation
 
-    #CleanStringForBreaks
-    #@param StringToBeCleaned: String To Be Cleaned
-    #
-    #@return: CleanString
+
 
     def CleanStringForBreaks(self,StringToBeCleaned):
+        """
+        @param StringToBeCleaned:
+
+        @return:
+        """
         CleanString = StringToBeCleaned.strip()
         try:
             CleanString = CleanString.replace('\r\n', '')

@@ -28,8 +28,21 @@ class Main (object):
 
         app.exec_()
 
-    def LaunchCLI(self, project_name, called_from = 'CLI'):
+    def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
+
+        if new_path is not None:
+            dir_information = {}
+            dir_information['path'] = new_path
+
+
+            self.Fixity.Database.update(self.Fixity.Database._tableProjectPath, dir_information, '1 = 1')
+
+            for dirs_objects in project_core.directories:
+                project_core.directories[dirs_objects].setPath(new_path)
+                print(project_core.directories[dirs_objects].getPath())
+                break
+
         project_core.Save(False)
         if called_from == 'test':
             return project_core.Run(False, False, False, 'test')

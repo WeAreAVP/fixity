@@ -31,8 +31,6 @@ class RequiredsCreationFixture(Fixtures):
         self.App = Main.Main()
         super(RequiredsCreationFixture, self).__init__()
         self.base_folder = self.App.Fixity.Configuration.getBasePath()
-        print(self.base_folder)
-
         pass
 
     def removeDirsAndFiles(self):

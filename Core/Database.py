@@ -43,7 +43,14 @@ class Database(object):
     def selfDestruct(self):
         del self
 
-    def connect(self, is_unit_test = False):
+
+    def connect(self, is_unit_test=False):
+        """
+        connect To Database
+        @param is_unit_test: is call came from unit test
+
+        @return Connect Instance
+        """
         global counter_recursion
         try:
 
@@ -61,12 +68,13 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-    #Get one record using given sql query
-    #@param query: SQL Raw Query
-    #
-    #@return: One sQuery Result
-
     def getOne(self, query):
+        """
+        Get one record using given sql query
+        @param query: SQL Raw Query
+
+        @return: One sQuery Result
+        """
         global counter_recursion
         try:
 
@@ -86,12 +94,13 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-    #SQL Query Runner
-    #@param query: SQL Raw Query
-    #
-    #@return: Query Result
-
     def sqlQuery(self, query):
+        """
+        SQL Query Runner
+        @param query: SQL Raw Query
+
+        @return: Query Result
+        """
         global counter_recursion
         try:
 
@@ -111,13 +120,14 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #Get Project Information
-    #@param project_name: Project Name to be searched in database
-    #@param limit: If Ture 1 limit with be applied
-    #
-    #@return project information
-
     def getProjectInfo(self,project_name = None, limit = True):
+        """
+        Get Project Information
+        @param project_name: Project Name to be searched in database
+        @param limit: If Ture 1 limit with be applied
+
+        @return project information
+        """
         global counter_recursion
         try:
             information = {}
@@ -144,13 +154,14 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #Get Projects paths Information
-    #@param project_id: Project ID
-    #@param version_id: ID of Version of Project to be fetched
-    #
-    #@return project information
-
     def getProjectPathInfo(self ,project_id ,version_id):
+        """
+        Get Projects paths Information
+        @param project_id: Project ID
+        @param version_id: ID of Version of Project to be fetched
+
+        @return project information
+        """
         global counter_recursion
         try:
 
@@ -172,10 +183,12 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #Get SMTP and User Email Configuration
-    #@return Configuration
-
     def getConfiguration(self):
+        """
+        Get SMTP and User Email Configuration
+
+        @return Configuration
+        """
         global counter_recursion
         try:
 
@@ -195,6 +208,9 @@ class Database(object):
             return False
 
     def getVersionDetails(self, project_id, version_id, OrderBy = None):
+        """
+        Get Version Details
+        """
         global counter_recursion
         try:
 
@@ -218,8 +234,10 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    ''' Fetch information related to email configuration'''
     def getConfigInfo(self, project=None):
+        """
+        Fetch information related to email configuration
+        """
         global counter_recursion
         query_result = self.select(self._tableConfiguration)
         try:
@@ -251,8 +269,10 @@ class Database(object):
             return False
         return {}
 
-    #Get Last Inserted Version of given project
     def getVersionDetailsLast(self, project_id):
+        """
+        Get Last Inserted Version of given project
+        """
         global counter_recursion
         try:
             response = {}
@@ -274,13 +294,15 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #Convert List to Tuple Data type
-    def listToTuple(self, proveded_list):
+    def listToTuple(self, provided_list):
+        """
+        Convert List to Tuple Data type
+        """
         global counter_recursion
         try:
             new_list = []
-            for single_of_proveded_list in  proveded_list:
-                new_list.append(proveded_list[single_of_proveded_list])
+            for single_of_provided_list in  provided_list:
+                new_list.append(provided_list[single_of_provided_list])
             return tuple(new_list)
 
         except (sqlite3.OperationalError,Exception):
@@ -289,7 +311,7 @@ class Database(object):
             self = Database()
             if counter_recursion < 2:
                 counter_recursion += 1
-                return self.listToTuple(proveded_list)
+                return self.listToTuple(provided_list)
 
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
@@ -298,15 +320,16 @@ class Database(object):
     def commit(self):
         self.con.commit()
 
-    #SQL Select Query
-    #@param table_name: Table Name
-    #@param select: Column To Select
-    #@param condition: Conditions as String
-    #@param order_by: order By Columns
-    #
-    #@return: Query Result
+    def select(self,table_name, select='*', condition=None, order_by=None):
+        """
+        SQL Select Query
+        @param table_name: Table Name
+        @param select: Column To Select
+        @param condition: Conditions as String
+        @param order_by: order By Columns
 
-    def select(self,table_name ,select = '*', condition=None, order_by = None):
+        @return: Query Result
+        """
         global counter_recursion
         try:
             query = 'SELECT '+ str(select) +' FROM '+str(table_name)
@@ -338,9 +361,10 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #Query Result to list converter
-
     def dict_gen(self,curs):
+        """
+        Query Result to list converter
+        """
         global counter_recursion
         try:
             import itertools
@@ -364,13 +388,14 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-    #SQL Insert Query
-    #@param table_name: Table Name
-    #@param information: List of columns with Values (index as Column and Value as Column Value)
-    #
-    #@return: Insert Id of this record
-
     def insert(self, table_name, information):
+        """
+        SQL Insert Query
+        @param table_name: Table Name
+        @param information: List of columns with Values (index as Column and Value as Column Value)
+
+        @return: Insert Id of this record
+        """
         global counter_recursion
         try:
 
@@ -396,7 +421,7 @@ class Database(object):
                 except:
                     pass
 
-            query = query + ' ( '+self.implode( columnName,  ',  ') + ' ) VALUES ( ' + self.implode(values,  ' , ', False) + ' ) '
+            query = query + ' ( ' + self.implode( columnName,  ',  ') + ' ) VALUES ( ' + self.implode( values,  ' , ', False ) + ' ) '
 
             self.cursor.execute(query)
             self.commit()
@@ -415,17 +440,18 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #SQL Delete Query
-    #@param table_name: Table Name
-    #@param condition: Condition of which row will deleted
-    #
-    #@return: Response of Query Result
+    def delete(self, table_name, condition):
+        """
+        SQL Delete Query
+        @param table_name: Table Name
+        @param condition: Condition of which row will deleted
 
-    def delete(self,table_name ,condition):
+        @return: Response of Query Result
+        """
         global counter_recursion
         try:
 
-            query = 'DELETE FROM '+str(table_name) + ' WHERE ' + condition
+            query = 'DELETE FROM ' + str(table_name) + ' WHERE ' + condition
             response = self.sqlQuery(query)
 
             counter_recursion = 0
@@ -443,18 +469,20 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #SQL Update Query
-    #@param table_name: Table Name
-    #@param information: List of columns with Values (index as Column and Value as Column Value)
-    #@param condition: Condition of which row will deleted
-    #
-    #@return: Response of Query Result
 
     def update(self, table_name, information, condition):
+        """
+        SQL Update Query
+        @param table_name: Table Name
+        @param information: List of columns with Values (index as Column and Value as Column Value)
+        @param condition: Condition of which row will deleted
+
+        @return: Response of Query Result
+        """
         global counter_recursion
         try:
 
-            query = 'UPDATE '+str(table_name) +' SET '
+            query = 'UPDATE '+str(table_name) + ' SET '
             counter = 0
             for single_info in information:
 
@@ -472,7 +500,6 @@ class Database(object):
                             pass
                     counter = counter+1
             query += ' WHERE '+condition
-            print(query)
 
             response = self.cursor.execute(query)
             self.commit()
@@ -493,14 +520,15 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    #  Columns and records Implode for query
-    #  @param information: Array of Value to be imploded
-    #  @param glue: glue with values will be glued
-    #  @param is_column: Given Information is of tables columns or Row
-    #
-    #  @return: Response of Query Result
-
     def implode(self,information , glue , is_column = True):
+        """
+        Columns and records Implode for query
+        @param information: Array of Value to be imploded
+        @param glue: glue with values will be glued
+        @param is_column: Given Information is of tables columns or Row
+
+        @return: Response of Query Result
+        """
         try:
 
             counter = 0

@@ -35,6 +35,7 @@ AlgorithmTestCaseFailMessages['test_moved_file_to_new_Directory_change_hash'] = 
 AlgorithmTestCaseFailMessages['test_moved_file_to_new_Directory_change_name_as_old'] =  'Failed Copy , Paste a File , Then Remove old File also change name of the new file as old one Unit Test ................. !'
 AlgorithmTestCaseFailMessages['test_moved_to_new_Directory_change_name_as_old_and_content'] = 'Failed Copy , Paste a File , Then Remove old File also change name of the new file as old one and changed content Unit Test ................. !'
 AlgorithmTestCaseFailMessages['test_change_base_path'] = 'Failed Test Change Base Path Unit Test ................. !'
+AlgorithmTestCaseFailMessages['test_intersection_of_dir'] = 'Failed Test Intersection Of Dir Unit Test ................. !'
 
 RequiredsCreationTestCaseFailMessages['is_report_dir_exists'] = 'Failed Reports Directory Creation Unit Test ................. !'
 RequiredsCreationTestCaseFailMessages['is_history_dir_exists'] = 'Failed History Directory Creation Unit Test ................. !'

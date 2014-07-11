@@ -108,9 +108,9 @@ class AlgorithmTestCase(object):
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
         if is_special_chars:
-            self.algorithm_fixtures.del_file(self.algorithm_fixtures.test_file_one_special)
+            del_file(self.algorithm_fixtures.test_file_one_special)
         else:
-            self.algorithm_fixtures.del_file(self.algorithm_fixtures.test_file_one)
+            del_file(self.algorithm_fixtures.test_file_one)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         self.algorithm_fixtures.unload_verification_algorithm_data()
@@ -139,9 +139,9 @@ class AlgorithmTestCase(object):
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
         if is_special_chars:
-            self.algorithm_fixtures.change_file(self.algorithm_fixtures.test_file_one_special)
+            change_file(self.algorithm_fixtures.test_file_one_special)
         else:
-            self.algorithm_fixtures.change_file(self.algorithm_fixtures.test_file_one)
+            change_file(self.algorithm_fixtures.test_file_one)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         self.algorithm_fixtures.unload_verification_algorithm_data()
@@ -238,9 +238,9 @@ class AlgorithmTestCase(object):
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
         if is_special_chars:
-            self.algorithm_fixtures.new_file(self.algorithm_fixtures.test_file_one_special+'_new_file')
+            new_file(self.algorithm_fixtures.test_file_one_special+'_new_file')
         else:
-            self.algorithm_fixtures.new_file(self.algorithm_fixtures.test_file_one+'_new_file')
+            new_file(self.algorithm_fixtures.test_file_one+'_new_file')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         self.algorithm_fixtures.unload_verification_algorithm_data()
@@ -267,9 +267,9 @@ class AlgorithmTestCase(object):
 
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         if is_special_chars:
-            self.algorithm_fixtures.rename_file(self.algorithm_fixtures.test_file_one_special, self.algorithm_fixtures.test_file_one_special + '_unit_test')
+            rename_file(self.algorithm_fixtures.test_file_one_special, self.algorithm_fixtures.test_file_one_special + '_unit_test')
         else:
-            self.algorithm_fixtures.rename_file(self.algorithm_fixtures.test_file_one, self.algorithm_fixtures.test_file_one + '_unit_test')
+            rename_file(self.algorithm_fixtures.test_file_one, self.algorithm_fixtures.test_file_one + '_unit_test')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         self.algorithm_fixtures.unload_verification_algorithm_data()
