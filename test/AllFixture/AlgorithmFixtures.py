@@ -189,7 +189,6 @@ class AlgorithmFixtures(Fixtures):
             pass
         pass
 
-
     def create_directory_intersect(self):
         """
         Create Directory Intersect
@@ -204,7 +203,6 @@ class AlgorithmFixtures(Fixtures):
         self.unit_test_folder + 'test2' + os.sep + '3.docx'
         self.unit_test_folder + 'test2' + os.sep + '4.docx'
         pass
-
 
     def change_file(self, path_to_be_changed):
         """
@@ -228,8 +226,6 @@ class AlgorithmFixtures(Fixtures):
         """
         os.remove(path_to_be_deleted.decode('utf-8'))
         pass
-
-
 
     def new_file(self, path_to_be_created, content='4 document'):
         """

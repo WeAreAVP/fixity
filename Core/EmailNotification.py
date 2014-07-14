@@ -13,23 +13,24 @@ class EmailNotification(object):
         super(EmailNotification, self).__init__()
         self.Fixity = SharedApp.SharedApp.App
 
-    #Sends Email
-    #Note that ADDRESS and PASSWORD should be set before use
-    #
-    #Input: root, output (boolean), hash algorithm, QApplication
-    #Output: list of tuples of (hash, path, id)
-    #
-    #
-    #@param recipients: All Recipients Address
-    #@param text: Message To be sent in this Email
-    #@param attachment: attachment To be sent in this Email
-    #@param information: Information About Email Configuration
-    #@param projectName: project Name
-    #@param EmailPref: Email Preferences
-    #
-    #@return:  Boolean True If Email Send other wise False
+
 
     def SendEmail(self, recipients, text, attachment, information, project_name=''):
+        """
+        Note that ADDRESS and PASSWORD should be set before use
+
+        Input: root, output (boolean), hash algorithm, QApplication
+        Output: list of tuples of (hash, path, id)
+
+        @param recipients: All Recipients Address
+        @param text: Message To be sent in this Email
+        @param attachment: attachment To be sent in this Email
+        @param information: Information About Email Configuration
+        @param projectName: project Name
+        @param EmailPref: Email Preferences
+
+        @return:  Boolean True If Email Send other wise False
+        """
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -97,12 +98,32 @@ class EmailNotification(object):
 
 
     def TestingEmail(self,recipients, text, information):
+        """
+        Testing Email
+
+        @param recipients:
+        @param text:
+        @param information:
+
+        @return: Boolean
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
         return self.SendEmail(recipients, text, None, information)
 
     def ReportEmail(self, recipients, attachment, text, information,project_name):
+        """
+        Report Email
+
+        @param recipients:
+        @param attachment:
+        @param text:
+        @param information:
+        @param project_name:
+
+        @return:
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -118,6 +139,17 @@ class EmailNotification(object):
         return flag
 
     def ErrorEmail(self, recipients, attachment, text, information, project_name):
+        """
+        Error Email
+
+        @param recipients:
+        @param attachment:
+        @param text:
+        @param information:
+        @param project_name:
+
+        @return: Boolean
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         flag = True

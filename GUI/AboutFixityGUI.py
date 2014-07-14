@@ -54,40 +54,37 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.main = GUILibraries.QHBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
-    ''' Distructor'''
+
     def destroy(self):
+        ''' Distructor'''
         del self
 
-
-
-
-    ''' Show Dialog'''
     def ShowDialog(self):
+        ''' Show Dialog'''
         self.show()
         self.exec_()
 
 
-    ''' Set Layout'''
+
     def SetLayout(self, layout):
+        ''' Set Layout'''
         self.AboutFixityLayout = layout
 
-    ''' Show Description'''
+
     def showDescription(self):
-
+        ''' Show Description'''
         self.heading.setText(GUILibraries.messages['description_heading'])
-        decriptionText = GUILibraries.messages['description_Content']
+        descriptionText = GUILibraries.messages['description_Content']
 
-
-        self.content.setText(decriptionText)
+        self.content.setText(descriptionText)
         self.description_btn.setDisabled(True)
         self.author_and_license_btn.setDisabled(False)
         self.contact_btn.setDisabled(False)
 
 
-    ''' Show License Information On About Us Page(Trigger in  button press)'''
-    def showLicense(self):
 
-        ''' Header '''
+    def showLicense(self):
+        ''' Show License Information On About Us Page(Trigger in  button press)'''
         self.heading.setText(GUILibraries.messages['License_heading'])
         ''' Header Detail '''
         LicenseText = GUILibraries.messages['License_Content']
@@ -99,8 +96,9 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.contact_btn.setDisabled(False)
 
 
-    '''Trigger The Show Contact'''
+
     def showContact(self):
+        '''Trigger The Show Contact'''
         self.heading.setText(GUILibraries.messages['Contact_heading'])
         ContactText = GUILibraries.messages['Contact_Content']
 
@@ -110,8 +108,9 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.contact_btn.setDisabled(True)
 
 
-    ''' All design Management Done in Here'''
+
     def SetDesgin(self):
+        ''' All design Management Done in Here'''
         try:
             self.description_btn.setFixedSize(210, 30)
             self.author_and_license_btn.setFixedSize(210, 30)
@@ -165,18 +164,26 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.setLayout(self.main)
         self.showDescription()
 
-    '''
-    Close the Dialog Box
-    '''
+
     def Cancel(self):
+        """
+        Close the Dialog Box
+        @return:
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.destroy()
         self.close()
 
-    # Launch Dialog
+
     def LaunchDialog(self):
+        """
+        Launch Dialog
+
+        @return:
+        """
         self.SetDesgin()
         self.ShowDialog()
 

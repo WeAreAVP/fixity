@@ -44,16 +44,21 @@ class DirsHandler(object):
     def setPathID(self, path_id):
         self.path_id = path_id
 
-    #Updating/Creating Manifest
-    #With on the given directory
-    #
-    #@param file: project Name with path to be scanned
-    #@param filters: Filters Will be applied on the given project by the user
-    #@param project_name: project Name to be scanned
-    #@param check_for_changes: check For Changes
-    #
-    #@return: removed Message if removed and count of removed file
     def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False, is_path_change = False, mark_all_confirmed = False):
+        """
+        Updating/Creating Manifest With on the given directory
+
+        @param project_name: project Name to be scanned
+        @param dict: Directories its according to inodes
+        @param dict_hash: Directories its according to Hash
+        @param dict_File: Directories its according to File Path
+        @param filters_array: Filters Will be applied on the given project by the user
+        @param verified_files: files verified
+        @param is_from_thread:
+        @param is_path_change:
+        @param mark_all_confirmed:
+        @return: removed Message if removed and count of removed file
+        """
 
         if is_from_thread:
             self.database = Database.Database()
@@ -283,23 +288,26 @@ class DirsHandler(object):
 
         return information
 
-    #Verify File Changes when scanning
-    #Method to verify a tuple against the dictionary
-    #Input: defaultDict (from buildDict), tuple
-    #Output: Message based on whether the file was good or not
-    #
-    #@param dicty: List of all directory with inode,  hash and path information  with indexed using Inode
-    #@param dict_hash: List of all directory with inode,  hash and path information with indexed using hash
-    #@param dictFile: List of all directory with inode,  hash and path information
-    #@param line: lsit of file to be scanned in this run
-    #@param fileNamePath: File Path with file name to be scanned in this run
-    #@param dctValue: Index of dict to be scanned
-    #@param Algorithm: Algo set be the user for this project to be used for file formation to be stored
-    #
-    #@return: List - list of result of scanning occurred in this file for a single file
+
 
     def verifyFiles(self, dicty ,dict_hash ,dictFile ,line ,verified_files, single_directory, is_path_change = False, mark_all_confirmed = False):
+        """
 
+        Verify File Changes when scanning
+        Method to verify a tuple against the dictionary
+        Input: defaultDict (from buildDict), tuple
+        Output: Message based on whether the file was good or not
+
+        @param dicty: List of all directory with inode,  hash and path information  with indexed using Inode
+        @param dict_hash: List of all directory with inode,  hash and path information with indexed using hash
+        @param dictFile: List of all directory with inode,  hash and path information
+        @param line: lsit of file to be scanned in this run
+        @param fileNamePath: File Path with file name to be scanned in this run
+        @param dctValue: Index of dict to be scanned
+        @param Algorithm: Algo set be the user for this project to be used for file formation to be stored
+
+        @return: List - list of result of scanning occurred in this file for a single file
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -551,27 +559,30 @@ class DirsHandler(object):
                     return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
                 pass
 
-    #------------------------------------------------------------------------------- --------------------------#
-    #Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
-    #------------------------------------------------------------------------------- --------------------------|
-    #If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly      |  Result   |
-    #(day of week to                                                         (day of month to      |           |
-    #run on if none 99)                                                      run on if none 99)    |           |
-    #================================================================================ =========================|
-    #================================================================================ =========================|
-    #     99           ----    00:00:00    ----         99            ----        99               |  Daily    |
-    #     1            ----    00:00:00    ----         1             ----        99               |  weekly   |
-    #     99           ----    00:00:00    ----         99             ----        2               |  Monthly  |
-    #----------------------------------------------------------------------------------------------------------#
 
-    #Method to create (hash, path, id) tables from file root
-    #
-    #@param Input: root, output (boolean), hash algorithm, QApplication
-    #@param Output: list of tuples of (hash, path, id)
-    #
-    #@return:  List - List of scanned Directory
 
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
+        """
+        ------------------------------------------------------------------------------- --------------------------
+        Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
+        ------------------------------------------------------------------------------- --------------------------|
+        If Loop is Weekly ---- Time to Run On ---- Day of Loop To Run On ---- If Loop Is Monthly      |  Result   |
+        (day of week to                                                         (day of month to      |           |
+        run on if none 99)                                                      run on if none 99)    |           |
+        ================================================================================ =========================|
+        ================================================================================ =========================|
+             99           ----    00:00:00    ----         99            ----        99               |  Daily    |
+             1            ----    00:00:00    ----         1             ----        99               |  weekly   |
+             99           ----    00:00:00    ----         99             ----        2               |  Monthly  |
+        ----------------------------------------------------------------------------------------------------------
+
+        Method to create (hash, path, id) tables from file root
+
+        @param Input: root, output (boolean), hash algorithm, QApplication
+        @param Output: list of tuples of (hash, path, id)
+
+        @return:  List - List of scanned Directory
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -640,10 +651,15 @@ class DirsHandler(object):
 
         return list_of_values
 
-    #Method to handle all special characters
-    #@param string_to_be_handled: String To Be Handled
-    #@return:  String - Fixed characters String
+
     def specialCharacterHandler(self, string_to_be_handled):
+        """
+        Method to handle all special characters
+
+        @param string_to_be_handled: String To Be Handled
+
+        @return:  String - Fixed characters String
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         try:
@@ -658,10 +674,19 @@ class DirsHandler(object):
 
         return string_to_be_handled
 
-    #Checksum Generation Method.
-    #Input: File Path, Algorithm.
-    #Output: Hexadecimal Value Of Hashed File.
+
     def getFilesHash(self, file_path, algorithm):
+        """
+        Checksum Generation Method.
+        Input: File Path, Algorithm.
+        Output: Hexadecimal Value Of Hashed File.
+
+        @param file_path: File Path
+        @param algorithm: Algorithm Selected
+
+        @return: None
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         try:
@@ -720,11 +745,16 @@ class DirsHandler(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-    #File ID for NTFS
-    #Returns the complete file ID as a single long string
-    #(volume number, high index, low index)
-
     def inodeForMac(self, file):
+        """
+        File ID for NTFS
+        Returns the complete file ID as a single long string
+        (volume number, high index, low index)
+        @param file:
+
+        @return: None
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -759,11 +789,17 @@ class DirsHandler(object):
             pass
         return id_node
 
-    #File ID for NTFS
-    #Returns the complete file ID as a single long string
-    #(volume number, high index, low index)
-
     def inodeForWin(self, file_path):
+        """
+        File ID for NTFS
+        Returns the complete file ID as a single long string
+        (volume number, high index, low index)
+
+        @param file_path: File Path
+
+        @return:
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -790,11 +826,15 @@ class DirsHandler(object):
 
         return id_node
 
-    #Check weather this file is Hidden or Not
-    #@param path_of_file: Path Of File or Directory to be checked
-    #@return: 0 if hidden and 2 if not in windows and in MAC true if hidden and false if not
-
     def isGivenFileHidden(self, path_of_file):
+        """
+        Check weather this file is Hidden or Not
+
+        @param path_of_file: Path Of File or Directory to be checked
+
+        @return: 0 if hidden and 2 if not in windows and in MAC true if hidden and false if not
+
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         if os.name == 'nt':

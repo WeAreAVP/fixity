@@ -22,9 +22,8 @@ sys.path.append(base_path+os.sep)
 import Main
 
 
-
-
 class ProjectFixtures(Fixtures):
+
 
     def __init__(self):
         self.App = Main.Main()
@@ -34,11 +33,14 @@ class ProjectFixtures(Fixtures):
         self.is_ignore_hidden_files = True
         pass
 
-
     def create_new_project(self, project_name, is_special_chars = False):
-        # Del File
-        #
-        # @param project_name:string  Project Name
+        """
+        Del File
+
+        @param project_name: Project Name
+        @param is_special_chars:
+        @return:
+        """
         project_information = {}
 
         project_information['title'] = project_name

@@ -16,6 +16,14 @@ class ProjectRepository(object):
         return self.Fixity.Database.getProjectInfo()
 
     def getSingleProject(self, project_name):
+        """
+        Get Single Project
+
+        @param project_name:
+
+        @return: None
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 

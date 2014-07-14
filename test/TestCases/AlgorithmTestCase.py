@@ -385,7 +385,6 @@ class AlgorithmTestCase(object):
 
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
-
         self.algorithm_fixtures.new_file(self.algorithm_fixtures.test_file_one+'_new_file')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
@@ -473,7 +472,8 @@ class AlgorithmTestCase(object):
 
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
-        self.algorithm_fixtures.move_file_in_a_directory(self.algorithm_fixtures.test_file_three, self.algorithm_fixtures.new_directory + '3.docx')
+        self.algorithm_fixtures.move_file_in_a_directory(self.algorithm_fixtures.test_file_three,
+                                                         self.algorithm_fixtures.new_directory + '3.docx')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
         self.algorithm_fixtures.unload_verification_algorithm_data()
@@ -593,7 +593,8 @@ class AlgorithmTestCase(object):
 
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
-        self.algorithm_fixtures.rename_file(self.algorithm_fixtures.test_file_one_special, self.algorithm_fixtures.test_file_one_special + '_unit_test')
+        self.algorithm_fixtures.rename_file(self.algorithm_fixtures.test_file_one_special,
+                                            self.algorithm_fixtures.test_file_one_special + '_unit_test')
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
 
@@ -656,10 +657,14 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.load_verification_algorithm_data()
         base_path = base_path_of_unitest+'test3'
 
-        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created1, base_path, '1 document')
-        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created2, base_path, '2 document')
-        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created3, base_path, '3 document')
-        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created4, base_path, '4 document')
+        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created1, base_path,
+                                                                               '1 document')
+        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created2, base_path,
+                                                                               '2 document')
+        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created3, base_path,
+                                                                               '3 document')
+        self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created4, base_path,
+                                                                               '4 document')
 
         self.project_fixtures.create_new_project(self.algorithm_fixtures.project_name)
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')

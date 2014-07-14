@@ -44,11 +44,20 @@ class Debugger(object):
             self.is_debugger_on = True
 
 
-    #Function to Log Errors
-    #@param msg Message to log
-    #@param more_information More information For Logging
+    #
+    #@param msg
+    #@param more_information
 
     def logError(self,msg,more_information = None):
+        """
+        Function to Log Errors
+
+        @param msg: Message to log
+        @param more_information: More information For Logging
+
+        @return:
+        """
+
         try:
             if self.is_debugger_on:
                 self.addTimeStamp()
@@ -64,11 +73,19 @@ class Debugger(object):
             pass
 
 
-    #Function to Log Information
-    #@param msg Message to log
-    #@param more_information More information For Logging
+    #
+    #@param msg
+    #@param more_information
 
     def logInfo(self,msg ,more_information = None):
+        """
+        Function to Log Information
+
+        @param msg:Message to log
+        @param more_information:More information For Logging
+
+        @return: None
+        """
         try:
             if self.is_debugger_on:
                 self.addTimeStamp()
@@ -86,6 +103,14 @@ class Debugger(object):
     #@param more_information More information For Logging
 
     def logWarning(self,msg,more_information = None):
+        """
+        Function to Log Warning
+
+        @param msg:Message to log
+        @param more_information:More information For Logging
+
+        @return: None
+        """
         try:
             if self.is_debugger_on:
                 self.addTimeStamp()
@@ -100,6 +125,12 @@ class Debugger(object):
             pass
 
     def set(self, status):
+        """
+        Set Debugging Information
+
+        @param status:
+        @return:
+        """
         os.remove(self.config_file_path)
         fixity = XmlHanlder.Element("Fixity")
 
@@ -116,6 +147,10 @@ class Debugger(object):
         return xml_obj.write(self.config_file_path)
 
     def get(self):
+        """
+        Get Status
+        @return: int
+        """
         tree = XmlHanlder.parse(self.config_file_path)
         root = tree.getroot()
         for child in root:
@@ -123,9 +158,19 @@ class Debugger(object):
                 return child1.attrib['status']
 
     def getCurrentTime(self):
+        """
+        Get Current Time
+
+        @return: None
+        """
         return str(datetime.datetime.now()).rpartition('.')[0]
 
     def addTimeStamp(self):
+        """
+        Add Time Stamp
+
+        @return: None
+        """
         self.loger.warning('::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::')
         self.loger.warning('::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::')
         self.loger.warning(str(self.getCurrentTime()))
@@ -133,7 +178,13 @@ class Debugger(object):
         self.loger.warning('')
 
     def LogException(self, message=''):
+        """
+        Log Exception
 
+        @param message: Message of Exception
+
+        @return: None
+        """
         self.Fixity = SharedApp.SharedApp.App
 
         ExceptionDetail = {}

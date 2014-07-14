@@ -34,6 +34,11 @@ class EmailTestCase(object):
         pass
 
     def test_testing_email(self):
+        """
+        Testing Email
+
+        @return: None
+        """
         print('Testing Email..........!')
         response = self.email_notification.TestingEmail(self.email_fixtures.recipients, 'Testing the Email', self.email_fixtures.EmailInformation())
 
@@ -43,6 +48,11 @@ class EmailTestCase(object):
         pass
 
     def test_attachment_email(self):
+        """
+        Test Attachment Email
+
+        @return: None
+        """
         print('Attachment Email..........!')
         self.email_fixtures.load_attachment()
         response = self.email_notification.ReportEmail(self.email_fixtures.recipients, self.email_fixtures.attachment ,'Testing the Email' ,self.email_fixtures.EmailInformation(), self.email_fixtures.project_name)
@@ -53,6 +63,11 @@ class EmailTestCase(object):
         return [response, ExpectedResults.EmailTestCaseExpectedResult['attachment'], FailedMessages.EmailTestCaseFailMessages['attachment']]
 
     def test_Error_email(self):
+        """
+        Test Error Email
+
+        @return: None
+        """
         print('Error Email..........!')
         self.email_fixtures.load_attachment()
         response = self.email_notification.ErrorEmail(self.email_fixtures.recipients, self.email_fixtures.attachment ,'Testing the Email' ,self.email_fixtures.EmailInformation(), self.email_fixtures.project_name)

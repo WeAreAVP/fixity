@@ -24,6 +24,8 @@ base_path = os.getcwd()
 base_path = base_path.replace(r'\test', '')
 sys.path.append(base_path+os.sep)
 import Main
+
+
 class ProjectTestCase(object):
 
 
@@ -38,7 +40,7 @@ class ProjectTestCase(object):
         @param project_name:  project name to be ran
         @return:
         """
-
+        
         print('Test Run Project.........!')
         self.project_fixtures.load_verification_algorithm_data()
 

@@ -23,6 +23,7 @@ from Fixtures import Fixtures
 
 class EmailFixtures(Fixtures):
 
+
     def __init__(self):
         self.App = Main.Main()
         super(EmailFixtures, self).__init__()
