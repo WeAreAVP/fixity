@@ -49,9 +49,7 @@ class TestSuite(unittest.TestCase):
 
         # Confirmed  FileExists::YES   ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
         response_test_confirm_file = self.algorithm_test_case.test_confirm_file()
-        self.assertEqual(response_test_confirm_file[0],
-                         response_test_confirm_file[1],
-                         response_test_confirm_file[2])
+        self.assertEqual(response_test_confirm_file[0], response_test_confirm_file[1],response_test_confirm_file[2])
 
         #New  FileExists::YES         ||SameHashOfFile::NO     ||SameFilePath::NO     ||SameI-Node::NO
         response_test_new_file = self.algorithm_test_case.test_new_file()
@@ -63,7 +61,6 @@ class TestSuite(unittest.TestCase):
         response_test_change_file = self.algorithm_test_case.test_change_file()
         self.assertEqual(response_test_change_file[0],
                          response_test_change_file[1],
-
                          response_test_change_file[2])
 
         # Changed  FileExists::YES     ||SameHashOfFile::NO     ||SameFilePath::NO     ||SameI-Node::YES
@@ -73,7 +70,6 @@ class TestSuite(unittest.TestCase):
                          response_test_change_file_hp[2])
 
         #Confirmed   FileExists::YES  ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-
         response_test_confirm_file_all = self.algorithm_test_case.test_confirm_if_inode_changed_of_file()
         self.assertEqual(response_test_confirm_file_all[0],
                          response_test_confirm_file_all[1],
@@ -182,7 +178,6 @@ class TestSuite(unittest.TestCase):
                          response_test_change_base_path[1],
                          response_test_change_base_path[2])
 
-
     # Running Projects Operation Test Cases
     def testBProjectTestCases(self):
 
@@ -256,7 +251,6 @@ class TestSuite(unittest.TestCase):
                          response_of_email_error[2])
         pass
 
-
     def testDRequiredFilesAndDirsCreation(self):
 
         print('==================================================================')
@@ -299,7 +293,6 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(response_of_is_schedules_dir_exists[0],
                          response_of_is_schedules_dir_exists[1],
                          response_of_is_schedules_dir_exists[2])
-
 
     def tearDown(self):
         print('Tear Down!')

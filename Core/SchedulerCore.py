@@ -59,7 +59,7 @@ class SchedulerCore(object):
             try:
 
                 if os.path.isfile(launch_agent):
-                    p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent], stdout=subprocess.PIPE)
+                    p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent] ,stdout=subprocess.PIPE)
                     output, err = p.communicate()
             except:
                 self.Fixity.logger.LogException(Exception.message)
@@ -237,7 +237,7 @@ class SchedulerCore(object):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
-                p = subprocess.call(command, startupinfo=startupinfo)
+                p = subprocess.call(command ,shell=True , startupinfo=startupinfo)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
@@ -245,13 +245,13 @@ class SchedulerCore(object):
 
             try:
                 if os.path.isfile(xml_file_name_with_dir_name):
-                    p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
+                    p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
 
-                p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
+                p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass

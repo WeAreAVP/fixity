@@ -436,7 +436,7 @@ class Database(object):
                 counter_recursion += 1
                 return self.insert(table_name, information)
 
-            counter_recursion = 0
+
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -560,6 +560,7 @@ class Database(object):
             return string_glued
         except (sqlite3.OperationalError,Exception):
             global counter_recursion
+
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
             if counter_recursion < 2:

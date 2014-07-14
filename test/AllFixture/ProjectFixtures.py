@@ -58,8 +58,8 @@ class ProjectFixtures(Fixtures):
         project_information['lastRan'] = ''
 
         project_information['updatedAt'] = self.App.Fixity.Configuration.getCurrentTime()
-        project_id = self.App.Fixity.Database.insert(self.App.Fixity.Database._tableProject, project_information)
 
+        project_id = self.App.Fixity.Database.insert(self.App.Fixity.Database._tableProject, project_information)
         dir_information = {}
         if is_special_chars:
             dirs_path = self.unit_test_folder_special
@@ -77,6 +77,5 @@ class ProjectFixtures(Fixtures):
 
             dir_new_id = self.App.Fixity.Database.insert(self.App.Fixity.Database._tableProjectPath, dir_information)
             dirs_path = ''
-
         self.App.Fixity.loadAllProjects()
         return dir_new_id
