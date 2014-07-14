@@ -178,16 +178,12 @@ class TestSuite(unittest.TestCase):
 
         # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
         response_test_change_base_path = self.algorithm_test_case.test_intersection_of_dir()
-<<<<<<< HEAD
-        self.assertEqual(response_test_change_base_path[0], response_test_change_base_path[1], response_test_change_base_path[2])
-
-=======
         self.assertEqual(response_test_change_base_path[0],
                          response_test_change_base_path[1],
                          response_test_change_base_path[2])
 
     # Running Projects Operation Test Cases
->>>>>>> a672a8fdb6bbb786e56fd7a7a0fe60b44078e888
+
     def testBProjectTestCases(self):
         """
         Running Projects Operation Test Cases
@@ -306,13 +302,9 @@ class TestSuite(unittest.TestCase):
 
         # Is Schedulers Directory Exists
         response_of_is_schedules_dir_exists = self.requireds_creation_test_case.is_schedules_dir_exists()
-<<<<<<< HEAD
-        self.assertEqual(response_of_is_schedules_dir_exists[0], response_of_is_schedules_dir_exists[1], response_of_is_schedules_dir_exists[2])
-=======
         self.assertEqual(response_of_is_schedules_dir_exists[0],
                          response_of_is_schedules_dir_exists[1],
                          response_of_is_schedules_dir_exists[2])
->>>>>>> a672a8fdb6bbb786e56fd7a7a0fe60b44078e888
 
     def tearDown(self):
         print('Tear Down!')
