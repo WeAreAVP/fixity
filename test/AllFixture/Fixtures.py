@@ -131,7 +131,10 @@ class Fixtures(object):
         """
         if os.path.exists(self.unit_test_folder):
             shutil.rmtree(self.unit_test_folder)
-        os.makedirs(self.unit_test_folder)
+        try:
+            os.makedirs(self.unit_test_folder)
+        except:
+            pass
 
         test_history_file = open(self.test_history_file, 'w+')
         history_content = [

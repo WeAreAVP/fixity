@@ -40,9 +40,13 @@ class TestSuite(unittest.TestCase):
         self.App.Fixity.loadAllProjects()
         pass
 
-    # Running Algorithm for Verification Test Cases
-    def testARunAlgorithmTestCases(self):
 
+    def testARunAlgorithmTestCases(self):
+        """
+        Running Algorithm for Verification Test Cases
+
+        @return: None
+        """
         print('==================================================================')
         print(' Running Algorithm for Verification Test Cases ')
         print('==================================================================')
@@ -137,10 +141,12 @@ class TestSuite(unittest.TestCase):
         response_test_change_base_path = self.algorithm_test_case.test_intersection_of_dir()
         self.assertEqual(response_test_change_base_path[0], response_test_change_base_path[1], response_test_change_base_path[2])
 
-
-    # Running Projects Operation Test Cases
     def testBProjectTestCases(self):
+        """
+        Running Projects Operation Test Cases
 
+        @return: None
+        """
         print('==================================================================')
         print(' Running Projects Operation Test Cases')
         print('==================================================================')
@@ -173,9 +179,12 @@ class TestSuite(unittest.TestCase):
         response_test_import_project = self.project_test_case.import_project('Testing')
         self.assertEqual(response_test_import_project[0], response_test_import_project[1], response_test_import_project[2])
 
-    # Running Email Notification Test Cases
     def testCEmailNotification(self):
+        """
+        Running Email Notification Test Cases
 
+        @return: None
+        """
         print('==================================================================')
         print(' Running Email Notification Test Cases')
         print('==================================================================')
@@ -192,7 +201,6 @@ class TestSuite(unittest.TestCase):
         response_of_email_error = self.email_test_case.test_Error_email()
         self.assertEqual(response_of_email_error[0], response_of_email_error[1], response_of_email_error[2])
         pass
-
 
     def testDRequiredFilesAndDirsCreation(self):
 
@@ -224,7 +232,6 @@ class TestSuite(unittest.TestCase):
         # Is Schedulers Directory Exists
         response_of_is_schedules_dir_exists = self.requireds_creation_test_case.is_schedules_dir_exists()
         self.assertEqual(response_of_is_schedules_dir_exists[0], response_of_is_schedules_dir_exists[1], response_of_is_schedules_dir_exists[2])
-
 
     def tearDown(self):
         print('Tear Down!')
