@@ -15,6 +15,8 @@ import sys
 base_path = os.getcwd()
 base_path = base_path.replace(r'\test', '')
 base_path = base_path.replace(r'\Fixture', '')
+base_path = base_path.replace(r'/test', '')
+base_path = base_path.replace(r'/Fixture', '')
 sys.path.append(base_path+os.sep)
 import Main
 

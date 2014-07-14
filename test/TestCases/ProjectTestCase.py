@@ -38,6 +38,7 @@ class ProjectTestCase(object):
         @param project_name:  project name to be ran
         @return:
         """
+
         print('Test Run Project.........!')
         self.project_fixtures.load_verification_algorithm_data()
 
@@ -48,12 +49,13 @@ class ProjectTestCase(object):
         return [project_information['created'], ExpectedResults.ProjectTestCaseExpectedResult['run_project'], FailedMessages.ProjectTestCaseFailMessages['run_project']]
 
     def delete_project(self, project_name):
-
         """
         Delete Project
 
         @param project_name: project name to be Deleted
+        @return List:
         """
+
         print('Test Delete Project.........!')
         project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
         deleted_project_id = project_core.getID()
@@ -93,6 +95,7 @@ class ProjectTestCase(object):
         @param project_name: project name to be Changed
         @param new_project: project name to be changed with
         """
+
         flag = True
         print('Test Change Project Name .........!')
         self.project_fixtures.create_new_project(project_name)
@@ -134,6 +137,7 @@ class ProjectTestCase(object):
 
         @param project_name: project name to be Changed Algorithm
         """
+
         print('Test Change Project Algorithm .........!')
 
         algo_value_selected = 'md5'
@@ -158,7 +162,9 @@ class ProjectTestCase(object):
 
         if bool(result_of_all_file_confirmed_second['file_changed_found']):
             flag = False
+
         print("---------------------------------------------------------------------\n")
+
         return [flag, ExpectedResults.ProjectTestCaseExpectedResult['change_algorithm'], FailedMessages.ProjectTestCaseFailMessages['change_algorithm']]
 
     def filters_files(self, selected_project):
@@ -167,6 +173,7 @@ class ProjectTestCase(object):
 
         @param selected_project: project name to be filtered
         """
+
         print('Test Filters Project .........!')
         self.project_fixtures.load_verification_algorithm_data()
 
@@ -195,6 +202,7 @@ class ProjectTestCase(object):
 
         @param project_name: project name to be import Project
         """
+
         print('Test Import Project .........!')
         self.project_fixtures.load_history_file()
         flag = True
