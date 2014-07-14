@@ -193,6 +193,8 @@ class AlgorithmFixtures(Fixtures):
     def create_directory_intersect(self):
         """
         Create Directory Intersect
+
+        @return:
         """
         self.algorithm_fixtures.load_verification_algorithm_data()
         self.unit_test_folder = self.unit_test_folder + 'test2'
@@ -207,7 +209,11 @@ class AlgorithmFixtures(Fixtures):
     def change_file(self, path_to_be_changed):
         """
         Change File
+
+        @param path_to_be_changed:
+        @return:
         """
+
         file_obj = open(path_to_be_changed.decode('utf-8'), 'w')
         file_obj.write('testing new file ' + str(random.randrange(1, 10000)))
         file_obj.close()
@@ -216,31 +222,23 @@ class AlgorithmFixtures(Fixtures):
     def del_file(self, path_to_be_deleted):
         """
         Delete File
+
+        @param path_to_be_deleted:
+        @return:
         """
         os.remove(path_to_be_deleted.decode('utf-8'))
         pass
 
 
-    #def rename_file(self, path_to_be_renamed, new_name):
-    #    """
-    #    Rename File
-    #    """
-    #
-    #    try:
-    #        os.rename(new_name, path_to_be_renamed)
-    #    except:
-    #        try:
-    #            os.rename(new_name.decode('utf-8'), path_to_be_renamed.decode('utf-8'))
-    #        except:
-    #            os.rename(new_name.encode('utf-8'), path_to_be_renamed.encode('utf-8'))
-    #            pass
-    #        pass
-    #    pass
-
 
     def new_file(self, path_to_be_created, content='4 document'):
         """
         New File
+
+        @param path_to_be_created: Path to be created
+        @param content:File Content to be created
+
+        @return:
         """
         try:
             file_obj = open(path_to_be_created.decode('utf-8'), 'w')

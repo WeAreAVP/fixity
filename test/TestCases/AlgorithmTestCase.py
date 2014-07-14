@@ -583,9 +583,14 @@ class AlgorithmTestCase(object):
                 FailedMessages.AlgorithmTestCaseFailMessages['test_moved_to_new_Directory_change_name_as_old_and_content']]
 
     def test_moved_file_is_special_chars(self):
+        """
+
+        @return:
+        """
         print('Test Moved File .........!')
         is_special_chars= True
         print('With Special Characters')
+
         self.algorithm_fixtures.load_special_verification_algorithm_data()
 
         self.project_fixtures.create_new_project(self.algorithm_fixtures.project_name, is_special_chars)
