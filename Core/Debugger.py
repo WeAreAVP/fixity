@@ -142,9 +142,9 @@ class Debugger(object):
         except:
             pass
 
-        print('========================== Exception Message ======================')
-        print(ExceptionDetail)
-        print('========================== Exception Message ======================')
+        # print('========================== Exception Message ======================')
+        # print(ExceptionDetail)
+        # print('========================== Exception Message ======================')
 
         try:
             ExceptionDetail['trace_back'] = self.Fixity.ExceptionHandler.getTraceBack()

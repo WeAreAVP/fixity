@@ -114,14 +114,16 @@ class ProjectCore(object):
 
     def setPreviousVersion(self, previous_version): self.previous_version = previous_version
 
-    # Creates New Version
-    #
-    # @param project_id: Project ID
-    # @param version_type: Version is created For
-    #
-    # @return Version ID Created
+    def createNewVersion(self, project_id, version_type):
 
-    def createNewVersion(self, project_id, version_type ):
+        """
+        Creates New Version
+
+        @param project_id: Project ID
+        @param version_type: Version is created For
+
+        @return Version ID Created
+        """
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -145,12 +147,13 @@ class ProjectCore(object):
 
         return self.Fixity.Database.insert(self.Fixity.Database._tableVersions, information)
 
-    # Save Project
-    #
-    # @return Project ID Created
-
     def Save(self, save_schedule = True):
 
+        """
+        Save Project
+
+        @return Project ID Created
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -230,12 +233,13 @@ class ProjectCore(object):
         SharedApp.SharedApp.App = self.Fixity
         return project_id['id']
 
-    # Delete this project
-    #
-    # @return Bool
-
     def Delete(self):
 
+        """
+        Delete this project
+
+        @return Bool
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -247,15 +251,17 @@ class ProjectCore(object):
         self.Fixity.removeProject(str(self.getTitle()))
         return True
 
-    # Import New project
-    # @param file_path: file Path of imported File
-    # @param project_name: Project Name
-    # @param flag_is_a_tsv_file: is File .tsv
-    # @param flag_is_a_fxy_file: is File .fxy
-    #
-    # @return Bool
-
     def ImportProject(self, file_path, project_name, flag_is_a_tsv_file, flag_is_a_fxy_file):
+        """
+
+        Import New project
+        @param file_path: file Path of imported File
+        @param project_name: Project Name
+        @param flag_is_a_tsv_file: is File .tsv
+        @param flag_is_a_fxy_file: is File .fxy
+
+        @return Bool
+        """
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -426,11 +432,14 @@ class ProjectCore(object):
                 return False
                 pass
 
-    #Check For Algorithm Used
-    #@param content: Content line containing Algorithm
-    #
-    #@return: Algorithm Used
     def checkForAlgoUsed(self,content):
+        """
+
+        Check For Algorithm Used
+        @param content: Content line containing Algorithm
+
+        @return: Algorithm Used
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         algo = 'sha256'
@@ -454,13 +463,13 @@ class ProjectCore(object):
                                     information, 'id="' + str(self.getID()) + '"')
         return False
 
-
-    # Change Project Name logic
-    #
-    #@param selected_project:string project name to be changed
-    #@param new_name:string project name changed with
-
     def changeProjectName(self, selected_project, new_name):
+        """
+        Change Project Name logic
+
+        @param selected_project:string project name to be changed
+        @param new_name:string project name changed with
+        """
         try:
             project_exists = self.Fixity.ProjectsList[str(new_name)]
             project_exists.getID()
@@ -498,12 +507,15 @@ class ProjectCore(object):
         self.Fixity.Database = Database.Database()
         self.Run(False, True)
 
-    # Run This project
-    # @param check_for_changes: if only want to know is all file confirmed or not
-    #
-    # @return array
-
     def Run(self, check_for_changes = False, is_from_thread = False, mark_all_confirmed = False, called_from = 'CLI'):
+
+        """
+        Run This project
+        @param check_for_changes: if only want to know is all file confirmed or not
+
+        @return array
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -891,11 +903,13 @@ class ProjectCore(object):
         if is_from_thread:
             self.Fixity.selfDestruct()
 
-    # Apply Filter For This project
-    # @param filters: sav filters againts this project
-    #
-    # @return bool
     def applyFilter(self, filters, is_ignore_hidden_files):
+        """
+        Apply Filter For This project
+        @param filters: sav filters againts this project
+
+        @return bool
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -916,20 +930,24 @@ class ProjectCore(object):
         response = self.Fixity.Database.update(self.Fixity.Database._tableProject, information, 'id = "' + str(self.getID()) + '"')
         return response
 
-    # Save Setting
-    #
-    # @return bool
     def SaveSchedule(self):
+        """
+        Save Setting
+
+        @return bool
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         self.scheduler.delTask(self.getTitle())
         self.scheduler.schedule(self.getTitle())
 
-    # set Project Info from given array
-    # @param projects_info: Array of Project information
-
-    # @return None
     def setProjectInfo(self, projects_info):
+        """
+        set Project Info from given array
+        @param projects_info: Array of Project information
+
+        @return None
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -980,11 +998,12 @@ class ProjectCore(object):
 
         self.setDirectories(directories)
 
-    #function to write the History File
-    #
-    #@param Content
     def writerHistoryFile(self, Content):
+        """
+        function to write the History File
 
+        @param Content
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         history_file = str(self.Fixity.Configuration.getHistoryPath()) + str(self.getTitle()) + '_' + str(datetime.date.today()) + '-' + str(datetime.datetime.now().strftime('%H%M%S')) + '.tsv'
@@ -1124,15 +1143,18 @@ class ProjectCore(object):
 
         return reports_text
 
-    #Method to find which files are missing in the scanned directory
-    #Input: defaultdict (from buildDict)
-    #Output: warning messages about missing files (one long string and  printing to stdout)
-    #
-    #@param dict: Directory of all file exists in the scanned folder
-    #@param file: List of all directory with inode,  hash and path information  with indexed using Inode
-    #
-    #@return: removed Messgae if removed and count of removed file
     def checkForMissingFiles(self, dict):
+
+        """
+        Method to find which files are missing in the scanned directory
+        Input: defaultdict (from buildDict)
+        Output: warning messages about missing files (one long string and  printing to stdout)
+
+        @param dict: Directory of all file exists in the scanned folder
+        @param file: List of all directory with inode,  hash and path information  with indexed using Inode
+
+        @return: removed Messgae if removed and count of removed file
+        """
 
         msg = ""
         count = 0
@@ -1196,12 +1218,14 @@ class ProjectCore(object):
 
         return msg, count
 
-    #Method to convert database line into tuple
-    #@param line: Information of a single File
-    #
-    #@return tuple: (hash, abspath, id)
-
     def toTuple(self, line):
+
+        """
+        Method to convert database line into tuple
+        @param line: Information of a single File
+
+        @return tuple: (hash, abspath, id)
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 

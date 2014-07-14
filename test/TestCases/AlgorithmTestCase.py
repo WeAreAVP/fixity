@@ -38,13 +38,9 @@ class AlgorithmTestCase(object):
         print('Test Confirm File {( Nothing is Changed )} .........!')
 
         self.algorithm_fixtures.load_verification_algorithm_data()
-
         self.project_fixtures.create_new_project(self.algorithm_fixtures.project_name)
-
         self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test')
-
         self.algorithm_fixtures.unload_verification_algorithm_data()
 
         confirmed = report_info_two['confirmed']

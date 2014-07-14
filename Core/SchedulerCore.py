@@ -15,12 +15,15 @@ class SchedulerCore(object):
         self.duration_type = None
         self.Fixity = SharedApp.SharedApp.App
 
-
-    #Deletes the SCHTASK entry and its corresponding files
-    #@param project: project Namer
-    #
-    #@return: None
     def delTask(self, project):
+
+        """
+        Deletes the SCHTASK entry and its corresponding files
+        @param project: project Name
+
+        @return: None
+        """
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -54,8 +57,10 @@ class SchedulerCore(object):
             launch_agent= AgentPath + "Com.fixity."+str(project) + ".demon.plist"
 
             try:
-                p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent], stdout=subprocess.PIPE)
-                output, err = p.communicate()
+
+                if os.path.isfile(launch_agent):
+                    p = subprocess.Popen(["launchctl", "unload", "-w", launch_agent] ,stdout=subprocess.PIPE)
+                    output, err = p.communicate()
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
@@ -66,19 +71,15 @@ class SchedulerCore(object):
                 self.Fixity.logger.LogException()
                 pass
 
-    #Writes a task to SCHTASKS and creates necessary VBS/BAT files,  ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
-    #
-    #@param interval: Interval
-    #@param dow: List of all Directory
-    #@param dom: List of all Email's
-    #@param timeSch: time of Scheduler
-    #@param project: Project
-    #@param Configurations:  Configurations
-    #@param SystemInformation: System Information
-    #@param dirInfo: Directory Information
-    #@return: None
-
     def schedule(self, title):
+        """
+
+        Writes a task to SCHTASKS and creates necessary VBS/BAT files,  ACPowerCheck, StartWhenAvailable,EmailOnlyWhenSomethingChanged
+
+        @param title: Project Name
+
+        @return: None
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         timeSch = self.getRunTime()
@@ -236,31 +237,35 @@ class SchedulerCore(object):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
-                p = subprocess.call(command, startupinfo=startupinfo)
+                p = subprocess.call(command ,shell=True , startupinfo=startupinfo)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
         else:
 
             try:
-                p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
+                if os.path.isfile(xml_file_name_with_dir_name):
+                    p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
-                p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name], stdout=subprocess.PIPE)
+
+                p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
 
-    #Create XML for Window 7 task schedules
-    #
-    #Input: information of all scheduler information wit project information
-    #Output : XML for Window 7 scheduler
     def CreateXML(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
+        """
+        Create XML for Window 7 task schedules
+
+        Input: information of all scheduler information wit project information
+        Output : XML for Window 7 scheduler
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
-        # Months = self.Fixity.Configuration.getMonths()
+
         schedule_path = self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + "-sch.xml"
         xmlsch = open(schedule_path, "w")
         scheduler_xml_text = ''
@@ -357,12 +362,13 @@ class SchedulerCore(object):
 
         return schedule_path
 
-
-    #Create XML for Mac launchd process
-    #
-    #Input: information of all scheduler information with project information
-    #Output : XML for Mac launhd scheduling
     def CreateXMLOfMac(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
+        """
+        Create XML for Mac launchd process
+
+        Input: information of all scheduler information with project information
+        Output : XML for Mac launhd scheduling
+        """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
