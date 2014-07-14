@@ -32,12 +32,12 @@ class ProjectTestCase(object):
         self.project_fixtures = ProjectFixtures()
         pass
 
-
-    # Create New Project
-    #
-    # @param string:project_name project name to be ran
-
     def run_project(self, project_name):
+        """
+        Create New Project
+        @param project_name:  project name to be ran
+        @return:
+        """
         print('Test Run Project.........!')
         self.project_fixtures.load_verification_algorithm_data()
 
@@ -47,13 +47,13 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [project_information['created'], ExpectedResults.ProjectTestCaseExpectedResult['run_project'], FailedMessages.ProjectTestCaseFailMessages['run_project']]
 
-
-    # Delete Project
-    #
-    # @param string:project_name project name to be Deleted
-
     def delete_project(self, project_name):
 
+        """
+        Delete Project
+
+        @param project_name: project name to be Deleted
+        """
         print('Test Delete Project.........!')
         project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
         deleted_project_id = project_core.getID()
@@ -86,13 +86,13 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [flag, ExpectedResults.ProjectTestCaseExpectedResult['delete_project'], FailedMessages.ProjectTestCaseFailMessages['delete_project']]
 
-
-    # Change Project Name
-    #
-    # @param string:project_name project name to be Changed
-    # @param string:new_project project name to be changed with
-
     def change_project_name(self, project_name, new_project):
+        """
+        Change Project Name
+
+        @param project_name: project name to be Changed
+        @param new_project: project name to be changed with
+        """
         flag = True
         print('Test Change Project Name .........!')
         self.project_fixtures.create_new_project(project_name)
@@ -109,11 +109,12 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [flag, ExpectedResults.ProjectTestCaseExpectedResult['change_project_name'], FailedMessages.ProjectTestCaseFailMessages['change_project_name']]
 
-    # Save Project
-    #
-    # @param string:project_name project name to be Saved
-
     def save_project(self, project_name):
+        """
+        Save Project
+
+        @param project_name: project name to be Saved
+        """
         print('Test Save Project .........!')
         flag = False
 
@@ -127,11 +128,12 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [flag, ExpectedResults.ProjectTestCaseExpectedResult['save_project'], FailedMessages.ProjectTestCaseFailMessages['save_project']]
 
-    # Change Algorithm
-    #
-    # @param string:project_name project name to be Changed Algorithm
-
     def change_algorithm(self, project_name):
+        """
+        Change Algorithm
+
+        @param project_name: project name to be Changed Algorithm
+        """
         print('Test Change Project Algorithm .........!')
 
         algo_value_selected = 'md5'
@@ -159,11 +161,12 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [flag, ExpectedResults.ProjectTestCaseExpectedResult['change_algorithm'], FailedMessages.ProjectTestCaseFailMessages['change_algorithm']]
 
-    # Filters Files
-    #
-    # @param string:selected_project project name to be filtered
-
     def filters_files(self, selected_project):
+        """
+        Filters Files
+
+        @param selected_project: project name to be filtered
+        """
         print('Test Filters Project .........!')
         self.project_fixtures.load_verification_algorithm_data()
 
@@ -186,11 +189,12 @@ class ProjectTestCase(object):
         print("---------------------------------------------------------------------\n")
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed}, ExpectedResults.ProjectTestCaseExpectedResult['filters_files'], FailedMessages.ProjectTestCaseFailMessages['filters_files']]
 
-    # Import Project
-    #
-    # @param string:project_name project name to be import Project
-
     def import_project(self, project_name):
+        """
+        Import Project
+
+        @param project_name: project name to be import Project
+        """
         print('Test Import Project .........!')
         self.project_fixtures.load_history_file()
         flag = True

@@ -40,7 +40,6 @@ class Main (object):
 
             for dirs_objects in project_core.directories:
                 project_core.directories[dirs_objects].setPath(new_path)
-                print(project_core.directories[dirs_objects].getPath())
                 break
 
         project_core.Save(False)

@@ -87,7 +87,6 @@ class AlgorithmTestCase(object):
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_confirm_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_confirm_file']]
 
-    @property
     def test_confirm_if_inode_changed_of_file(self):
 
         print('Test Confirm File {( I-Node is Changed )} .........!')
@@ -118,7 +117,6 @@ class AlgorithmTestCase(object):
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_confirm_if_inode_changed_of_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_confirm_if_inode_changed_of_file']]
 
-    @property
     def test_confirm_if_inode_changed_of_file_is_special_chars(self):
 
         print('Test Confirm File {( I-Node is Changed )} .........!')
@@ -170,7 +168,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_delete_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_delete_file']]
@@ -199,7 +199,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_delete_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_delete_file']]
@@ -225,7 +227,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_change_file']]
@@ -253,7 +257,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_change_file']]
@@ -279,7 +285,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_file_changed_hash_and_path'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_change_file_changed_hash_and_path']]
@@ -308,7 +316,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_file_changed_hash_and_path'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_change_file_changed_hash_and_path']]
@@ -370,7 +380,6 @@ class AlgorithmTestCase(object):
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_change_inode_and_hash_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_change_inode_and_hash_file']]
 
-
     def test_new_file(self):
         print('Test New File .........!')
 
@@ -423,7 +432,9 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
+
         print("---------------------------------------------------------------------\n")
+
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
                 ExpectedResults.AlgorithmTestCaseExpectedResult['test_new_file'],
                 FailedMessages.AlgorithmTestCaseFailMessages['test_new_file']]
@@ -656,8 +667,6 @@ class AlgorithmTestCase(object):
         self.algorithm_fixtures.change_path_custom(base_path)
 
         report_info_two = self.App.LaunchCLI(self.algorithm_fixtures.project_name, 'test', base_path)
-
-
 
         self.algorithm_fixtures.unload_verification_algorithm_data()
 

@@ -34,11 +34,11 @@ class ProjectFixtures(Fixtures):
         self.is_ignore_hidden_files = True
         pass
 
-    # Del File
-    #
-    # @param project_name:string  Project Name
-    def create_new_project(self, project_name, is_special_chars = False):
 
+    def create_new_project(self, project_name, is_special_chars = False):
+        # Del File
+        #
+        # @param project_name:string  Project Name
         project_information = {}
 
         project_information['title'] = project_name

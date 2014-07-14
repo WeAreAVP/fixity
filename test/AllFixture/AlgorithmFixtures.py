@@ -177,7 +177,16 @@ class AlgorithmFixtures(Fixtures):
         @param path_to_be_changed:string  Path to be change for testing
         @param new_path:string  Path to be changed with for testing
         """
-        os.rename(path_to_be_changed.decode('utf-8'), new_path.decode('utf-8'))
+
+        try:
+            os.rename(path_to_be_changed, new_path)
+        except:
+            try:
+                os.rename(path_to_be_changed.decode('utf-8'), new_path.decode('utf-8'))
+            except:
+                os.rename(path_to_be_changed.encode('utf-8'), new_path.encode('utf-8'))
+                pass
+            pass
         pass
 
 
@@ -212,16 +221,21 @@ class AlgorithmFixtures(Fixtures):
         pass
 
 
-    def rename_file(self, path_to_be_renamed, new_name):
-        """
-        Rename File
-        """
-        
-        try:
-            os.rename(new_name, path_to_be_renamed)
-        except:
-            pass
-        pass
+    #def rename_file(self, path_to_be_renamed, new_name):
+    #    """
+    #    Rename File
+    #    """
+    #
+    #    try:
+    #        os.rename(new_name, path_to_be_renamed)
+    #    except:
+    #        try:
+    #            os.rename(new_name.decode('utf-8'), path_to_be_renamed.decode('utf-8'))
+    #        except:
+    #            os.rename(new_name.encode('utf-8'), path_to_be_renamed.encode('utf-8'))
+    #            pass
+    #        pass
+    #    pass
 
 
     def new_file(self, path_to_be_created, content='4 document'):
