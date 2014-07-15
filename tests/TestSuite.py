@@ -17,9 +17,10 @@ from TestCases.ProjectTestCase import ProjectTestCase
 from TestCases.EmailTestCase import EmailTestCase
 from TestCases.AlgorithmTestCase import AlgorithmTestCase
 from TestCases.RequiredsCreationTestCase import RequiredsCreationTestCase
+import shutil
 
 base_path = os.getcwd()
-base_path = base_path.replace(r'\test', '')
+base_path = base_path.replace(r'\tests', '')
 sys.path.append(base_path+os.sep)
 
 from AllFixture.Fixtures import Fixtures
@@ -310,9 +311,11 @@ class TestSuite(unittest.TestCase):
                          response_of_is_schedules_dir_exists[1],
                          response_of_is_schedules_dir_exists[2])
         pass
+
     def tearDown(self):
         print('Tear Down!')
         self.Fixtures.delete_testing_data()
+        self.Fixtures.delete_required_dirs()
         print('')
         pass
 

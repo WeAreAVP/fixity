@@ -13,6 +13,7 @@ import shutil
 # Custom libraries
 import sys
 import helper
+print(helper.setImportBaseBath())
 sys.path.append(helper.setImportBaseBath())
 import Main
 
@@ -32,17 +33,13 @@ class Fixtures(object):
         self.test_file_three = self.unit_test_folder + '3.docx'
         self.test_file_four = self.unit_test_folder + '4.txt'
 
-        self.test_file_one_special = self.unit_test_folder_special +\
-        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ1.docx'
+        self.test_file_one_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ1.docx'
 
-        self.test_file_two_special = self.unit_test_folder_special +\
-        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ2.docx'
+        self.test_file_two_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ2.docx'
 
-        self.test_file_three_special = self.unit_test_folder_special + \
-        '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ3.docx'
+        self.test_file_three_special = self.unit_test_folder_special + '¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ.shpÿ3.docx'
 
-        self.test_file_four_special = self.unit_test_folder_special +\
-        'Unidade_de_C@.#$%onservação4.txt'
+        self.test_file_four_special = self.unit_test_folder_special + 'Unidade_de_C@.#$%onservação4.txt'
 
         self.test_history_file = self.unit_test_folder + 'history.tsv'
         self.attachment = self.unit_test_folder + 'attachment.tsv'
@@ -76,9 +73,42 @@ class Fixtures(object):
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
 
+
         self.unload_verification_algorithm_data()
         self.unload_verification_algorithm_data_special()
         pass
+
+    def delete_required_dirs(self):
+        try:
+            shutil.rmtree(self.App.Fixity.Configuration.getHistoryPath())
+        except:
+            pass
+
+        try:
+            shutil.rmtree(self.App.Fixity.Configuration.getReportsPath())
+        except:
+            pass
+
+        try:
+            shutil.rmtree(self.App.Fixity.Configuration.getSchedulesPath())
+        except:
+            pass
+
+        try:
+            os.remove(self.App.Fixity.Configuration.getDebugFilePath())
+        except:
+            pass
+
+        try:
+            os.remove(self.App.Fixity.Configuration.getConfig_file_path())
+        except:
+            pass
+
+        try:
+            os.remove(self.App.Fixity.Configuration.getDatabaseFilePath())
+            shutil.rmtree(self.App.Fixity.Configuration.getDatabaseFilePath())
+        except:
+            pass
 
     def load_verification_algorithm_data(self):
         """
