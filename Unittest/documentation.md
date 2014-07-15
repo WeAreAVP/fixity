@@ -9,19 +9,19 @@
  1. Confirmed  FileExists::YES   ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
  2. Confirmed   FileExists::YES  ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
 
-#####Changed
+#####Changed for Both Normal And Special Charachter
 
  1. Changed   FileExists::YES    ||SameHashOfFile::NO     ||SameFilePath::YES    ||SameI-Node::YES
  2. Changed  FileExists::YES     ||SameHashOfFile::NO     ||SameFilePath::NO     ||SameI-Node::YES
  3. Changed  FileExists::YES     ||SameHashOfFile::NO     ||SameFilePath::YES    ||SameI-Node::NO
 
-#####Moved
+#####Moved for Both Normal And Special Charachter
  1. Moved   FileExists::YES      ||SameHashOfFile::YES    ||SameFilePath::NO     ||SameI-Node::YES
 
-#####Removed
+#####Removed for Both Normal And Special Charachter
  1. Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
 
-#####New
+#####New for Both Normal And Special Charachter
  1. New  FileExists::YES         ||SameHashOfFile::NO     ||SameFilePath::NO     ||SameI-Node::NO
 
 #####Scenarios of Algorithm change 
@@ -55,5 +55,4 @@
  1. Testing Email
  2. Attchment Email
  3. Error Email
- 
-other in progress.....!
+
