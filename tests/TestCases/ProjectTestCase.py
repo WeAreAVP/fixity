@@ -138,13 +138,15 @@ class ProjectTestCase(object):
         print('Test Save Project .........!')
         flag = False
 
-        try:
-            self.project_fixtures.create_new_project(project_name)
-            project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
-            project_core.Save()
-            flag = True
-        except:
-            flag = False
+        #try:
+        self.project_fixtures.create_new_project(project_name)
+        project_core = self.App.Fixity.ProjectRepo.getSingleProject(project_name)
+        project_core.Save()
+        flag = True
+        #except:
+        #    print(Exception.message)
+        #    flag = False
+        print(flag)
         try:
             self.project_fixtures.delete_testing_data()
         except:

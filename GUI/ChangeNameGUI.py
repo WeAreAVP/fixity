@@ -32,6 +32,7 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         
     # QDailog Reject Tigger over writen'''
     def reject(self):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 

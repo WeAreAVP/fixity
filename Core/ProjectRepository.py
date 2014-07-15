@@ -10,6 +10,7 @@ class ProjectRepository(object):
         self.Fixity = SharedApp.SharedApp.App
 
     def getAll(self):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 

@@ -27,6 +27,7 @@ class DirsHandler(object):
         self.database = Database.Database()
 
     def getPath(self):
+
         return self.path
 
     def getID(self):

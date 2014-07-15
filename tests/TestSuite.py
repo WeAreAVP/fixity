@@ -315,7 +315,7 @@ class TestSuite(unittest.TestCase):
     def tearDown(self):
         print('Tear Down!')
         self.Fixtures.delete_testing_data()
-        self.Fixtures.delete_required_dirs()
+        #self.Fixtures.delete_required_dirs()
         print('')
         pass
 

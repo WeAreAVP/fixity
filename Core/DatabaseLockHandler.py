@@ -27,13 +27,13 @@ class DatabaseLockHandler(object):
         self.process_id = process_id
         
 
-    """ Acquire the lock, if possible. If the lock is in use, it check again
+
+    def acquire(self):
+        """ Acquire the lock, if possible. If the lock is in use, it check again
             every `wait` seconds. It does this until it either gets the lock or
             exceeds `timeout` number of seconds, in which case it throws
             an exception.
-    """
-    def acquire(self):
-
+        """
         start_time = time.time()
         while True:
             try:
@@ -54,12 +54,12 @@ class DatabaseLockHandler(object):
 
         self.is_locked = True
 
-    """ Get rid of the lock by deleting the lockfile.
+
+    def release(self):
+        """ Get rid of the lock by deleting the lockfile.
             When working in a `with` statement, this gets automatically
             called at the end.
-    """
-    def release(self):
-       
+        """
         if self.is_locked:
             try:
                 os.close(self.fd)
@@ -112,7 +112,10 @@ class DatabaseLockHandler(object):
     '''      
     def check_pid(self,pid):
         """
-            Return process status of a given process  
+        Return process status of a given process
+        @param pid: process id
+
+        @return Boolean
         """
         try:
             #this line only check is process alive or not

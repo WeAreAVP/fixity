@@ -51,6 +51,7 @@ class PathChangeGUI(GUILibraries.QDialog):
     @return: None
     '''
     def GetWindow(self):
+
         return self.path_change_win
 
     '''

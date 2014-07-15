@@ -1,4 +1,4 @@
-    # -*- coding: UTF-8 -*-
+# -*- coding: UTF-8 -*-
 #
 #@author: Furqan Wasi <furqan@avpreserve.com>
 
@@ -7,7 +7,9 @@ from Core import SharedApp
 import email, datetime, os
 from smtplib import *
 
+
 class EmailNotification(object):
+
 
     def __init__(self):
         super(EmailNotification, self).__init__()
@@ -90,6 +92,7 @@ class EmailNotification(object):
                 moreInformation ={'SenderEmailAddress::':addr, 'RecipientsEmailAddress':recipients,  '::More Detail':'', 'ErrorMsg':str(Exception.message)}
             except:
                 pass
+
             self.Fixity.logger.LogException(str(moreInformation))
 
             return False
@@ -98,9 +101,9 @@ class EmailNotification(object):
         """
         Testing Email
 
-        @param recipients:
-        @param text:
-        @param information:
+        @param recipients: All Recipients Address
+        @param text: Message To be sent in this Email
+        @param information: SMTP configuration
 
         @return: Boolean
         """
@@ -113,11 +116,11 @@ class EmailNotification(object):
         """
         Report Email
 
-        @param recipients:
-        @param attachment:
-        @param text:
-        @param information:
-        @param project_name:
+        @param recipients: All Recipients Address
+        @param attachment: attachment To be sent in this Email
+        @param text: Message To be sent in this Email
+        @param information: SMTP configuration
+        @param projectName: project Name
 
         @return:
         """
@@ -136,19 +139,21 @@ class EmailNotification(object):
         return flag
 
     def ErrorEmail(self, recipients, attachment, text, information, project_name):
+
         """
         Error Email
 
-        @param recipients:
-        @param attachment:
-        @param text:
-        @param information:
-        @param project_name:
+        @param recipients: All Recipients Address
+        @param attachment: attachment To be sent in this Email
+        @param text: Message To be sent in this Email
+        @param information: SMTP configuration
+        @param projectName: project Name
 
         @return: Boolean
         """
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
+
         flag = True
         all_recipients = str(recipients).split(',')
         for single_recipients in all_recipients:

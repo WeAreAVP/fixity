@@ -51,7 +51,7 @@ class CustomException(object):
         """
         Get Trace Back
 
-        @return: None
+        @return: Error Stack
         """
         stack_errro = repr(traceback.extract_stack())
         return stack_errro

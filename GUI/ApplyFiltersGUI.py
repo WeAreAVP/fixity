@@ -174,6 +174,7 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
     Close the Dialog Box
     '''
     def Cancel(self):
+
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.destroy()
         self.close()

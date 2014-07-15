@@ -25,6 +25,7 @@ class Debugger(object):
         del self
 
     def setUp(self):
+
         self.Fixity = SharedApp.SharedApp.App
 
         self.debug_file_path = self.Fixity.Configuration.getDebugFilePath()

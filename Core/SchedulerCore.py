@@ -465,6 +465,7 @@ class SchedulerCore(object):
     def getEmail_only_upon_warning(self): return self.email_only_upon_warning
 
     def setValuesForScheduler(self, string, find_string, replace_with_string):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
