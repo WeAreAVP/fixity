@@ -12,9 +12,9 @@ import os
 import sys
 
 # Custom libraries
-base_path = os.getcwd()
-base_path = base_path.replace(r'\test', '')
-sys.path.append(base_path+os.sep)
+import AllFixture.helper as helper
+sys.path.append(helper.setImportBaseBath())
+
 import Main
 
 from AllFixture.AlgorithmFixtures import AlgorithmFixtures

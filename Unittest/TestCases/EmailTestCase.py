@@ -16,12 +16,11 @@ from Core import EmailNotification
 import ExpectedResults as ExpectedResults
 import FailedMessages as FailedMessages
 
-base_path = os.getcwd()
-base_path = base_path.replace(r'\test', '')
-sys.path.append(base_path+os.sep)
+import AllFixture.helper as helper
+sys.path.append(helper.setImportBaseBath())
+
 
 import Main
-
 
 
 class EmailTestCase(object):

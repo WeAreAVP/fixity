@@ -14,10 +14,9 @@ from Fixtures import Fixtures
 
 
 import sys
-base_path = os.getcwd()
-base_path = base_path.replace(r'\test', '')
-base_path = base_path.replace(r'\Fixture', '')
-sys.path.append(base_path+os.sep)
+import helper
+sys.path.append(helper.setImportBaseBath())
+
 
 import Main
 
