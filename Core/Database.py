@@ -209,6 +209,8 @@ class Database(object):
     def getVersionDetails(self, project_id, version_id, OrderBy = None):
         """
         Get Version Details
+        @param project_id: Project ID
+        @param version_id: Project ID
         """
         global counter_recursion
         try:
@@ -271,6 +273,8 @@ class Database(object):
     def getVersionDetailsLast(self, project_id):
         """
         Get Last Inserted Version of given project
+
+        @param project_id: Project ID
         """
         global counter_recursion
         try:
@@ -517,7 +521,7 @@ class Database(object):
             self.Fixity.logger.LogException(Exception.message)
             return False
 
-    def implode(self,information , glue , is_column = True):
+    def implode(self,information, glue, is_column=True):
         """
         Columns and records Implode for query
         @param information: Array of Value to be imploded
@@ -536,13 +540,13 @@ class Database(object):
                         if counter == 0:
                             string_glued = string_glued + information[info]
                         else:
-                            string_glued =  string_glued + ' , ' + information[info]
+                            string_glued = string_glued + ' , ' + information[info]
                     else:
                         if counter == 0:
                             try:
-                                string_glued = string_glued + ' "'+ str(information[info]) + '" '
+                                string_glued = string_glued + ' "' + str(information[info]) + '" '
                             except:
-                                string_glued = string_glued + ' "'+ information[info] + '" '
+                                string_glued = string_glued + ' "' + information[info] + '" '
                                 pass
                         else:
                             try:
@@ -560,9 +564,11 @@ class Database(object):
 
             SharedApp.SharedApp.App.Database = Database()
             self = Database()
+
             if counter_recursion < 2:
                 counter_recursion += 1
                 return self.implode(information , glue , is_column)
+
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
