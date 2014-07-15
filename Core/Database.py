@@ -43,7 +43,6 @@ class Database(object):
     def selfDestruct(self):
         del self
 
-
     def connect(self, is_unit_test=False):
         """
         connect To Database
@@ -436,7 +435,6 @@ class Database(object):
                 counter_recursion += 1
                 return self.insert(table_name, information)
 
-
             self.Fixity.logger.LogException(Exception.message)
             return False
 
@@ -468,7 +466,6 @@ class Database(object):
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
-
 
     def update(self, table_name, information, condition):
         """

@@ -12,6 +12,7 @@ from Core import SharedApp, EmailNotification
 # Class to manage the Algorithm change to be implemented for the files to get Hashes
 class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
+
     def __init__(self,parent_win):
         GUILibraries.QDialog.__init__(self,parent_win)
 
@@ -39,22 +40,18 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         super(ChangeAlgorithmGUI,self).reject()
 
-
     # Create Show Window'''
     def ShowDialog(self):
         self.show()
         self.exec_()
 
-
     # Create Show Window'''
     def SetLayout(self, layout):
         self.change_algorithm_layout = layout
 
-
     # Set Layout for Windows'''
     def SetWindowLayout(self):
         self.setLayout(self.change_algorithm_layout)
-
 
     # Get Layout'''
     def GetLayout(self):
@@ -102,7 +99,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         except:
             pass
 
-
     def Save(self):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -111,7 +107,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         selected_project = self.projects.currentText()
         algo_value_selected = self.methods.currentText()
-
 
         if selected_project is None or selected_project == '':
             self.notification.showError(self, "Warning", GUILibraries.messages['no_project_selected'])
@@ -131,15 +126,9 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         except:
             pass
 
-
-
         msgBox.setWindowTitle("Processing ....")
         msgBox.setText("Reading Files, please wait ...")
         msgBox.show()
-
-
-        #self.notification.showError(self, "Failure", GUILibraries.messages['project_not_ran_before'])
-        #return
 
         GUILibraries.QCoreApplication.processEvents()
 
@@ -188,7 +177,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         self.notification.showInformation(self, "Success", selected_project+"'s " + GUILibraries.messages['algorithm_success'])
         self.Cancel()
 
-
     def ProjectChanged(self):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -206,7 +194,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         return
 
     #Close the Dialog Box
-
     def Cancel(self):
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.destroy()

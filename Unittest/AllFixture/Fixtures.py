@@ -14,7 +14,6 @@ import shutil
 import sys
 import helper
 sys.path.append(helper.setImportBaseBath())
-
 import Main
 
 
@@ -49,7 +48,6 @@ class Fixtures(object):
         self.attachment = self.unit_test_folder + 'attachment.tsv'
         pass
 
-
     def delete_testing_data(self):
         """
         Delete Testing Data For Unit Test
@@ -67,6 +65,13 @@ class Fixtures(object):
                 shutil.rmtree(self.unit_test_folder_special)
             pass
 
+        self.unit_test_folder + 'testing_new_dir'
+        if os.path.exists(self.unit_test_folder+'test2'):
+            shutil.rmtree(self.unit_test_folder+'test2')
+
+        if os.path.exists(self.unit_test_folder + 'testing_new_dir'):
+            shutil.rmtree(self.unit_test_folder + 'testing_new_dir')
+
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, '1 = 1')
         self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, '1 = 1')
@@ -83,6 +88,11 @@ class Fixtures(object):
             shutil.rmtree(self.unit_test_folder)
         os.makedirs(self.unit_test_folder)
 
+        self.test_file_one = os.path.join(self.unit_test_folder, '1.docx')
+        self.test_file_two = os.path.join(self.unit_test_folder, '2.docx')
+        self.test_file_three = os.path.join(self.unit_test_folder, '3.docx')
+        self.test_file_four = os.path.join(self.unit_test_folder, '4.txt')
+
         file_obj1 = open(self.test_file_one, 'w+')
         file_obj1.write('1 document')
         file_obj1.close()
@@ -98,7 +108,6 @@ class Fixtures(object):
         file_obj1 = open(self.test_file_four, 'w+')
         file_obj1.write('4 document')
         file_obj1.close()
-
 
     def load_special_verification_algorithm_data(self):
         """

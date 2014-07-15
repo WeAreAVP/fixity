@@ -13,8 +13,6 @@ class EmailNotification(object):
         super(EmailNotification, self).__init__()
         self.Fixity = SharedApp.SharedApp.App
 
-
-
     def SendEmail(self, recipients, text, attachment, information, project_name=''):
         """
         Note that ADDRESS and PASSWORD should be set before use
@@ -95,7 +93,6 @@ class EmailNotification(object):
             self.Fixity.logger.LogException(str(moreInformation))
 
             return False
-
 
     def TestingEmail(self,recipients, text, information):
         """

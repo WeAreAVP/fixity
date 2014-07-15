@@ -19,7 +19,6 @@ import FailedMessages as FailedMessages
 import AllFixture.helper as helper
 sys.path.append(helper.setImportBaseBath())
 
-
 import Main
 
 
@@ -75,4 +74,3 @@ class EmailTestCase(object):
         print("---------------------------------------------------------------------\n")
 
         return [response, ExpectedResults.EmailTestCaseExpectedResult['error'], FailedMessages.EmailTestCaseFailMessages['error']]
-

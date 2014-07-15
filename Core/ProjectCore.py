@@ -279,7 +279,7 @@ class ProjectCore(object):
         algorithm_selected = ''
         if flag_is_a_tsv_file:
             filters  = str(self.Fixity.Configuration.CleanStringForBreaks(file_to_import_info_of.readline()))
-            algorithm_selected  = str(self.Fixity.Configuration.CleanStringForBreaks(file_to_import_info_of.readline()))
+            algorithm_selected = str(self.Fixity.Configuration.CleanStringForBreaks(file_to_import_info_of.readline()))
             filters = filters.split('||-||')
         all_content = file_to_import_info_of.readlines()
 
@@ -492,7 +492,6 @@ class ProjectCore(object):
         self.Fixity.removeProject(selected_project)
         SharedApp.SharedApp.App = self.Fixity
         return True
-
 
     def launchThread(self):
         try:self.Fixity = SharedApp.SharedApp.App
@@ -994,7 +993,6 @@ class ProjectCore(object):
             pass
 
         directories = self.Fixity.Database.getProjectPathInfo(projects_info['id'], projects_info['versionCurrentID'])
-
 
         self.setDirectories(directories)
 

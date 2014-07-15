@@ -23,7 +23,9 @@ from AllFixture.ProjectFixtures import ProjectFixtures
 import ExpectedResults as ExpectedResults
 import FailedMessages as FailedMessages
 
+
 class AlgorithmTestCase(object):
+
 
     def __init__(self):
         super(AlgorithmTestCase,self).__init__()
@@ -580,6 +582,7 @@ class AlgorithmTestCase(object):
 
     def test_moved_file_is_special_chars(self):
         """
+        Test Moved File Is Special Chars
 
         @return:
         """
@@ -636,7 +639,7 @@ class AlgorithmTestCase(object):
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
         self.algorithm_fixtures.delete_testing_data()
-
+        self.algorithm_fixtures.unit_test_folder = self.App.Fixity.Configuration.getUnit_test_folder()
         print("---------------------------------------------------------------------\n")
 
         return [{0: confirmed, 1: missing_file, 2: created, 3: moved, 4: corrupted_or_changed},
@@ -653,8 +656,8 @@ class AlgorithmTestCase(object):
         file_path_given_to_be_created3 = base_path_of_unitest+'test3' + os.sep + '3.docx'
         file_path_given_to_be_created4 = base_path_of_unitest+'test3' + os.sep + '4.txt'
 
-
         self.algorithm_fixtures.load_verification_algorithm_data()
+
         base_path = base_path_of_unitest+'test3'
 
         self.algorithm_fixtures.load_verification_algorithm_data_for_intersect(file_path_given_to_be_created1, base_path,
@@ -682,6 +685,7 @@ class AlgorithmTestCase(object):
         moved = report_info_two['moved']
         corrupted_or_changed = report_info_two['corrupted_or_changed']
 
+        self.algorithm_fixtures.unit_test_folder = self.App.Fixity.Configuration.getUnit_test_folder()
         self.algorithm_fixtures.delete_testing_data()
 
         print("---------------------------------------------------------------------\n")

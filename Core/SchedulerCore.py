@@ -7,6 +7,7 @@ from Core import SharedApp
 
 class SchedulerCore(object):
 
+
     def __init__(self):
         self.run_day_or_month = None
         self.if_missed_run_upon_restart = None
@@ -438,89 +439,29 @@ class SchedulerCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-        #    # Months
-        #    if interval == 1:
-        #        template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_mac(), "r")
-        #        scheduler_xml_template_lines = template_monthly_file.readlines()
-        #        template_monthly_file.close()
-        #
-        #    # Weeks
-        #    elif interval == 2:
-        #        template_week_file = open(self.Fixity.Configuration.getSch_week_template_path_mac(), "r")
-        #        scheduler_xml_template_lines = template_week_file.readlines()
-        #        template_week_file.close()
-        #
-        #    # Days
-        #    elif interval == 3:
-        #        template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path_mac(), "r")
-        #        scheduler_xml_template_lines = template_days_file.readlines()
-        #        template_days_file.close()
-        #
-        #
-        #    infoTrigger = str(triggers['CalendarTrigger']['StartBoundary']).split('T')
-        #    trigger_information = str(infoTrigger[1]).split(':')
-        #    for scheduler_xml_template_line_single in scheduler_xml_template_lines:
-        #
-        #
-        #        scheduler_xml_template_line_single = self.Fixity.Configuration.CleanStringForBreaks(str(scheduler_xml_template_line_single))
-        #
-        #
-        #        response = False
-        #
-        #        response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{fixity_path}}', str(self.Fixity.Configuration.getFixityLaunchPath()))
-        #
-        #        if response is False:
-        #            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{demon_name}}', "Com.fixity."+str(project_name)+".demon")
-        #
-        #        if response is False:
-        #            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{project_name}}', str(project_name))
-        #
-        #        if response is False:
-        #            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{debug_file_path}}', self.Fixity.Configuration.getDebugFilePath())
-        #
-        #        if response is False:
-        #            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{mins}}', str(trigger_information[1]))
-        #
-        #        if response is False:
-        #            response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{hrs}}', str(trigger_information[0]))
-        #
-        #        if interval == 1:
-        #            if response is False:
-        #                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{day}}', str(triggers['CalendarTrigger']['ScheduleByMonth']['DaysOfMonth']))
-        #
-        #        if interval == 2:
-        #            if response is False:
-        #                week_information = self.Fixity.Configuration.getWeekInformation()
-        #                response = self.setValuesForScheduler(scheduler_xml_template_line_single, '{{week_day}}', str(week_information[str(triggers['CalendarTrigger']['ScheduleByWeek']['DaysOfWeek'])]) )
-        #
-        #
-        #        if response is False:
-        #            # if no value found to replace
-        #            scheduler_xml_text += str(scheduler_xml_template_line_single) +"\n"
-        #        else:
-        #            scheduler_xml_text += response
-        #
-        #    try:
-        #        xmlsch.write(scheduler_xml_text)
-        #    except:
-        #        pass
-        #except:
-        #    self.Fixity.logger.LogException(Exception.message)
-        #    pass
-        #xmlsch.close()
-        #return launch_agent
 
     def setRunTime(self, runTime):self.runTime = runTime
+
     def getRunTime(self ): return self.runTime
+
     def setDurationType(self, duration_type):self.duration_type = duration_type
+
     def getDurationType(self ): return self.duration_type
+
     def setRun_day_or_month(self, run_day_or_month): self.run_day_or_month = run_day_or_month
+
     def setRun_when_on_battery(self, run_when_on_battery): self.run_when_on_battery = run_when_on_battery
+
     def getRun_when_on_battery(self): return self.run_when_on_battery
+
     def getRun_day_or_month(self ): return self.run_day_or_month
+
     def setIf_missed_run_upon_restart(self, if_missed_run_upon_restart):self.if_missed_run_upon_restart = if_missed_run_upon_restart
+
     def getIf_missed_run_upon_restart(self): return self.if_missed_run_upon_restart
+
     def setEmail_only_upon_warning(self, email_only_upon_warning):self.email_only_upon_warning = email_only_upon_warning
+
     def getEmail_only_upon_warning(self): return self.email_only_upon_warning
 
     def setValuesForScheduler(self, string, find_string, replace_with_string):

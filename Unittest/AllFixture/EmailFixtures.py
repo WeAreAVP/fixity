@@ -37,4 +37,3 @@ class EmailFixtures(Fixtures):
 
     def EmailInformation(self):
         return self.information
-

@@ -10,6 +10,7 @@ import unittest
 import os
 import sys
 
+
 # Custom libraries
 from AllFixture.ProjectFixtures import ProjectFixtures
 from TestCases.ProjectTestCase import ProjectTestCase
@@ -33,7 +34,6 @@ class TestSuite(unittest.TestCase):
 
         @return: None
         """
-
         print('Start Up')
         self.Fixtures = Fixtures()
         self.ProjectFixtures = ProjectFixtures()
@@ -45,7 +45,6 @@ class TestSuite(unittest.TestCase):
         self.App = Main.Main()
         self.App.Fixity.loadAllProjects()
         pass
-
 
     def testARunAlgorithmTestCases(self):
         """
@@ -86,7 +85,7 @@ class TestSuite(unittest.TestCase):
                          response_test_change_file_hp[1],
                          response_test_change_file_hp[2])
 
-         # Changed  FileExists::YES     ||SameHashOfFile::NO     ||SameFilePath::YES    ||SameI-Node::NO
+        # Changed  FileExists::YES     ||SameHashOfFile::NO     ||SameFilePath::YES    ||SameI-Node::NO
         response_test_confirm_file_ih = self.algorithm_test_case.test_change_inode_and_hash_file()
         self.assertEqual(response_test_confirm_file_ih[0],
                          response_test_confirm_file_ih[1],
@@ -151,6 +150,38 @@ class TestSuite(unittest.TestCase):
                          response_test_confirm_file_all[2])
 
         # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        response_test_confirm_file_delete = self.algorithm_test_case.test_delete_file_is_special_chars()
+        self.assertEqual(response_test_confirm_file_delete[0],
+                         response_test_confirm_file_delete[1],
+                         response_test_confirm_file_delete[2])
+
+        ######################################################################################################
+        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        response_test_moved_file_to_new_Directory = self.algorithm_test_case.test_moved_file_to_new_directory()
+        self.assertEqual(response_test_moved_file_to_new_Directory[0],
+                         response_test_moved_file_to_new_Directory[1],
+                         response_test_moved_file_to_new_Directory[2])
+        ######################################################################################################
+
+        # Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::NO    ||SameI-Node::YES
+        response_test_moved_file_to_new_Directory_change_hash = self.algorithm_test_case.test_moved_file_to_new_Directory_change_hash()
+        self.assertEqual(response_test_moved_file_to_new_Directory_change_hash[0],
+                         response_test_moved_file_to_new_Directory_change_hash[1],
+                         response_test_moved_file_to_new_Directory_change_hash[2])
+
+        # Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
+        response_test_moved_new_Directory_change_name_as_old = self.algorithm_test_case.test_moved_file_to_new_Directory_change_name_as_old()
+        self.assertEqual(response_test_moved_new_Directory_change_name_as_old[0],
+                         response_test_moved_new_Directory_change_name_as_old[1],
+                         response_test_moved_new_Directory_change_name_as_old[2])
+        #
+        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
+        response_test_moved_new_Directory_change_name_and_as_old_and_content = self.algorithm_test_case.test_moved_to_new_directory_change_name_as_old_and_content()
+        self.assertEqual(response_test_moved_new_Directory_change_name_and_as_old_and_content[0],
+                         response_test_moved_new_Directory_change_name_and_as_old_and_content[1],
+                         response_test_moved_new_Directory_change_name_and_as_old_and_content[2])
+
+        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
         response_test_change_base_path = self.algorithm_test_case.test_change_base_path()
         self.assertEqual(response_test_change_base_path[0],
                          response_test_change_base_path[1],
@@ -161,36 +192,6 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(response_test_change_base_path[0],
                          response_test_change_base_path[1],
                          response_test_change_base_path[2])
-
-        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-        response_test_confirm_file_delete = self.algorithm_test_case.test_delete_file_is_special_chars()
-        self.assertEqual(response_test_confirm_file_delete[0],
-                         response_test_confirm_file_delete[1],
-                         response_test_confirm_file_delete[2])
-
-        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-        response_test_moved_file_to_new_Directory = self.algorithm_test_case.test_moved_file_to_new_directory()
-        self.assertEqual(response_test_moved_file_to_new_Directory[0],
-                         response_test_moved_file_to_new_Directory[1],
-                         response_test_moved_file_to_new_Directory[2])
-
-        # Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::NO    ||SameI-Node::YES
-        response_test_moved_file_to_new_Directory = self.algorithm_test_case.test_moved_file_to_new_Directory_change_hash()
-        self.assertEqual(response_test_moved_file_to_new_Directory[0],
-                         response_test_moved_file_to_new_Directory[1],
-                         response_test_moved_file_to_new_Directory[2])
-
-        # Deleted   FileExists::YES     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::NO
-        response_test_moved_new_Directory_change_name = self.algorithm_test_case.test_moved_file_to_new_Directory_change_name_as_old()
-        self.assertEqual(response_test_moved_new_Directory_change_name[0],
-                         response_test_moved_new_Directory_change_name[1],
-                         response_test_moved_new_Directory_change_name[2])
-        #
-        # Deleted   FileExists::NO     ||SameHashOfFile::YES    ||SameFilePath::YES    ||SameI-Node::YES
-        response_test_moved_new_Directory_change_name_and_hash = self.algorithm_test_case.test_moved_to_new_directory_change_name_as_old_and_content()
-        self.assertEqual(response_test_moved_new_Directory_change_name_and_hash[0],
-                         response_test_moved_new_Directory_change_name_and_hash[1],
-                         response_test_moved_new_Directory_change_name_and_hash[2])
 
     def testBProjectTestCases(self):
         """
@@ -227,19 +228,16 @@ class TestSuite(unittest.TestCase):
         # Import Project Unit test
         response_test_import_project = self.project_test_case.import_project('Testing')
         self.assertEqual(response_test_import_project[0],
-                         response_test_import_project[1],
-                         response_test_import_project[2])
+                         response_test_import_project[1], response_test_import_project[2])
         # Change Algorithm Unit test
         response_test_change_algorithm = self.project_test_case.change_algorithm(self.Fixtures.project_name)
         self.assertEqual(response_test_change_algorithm[0],
-                         response_test_change_algorithm[1],
-                         response_test_change_algorithm[2])
+                         response_test_change_algorithm[1], response_test_change_algorithm[2])
 
         # Change Project Name Unit test
         response_test_change_project_name = self.project_test_case.change_project_name(self.Fixtures.project_name, 'testing')
         self.assertEqual(response_test_change_project_name[0],
-                         response_test_change_project_name[1],
-                         response_test_change_project_name[2])
+                         response_test_change_project_name[1], response_test_change_project_name[2])
 
     def testCEmailNotification(self):
         """
@@ -268,7 +266,6 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(response_of_email_attachment[0],
                          response_of_email_attachment[1],
                          response_of_email_attachment[2])
-
         pass
 
     def testDRequiredFilesAndDirsCreation(self):
@@ -312,7 +309,7 @@ class TestSuite(unittest.TestCase):
         self.assertEqual(response_of_is_schedules_dir_exists[0],
                          response_of_is_schedules_dir_exists[1],
                          response_of_is_schedules_dir_exists[2])
-
+        pass
     def tearDown(self):
         print('Tear Down!')
         self.Fixtures.delete_testing_data()

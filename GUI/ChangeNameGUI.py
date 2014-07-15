@@ -146,7 +146,6 @@ class ChangeNameGUI(GUILibraries.QDialog ):
     def project_changed(self):
         project_changed = ''
 
-
     '''
     Close the Dialog Box
     '''
@@ -159,5 +158,3 @@ class ChangeNameGUI(GUILibraries.QDialog ):
     def LaunchDialog(self):
         self.SetDesgin()
         self.ShowDialog()
-
-

@@ -22,7 +22,7 @@ class AlgorithmFixtures(Fixtures):
     def __init__(self):
         self.App = Main.Main()
         super(AlgorithmFixtures, self).__init__()
-        self.new_directory = self.unit_test_folder + 'testing_new_dir'
+        self.new_directory = self.unit_test_folder + 'testing_new_dir' + os.sep
         self.new_file_name_temp = self.unit_test_folder + 'testing1234.docx'
         pass
 
@@ -33,6 +33,7 @@ class AlgorithmFixtures(Fixtures):
         @param path_to_be_changed:string  Path to be change for testing
         @param path_to_be_moved_to:string  Path to be change with
         """
+
         if not os.path.exists(self.new_directory):
             os.makedirs(self.new_directory)
 
@@ -189,21 +190,6 @@ class AlgorithmFixtures(Fixtures):
             pass
         pass
 
-    def create_directory_intersect(self):
-        """
-        Create Directory Intersect
-
-        @return:
-        """
-        self.algorithm_fixtures.load_verification_algorithm_data()
-        self.unit_test_folder = self.unit_test_folder + 'test2'
-
-        self.unit_test_folder + 'test2' + os.sep + '1.docx'
-        self.unit_test_folder + 'test2' + os.sep + '2.docx'
-        self.unit_test_folder + 'test2' + os.sep + '3.docx'
-        self.unit_test_folder + 'test2' + os.sep + '4.docx'
-        pass
-
     def change_file(self, path_to_be_changed):
         """
         Change File
@@ -252,5 +238,3 @@ class AlgorithmFixtures(Fixtures):
                 pass
             pass
         pass
-
-

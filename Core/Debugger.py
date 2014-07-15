@@ -43,7 +43,6 @@ class Debugger(object):
         else:
             self.is_debugger_on = True
 
-
     #
     #@param msg
     #@param more_information
@@ -71,7 +70,6 @@ class Debugger(object):
 
         except:
             pass
-
 
     #
     #@param msg

@@ -54,7 +54,6 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.main = GUILibraries.QHBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
-
     def destroy(self):
         ''' Distructor'''
         del self
@@ -64,12 +63,9 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.show()
         self.exec_()
 
-
-
     def SetLayout(self, layout):
         ''' Set Layout'''
         self.AboutFixityLayout = layout
-
 
     def showDescription(self):
         ''' Show Description'''
@@ -80,22 +76,16 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.description_btn.setDisabled(True)
         self.author_and_license_btn.setDisabled(False)
         self.contact_btn.setDisabled(False)
-
-
-
     def showLicense(self):
         ''' Show License Information On About Us Page(Trigger in  button press)'''
         self.heading.setText(GUILibraries.messages['License_heading'])
         ''' Header Detail '''
         LicenseText = GUILibraries.messages['License_Content']
 
-
         self.content.setText(LicenseText)
         self.description_btn.setDisabled(False)
         self.author_and_license_btn.setDisabled(True)
         self.contact_btn.setDisabled(False)
-
-
 
     def showContact(self):
         '''Trigger The Show Contact'''
@@ -106,8 +96,6 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.description_btn.setDisabled(False)
         self.author_and_license_btn.setDisabled(False)
         self.contact_btn.setDisabled(True)
-
-
 
     def SetDesgin(self):
         ''' All design Management Done in Here'''
@@ -164,7 +152,6 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.setLayout(self.main)
         self.showDescription()
 
-
     def Cancel(self):
         """
         Close the Dialog Box
@@ -176,7 +163,6 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         self.destroy()
         self.close()
-
 
     def LaunchDialog(self):
         """

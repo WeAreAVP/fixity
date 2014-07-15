@@ -5,18 +5,13 @@ Created on May 14, 2014
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
 
-
 # built-in libraries
-import os
-
 from Fixtures import Fixtures
+
 # Custom libraries
-
-
 import sys
 import helper
 sys.path.append(helper.setImportBaseBath())
-
 
 import Main
 
@@ -80,3 +75,12 @@ class ProjectFixtures(Fixtures):
             dirs_path = ''
         self.App.Fixity.loadAllProjects()
         return dir_new_id
+
+    def delete_project(self, project_name, project_id):
+        """
+        Delete Project
+        """
+
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProjectPath, 'projectID="' + str(project_id) + '"')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableVersionDetail, 'projectID="' + str(project_id) + '"')
+        self.App.Fixity.Database.delete(self.App.Fixity.Database._tableProject, 'id ="' + str(project_id) + '"')

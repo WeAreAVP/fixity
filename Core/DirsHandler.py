@@ -288,8 +288,6 @@ class DirsHandler(object):
 
         return information
 
-
-
     def verifyFiles(self, dicty ,dict_hash ,dictFile ,line ,verified_files, single_directory, is_path_change = False, mark_all_confirmed = False):
         """
 
@@ -559,8 +557,6 @@ class DirsHandler(object):
                     return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
                 pass
 
-
-
     def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
         """
         ------------------------------------------------------------------------------- --------------------------
@@ -651,7 +647,6 @@ class DirsHandler(object):
 
         return list_of_values
 
-
     def specialCharacterHandler(self, string_to_be_handled):
         """
         Method to handle all special characters
@@ -674,7 +669,6 @@ class DirsHandler(object):
 
         return string_to_be_handled
 
-
     def getFilesHash(self, file_path, algorithm):
         """
         Checksum Generation Method.
@@ -686,7 +680,6 @@ class DirsHandler(object):
 
         @return: None
         """
-
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         try:

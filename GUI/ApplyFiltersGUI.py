@@ -9,7 +9,6 @@ from GUI import GUILibraries
 from Core import SharedApp
 __author__ = 'Furqan'
 
-
 #Class to manage the Filter to be implemented for the files with specific extensions
 
 class ApplyFiltersGUI(GUILibraries.QDialog):
@@ -30,7 +29,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         self.filter_files_layout = GUILibraries.QVBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
-
     '''
         catch Reject even of the Dialog box
     '''
@@ -39,13 +37,11 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
         super(ApplyFiltersGUI,self).reject()
 
-
     '''
         Distructor
     '''
     def destroy(self):
         del self
-
 
     '''
     Get Window of this
@@ -153,7 +149,6 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
         else:
             self.notification.showError(self, "Failure", GUILibraries.messages['filter_fail'])
 
-
     '''
     Triggers on project changed from drop down and sets related information in filters Field
     '''
@@ -188,10 +183,3 @@ class ApplyFiltersGUI(GUILibraries.QDialog):
 
         self.SetDesgin()
         self.ShowDialog()
-
-#app = GUILibraries.QApplication('sadas')
-#w = ApplyFilters(GUILibraries.QDialog())
-#w.SetWindowLayout()
-#w.SetDesgin()
-#w.ShowDialog()
-#exit(app.exec_())

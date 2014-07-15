@@ -67,7 +67,6 @@ class EmailNotificationGUI(GUILibraries.QDialog):
     def SetWindowLayout(self):
         self.setLayout(self.email_pref_layout)
 
-
     '''
     All design Management Done in Here
 
