@@ -234,24 +234,31 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_layout.addWidget(self.monthly)
         self.scheduling_layout.addWidget(self.weekly)
         self.scheduling_layout.addWidget(self.daily)
-
+        self.scheduler_run_time = GUILibraries.QLabel("Scheduler Run Time: ")
+        self.scheduling_layout.addWidget(self.scheduler_run_time)
         self.timer = GUILibraries.QTimeEdit(GUILibraries.QTime())
 
         self.timer.setDisplayFormat(self.Fixity.Configuration.getTimeFormat())
         self.scheduling_layout.addWidget(self.timer)
 
+        self.scheduler_run_on = GUILibraries.QLabel("Scheduler Run On: ")
+        self.scheduling_layout.addWidget(self.scheduler_run_on)
         self.day_of_week = GUILibraries.QComboBox()
         self.day_of_week.addItems(self.Fixity.Configuration.getWeekDays())
         self.day_of_week.activated.connect(self.changed)
         self.scheduling_layout.addWidget(self.day_of_week)
         self.day_of_week.hide()
 
+
+
         self.day_of_month = GUILibraries.QSpinBox()
         self.day_of_month.setMaximum(31)
         self.day_of_month.setMinimum(1)
+
         self.day_of_month.valueChanged.connect(self.changed)
         self.scheduling_layout.addWidget(self.day_of_month)
         self.day_of_month.hide()
+
 
         self.spacer = GUILibraries.QSpacerItem(125, 30)
         self.scheduling_layout.addItem(self.spacer)
@@ -545,9 +552,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if is_lock_exists is False:
             project_core = self.Save()
-
-            project_core.launchThread()
             self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
+            project_core.launchThread()
+
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
 
@@ -906,6 +913,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.changed()
         self.day_of_month.hide()
         self.day_of_week.hide()
+        self.scheduler_run_on.hide()
         self.spacer.changeSize(30, 25)
 
     #Month check box Click Trigger
@@ -918,6 +926,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.spacer.changeSize(0, 0)
         self.day_of_month.hide()
         self.day_of_week.show()
+        self.scheduler_run_on.show()
+        self.scheduler_run_on.setText('Scheduler Run Every ')
 
     #Month check box Click Trigger
     #(Trigger on Month Check box click)
@@ -929,6 +939,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.spacer.changeSize(0, 0)
         self.day_of_week.hide()
         self.day_of_month.show()
+        self.scheduler_run_on.show()
+        self.scheduler_run_on.setText('Scheduler Run On ')
 
     #Pick Directory
     #(Trigger on Pick Directory Button Menu)

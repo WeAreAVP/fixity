@@ -5,11 +5,13 @@
 
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
-
+from GUI import NotificationGUI, GUILibraries;
+from subprocess import Popen
 import datetime
 import re
 import os
 import thread
+import time
 from collections import defaultdict
 
 global verified_files
@@ -386,7 +388,7 @@ class ProjectCore(object):
 
                 if project_id and len(all_content) > 0:
                     flag_project_contain_detail = True
-                    
+
                     for single_content in all_content:
                         fix_info = re.split(r'\t+', single_content)
 
@@ -497,6 +499,13 @@ class ProjectCore(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
+        notification = NotificationGUI.NotificationGUI()
+
+        msgBox = GUILibraries.QLabel('Loading')
+
+        msgBox.setWindowTitle("Processing ....")
+        msgBox.setText("Reading Files, please wait ...")
+        msgBox.show()
         run_thread = thread.start_new_thread(self.launchRun, tuple())
         self.Fixity.queue[len(self.Fixity.queue)] = run_thread
 
@@ -506,14 +515,15 @@ class ProjectCore(object):
         self.Fixity.Database = Database.Database()
         self.Run(False, True)
 
-    def Run(self, check_for_changes = False, is_from_thread = False, mark_all_confirmed = False, called_from = 'CLI'):
-
+    def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI'):
         """
         Run This project
         @param check_for_changes: if only want to know is all file confirmed or not
 
         @return array
         """
+        start_time = datetime.datetime.now()
+
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -524,7 +534,7 @@ class ProjectCore(object):
             self.database = Database.Database()
         else:
             self.database = self.Fixity.Database
-
+        time.sleep(1.5)
         missing_file = ('', '')
         global verified_files
         verified_files = list()
@@ -629,7 +639,8 @@ class ProjectCore(object):
                 index_path_in_for = r''+str(str(project_path_information[path_info]['path']).strip())
 
             base_path_information[str(project_path_information[path_info]['pathID'])] = {'path': index_path_in_for,
-                                                                                        'code': str(project_path_information[path_info]['pathID']) ,'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
+                                                                                        'code': str(project_path_information[path_info]['pathID']) ,
+                                                                                        'number': str(Id_info[1]),'id':project_path_information[path_info]['id']}
 
         filters_array = {}
         try:
@@ -861,7 +872,7 @@ class ProjectCore(object):
         if created > 0 or missing_files_total > 0 or corrupted_or_changed > 0 or moved > 0:
             send_email_new = True
 
-        created_report_info = self.writerReportFile(information_for_report, report_content)
+        created_report_info = self.writerReportFile(information_for_report, report_content, start_time)
 
         self.writerHistoryFile(history_text)
 
@@ -901,6 +912,7 @@ class ProjectCore(object):
 
         if is_from_thread:
             self.Fixity.selfDestruct()
+
 
     def applyFilter(self, filters, is_ignore_hidden_files):
         """
@@ -1021,11 +1033,12 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-    def writerReportFile(self, information, detail_output_of_all_files_changes):
+    def writerReportFile(self, information, detail_output_of_all_files_changes, start_time):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
         try:
+
             reports_file = open(self.Fixity.Configuration.getReportTemplatePath(), 'r')
             reports_lines = reports_file.readlines()
             reports_file.close()
@@ -1033,9 +1046,21 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
+        time_elapsed = {}
+        end_time = datetime.datetime.now()
+        time_diff = end_time - start_time
+        hours, remainder = divmod(time_diff.seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+
+        time_elapsed['hrs'] = hours
+        time_elapsed['min'] = minutes
+        time_elapsed['sec'] = seconds
+
+        information['time_elapsed'] = time_elapsed
         reports_text = ''
         try:
             for reports_single_line in reports_lines:
+
                 try:
                     reports_single_line = reports_single_line.decode('utf-8').replace('\n', '')
                 except:
@@ -1093,6 +1118,7 @@ class ProjectCore(object):
         return {'path': rn, 'email_content': reports_email_text}
 
     def setReportInformation(self, report_text ,information, detail_output_of_all_files_changes, email_report = False):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -1124,6 +1150,9 @@ class ProjectCore(object):
 
         elif '{{removed_files}}' in reports_text:
             reports_text = str(reports_text).replace('{{removed_files}}', str(information['missing_file']))
+
+        elif '{{time_elapsed}}' in reports_text:
+            reports_text = str(reports_text).replace('{{time_elapsed}}', str(information['time_elapsed']['hrs']) + ' hrs ' + str(information['time_elapsed']['min'])+ ' min ' + str(information['time_elapsed']['sec']) + ' seconds')
 
         elif '{{details}}' in reports_text and email_report is False:
             utf_encode = False
