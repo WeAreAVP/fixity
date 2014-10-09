@@ -45,7 +45,7 @@ class DirsHandler(object):
     def setPathID(self, path_id):
         self.path_id = path_id
 
-    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False, is_path_change = False, mark_all_confirmed = False):
+    def Run(self, project_name,dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread = False, is_path_change = False, mark_all_confirmed = False, scanner=None):
         """
         Updating/Creating Manifest With on the given directory
 
@@ -78,8 +78,11 @@ class DirsHandler(object):
         #Getting all files and directory  in side "single_directory" with detail information (inode, path and file hash)
         single_directory = self.getPath()
 
-        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm)
-
+        directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm, scanner)
+        try:
+            scanner.AddText('\n Preparing Data for scanning.')
+        except:
+            pass
         for directories_inside_details_single in directories_inside_details:
 
             flag = True
@@ -185,6 +188,11 @@ class DirsHandler(object):
                 check += 1
                 try:
                     response = []
+
+                    try:
+                        scanner.AddText('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
+                    except:
+                        pass
                     response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change, mark_all_confirmed)
 
                     if not response or len(response) < 1 or len(response) <= 0:
@@ -558,7 +566,7 @@ class DirsHandler(object):
                     return line, self.Fixity.Configuration.new_file + ":\t" + line[1].encode('utf-8')
                 pass
 
-    def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ):
+    def getFilesDetailInformationWithinGivenPath(self, directory_path_to_be_scanned, algorithm_used_for_this_project ,scanner=None):
         """
         ------------------------------------------------------------------------------- --------------------------
         Logic For Selection of Scheduler time In History or Depreciated Manifest  Functi onality                  |
@@ -585,11 +593,17 @@ class DirsHandler(object):
 
         list_of_values = []
         fls = []
-
+        try:
+            scanner.AddText('Getting Directories Details .')
+        except:
+            pass
         try:
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files:
-
+                    try:
+                        scanner.AddText('.')
+                    except:
+                        pass
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             fls.append(root + str(os.sep) + single_file)
@@ -609,13 +623,20 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+        try:
+            scanner.AddText('\nListing Files .')
+        except:
+            pass
 
         try:
             for f in xrange(len(fls)):
                 path_of_the_file = fls[f]
 
                 encoded_base_path = self.getPathID()
-
+                try:
+                    scanner.AddText('.')
+                except:
+                    pass
                 if self.Fixity.Configuration.getOsType() == 'Windows':
                     try:
                         given_path = path_of_the_file. replace(directory_path_to_be_scanned, encoded_base_path + '||')
