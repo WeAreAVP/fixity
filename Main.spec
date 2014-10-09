@@ -1,22 +1,17 @@
 # -*- mode: python -*-
 a = Analysis(['Main.py'],
-             pathex=['C:\\PyInstaller\\pyinstaller.py'],
+             pathex=['c:\\Users\\Xohotech\\Desktop\\projects\\fixity'],
              hiddenimports=[],
-             hookspath=None)
-a.datas += [('assets\\logo_sign_small.png', 'assets\\logo_sign_small.png','DATA')]
+             hookspath=None,
+             runtime_hooks=None)
 pyz = PYZ(a.pure)
 exe = EXE(pyz,
           a.scripts,
           a.binaries,
-          a.zipfiles, 
+          a.zipfiles,
           a.datas,
-          name=os.path.join('dist', 'Fixity.exe'),
+          name='Main.exe',
           debug=False,
           strip=None,
           upx=True,
-          console=False , icon='assets\\icon.ico')
-app = BUNDLE(exe,
-             name=os.path.join('dist', 'Fixity.exe.app'))
-
-
-
+          console=True )
