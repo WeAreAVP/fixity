@@ -30,7 +30,7 @@ class Main (object):
 
     def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
-
+        print(project_name)
         if new_path is not None:
             dir_information = {}
             dir_information['path'] = new_path

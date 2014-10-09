@@ -2,6 +2,7 @@ Fixity report
 Project name    {{project_name}}
 Algorithm used  {{algo}}
 Date    {{date}}
+Time Elapsed    {{time_elapsed}}
 Total Files {{total_files}}
 Confirmed Files {{confirmed_files}}
 Moved or Renamed Files  {{moved_or_renamed_files}}

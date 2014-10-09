@@ -114,15 +114,17 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
+
         if project_core.getAlgorithm() == algo_value_selected:
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
             return
+
         last_dif_paths_info = self.Fixity.Database.select(self.Fixity.Database._tableProject,'*',"`id` = '" + str(id) + "' OR `title` like '" + project_core.getTitle() + "'")
         try:
             project_core.setLast_dif_paths(str(last_dif_paths_info[0]['lastDifPaths']))
             project_core.setFilters(str(last_dif_paths_info[0]['filters']))
             project_core.setAlgorithm(str(last_dif_paths_info[0]['selectedAlgo']))
-            project_core.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
+            #project_core.setProject_ran_before(str(last_dif_paths_info[0]['projectRanBefore']))
         except:
             pass
 
@@ -135,7 +137,8 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         project_core.SaveSchedule()
         result_of_all_file_confirmed = {}
         if not (project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None) :
-            result_of_all_file_confirmed = project_core.Run(True)
+            if(project_core.getProject_ran_before() == 1):
+                result_of_all_file_confirmed = project_core.Run(True)
         else:
             result_of_all_file_confirmed['file_changed_found'] = False
 
@@ -171,7 +174,9 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
 
-        project_core.Run(False, False, True)
+        if(project_core.getProject_ran_before() == 1):
+            project_core.Run(False, False, True)
+
         msgBox.close()
         SharedApp.SharedApp.App = self.Fixity
         self.notification.showInformation(self, "Success", selected_project+"'s " + GUILibraries.messages['algorithm_success'])
