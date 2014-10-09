@@ -5,8 +5,6 @@
 
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
-from GUI import NotificationGUI, GUILibraries;
-from subprocess import Popen
 import datetime
 import re
 import os
@@ -495,19 +493,30 @@ class ProjectCore(object):
         SharedApp.SharedApp.App = self.Fixity
         return True
 
-    def launchThread(self):
+    def launchThread(self, scanner):
+
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
-        notification = NotificationGUI.NotificationGUI()
+        self.Fixity = SharedApp.SharedApp.App
+        self.Fixity.Database = Database.Database()
+        self.Run(False, True, False, 'CLI', scanner)
+        try:
+            scanner.AddText('\nScanning Completed. \n')
+        except:
+            pass
 
-        msgBox = GUILibraries.QLabel('Loading')
+        time.sleep(6)
 
-        msgBox.setWindowTitle("Processing ....")
-        msgBox.setText("Reading Files, please wait ...")
-        msgBox.show()
-        run_thread = thread.start_new_thread(self.launchRun, tuple())
-        self.Fixity.queue[len(self.Fixity.queue)] = run_thread
+        try:
+            scanner.AddText('\nClosing Console. \n')
+        except:
+            pass
+
+        time.sleep(2)
+        scanner.Cancel()
+        # run_thread = thread.start_new_thread(self.launchRun, tuple())
+        # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
 
     def launchRun(self):
 
@@ -515,7 +524,7 @@ class ProjectCore(object):
         self.Fixity.Database = Database.Database()
         self.Run(False, True)
 
-    def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI'):
+    def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI', scanner=None):
         """
         Run This project
         @param check_for_changes: if only want to know is all file confirmed or not
@@ -731,8 +740,12 @@ class ProjectCore(object):
         for index in self.directories:
 
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
+                try:
+                    scanner.AddText('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
+                except:
+                    pass
 
-                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change, mark_all_confirmed)
+                result_score = self.directories[index].Run(self.getTitle(), dict, dict_hash, dict_File, filters_array, verified_files, is_from_thread, is_path_change, mark_all_confirmed, scanner)
 
                 verified_files = result_score['verified_files']
 

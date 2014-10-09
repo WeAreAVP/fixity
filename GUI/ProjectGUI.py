@@ -522,6 +522,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             return
         is_lock_exists = False
         is_dead_lock = False
+
         try:
             process_id = os.getpid()
         except:
@@ -553,7 +554,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if is_lock_exists is False:
             project_core = self.Save()
             self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
-            project_core.launchThread()
+            self.scanner = Scanner(self)
+            project_core.launchThread(self.scanner)
 
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
@@ -955,9 +957,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
         for single_index in xrange(self.Fixity.Configuration.getNumberOfPathDirectories()):
             if self.dirs_text_fields[single_index].text() == path_selected and self.dirs_text_fields[single_index].text() != '' and path_selected != '':
                 duplicate_path = True
+
         if duplicate_path:
             self.notification.showError(self, "Error", GUILibraries.messages['duplicate_path'])
             return
+
         if path_selected and path_selected != '':
             self.dirs_text_fields[n].setText(path_selected)
 
@@ -1011,3 +1015,41 @@ class ProjectGUI(GUILibraries.QMainWindow):
             except:
                 pass
             self.unsaved = False
+# window to display test results
+class Scanner(GUILibraries.QDialog):
+    def __init__(self, parent_win):
+        GUILibraries.QDialog.__init__(self, parent_win)
+        self.setWindowModality(GUILibraries.Qt.WindowModal)
+        self.setWindowTitle('Scanner Console')
+        self.Fixity = SharedApp.SharedApp.App
+        self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
+        self.lay = GUILibraries.QVBoxLayout(self)
+        self.te = GUILibraries.QTextEdit(self)
+        self.te.setReadOnly(True)
+        self.lay.addWidget(self.te)
+        self.setLayout(self.lay)
+        self.resize(800, 300)
+        self.show()
+        self.AddText('Started Scanning ..... !')
+
+    def AddText(self, text):
+        self.te.moveCursor(GUILibraries.QTextCursor.End);
+        self.te.insertPlainText (text);
+        self.te.moveCursor (GUILibraries.QTextCursor.End);
+        GUILibraries.QCoreApplication.processEvents()
+
+    '''
+    Distructor
+
+    @return: None
+    '''
+    def destroy(self):
+        del self
+
+    '''
+    Close the Dialog Box
+    '''
+    def Cancel(self):
+
+        self.destroy()
+        self.close()
