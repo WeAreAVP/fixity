@@ -78,10 +78,10 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             # set Fixed Size(Width, Height)
-            self.setFixedSize(900, 300)
+            self.setFixedSize(900, 318)
         else:
             # set Fixed Size(Width, Height)
-            self.setFixedSize(1000, 282)
+            self.setFixedSize(1000, 300)
 
 
     def createDirectories(self):
@@ -122,7 +122,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
-        self.dirs.setFixedSize(273,267)
+        self.dirs.setFixedSize(273,289)
         self.mail = GUILibraries.QGroupBox("Recipient Email Addresses")
 
         self.dirs.setLayout(self.dirs_layout)
@@ -272,7 +272,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.lastrun = GUILibraries.QLabel("Last checked: ")
         self.scheduling_layout.addWidget(self.lastrun)
         self.scheduling_groupBox.setLayout(self.scheduling_layout)
-        self.scheduling_groupBox.setFixedSize(255, 269)
+        self.scheduling_groupBox.setFixedSize(260, 289)
 
     def closeEvent(self, event):
         if self.unsaved:
