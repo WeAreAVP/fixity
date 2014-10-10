@@ -14,12 +14,6 @@
             </ScheduleByDay>
         </CalendarTrigger>
     </Triggers>
-	<Principals> 
-		<Principal id="Author">
-			<UserId>SYSTEM</UserId>
-			<RunLevel>HighestAvailable</RunLevel>
-		</Principal>
-	</Principals>
     <Settings>
         <Enabled>true</Enabled>
         <AllowStartOnDemand>{{allow_start_on_demand}}</AllowStartOnDemand>

@@ -9,27 +9,20 @@
     <Triggers>
         <CalendarTrigger>
             <StartBoundary>{{start_boundary}}</StartBoundary>
-            <ScheduleByMonth>
-                <DaysOfMonth>
-                    <Day>{{days_of_month}}</Day>
-                </DaysOfMonth >
-                <Months>
-                <January/>
-                <February/>
-                <March/>
-                <April/>
-                <May/>
-                <June/>
-                <July/>
-                <August/>
-                <September/>
-                <October/>
-                <November/>
-                <December/>
-                </Months>
-            </ScheduleByMonth>
+            <ScheduleByWeek>
+                <WeeksInterval >{{weeks_interval}}</WeeksInterval >
+                <DaysOfWeek>
+                    <{{day_of_week}}/>
+                </DaysOfWeek >
+            </ScheduleByWeek>
         </CalendarTrigger>
     </Triggers>
+	<Principals> 
+		<Principal id="Author">
+			<UserId>SYSTEM</UserId>
+			<RunLevel>HighestAvailable</RunLevel>
+		</Principal>
+	</Principals>
     <Settings>
         <Enabled>{{enabled}}</Enabled>
         <AllowStartOnDemand>{{allow_start_on_demand}}</AllowStartOnDemand>

@@ -45,6 +45,11 @@ class Configuration(object):
             self.sch_daily_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinDaily.xml')
             self.sch_week_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinWeek.xml')
             self.sch_month_template_path = r''+(os.path.join(self.template_path)+'SchedulerWinMonth.xml')
+
+            self.sch_daily_template_path_admin = r''+(os.path.join(self.template_path)+'SchedulerWinDailyAdmin.xml')
+            self.sch_week_template_path_admin = r''+(os.path.join(self.template_path)+'SchedulerWinWeekAdmin.xml')
+            self.sch_month_template_path_admin = r''+(os.path.join(self.template_path)+'SchedulerWinMonthAdmin.xml')
+
             self.config_file_path = self.getBasePath()+'conf.xml'
             try:
                 self.avpreserve_img = os.path.join(sys._MEIPASS, 'assets' + (str(os.sep)) +'avpreserve.png')
@@ -108,6 +113,12 @@ class Configuration(object):
     def getSch_week_template_path(self): return self.sch_week_template_path
 
     def getSch_month_template_path(self): return self.sch_month_template_path
+
+    def getSch_daily_template_path_admin(self): return self.sch_daily_template_path_admin
+
+    def getSch_week_template_path_admin(self): return self.sch_week_template_path_admin
+
+    def getSch_month_template_path_admin(self): return self.sch_month_template_path_admin
 
     def getSch_daily_template_path_mac(self): return self.sch_daily_template_path_mac
 

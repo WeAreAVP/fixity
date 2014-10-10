@@ -72,6 +72,20 @@ class SchedulerCore(object):
                 self.Fixity.logger.LogException()
                 pass
 
+    def isUserAdmin(self):
+        if os.name == 'nt':
+            import ctypes
+            # WARNING: requires Windows XP SP2 or higher!
+            try:
+                return ctypes.windll.shell32.IsUserAnAdmin()
+            except:
+                return False
+        elif os.name == 'posix':
+            # Check for root on Posix
+            return os.getuid() == 0
+        else:
+            raise RuntimeError, "Unsupported operating system for this module: %s" % (os.name,)
+
     def schedule(self, title):
         """
 
@@ -227,8 +241,8 @@ class SchedulerCore(object):
             SystemInformation = self.Fixity.Configuration.getWindowsInformation()
 
             if str(SystemInformation['WindowsType']) == '7':
+
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
-		print(command)	
             else:
                 command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
 
@@ -273,20 +287,35 @@ class SchedulerCore(object):
         scheduler_xml_text = ''
         scheduler_xml_template_lines = []
         # Months
+        print(self.isUserAdmin())
+        print(interval)
         if interval == 1:
-            template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path(), "r")
+            if self.isUserAdmin():
+                template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_admin(), "r")
+            else:
+                template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path(), "r")
+
             scheduler_xml_template_lines = template_monthly_file.readlines()
             template_monthly_file.close()
 
         # Weeks
         elif interval == 2:
-            template_week_file = open(self.Fixity.Configuration.getSch_week_template_path(), "r")
+            if self.isUserAdmin():
+                template_week_file = open(self.Fixity.Configuration.getSch_week_template_path_admin(), "r")
+            else:
+                template_week_file = open(self.Fixity.Configuration.getSch_week_template_path(), "r")
+
             scheduler_xml_template_lines = template_week_file.readlines()
             template_week_file.close()
 
         # Days
         elif interval == 3:
-            template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path(), "r")
+            if self.isUserAdmin():
+                template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path_admin(), "r")
+            else:
+                print(self.Fixity.Configuration.getSch_daily_template_path())
+                template_days_file = open(self.Fixity.Configuration.getSch_daily_template_path(), "r")
+
             scheduler_xml_template_lines = template_days_file.readlines()
             template_days_file.close()
 
