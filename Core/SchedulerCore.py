@@ -417,16 +417,16 @@ class SchedulerCore(object):
                 xmlsch.write("        <dict>\n")
 
                 xmlsch.write("            <key>Program</key>\n")
-                # xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
-                xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
+                xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
+                # xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
 
                 xmlsch.write("            <key>Label</key>\n")
                 xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
                 xmlsch.write("            <key>ProgramArguments</key>\n")
 
                 xmlsch.write("            <array>\n")
-                # xmlsch.write("                <string>"+str(self.Fixity.Configuration.getFixityLaunchPath())+"</string>\n")
-                xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
+                xmlsch.write("                <string>"+str(self.Fixity.Configuration.getFixityLaunchPath())+"</string>\n")
+                # xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
                 xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
                 xmlsch.write("            </array>\n")
 
