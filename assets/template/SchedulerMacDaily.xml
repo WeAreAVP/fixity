@@ -3,12 +3,12 @@
     <plist version="1.0">
         <dict>
             <key>Program</key>
-                <string>{{fixity_path}}</string>
+                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>
             <key>Label</key>
             <string>{{demon_name}}</string>
             <key>ProgramArguments</key>
             <array>
-                <string>{{fixity_path}}</string>
+                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>
                 <string>-a={{project_name}}</string>
             </array>
             <key>StandardOutPath</key>

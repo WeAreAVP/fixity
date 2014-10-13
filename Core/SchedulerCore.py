@@ -261,13 +261,15 @@ class SchedulerCore(object):
 
             try:
                 if os.path.isfile(xml_file_name_with_dir_name):
+                    print(["launchctl", "unload", "-w", xml_file_name_with_dir_name])
                     p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
+                print("launchctl load -w " + xml_file_name_with_dir_name)
+                os.system("launchctl load -w " + xml_file_name_with_dir_name)
 
-                p = subprocess.Popen(["launchctl", "load", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
@@ -406,6 +408,7 @@ class SchedulerCore(object):
         try:
             launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
             scheduler_xml_text = ''
+            print(self.Fixity.Configuration.getLibAgentPath())
             xmlsch = open(u''+launch_agent, "w")
             try:
                 xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")
@@ -414,13 +417,16 @@ class SchedulerCore(object):
                 xmlsch.write("        <dict>\n")
 
                 xmlsch.write("            <key>Program</key>\n")
-                xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
+                # xmlsch.write("                <string>" + str(self.Fixity.Configuration.getFixityLaunchPath()) +"</string>\n")
+                xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
+
                 xmlsch.write("            <key>Label</key>\n")
                 xmlsch.write("            <string>Com.fixity."+str(project_name)+".demon</string>\n")
                 xmlsch.write("            <key>ProgramArguments</key>\n")
 
                 xmlsch.write("            <array>\n")
-                xmlsch.write("                <string>"+str(self.Fixity.Configuration.getFixityLaunchPath())+"</string>\n")
+                # xmlsch.write("                <string>"+str(self.Fixity.Configuration.getFixityLaunchPath())+"</string>\n")
+                xmlsch.write("                <string>/Applications/TextEdit.app/Contents/MacOS/TextEdit</string>\n")
                 xmlsch.write("                <string>-a="+str(project_name)+"</string>\n")
                 xmlsch.write("            </array>\n")
 
