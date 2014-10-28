@@ -27,7 +27,7 @@ class Main (object):
         app.exec_()
 
     def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
-
+        print('started')
         is_lock_exists = False
         is_dead_lock = False
 
@@ -37,6 +37,7 @@ class Main (object):
             process_id = None
             pass
 
+        print('Get File Locker and check for dead lock')
         # Get File Locker and check for dead lock
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
@@ -44,8 +45,11 @@ class Main (object):
             is_dead_lock = lock.isProcessLockFileIsDead()
         except:
             self.Fixity.logger.LogException(Exception.message)
+            print(Exception.message)
             pass
 
+
+        print('is_dead_lock')
         try:
             if is_dead_lock:
                 lock.is_locked = True
@@ -54,11 +58,13 @@ class Main (object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
+        print('isLockFileExists')
         try:
             is_lock_exists = lock.isLockFileExists()
         except:
             pass
 
+        print('getSingleProject')
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
         if is_lock_exists is False:
             if new_path is not None:
