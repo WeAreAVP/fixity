@@ -114,7 +114,6 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         project_core = self.Fixity.ProjectRepo.getSingleProject(str(selected_project))
 
-
         if project_core.getAlgorithm() == algo_value_selected:
             self.notification.showWarning(self, "Failure", GUILibraries.messages['already_using_algorithm'])
             return
@@ -136,9 +135,13 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
 
         project_core.SaveSchedule()
         result_of_all_file_confirmed = {}
+
         if not (project_core.getProject_ran_before() == 0 or project_core.getProject_ran_before() == '0' or project_core.getProject_ran_before() == '' or project_core.getProject_ran_before() == 'None' or project_core.getProject_ran_before() is None) :
-            if(project_core.getProject_ran_before() == 1):
+            if project_core.getProject_ran_before() == 1 or project_core.getProject_ran_before() == '1':
                 result_of_all_file_confirmed = project_core.Run(True)
+            else:
+                result_of_all_file_confirmed['file_changed_found'] = False
+
         else:
             result_of_all_file_confirmed['file_changed_found'] = False
 
@@ -174,7 +177,7 @@ class ChangeAlgorithmGUI(GUILibraries.QDialog):
         GUILibraries.QCoreApplication.processEvents()
         project_core.SaveSchedule()
 
-        if(project_core.getProject_ran_before() == 1):
+        if project_core.getProject_ran_before() == 1:
             project_core.Run(False, False, True)
 
         msgBox.close()

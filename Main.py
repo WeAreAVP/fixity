@@ -5,7 +5,7 @@ Created on May 14, 2014
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
 from os import path
-from Core import SharedApp
+from Core import SharedApp, DatabaseLockHandler
 from GUI import GUILibraries
 import App
 from argparse import ArgumentParser
@@ -27,25 +27,58 @@ class Main (object):
         app.exec_()
 
     def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
+
+        is_lock_exists = False
+        is_dead_lock = False
+
+        try:
+            process_id = os.getpid()
+        except:
+            process_id = None
+            pass
+
+        # Get File Locker and check for dead lock
+        try:
+            lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
+
+            is_dead_lock = lock.isProcessLockFileIsDead()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            if is_dead_lock:
+                lock.is_locked = True
+                lock.release()
+        except:
+            self.Fixity.logger.LogException(Exception.message)
+            pass
+
+        try:
+            is_lock_exists = lock.isLockFileExists()
+        except:
+            pass
+
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
-        print(project_name)
-        if new_path is not None:
-            dir_information = {}
-            dir_information['path'] = new_path
+        if is_lock_exists is False:
+            if new_path is not None:
+                dir_information = {}
+                dir_information['path'] = new_path
 
 
-            self.Fixity.Database.update(self.Fixity.Database._tableProjectPath, dir_information, '1 = 1')
+                self.Fixity.Database.update(self.Fixity.Database._tableProjectPath, dir_information, '1 = 1')
 
-            for dirs_objects in project_core.directories:
-                project_core.directories[dirs_objects].setPath(new_path)
-                break
+                for dirs_objects in project_core.directories:
+                    project_core.directories[dirs_objects].setPath(new_path)
+                    break
 
-        project_core.Save(False)
-        if called_from == 'test':
-            return project_core.Run(False, False, False, 'test')
+            project_core.Save(False)
+            if called_from == 'test':
+                return project_core.Run(False, False, False, 'test')
+            else:
+                project_core.Run()
         else:
-            project_core.Run()
-
+            print('Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.')
         return ''
 if __name__ == '__main__':
     try:
