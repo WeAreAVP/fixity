@@ -11,6 +11,10 @@ import App
 from argparse import ArgumentParser
 import sys, os, traceback, types
 
+sys.path.append('/usr/local/lib/python2.7')
+sys.path.append('/usr/local/lib/python2.7/site-packages')
+sys.path.append('/usr/local/lib/python2.7/site-packages/PySide')
+
 class Main (object):
 
     def __init__(self, is_unit_test = False):
@@ -27,7 +31,7 @@ class Main (object):
         app.exec_()
 
     def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
-        print('started')
+
         is_lock_exists = False
         is_dead_lock = False
 
@@ -37,7 +41,7 @@ class Main (object):
             process_id = None
             pass
 
-        print('Get File Locker and check for dead lock')
+
         # Get File Locker and check for dead lock
         try:
             lock = DatabaseLockHandler.DatabaseLockHandler(self.Fixity.Configuration.getLockFilePath(),process_id, timeout=20)
@@ -49,7 +53,6 @@ class Main (object):
             pass
 
 
-        print('is_dead_lock')
         try:
             if is_dead_lock:
                 lock.is_locked = True
@@ -58,13 +61,13 @@ class Main (object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-        print('isLockFileExists')
+
         try:
             is_lock_exists = lock.isLockFileExists()
         except:
             pass
 
-        print('getSingleProject')
+
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
         if is_lock_exists is False:
             if new_path is not None:
