@@ -1031,6 +1031,11 @@ class Scanner(GUILibraries.QDialog):
         self.resize(800, 300)
         self.show()
         self.AddText('Started Scanning ..... !')
+        self._want_to_close = False
+
+    def closeEvent(self, evnt):
+            if not self._want_to_close:
+                evnt.ignore()
 
     def AddText(self, text):
         self.te.moveCursor(GUILibraries.QTextCursor.End);
@@ -1052,4 +1057,5 @@ class Scanner(GUILibraries.QDialog):
     def Cancel(self):
 
         self.destroy()
+        self._want_to_close = True
         self.close()

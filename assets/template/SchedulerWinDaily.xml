@@ -16,6 +16,7 @@
     </Triggers>
     <Settings>
         <Enabled>true</Enabled>
+        <MultipleInstancesPolicy>Parallel</MultipleInstancesPolicy>
         <AllowStartOnDemand>{{allow_start_on_demand}}</AllowStartOnDemand>
         <AllowHardTerminate>{{allow_hard_terminate}}</AllowHardTerminate>
         <DisallowStartIfOnBatteries>{{disallow_start_if_on_batteries}}</DisallowStartIfOnBatteries>

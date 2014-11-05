@@ -245,7 +245,7 @@ class SchedulerCore(object):
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
                 command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
-
+        print(command)
         information = {}
         information['versionType'] = 'save'
         current_date = time.strftime("%Y-%m-%d")
@@ -261,13 +261,11 @@ class SchedulerCore(object):
 
             try:
                 if os.path.isfile(xml_file_name_with_dir_name):
-                    print(["launchctl", "unload", "-w", xml_file_name_with_dir_name])
                     p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
-                print("launchctl load -w " + xml_file_name_with_dir_name)
                 os.system("launchctl load -w " + xml_file_name_with_dir_name)
 
             except:
