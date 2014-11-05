@@ -787,9 +787,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
         if len(self.Fixity.ProjectsList) > 0:
             self.check_for_path_changes()
             self.checkNumberOfDirsChange()
-        current_item = self.projects.currentItem().text()
+        try:
+            current_item = self.projects.currentItem().text()
 
-        self.project.setTitle(current_item)
+            self.project.setTitle(current_item)
+        except:
+            pass
 
         is_month, is_week = 99, 99
 

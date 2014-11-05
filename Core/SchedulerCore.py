@@ -429,9 +429,9 @@ class SchedulerCore(object):
                 xmlsch.write("            </array>\n")
 
                 xmlsch.write("            <key>StandardOutPath</key>\n")
-                xmlsch.write("            <string>"+str(self.Fixity.Configuration.getDebugFilePath())+"/debug/debug.log</string>\n")
+                xmlsch.write("            <string>"+str(self.Fixity.Configuration.getDebugFilePath())+"</string>\n")
                 xmlsch.write("            <key>StandardErrorPath</key>\n")
-                xmlsch.write("            <string>"+str(self.Fixity.Configuration.getDebugFilePath())+"/debug/debug.log</string>\n")
+                xmlsch.write("            <string>"+str(self.Fixity.Configuration.getDebugFilePath())+"</string>\n")
                 xmlsch.write("            <key>StartCalendarInterval</key>\n")
                 xmlsch.write("            <dict>\n")
 
