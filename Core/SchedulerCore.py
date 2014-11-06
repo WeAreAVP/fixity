@@ -245,7 +245,7 @@ class SchedulerCore(object):
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
                 command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
-        print(command)
+
         information = {}
         information['versionType'] = 'save'
         current_date = time.strftime("%Y-%m-%d")
@@ -253,7 +253,8 @@ class SchedulerCore(object):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
-                p = subprocess.call(command ,shell=True , startupinfo=startupinfo)
+                return subprocess.call(command ,shell=False , stdout=subprocess.PIPE)
+
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
@@ -261,16 +262,18 @@ class SchedulerCore(object):
 
             try:
                 if os.path.isfile(xml_file_name_with_dir_name):
-                    p = subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
+                    return subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
             try:
-                os.system("launchctl load -w " + xml_file_name_with_dir_name)
+                return os.system("launchctl load -w " + xml_file_name_with_dir_name)
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
+
+        return 1
 
     def CreateXML(self, project_name,  version,  registration_info,   triggers,  principals,  settings,  actions, interval):
         """
@@ -287,8 +290,7 @@ class SchedulerCore(object):
         scheduler_xml_text = ''
         scheduler_xml_template_lines = []
         # Months
-        print(self.isUserAdmin())
-        print(interval)
+
         if interval == 1:
             if self.isUserAdmin():
                 template_monthly_file = open(self.Fixity.Configuration.getSch_month_template_path_admin(), "r")
@@ -406,7 +408,7 @@ class SchedulerCore(object):
         try:
             launch_agent= str(self.Fixity.Configuration.getLibAgentPath())+ "Com.fixity."+str(project_name) + ".demon.plist"
             scheduler_xml_text = ''
-            print(self.Fixity.Configuration.getLibAgentPath())
+
             xmlsch = open(u''+launch_agent, "w")
             try:
                 xmlsch.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n")

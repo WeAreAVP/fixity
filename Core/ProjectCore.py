@@ -147,7 +147,7 @@ class ProjectCore(object):
 
         return self.Fixity.Database.insert(self.Fixity.Database._tableVersions, information)
 
-    def Save(self, save_schedule = True):
+    def Save(self, save_schedule = True, came_from = False):
 
         """
         Save Project
@@ -225,7 +225,13 @@ class ProjectCore(object):
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
         if save_schedule:
-            self.SaveSchedule()
+            response = self.SaveSchedule()
+            print(response)
+            print(came_from)
+            if came_from:
+                return response
+
+
 
         if project_id['id']:
             self.Fixity.ProjectsList[self.getTitle()] = self
@@ -486,12 +492,13 @@ class ProjectCore(object):
         self.setTitle(new_name)
 
         self.scheduler.delTask(selected_project)
-        self.scheduler.schedule(new_name)
+        schedule_update = 1
+        schedule_update = self.scheduler.schedule(new_name)
 
         self.Fixity.ProjectsList[new_name] = self
         self.Fixity.removeProject(selected_project)
         SharedApp.SharedApp.App = self.Fixity
-        return True
+        return schedule_update
 
     def launchThread(self, scanner):
 
@@ -963,7 +970,11 @@ class ProjectCore(object):
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
         self.scheduler.delTask(self.getTitle())
-        self.scheduler.schedule(self.getTitle())
+
+        schedule_update = 1
+        schedule_update = self.scheduler.schedule(self.getTitle())
+
+        return schedule_update
 
     def setProjectInfo(self, projects_info):
         """

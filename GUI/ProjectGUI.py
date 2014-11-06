@@ -873,8 +873,17 @@ class ProjectGUI(GUILibraries.QMainWindow):
             information[n]['pathID'] = ID
 
         self.project.setDirectories(information)
-        self.project.Save()
-        self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
+        response = self.project.Save(True, True)
+        if self.Fixity.Configuration.getOsType() == 'Windows':
+            print(response)
+
+            if response == 1:
+                self.notification.showWarning(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text() + GUILibraries.messages['settings_saved_but'])
+            else:
+                self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
+        else:
+            self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
+
         self.togglerMenu(False)
         self.unsaved = False
         return self.project

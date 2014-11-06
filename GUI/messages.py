@@ -13,6 +13,7 @@ messages['in_valid_project_name_detailed'] = 'Invalid project name:\n*Project na
 messages['invalid_email'] = 'Invalid email address provided.  Please provide a valid address and try again.'
 messages['no_directories'] = 'No directories selected!\nPlease set directories to scan before saving.'
 messages['settings_saved'] = 'Project settings saved for '
+messages['settings_saved_but'] =  ' but fixity could not update the scheduler, please run Fixity as administrator and try again.'
 messages['project_schedule_not_set'] = 'Project schedule not set - please select an interval for scans.'
 messages['sure_delete'] = 'Are you certain that you want to delete '
 messages['no_project_selected_delete'] = 'No project selected to delete - please select a project and try again.'
