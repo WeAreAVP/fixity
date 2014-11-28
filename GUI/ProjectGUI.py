@@ -874,10 +874,9 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.project.setDirectories(information)
         response = self.project.Save(True, True)
-        if self.Fixity.Configuration.getOsType() == 'Windows':
-            print(response)
 
-            if response == 1:
+        if self.Fixity.Configuration.getOsType() == 'Windows':
+            if response[0] == 1:
                 self.notification.showWarning(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text() + GUILibraries.messages['settings_saved_but'])
             else:
                 self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
@@ -1030,9 +1029,12 @@ class ProjectGUI(GUILibraries.QMainWindow):
 # window to display test results
 class Scanner(GUILibraries.QDialog):
     def __init__(self, parent_win):
-        GUILibraries.QDialog.__init__(self, parent_win)
-        self.setWindowModality(GUILibraries.Qt.WindowModal)
+        GUILibraries.QDialog.__init__(self, parent_win, GUILibraries.Qt.CustomizeWindowHint | GUILibraries.Qt.WindowTitleHint | GUILibraries.Qt.WindowMinMaxButtonsHint)
         self.setWindowTitle('Scanner Console')
+        #GUILibraries.Qt.CustomizeWindowHint | GUILibraries.Qt.WindowTitleHint | GUILibraries.Qt.WindowMinMaxButtonsHint
+        self.setWindowModality(GUILibraries.Qt.WindowModal)
+        #self.setWindowModality(GUILibraries.Qt.CustomizeWindowHint | GUILibraries.Qt.WindowTitleHint | GUILibraries.Qt.WindowMinMaxButtonsHint)
+
         self.Fixity = SharedApp.SharedApp.App
         self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
         self.lay = GUILibraries.QVBoxLayout(self)

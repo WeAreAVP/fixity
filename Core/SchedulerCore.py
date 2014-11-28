@@ -241,7 +241,6 @@ class SchedulerCore(object):
             SystemInformation = self.Fixity.Configuration.getWindowsInformation()
 
             if str(SystemInformation['WindowsType']) == '7':
-
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
                 command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
@@ -253,7 +252,11 @@ class SchedulerCore(object):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             try:
-                return subprocess.call(command ,shell=False , stdout=subprocess.PIPE)
+                si = subprocess.STARTUPINFO()
+                si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+                response = subprocess.call(command, startupinfo=si)
+                return {0:response, 1:command}
+
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
