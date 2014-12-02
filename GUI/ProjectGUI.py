@@ -879,7 +879,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if self.Fixity.Configuration.getOsType() == 'Windows':
             if response[0] == 1:
-                self.notification.showWarning(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text() + GUILibraries.messages['settings_saved_but'])
+                self.notification.showInformation("Warning", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text() + GUILibraries.messages['settings_saved_but'])
             else:
                 self.notification.showInformation(self, "Success", GUILibraries.messages['settings_saved'] + self.projects.currentItem().text())
         else:

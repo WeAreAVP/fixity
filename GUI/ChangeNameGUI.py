@@ -136,8 +136,10 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         flag_name_changed = project_core.changeProjectName(selected_project, new_name)
 
         if flag_name_changed:
+            currentRow = self.parent_win.projects.currentRow()
             self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
             self.parent_win.refreshProjectSettings()
+            self.parent_win.projects.setCurrentRow(currentRow)
             self.Cancel()
         else:
             self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
