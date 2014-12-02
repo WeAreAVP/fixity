@@ -553,9 +553,11 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         if is_lock_exists is False:
             project_core = self.Save()
-            self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
-            self.scanner = Scanner(self)
-            project_core.launchThread(self.scanner)
+
+            if(project_core):
+                self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
+                self.scanner = Scanner(self)
+                project_core.launchThread(self.scanner)
 
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
