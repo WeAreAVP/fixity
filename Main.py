@@ -22,7 +22,6 @@ class Main (object):
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.is_unit_test = is_unit_test
 
-
     def LaunchGUI(self, arg):
         app = GUILibraries.QApplication(arg)
         app.MainFixityWindow = App.ProjectGUI.ProjectGUI()
@@ -52,7 +51,6 @@ class Main (object):
             print(Exception.message)
             pass
 
-
         try:
             if is_dead_lock:
                 lock.is_locked = True
@@ -61,19 +59,16 @@ class Main (object):
             self.Fixity.logger.LogException(Exception.message)
             pass
 
-
         try:
             is_lock_exists = lock.isLockFileExists()
         except:
             pass
-
 
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
         if is_lock_exists is False:
             if new_path is not None:
                 dir_information = {}
                 dir_information['path'] = new_path
-
 
                 self.Fixity.Database.update(self.Fixity.Database._tableProjectPath, dir_information, '1 = 1')
 
@@ -110,5 +105,3 @@ if __name__ == '__main__':
            file_name = path.split(exc_tb.tb_frame.f_code.co_filename)[1]
 
            print("Could not run this Project "+str(Exception.message))
-
-

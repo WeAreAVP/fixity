@@ -224,14 +224,15 @@ class ProjectCore(object):
             self.directories[dirs_objects].setID(dir_path_id['id'])
 
         self.Fixity.Database.update(self.Fixity.Database._tableProject, update_version, 'id ="' + str(project_id['id']) + '"')
+
         if save_schedule:
             response = self.SaveSchedule()
-            print(response)
-            print(came_from)
             if came_from:
+                if project_id['id']:
+                    self.Fixity.ProjectsList[self.getTitle()] = self
+                    SharedApp.SharedApp.App = self.Fixity
+
                 return response
-
-
 
         if project_id['id']:
             self.Fixity.ProjectsList[self.getTitle()] = self
