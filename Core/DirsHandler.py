@@ -601,7 +601,7 @@ class DirsHandler(object):
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files:
                     try:
-                        scanner.AddText('.')
+                        scanner.AddText(single_file + '.' + "\n")
                     except:
                         pass
                     if self.Fixity.Configuration.getOsType() == 'Windows':
@@ -634,7 +634,7 @@ class DirsHandler(object):
 
                 encoded_base_path = self.getPathID()
                 try:
-                    scanner.AddText('.')
+                    scanner.AddText(path_of_the_file + '.' + "\n")
                 except:
                     pass
                 if self.Fixity.Configuration.getOsType() == 'Windows':
