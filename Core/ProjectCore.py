@@ -8,7 +8,7 @@ from Core import SharedApp, SchedulerCore, EmailNotification, Database, Database
 import datetime
 import re
 import os
-import thread
+import threading
 import time
 from collections import defaultdict
 
@@ -508,7 +508,11 @@ class ProjectCore(object):
 
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.Database = Database.Database()
-        self.Run(False, True, False, 'CLI', scanner)
+        t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
+        t1.start()
+        t1.join()
+        #
+
         try:
             scanner.AddText('\nScanning Completed. \n')
         except:

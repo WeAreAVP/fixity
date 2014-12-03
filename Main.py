@@ -9,7 +9,7 @@ from Core import SharedApp, DatabaseLockHandler
 from GUI import GUILibraries
 import App
 from argparse import ArgumentParser
-import sys, os, traceback, types
+import sys, os
 
 sys.path.append('/usr/local/lib/python2.7')
 sys.path.append('/usr/local/lib/python2.7/site-packages')
@@ -29,7 +29,7 @@ class Main (object):
 
         app.exec_()
 
-    def LaunchCLI(self, project_name, called_from = 'CLI', new_path = None):
+    def LaunchCLI(self, project_name, called_from = 'CLI', new_path=None):
 
         is_lock_exists = False
         is_dead_lock = False
