@@ -8,7 +8,7 @@ from Core import SharedApp, SchedulerCore, EmailNotification, Database, Database
 import datetime
 import re
 import os
-import threading
+import threading, thread
 import time
 from collections import defaultdict
 
@@ -508,25 +508,27 @@ class ProjectCore(object):
 
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.Database = Database.Database()
+
         t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
         t1.start()
-        t1.join()
+        #while t1.isAlive():
+        #    testing1=0;
+
+
+        #try:
+        #    scanner.AddText('\nScanning Completed. \n')
+        #except:
+        #    pass
         #
-
-        try:
-            scanner.AddText('\nScanning Completed. \n')
-        except:
-            pass
-
-        time.sleep(6)
-
-        try:
-            scanner.AddText('\nClosing Console. \n')
-        except:
-            pass
-
-        time.sleep(2)
-        scanner.Cancel()
+        #time.sleep(6)
+        #
+        #try:
+        #    scanner.AddText('\nClosing Console. \n')
+        #except:
+        #    pass
+        #
+        #time.sleep(2)
+        #scanner.Cancel()
         # run_thread = thread.start_new_thread(self.launchRun, tuple())
         # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
 
@@ -906,6 +908,21 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
+        try:
+            scanner.AddText('\nScanning Completed. \n')
+        except:
+            pass
+
+        time.sleep(6)
+
+        try:
+            scanner.AddText('\nClosing Console. \n')
+        except:
+            pass
+
+        time.sleep(2)
+        scanner.Cancel()
 
         if called_from == 'test':
             return information_for_report
