@@ -560,7 +560,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             if(project_core):
                 self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
                 self.scanner = Scanner(self)
-                project_core.launchThread(self.scanner)
+                project_core.launchThread(self.scanner )
 
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
@@ -1058,11 +1058,11 @@ class Scanner(GUILibraries.QDialog):
                 evnt.ignore()
 
     def AddText(self, text):
-        print(text)
-        #self.te.moveCursor(GUILibraries.QTextCursor.End);
-        #self.te.insertPlainText (text);
-        #self.te.moveCursor (GUILibraries.QTextCursor.End);
-        #GUILibraries.QCoreApplication.processEvents()
+
+        self.te.moveCursor(GUILibraries.QTextCursor.End);
+        self.te.insertPlainText (text);
+        self.te.moveCursor (GUILibraries.QTextCursor.End);
+        GUILibraries.QCoreApplication.processEvents()
 
     '''
     Distructor

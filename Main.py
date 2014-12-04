@@ -96,7 +96,7 @@ if __name__ == '__main__':
         args = parser.parse_args()
     except:
         pass
-    sys.excepthook = log_uncaught_exceptions
+    # sys.excepthook = log_uncaught_exceptions
     # If Received argument (project name and run command), it with run the
     # scheduler other wise it will open Fixity Front end View)
     Fixity = Main(False)

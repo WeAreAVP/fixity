@@ -6,6 +6,8 @@
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
 from GUI import GUILibraries
+import GUI.ProjectGUI
+
 import datetime
 import re
 import os
@@ -503,7 +505,7 @@ class ProjectCore(object):
         return schedule_update
 
     def launchThread(self, scanner):
-
+        print('1')
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
 
@@ -512,10 +514,15 @@ class ProjectCore(object):
         # if self.Fixity.Configuration.getOsType() == 'Windows':
         # t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
         # t1.start()
-        aObjectTest = A(self,{False, True, False, 'CLI', scanner})
-        aObjectTest.start()
-        GUILibraries.QObject.connect(aObjectTest, GUILibraries.SIGNAL("asignal"),aObjectTest.bfunc,GUILibraries.QueuedConnection)
+        # aObjectTest = A(self,{False, True, False, 'CLI', scanner})
+        # aObjectTest.start()
+        print('1')
+        test = testa()
+
+        test.testds(self, [False, True, False, 'CLI', scanner])
+        # GUILibraries.QObject.connect(aObjectTest, GUILibraries.SIGNAL("asignal"),aObjectTest.afunc,GUILibraries.Qt.QueuedConnection)
         scanner.Cancel()
+
         # else:
         #     self.Run(False, True, False, 'CLI', scanner)
         #     try:
@@ -542,6 +549,9 @@ class ProjectCore(object):
         self.Run(False, True)
 
     def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI', scanner=None):
+        scanner.AddText('asdasdas')
+
+
         """
         Run This project
         @param check_for_changes: if only want to know is all file confirmed or not
@@ -758,7 +768,7 @@ class ProjectCore(object):
 
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 try:
-                    print('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
+                    scanner.AddText('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
                 except:
                     pass
 
@@ -913,14 +923,14 @@ class ProjectCore(object):
             pass
 
         try:
-            print('\nScanning Completed. \n')
+            scanner.AddText('\nScanning Completed. \n')
         except:
             pass
 
         time.sleep(6)
 
         try:
-            print('\nClosing Console. \n')
+            scanner.AddText('\nClosing Console. \n')
         except:
             pass
 
@@ -1311,16 +1321,30 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             return None
 
+class testa(object):
+    def testds(self, parant, param):
+        a= A(parant, param)
+        a.start()
+        GUILibraries.QObject.connect(a,GUILibraries.SIGNAL("asignal"),a.afunc,GUILibraries.Qt.QueuedConnection)
+        a.afunc()
+        self.a= a
+
+    def ola(self,param1,param2,param3,param4,param5):
+        print('12121')
+        # self.a.sleep(1)
+        print('12121')
+
 class A (GUILibraries.QThread):
-    def __init__(self,Parent, params):
-        self.Parent = Parent
-        self.params = params
+    def __init__(self, parent, param):
         GUILibraries.QThread.__init__(self)
+        self.parent = parent
+        self.param = param
 
     def afunc (self):
         print("starting in a()")
-        self.Parent.Run(self.params[0],self.params[1],self.params[2],self.params[3],self.params[4])
-        self.emit(GUILibraries.SIGNAL("asignal"))
+        print(self.param[0])
+        self.parent.Run(self.param[0],self.param[1],self.param[2],self.param[3],self.param[4])
+        # self.emit(SIGNAL("asignal"))
         print("finished in a()")
 
     def bfunc(self):
