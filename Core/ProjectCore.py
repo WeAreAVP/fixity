@@ -517,9 +517,7 @@ class ProjectCore(object):
                 print('\nScanning Completed. \n')
             except:
                 pass
-
             time.sleep(6)
-
             try:
                 print('\nClosing Console. \n')
             except:
@@ -920,7 +918,7 @@ class ProjectCore(object):
             pass
 
         time.sleep(2)
-        #scanner.Cancel()
+        scanner.Cancel()
 
         if called_from == 'test':
             return information_for_report
