@@ -508,27 +508,27 @@ class ProjectCore(object):
 
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.Database = Database.Database()
-        if self.Fixity.Configuration.getOsType() == 'Windows':
-            t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
-            t1.start()
-        else:
-            self.Run(False, True, False, 'CLI', scanner)
-            try:
-                scanner.AddText('\nScanning Completed. \n')
-            except:
-                pass
+        # if self.Fixity.Configuration.getOsType() == 'Windows':
+        t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
+        t1.start()
+        # else:
+        #     self.Run(False, True, False, 'CLI', scanner)
 
-            time.sleep(6)
+        try:
+            scanner.AddText('\nScanning Completed. \n')
+        except:
+            pass
 
-            try:
-                scanner.AddText('\nClosing Console. \n')
-            except:
-                pass
+        time.sleep(6)
 
-            time.sleep(2)
-            scanner.Cancel()
-        # run_thread = thread.start_new_thread(self.launchRun, tuple())
-        # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
+        try:
+            scanner.AddText('\nClosing Console. \n')
+        except:
+            pass
+
+        time.sleep(2)
+
+        scanner.Cancel()
 
     def launchRun(self):
 
@@ -544,7 +544,6 @@ class ProjectCore(object):
         @return array
         """
         start_time = datetime.datetime.now()
-
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -915,7 +914,6 @@ class ProjectCore(object):
 
                 return {'file_changed_found': True, 'report_path': created_report_info['path']}
             else:
-
                 return {'file_changed_found': False, 'report_path': created_report_info['path']}
         else:
 

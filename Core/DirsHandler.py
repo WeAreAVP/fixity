@@ -604,6 +604,7 @@ class DirsHandler(object):
                         scanner.AddText(single_file + '.' + "\n")
                     except:
                         pass
+
                     if self.Fixity.Configuration.getOsType() == 'Windows':
                         try:
                             fls.append(root + str(os.sep) + single_file)
@@ -623,6 +624,7 @@ class DirsHandler(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
         try:
             scanner.AddText('\nListing Files .')
         except:
