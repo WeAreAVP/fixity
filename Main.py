@@ -9,7 +9,7 @@ from Core import SharedApp, DatabaseLockHandler
 from GUI import GUILibraries
 import App
 from argparse import ArgumentParser
-import sys, os
+import sys, os, traceback, logging
 
 sys.path.append('/usr/local/lib/python2.7')
 sys.path.append('/usr/local/lib/python2.7/site-packages')
@@ -84,6 +84,11 @@ class Main (object):
         else:
             print('Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.')
         return ''
+def log_uncaught_exceptions(ex_cls, ex, tb):
+
+    logging.critical(''.join(traceback.format_tb(tb)))
+    logging.critical('{0}: {1}'.format(ex_cls, ex))
+
 if __name__ == '__main__':
     try:
         parser = ArgumentParser()
@@ -91,7 +96,7 @@ if __name__ == '__main__':
         args = parser.parse_args()
     except:
         pass
-
+    sys.excepthook = log_uncaught_exceptions
     # If Received argument (project name and run command), it with run the
     # scheduler other wise it will open Fixity Front end View)
     Fixity = Main(False)
