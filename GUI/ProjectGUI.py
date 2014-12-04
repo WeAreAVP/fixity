@@ -10,9 +10,12 @@ from GUI import ChangeNameGUI, EmailNotificationGUI, ImportProjGUI, PathChangeGU
 from Core import SharedApp, ProjectCore, DatabaseLockHandler
 
 
+
 # Built-in Libraries
 import datetime
 import os
+import sys
+
 
 ''' Project GUI Class '''
 class ProjectGUI(GUILibraries.QMainWindow):
@@ -1044,6 +1047,7 @@ class Scanner(GUILibraries.QDialog):
         self.te.setReadOnly(True)
         self.lay.addWidget(self.te)
         self.setLayout(self.lay)
+        sys.stdout = Printer(self.te)
         self.resize(800, 300)
         self.show()
         self.AddText('Started Scanning ..... !')
@@ -1054,10 +1058,11 @@ class Scanner(GUILibraries.QDialog):
                 evnt.ignore()
 
     def AddText(self, text):
-        self.te.moveCursor(GUILibraries.QTextCursor.End);
-        self.te.insertPlainText (text);
-        self.te.moveCursor (GUILibraries.QTextCursor.End);
-        GUILibraries.QCoreApplication.processEvents()
+        print(text)
+        #self.te.moveCursor(GUILibraries.QTextCursor.End);
+        #self.te.insertPlainText (text);
+        #self.te.moveCursor (GUILibraries.QTextCursor.End);
+        #GUILibraries.QCoreApplication.processEvents()
 
     '''
     Distructor
@@ -1075,3 +1080,12 @@ class Scanner(GUILibraries.QDialog):
         self.destroy()
         self._want_to_close = True
         self.close()
+
+class Printer():
+
+    def __init__(self, target):
+        self.target = target
+
+    def write(self, message):
+        self.target.moveCursor(GUILibraries.QTextCursor.End)
+        self.target.insertPlainText(message)

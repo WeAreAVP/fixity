@@ -514,14 +514,14 @@ class ProjectCore(object):
         else:
             self.Run(False, True, False, 'CLI', scanner)
             try:
-                scanner.AddText('\nScanning Completed. \n')
+                print('\nScanning Completed. \n')
             except:
                 pass
 
             time.sleep(6)
 
             try:
-                scanner.AddText('\nClosing Console. \n')
+                print('\nClosing Console. \n')
             except:
                 pass
 
@@ -753,7 +753,7 @@ class ProjectCore(object):
 
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 try:
-                    scanner.AddText('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
+                    print('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
                 except:
                     pass
 
@@ -906,6 +906,21 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+
+        try:
+            print('\nScanning Completed. \n')
+        except:
+            pass
+
+        time.sleep(6)
+
+        try:
+            print('\nClosing Console. \n')
+        except:
+            pass
+
+        time.sleep(2)
+        #scanner.Cancel()
 
         if called_from == 'test':
             return information_for_report
