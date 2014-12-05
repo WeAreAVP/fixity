@@ -1047,7 +1047,7 @@ class Scanner(GUILibraries.QDialog):
         self.te.setReadOnly(True)
         self.lay.addWidget(self.te)
         self.setLayout(self.lay)
-        sys.stdout = Printer(self.te)
+        #sys.stdout = Printer(self.te)
         self.resize(800, 300)
         self.show()
         self.AddText('Started Scanning ..... !')
@@ -1058,11 +1058,11 @@ class Scanner(GUILibraries.QDialog):
                 evnt.ignore()
 
     def AddText(self, text):
-
-        self.te.moveCursor(GUILibraries.QTextCursor.End);
-        self.te.insertPlainText (text);
-        self.te.moveCursor (GUILibraries.QTextCursor.End);
-        GUILibraries.QCoreApplication.processEvents()
+        print(text)
+        #self.te.moveCursor(GUILibraries.QTextCursor.End);
+        #self.te.insertPlainText (text);
+        #self.te.moveCursor (GUILibraries.QTextCursor.End);
+        #GUILibraries.QCoreApplication.processEvents()
 
     '''
     Distructor

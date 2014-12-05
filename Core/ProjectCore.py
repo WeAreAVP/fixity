@@ -509,23 +509,24 @@ class ProjectCore(object):
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.Database = Database.Database()
         if self.Fixity.Configuration.getOsType() == 'Windows':
-            t1 = threading.Thread(target=self.Run, args= (False, True, False, 'CLI', scanner))
+            t1 = threading.Thread(target=self.Run, args= (False, False, False, 'CLI', scanner))
             t1.start()
+            scanner.Cancel()
         else:
             self.Run(False, True, False, 'CLI', scanner)
             try:
-                scanner.AddText('\nScanning Completed. \n')
+                print('\nScanning Completed. \n')
             except:
                 pass
 
-            time.sleep(6)
+            #time.sleep(6)
 
             try:
-                scanner.AddText('\nClosing Console. \n')
+                print('\nClosing Console. \n')
             except:
                 pass
 
-            time.sleep(2)
+            #time.sleep(2)
             scanner.Cancel()
         # run_thread = thread.start_new_thread(self.launchRun, tuple())
         # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
@@ -544,7 +545,6 @@ class ProjectCore(object):
         @return array
         """
         start_time = datetime.datetime.now()
-
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -731,7 +731,6 @@ class ProjectCore(object):
                             except:
 
                                 this_file_path = self.Fixity.Configuration.CleanStringForBreaks(base_path_information[str(path_information[0])]['path'] + self.Fixity.Configuration.CleanStringForBreaks(path_information[1].decode('utf-8')))
-
                                 base_path = base_path_information[str(path_information[0])]['path']
 
                                 pass
@@ -753,7 +752,7 @@ class ProjectCore(object):
 
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 try:
-                    scanner.AddText('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
+                    print('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
                 except:
                     pass
 
@@ -934,10 +933,6 @@ class ProjectCore(object):
                 except:
                     self.Fixity.logger.LogException(Exception.message)
                     pass
-
-        if is_from_thread:
-            self.Fixity.selfDestruct()
-
 
     def applyFilter(self, filters, is_ignore_hidden_files):
         """
