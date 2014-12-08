@@ -61,10 +61,8 @@ class DirsHandler(object):
         @return: removed Message if removed and count of removed file
         """
 
-        if is_from_thread:
-            self.database = Database.Database()
-        else:
-            self.database = self.Fixity.Database
+
+        self.database = self.Fixity.Database
 
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 

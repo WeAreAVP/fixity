@@ -520,7 +520,7 @@ class ProjectCore(object):
             #t1 = th
             # ()
 
-            thread.trigger.connect(lambda: self.Run(False, False, False, 'CLI', scanner, thread))  # connect to it's signal
+            thread.trigger.connect(lambda: self.Run(False, True, False, 'CLI', scanner, thread))  # connect to it's signal
             thread.started.connect(self.started)
             thread.terminated.connect(lambda: self.threadFinished(scanner))
 
@@ -573,10 +573,8 @@ class ProjectCore(object):
 
         self.Fixity.Database = Database.Database()
 
-        if is_from_thread:
-            self.database = Database.Database()
-        else:
-            self.database = self.Fixity.Database
+
+        self.database = self.Fixity.Database
 
         missing_file = ('', '')
         global verified_files
@@ -927,8 +925,8 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
-
-        thread.terminated.emit()
+        if is_from_thread:
+            thread.terminated.emit()
 
         if called_from == 'test':
             return information_for_report

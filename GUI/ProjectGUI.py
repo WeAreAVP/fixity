@@ -86,7 +86,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
             # set Fixed Size(Width, Height)
             self.setFixedSize(1000, 300)
 
-
     def createDirectories(self):
         self.mail_layout = GUILibraries.QVBoxLayout()
         self.mail_layout.setSpacing(0)
