@@ -14,7 +14,7 @@ from Core import SharedApp, ProjectCore, DatabaseLockHandler
 # Built-in Libraries
 import datetime
 import os
-import sys
+import sys, time, random
 
 
 ''' Project GUI Class '''
@@ -560,7 +560,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
             if(project_core):
                 self.notification.showInformation(self, "Success", self.projects.currentItem().text() + " is currently scanning.\nPlease do not close Fixity until a report is generated.")
                 self.scanner = Scanner(self)
-                project_core.launchThread(self.scanner )
+                thread = MyThread(self)    # create a thread
+                project_core.launchThread(self.scanner, thread )
 
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
@@ -1058,11 +1059,8 @@ class Scanner(GUILibraries.QDialog):
                 evnt.ignore()
 
     def AddText(self, text):
-        print(text)
-        #self.te.moveCursor(GUILibraries.QTextCursor.End);
-        #self.te.insertPlainText (text);
-        #self.te.moveCursor (GUILibraries.QTextCursor.End);
-        #GUILibraries.QCoreApplication.processEvents()
+        self.te.append(text)
+        GUILibraries.QCoreApplication.processEvents()
 
     '''
     Distructor
@@ -1089,3 +1087,16 @@ class Printer():
     def write(self, message):
         self.target.moveCursor(GUILibraries.QTextCursor.End)
         self.target.insertPlainText(message)
+
+class MyThread(GUILibraries.QThread):
+    trigger = GUILibraries.Signal(int)
+
+    def __init__(self, parent=None):
+        super(MyThread, self).__init__(parent)
+
+    def setup(self, thread_no):
+        self.thread_no = thread_no
+
+    def run(self):
+        time.sleep(random.random()*5)  # random sleep to imitate working
+        self.trigger.emit(self.thread_no)
