@@ -526,7 +526,7 @@ class ProjectCore(object):
             except:
                 pass
 
-            #time.sleep(2)
+            time.sleep(2)
             scanner.Cancel()
         # run_thread = thread.start_new_thread(self.launchRun, tuple())
         # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
