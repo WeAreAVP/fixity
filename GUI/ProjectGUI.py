@@ -38,7 +38,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
         self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
-        self.setWindowTitle(self.Fixity.Configuration.getApplicationName())
+        self.setWindowTitle(self.Fixity.Configuration.getApplicationName() +' '+ self.Fixity.Configuration.getApplicationVersion())
 
         # create Menu
         self.createMenu()
