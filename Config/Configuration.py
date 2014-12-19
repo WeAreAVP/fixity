@@ -21,7 +21,7 @@ class Configuration(object):
 
         self.Fixity = SharedApp.App
         self.application_name = 'Fixity'
-        self.application_version = '0.4'
+        self.application_version = '0.5'
         self.change_file = 'Changed File'
         self.move_or_renamed_file = 'Moved or Renamed File'
         self.confirmed_file = 'Confirmed File'

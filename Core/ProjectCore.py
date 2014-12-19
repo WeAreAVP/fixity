@@ -5,6 +5,7 @@
 
 from Core import DirsHandler
 from Core import SharedApp, SchedulerCore, EmailNotification, Database, DatabaseLockHandler
+from GUI import GUILibraries
 import datetime
 import re
 import os
@@ -501,7 +502,10 @@ class ProjectCore(object):
         SharedApp.SharedApp.App = self.Fixity
         return schedule_update
 
-    def launchThread(self, scanner):
+    def started(self):
+        print('started from the bottoms')
+
+    def launchThread(self, scanner, thread):
 
         try:self.Fixity = SharedApp.SharedApp.App
         except:pass
@@ -509,27 +513,47 @@ class ProjectCore(object):
         self.Fixity = SharedApp.SharedApp.App
         self.Fixity.Database = Database.Database()
         if self.Fixity.Configuration.getOsType() == 'Windows':
-            t1 = threading.Thread(target=self.Run, args= (False, False, False, 'CLI', scanner))
-            t1.start()
-            scanner.Cancel()
+
+            #testing = MyThread(self, [False, False, False, 'CLI', scanner], None)
+            #testing.setup(1)
+            #testing.start()
+            #t1 = th
+            # ()
+
+            thread.trigger.connect(lambda: self.Run(False, True, False, 'CLI', scanner, thread))  # connect to it's signal
+            thread.started.connect(self.started)
+            thread.terminated.connect(lambda: self.threadFinished(scanner))
+
+            thread.setup(1)            # just setting up a parameter
+            thread.start()             # start the thread
+
+
         else:
             self.Run(False, True, False, 'CLI', scanner)
             try:
-                print('\nScanning Completed. \n')
+                scanner.AddText('\nScanning Completed. \n')
             except:
                 pass
-
-            #time.sleep(6)
-
             try:
-                print('\nClosing Console. \n')
+                scanner.AddText('\nClosing Console. \n')
             except:
                 pass
 
             time.sleep(2)
+
             scanner.Cancel()
-        # run_thread = thread.start_new_thread(self.launchRun, tuple())
-        # self.Fixity.queue[len(self.Fixity.queue)] = run_thread
+
+    def update_text(self):
+        for range in xrange(0, 10):
+            print(range)
+
+    def threadFinished(self,scanner):
+        scanner.AddText('\nScanning Completed. \n')
+        time.sleep(2)
+        scanner.AddText('\nClosing Console. \n')
+
+        if(scanner):
+            scanner.Cancel()
 
     def launchRun(self):
 
@@ -537,7 +561,7 @@ class ProjectCore(object):
         self.Fixity.Database = Database.Database()
         self.Run(False, True)
 
-    def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI', scanner=None):
+    def Run(self, check_for_changes=False, is_from_thread = False, mark_all_confirmed=False, called_from='CLI', scanner=None, thread= None):
         """
         Run This project
         @param check_for_changes: if only want to know is all file confirmed or not
@@ -551,11 +575,9 @@ class ProjectCore(object):
 
         self.Fixity.Database = Database.Database()
 
-        if is_from_thread:
-            self.database = Database.Database()
-        else:
-            self.database = self.Fixity.Database
-        time.sleep(1.5)
+
+        self.database = self.Fixity.Database
+
         missing_file = ('', '')
         global verified_files
         verified_files = list()
@@ -752,7 +774,7 @@ class ProjectCore(object):
 
             if self.directories[index].getPath() != '' and self.directories[index].getPath() is not None:
                 try:
-                    print('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
+                    scanner.AddText('\nScanning Directory '+ self.directories[index].getPath() + "::\n\n")
                 except:
                     pass
 
@@ -905,6 +927,8 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             pass
+        if is_from_thread:
+            thread.terminated.emit()
 
         if called_from == 'test':
             return information_for_report
@@ -1285,3 +1309,5 @@ class ProjectCore(object):
         except:
             self.Fixity.logger.LogException(Exception.message)
             return None
+
+

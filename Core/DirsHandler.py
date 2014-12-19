@@ -61,10 +61,8 @@ class DirsHandler(object):
         @return: removed Message if removed and count of removed file
         """
 
-        if is_from_thread:
-            self.database = Database.Database()
-        else:
-            self.database = self.Fixity.Database
+
+        self.database = self.Fixity.Database
 
         project_core = self.Fixity.ProjectRepo.getSingleProject(project_name)
 
@@ -80,10 +78,12 @@ class DirsHandler(object):
 
         directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm, scanner)
         try:
+
             if self.Fixity.Configuration.getOsType() == 'linux':
                 scanner.AddText('\n Preparing Data for scanning.')
             else:
                 print('\n Preparing Data for scanning.')
+
         except:
             pass
         for directories_inside_details_single in directories_inside_details:
@@ -601,6 +601,7 @@ class DirsHandler(object):
         list_of_values = []
         fls = []
         try:
+
             if self.Fixity.Configuration.getOsType() == 'linux':
                 scanner.AddText('Getting Directories Details .')
             else:
@@ -612,6 +613,7 @@ class DirsHandler(object):
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files:
                     try:
+
                         if self.Fixity.Configuration.getOsType() == 'linux':
                             scanner.AddText(single_file + '.' + "\n")
                         else:
@@ -643,6 +645,7 @@ class DirsHandler(object):
                 scanner.AddText('\nListing Files .')
             else:
                 print('\nListing Files .')
+
         except:
             pass
 
@@ -656,6 +659,7 @@ class DirsHandler(object):
                         scanner.AddText(path_of_the_file + '.' + "\n")
                     else:
                         print(path_of_the_file + '.' + "\n")
+
                 except:
                     pass
                 if self.Fixity.Configuration.getOsType() == 'Windows':
