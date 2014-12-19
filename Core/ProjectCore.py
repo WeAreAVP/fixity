@@ -514,12 +514,6 @@ class ProjectCore(object):
         self.Fixity.Database = Database.Database()
         if self.Fixity.Configuration.getOsType() == 'Windows':
 
-            #testing = MyThread(self, [False, False, False, 'CLI', scanner], None)
-            #testing.setup(1)
-            #testing.start()
-            #t1 = th
-            # ()
-
             thread.trigger.connect(lambda: self.Run(False, True, False, 'CLI', scanner, thread))  # connect to it's signal
             thread.started.connect(self.started)
             thread.terminated.connect(lambda: self.threadFinished(scanner))
@@ -928,7 +922,8 @@ class ProjectCore(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
         if is_from_thread:
-            thread.terminated.emit()
+            if self.Fixity.Configuration.getOsType() == 'Windows':
+                thread.terminated.emit()
 
         if called_from == 'test':
             return information_for_report
