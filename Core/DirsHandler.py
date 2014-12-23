@@ -78,7 +78,12 @@ class DirsHandler(object):
 
         directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm, scanner)
         try:
-            scanner.AddText('\n Preparing Data for scanning.')
+
+            if self.Fixity.Configuration.getOsType() == 'linux':
+                scanner.AddText('\n Preparing Data for scanning.')
+            else:
+                print('\n Preparing Data for scanning.')
+
         except:
             pass
         for directories_inside_details_single in directories_inside_details:
@@ -188,7 +193,11 @@ class DirsHandler(object):
                     response = []
 
                     try:
-                        scanner.AddText('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
+                        if self.Fixity.Configuration.getOsType() == 'linux':
+                            scanner.AddText('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
+                        else:
+                            print('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
+
                     except:
                         pass
                     response = self.verifyFiles(dict, dict_hash, dict_File, directories_inside_details_single, verified_files, single_directory, is_path_change, mark_all_confirmed)
@@ -592,14 +601,24 @@ class DirsHandler(object):
         list_of_values = []
         fls = []
         try:
-            scanner.AddText('Getting Directories Details .')
+
+            if self.Fixity.Configuration.getOsType() == 'linux':
+                scanner.AddText('Getting Directories Details .')
+            else:
+                print('Getting Directories Details .')
+
         except:
             pass
         try:
             for root, sub_folders, files in os.walk(directory_path_to_be_scanned):
                 for single_file in files:
                     try:
-                        scanner.AddText(single_file + '.' + "\n")
+
+                        if self.Fixity.Configuration.getOsType() == 'linux':
+                            scanner.AddText(single_file + '.' + "\n")
+                        else:
+                            print(single_file + '.' + "\n")
+
                     except:
                         pass
                     if self.Fixity.Configuration.getOsType() == 'Windows':
@@ -622,7 +641,11 @@ class DirsHandler(object):
             self.Fixity.logger.LogException(Exception.message)
             pass
         try:
-            scanner.AddText('\nListing Files .')
+            if self.Fixity.Configuration.getOsType() == 'linux':
+                scanner.AddText('\nListing Files .')
+            else:
+                print('\nListing Files .')
+
         except:
             pass
 
@@ -632,7 +655,11 @@ class DirsHandler(object):
 
                 encoded_base_path = self.getPathID()
                 try:
-                    scanner.AddText(path_of_the_file + '.' + "\n")
+                    if self.Fixity.Configuration.getOsType() == 'linux':
+                        scanner.AddText(path_of_the_file + '.' + "\n")
+                    else:
+                        print(path_of_the_file + '.' + "\n")
+
                 except:
                     pass
                 if self.Fixity.Configuration.getOsType() == 'Windows':
