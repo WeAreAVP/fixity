@@ -19,6 +19,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         self.Fixity = SharedApp.SharedApp.App
         self.parent_win = parent_win
+        self.setWindowTitle('Configure Sender Email')
         self.setWindowModality(GUILibraries.Qt.WindowModal)
         self.parent_win.setWindowTitle('Configure Sender Email')
         self.email_notification = EmailNotification.EmailNotification()

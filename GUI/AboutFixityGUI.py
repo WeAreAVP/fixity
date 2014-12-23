@@ -54,6 +54,17 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.main = GUILibraries.QHBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
+    def reject(self):
+        try:
+            self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
+
+        except:
+            pass
+        try:
+            super(AboutFixityGUI, self).reject()
+        except:
+            pass
+
     def destroy(self):
         ''' Distructor'''
         del self
