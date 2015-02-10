@@ -6,6 +6,7 @@ Created on May 14, 2014
 '''
 
 messages = {}
+version='0.5'
 
 ''' Project '''
 messages['in_valid_project_name'] = 'Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces (use hyphen or underscore instead)\n*Project names must be alphanumeric.'
@@ -55,7 +56,7 @@ messages['new_project_unsaved'] = 'There are unsaved changes on this project, wh
 ''' About Fixity''' 
 ''' Description ''' 
 messages['description_heading'] = '<h1>DESCRIPTION</h1>'
-messages['description_Content'] = '<p>AVPreserve Fixity 0.4</p> <p>Fixity was developed by AVPreserve and can be found at www.avpreserve.com/tools</p></br> <p>The GitHub repository for Fixity can be found at https://github.com/avpreserve/fixity</p> <p>Fixity is a utility for the documentation and regular review of stored files. Fixity scans a folder or directory, creating a manifest of the files including their file paths and their checksums, against which a regular comparative analysis can be run. Fixity monitors file integrity through generation and validation of checksums, and file attendance through monitoring and reporting on new, missing, moved and renamed files. Fixity emails a report to the user documenting flagged items along with the reason for a flag, such as that a file has been moved to a new location in the directory, has been edited, or has failed a checksum comparison for other reasons. Supplementing tools like BagIt that review files at points of exchange, when run regularly Fixity becomes a powerful tool for monitoring digital files in repositories, servers, and other long-term storage locations.</p>'
+messages['description_Content'] = '<p>AVPreserve Fixity ' + str(version) + '</p> <p>Fixity was developed by AVPreserve and can be found at www.avpreserve.com/tools</p></br> <p>The GitHub repository for Fixity can be found at https://github.com/avpreserve/fixity</p> <p>Fixity is a utility for the documentation and regular review of stored files. Fixity scans a folder or directory, creating a manifest of the files including their file paths and their checksums, against which a regular comparative analysis can be run. Fixity monitors file integrity through generation and validation of checksums, and file attendance through monitoring and reporting on new, missing, moved and renamed files. Fixity emails a report to the user documenting flagged items along with the reason for a flag, such as that a file has been moved to a new location in the directory, has been edited, or has failed a checksum comparison for other reasons. Supplementing tools like BagIt that review files at points of exchange, when run regularly Fixity becomes a powerful tool for monitoring digital files in repositories, servers, and other long-term storage locations.</p>'
 
 ''' License ''' 
 messages['License_heading'] = '<h1>Author and License </h1>'

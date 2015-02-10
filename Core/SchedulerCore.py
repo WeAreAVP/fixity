@@ -262,15 +262,16 @@ class SchedulerCore(object):
                 self.Fixity.logger.LogException(Exception.message)
                 pass
         else:
-
             try:
                 if os.path.isfile(xml_file_name_with_dir_name):
-                    return subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
+                    subprocess.Popen(["launchctl", "unload", "-w", xml_file_name_with_dir_name] ,shell=True , stdout=subprocess.PIPE)
             except:
                 self.Fixity.logger.LogException(Exception.message)
                 pass
+
             try:
-                return os.system("launchctl load -w " + xml_file_name_with_dir_name)
+                responseLd = os.system("launchctl load -w " + xml_file_name_with_dir_name)
+                return responseLd
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
