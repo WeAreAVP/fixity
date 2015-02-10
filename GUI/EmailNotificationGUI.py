@@ -235,9 +235,9 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         except:pass
 
         msgEmailValidation = None
-        if Pass == '':
-            msgEmailValidation = GUILibraries.messages['provide_valid_pass']
-            return msgEmailValidation
+        # if Pass == '':
+        #     msgEmailValidation = GUILibraries.messages['provide_valid_pass']
+        #     return msgEmailValidation
         if not GUILibraries.re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgEmailValidation = GUILibraries.messages['provide_valid_email']
             return msgEmailValidation
@@ -416,6 +416,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         SharedApp.SharedApp.App = self.Fixity
 
         self.notification.showInformation(self, "Fixity", GUILibraries.messages['email_save_success'])
+        self.parent_win.toggleEmailFields()
         self.Cancel()
     def getConfigInfo(self):
         getConfigInfo = ''

@@ -15,6 +15,7 @@ from Core import SharedApp, ProjectCore, DatabaseLockHandler
 import datetime
 import os
 import sys, time, random
+from PySide.QtGui import QToolTip
 
 
 ''' Project GUI Class '''
@@ -108,7 +109,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_text_fields[n].setContentsMargins(0, 2, 7, 0)
             self.dirs_text_fields[n].setFixedSize(150,22)
             self.bin_of_dirs[n].setFixedSize(25,22)
-            self.bin_of_dirs[n].setStyleSheet('QPushButton {color: red; font: bold}')
+            self.bin_of_dirs[n].setStyleSheet('QPushButton {color: red; font: bold} ')
             self.browse_dirs[n].clicked.connect(self.pickDir)
             self.dirs_text_fields[n].textChanged.connect(self.changed)
             self.bin_of_dirs[n].clicked.connect(self.removeDirs)
@@ -120,14 +121,14 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_layout.addLayout(hbox)
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
-            self.mail_text_fields[n].textChanged.connect(self.changed)
+
             self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
         self.dirs.setFixedSize(273,289)
         self.mail = GUILibraries.QGroupBox("Recipient Email Addresses")
 
-        self.dirs.setLayout(self.dirs_layout)
+        self.dirs.setLayout(self.dirs_layout)   
         self.mail.setLayout(self.mail_layout)
 
         self.main = GUILibraries.QHBoxLayout()
@@ -144,8 +145,25 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setDisabled(False)
         self.email_only_when_something_changed.setDisabled(False)
 
+        self.toggleEmailFields()
+
         if len(self.Fixity.ProjectsList) <= 0:
             self.togglerMenu(True)
+
+
+    def toggleEmailFields(self):
+        ''' # Enable or disable Email address bar depending on email configuration is set or not. '''
+
+        information = self.Fixity.Configuration.getEmailConfiguration()
+        for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+
+
+            if information is None or len(information) <= 0:
+                self.mail_text_fields[n].setReadOnly(True)
+                self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
+            else:
+                self.mail_text_fields[n].setReadOnly(False)
+                self.mail_text_fields[n].setStyleSheet("QLineEdit {background: white;}");
 
     def createMenu(self):
          #Creat All Menu
@@ -288,6 +306,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.close()
 
     def changed(self):
+        for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+            self.dirs_text_fields[n].setToolTip(self.dirs_text_fields[n].text())
         self.unsaved = True
 
     def createProjectListingOption(self):
@@ -377,6 +397,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         for n in range(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
             self.dirs_text_fields[(n)].setText("")
             self.mail_text_fields[(n)].setText("")
+
 
         self.run_only_on_ac_power.setChecked(False)
         self.start_when_available.setChecked(False)
