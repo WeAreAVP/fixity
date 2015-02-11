@@ -128,7 +128,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.dirs.setFixedSize(273,289)
         self.mail = GUILibraries.QGroupBox("Recipient Email Addresses")
 
-        self.dirs.setLayout(self.dirs_layout)   
+        self.dirs.setLayout(self.dirs_layout)
         self.mail.setLayout(self.mail_layout)
 
         self.main = GUILibraries.QHBoxLayout()
@@ -268,8 +268,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.day_of_week.activated.connect(self.changed)
         self.scheduling_layout.addWidget(self.day_of_week)
         self.day_of_week.hide()
-
-
 
         self.day_of_month = GUILibraries.QSpinBox()
         self.day_of_month.setMaximum(31)
@@ -740,7 +738,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.toggler(False)
         self.unsaved = True
-
+        self.toggleEmailFields()
         if new_item:
             self.old = new_item
 
