@@ -155,15 +155,19 @@ class ProjectGUI(GUILibraries.QMainWindow):
         ''' # Enable or disable Email address bar depending on email configuration is set or not. '''
 
         information = self.Fixity.Configuration.getEmailConfiguration()
+
         for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
-
-
             if information is None or len(information) <= 0:
                 self.mail_text_fields[n].setReadOnly(True)
                 self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
             else:
-                self.mail_text_fields[n].setReadOnly(False)
-                self.mail_text_fields[n].setStyleSheet("QLineEdit {background: white;}");
+                if 'protocol' in information and 'smtp' in information and 'email' in information and 'port' in information\
+                        and information['protocol'] and information['smtp'] and information['email'] and information['port'] :
+                    self.mail_text_fields[n].setReadOnly(False)
+                    self.mail_text_fields[n].setStyleSheet("QLineEdit {background: white;}");
+                else:
+                    self.mail_text_fields[n].setReadOnly(True)
+                    self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
 
     def createMenu(self):
          #Creat All Menu
@@ -583,6 +587,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
+
 
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
@@ -1050,6 +1055,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             except:
                 pass
             self.unsaved = False
+
 # window to display test results
 class Scanner(GUILibraries.QDialog):
     def __init__(self, parent_win):
@@ -1082,6 +1088,7 @@ class Scanner(GUILibraries.QDialog):
         self.te.insertPlainText (text);
         self.te.moveCursor (GUILibraries.QTextCursor.End);
         GUILibraries.QCoreApplication.processEvents()
+
     '''
     Distructor
 
