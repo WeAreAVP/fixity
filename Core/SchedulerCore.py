@@ -270,8 +270,7 @@ class SchedulerCore(object):
                 pass
 
             try:
-                responseLd = os.system("launchctl load -w " + xml_file_name_with_dir_name)
-                return responseLd
+                os.system("launchctl load -w " + xml_file_name_with_dir_name)
 
             except:
                 self.Fixity.logger.LogException(Exception.message)
