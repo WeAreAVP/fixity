@@ -1085,8 +1085,8 @@ class Scanner(GUILibraries.QDialog):
 
     def AddText(self, text):
         self.te.moveCursor(GUILibraries.QTextCursor.End);
-        self.te.insertPlainText (text);
-        self.te.moveCursor (GUILibraries.QTextCursor.End);
+        self.te.insertPlainText(text);
+        self.te.moveCursor(GUILibraries.QTextCursor.End);
         GUILibraries.QCoreApplication.processEvents()
 
     '''
