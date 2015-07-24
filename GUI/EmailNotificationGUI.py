@@ -19,6 +19,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
 
         self.Fixity = SharedApp.SharedApp.App
         self.parent_win = parent_win
+        self.setWindowTitle('Configure Sender Email')
         self.setWindowModality(GUILibraries.Qt.WindowModal)
         self.parent_win.setWindowTitle('Configure Sender Email')
         self.email_notification = EmailNotification.EmailNotification()
@@ -234,9 +235,9 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         except:pass
 
         msgEmailValidation = None
-        if Pass == '':
-            msgEmailValidation = GUILibraries.messages['provide_valid_pass']
-            return msgEmailValidation
+        # if Pass == '':
+        #     msgEmailValidation = GUILibraries.messages['provide_valid_pass']
+        #     return msgEmailValidation
         if not GUILibraries.re.match(r"[^@]+@[^@]+\.[^@]+", Email):
             msgEmailValidation = GUILibraries.messages['provide_valid_email']
             return msgEmailValidation
@@ -415,6 +416,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         SharedApp.SharedApp.App = self.Fixity
 
         self.notification.showInformation(self, "Fixity", GUILibraries.messages['email_save_success'])
+        self.parent_win.toggleEmailFields()
         self.Cancel()
     def getConfigInfo(self):
         getConfigInfo = ''

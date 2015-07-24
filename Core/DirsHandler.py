@@ -77,12 +77,14 @@ class DirsHandler(object):
         single_directory = self.getPath()
 
         directories_inside_details = self.getFilesDetailInformationWithinGivenPath(single_directory, Algorithm, scanner)
+
         try:
 
             if self.Fixity.Configuration.getOsType() == 'linux':
                 scanner.AddText('\n Preparing Data for scanning.')
             else:
                 print('\n Preparing Data for scanning.')
+                scanner.AddText('\n Preparing Data for scanning.')
 
         except:
             pass
@@ -197,6 +199,7 @@ class DirsHandler(object):
                             scanner.AddText('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
                         else:
                             print('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
+                            scanner.AddText('Scanning File '+ str(directories_inside_details_single[1]) + "  .\n ")
 
                     except:
                         pass
@@ -605,6 +608,7 @@ class DirsHandler(object):
             if self.Fixity.Configuration.getOsType() == 'linux':
                 scanner.AddText('Getting Directories Details .')
             else:
+                scanner.AddText('Getting Directories Details .')
                 print('Getting Directories Details .')
 
         except:
@@ -618,6 +622,7 @@ class DirsHandler(object):
                             scanner.AddText(single_file + '.' + "\n")
                         else:
                             print(single_file + '.' + "\n")
+                            scanner.AddText(single_file + '.' + "\n")
 
                     except:
                         pass
@@ -645,6 +650,7 @@ class DirsHandler(object):
                 scanner.AddText('\nListing Files .')
             else:
                 print('\nListing Files .')
+                scanner.AddText('\nListing Files .')
 
         except:
             pass
@@ -659,6 +665,7 @@ class DirsHandler(object):
                         scanner.AddText(path_of_the_file + '.' + "\n")
                     else:
                         print(path_of_the_file + '.' + "\n")
+                        scanner.AddText(path_of_the_file + '.' + "\n")
 
                 except:
                     pass

@@ -110,40 +110,41 @@ class ChangeNameGUI(GUILibraries.QDialog ):
         if not is_project_name_valid:
             self.notification.showError(self, "Failure", str(GUILibraries.messages['in_valid_project_name']))
             return
-
-        is_this_name_already_taken = False
-
-        if is_this_name_already_taken:
-            self.notification.showWarning(self, "Failure", GUILibraries.messages['project_already_selected'])
-            return
-
-        if False:
-            self.notification.showInformation(self, "Failure", GUILibraries.messages['problem_proj_name_change'])
-            return
-
-        new_name = self.change_name_field.text()
-
-        try:
-            project_exists = self.Fixity.ProjectsList[str(new_name)]
-            project_exists.getID()
-            project_exists.getTitle()
-            self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
-            return
-        except:
-            pass
-
-        project_core = self.Fixity.ProjectsList[selected_project]
-        flag_name_changed = project_core.changeProjectName(selected_project, new_name)
-
-        if flag_name_changed:
-            currentRow = self.parent_win.projects.currentRow()
-            self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
-            self.parent_win.refreshProjectSettings()
-            self.parent_win.projects.setCurrentRow(currentRow)
-            self.Cancel()
         else:
-            self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
-            return
+
+            is_this_name_already_taken = False
+
+            if is_this_name_already_taken:
+                self.notification.showWarning(self, "Failure", GUILibraries.messages['project_already_selected'])
+                return
+
+            if False:
+                self.notification.showInformation(self, "Failure", GUILibraries.messages['problem_proj_name_change'])
+                return
+
+            new_name = self.change_name_field.text()
+
+            try:
+                project_exists = self.Fixity.ProjectsList[str(new_name)]
+                project_exists.getID()
+                project_exists.getTitle()
+                self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
+                return
+            except:
+                pass
+
+            project_core = self.Fixity.ProjectsList[selected_project]
+            flag_name_changed = project_core.changeProjectName(selected_project, new_name)
+
+            if flag_name_changed:
+                currentRow = self.parent_win.projects.currentRow()
+                self.notification.showInformation(self, "Success", GUILibraries.messages['project_name_changed'])
+                self.parent_win.refreshProjectSettings()
+                self.parent_win.projects.setCurrentRow(currentRow)
+                self.Cancel()
+            else:
+                self.notification.showInformation(self, "Failure", GUILibraries.messages['in_valid_project_name_detailed'])
+                return
 
 
     def project_changed(self):

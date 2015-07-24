@@ -15,6 +15,7 @@ from Core import SharedApp, ProjectCore, DatabaseLockHandler
 import datetime
 import os
 import sys, time, random
+from PySide.QtGui import QToolTip
 
 
 ''' Project GUI Class '''
@@ -108,7 +109,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_text_fields[n].setContentsMargins(0, 2, 7, 0)
             self.dirs_text_fields[n].setFixedSize(150,22)
             self.bin_of_dirs[n].setFixedSize(25,22)
-            self.bin_of_dirs[n].setStyleSheet('QPushButton {color: red; font: bold}')
+            self.bin_of_dirs[n].setStyleSheet('QPushButton {color: red; font: bold} ')
             self.browse_dirs[n].clicked.connect(self.pickDir)
             self.dirs_text_fields[n].textChanged.connect(self.changed)
             self.bin_of_dirs[n].clicked.connect(self.removeDirs)
@@ -120,7 +121,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             self.dirs_layout.addLayout(hbox)
             self.mail_text_fields.append(GUILibraries.QLineEdit())
             self.mail_layout.addWidget(self.mail_text_fields[n])
-            self.mail_text_fields[n].textChanged.connect(self.changed)
+
             self.dirs_text_fields[n].setReadOnly(True)
 
         self.dirs =GUILibraries.QGroupBox("Directories")
@@ -144,8 +145,29 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.start_when_available.setDisabled(False)
         self.email_only_when_something_changed.setDisabled(False)
 
+        self.toggleEmailFields()
+
         if len(self.Fixity.ProjectsList) <= 0:
             self.togglerMenu(True)
+
+
+    def toggleEmailFields(self):
+        ''' # Enable or disable Email address bar depending on email configuration is set or not. '''
+
+        information = self.Fixity.Configuration.getEmailConfiguration()
+
+        for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+            if information is None or len(information) <= 0:
+                self.mail_text_fields[n].setReadOnly(True)
+                self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
+            else:
+                if 'protocol' in information and 'smtp' in information and 'email' in information and 'port' in information\
+                        and information['protocol'] and information['smtp'] and information['email'] and information['port'] :
+                    self.mail_text_fields[n].setReadOnly(False)
+                    self.mail_text_fields[n].setStyleSheet("QLineEdit {background: white;}");
+                else:
+                    self.mail_text_fields[n].setReadOnly(True)
+                    self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
 
     def createMenu(self):
          #Creat All Menu
@@ -251,8 +273,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_layout.addWidget(self.day_of_week)
         self.day_of_week.hide()
 
-
-
         self.day_of_month = GUILibraries.QSpinBox()
         self.day_of_month.setMaximum(31)
         self.day_of_month.setMinimum(1)
@@ -288,6 +308,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
                 self.close()
 
     def changed(self):
+        for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
+            self.dirs_text_fields[n].setToolTip(self.dirs_text_fields[n].text())
         self.unsaved = True
 
     def createProjectListingOption(self):
@@ -377,6 +399,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         for n in range(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
             self.dirs_text_fields[(n)].setText("")
             self.mail_text_fields[(n)].setText("")
+
 
         self.run_only_on_ac_power.setChecked(False)
         self.start_when_available.setChecked(False)
@@ -565,6 +588,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
         else:
             self.notification.showWarning(self, "Warning", "Fixity is already scanning a project.\nPlease wait until the current scan completes before starting a new one.")
 
+
     #Check For Changes In the provided base  path and old given base path the given project name
     #@param projectName: Project Name
     #@param searchForPath: Path of a given base Dire in the view
@@ -719,7 +743,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
 
         self.toggler(False)
         self.unsaved = True
-
+        self.toggleEmailFields()
         if new_item:
             self.old = new_item
 
@@ -1031,6 +1055,7 @@ class ProjectGUI(GUILibraries.QMainWindow):
             except:
                 pass
             self.unsaved = False
+
 # window to display test results
 class Scanner(GUILibraries.QDialog):
     def __init__(self, parent_win):
@@ -1060,9 +1085,10 @@ class Scanner(GUILibraries.QDialog):
 
     def AddText(self, text):
         self.te.moveCursor(GUILibraries.QTextCursor.End);
-        self.te.insertPlainText (text);
-        self.te.moveCursor (GUILibraries.QTextCursor.End);
+        self.te.insertPlainText(text);
+        self.te.moveCursor(GUILibraries.QTextCursor.End);
         GUILibraries.QCoreApplication.processEvents()
+
     '''
     Distructor
 

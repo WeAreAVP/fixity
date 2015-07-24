@@ -7,6 +7,7 @@ Created on May 14, 2014
 
 from GUI import GUILibraries
 from Core import SharedApp
+import GUI.messages as singleMessage
 
 OS_Info = 'Windows'
 
@@ -30,7 +31,7 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.setWindowModality(GUILibraries.Qt.WindowModal)
         
         self.parent_win.setWindowTitle('About Fixity')
-
+        singleMessage.version = self.Fixity.Configuration.getApplicationVersion()
         
         self.setWindowIcon(GUILibraries.QIcon(self.Fixity.Configuration.getLogoSignSmall()))
         self.AboutFixityLayout =GUILibraries.QVBoxLayout()
@@ -69,8 +70,8 @@ class AboutFixityGUI(GUILibraries.QDialog):
 
     def showDescription(self):
         ''' Show Description'''
-        self.heading.setText(GUILibraries.messages['description_heading'])
-        descriptionText = GUILibraries.messages['description_Content']
+        self.heading.setText(singleMessage.messages['description_heading'])
+        descriptionText = singleMessage.messages['description_Content']
 
         self.content.setText(descriptionText)
         self.description_btn.setDisabled(True)
@@ -78,9 +79,9 @@ class AboutFixityGUI(GUILibraries.QDialog):
         self.contact_btn.setDisabled(False)
     def showLicense(self):
         ''' Show License Information On About Us Page(Trigger in  button press)'''
-        self.heading.setText(GUILibraries.messages['License_heading'])
+        self.heading.setText(singleMessage.messages['License_heading'])
         ''' Header Detail '''
-        LicenseText = GUILibraries.messages['License_Content']
+        LicenseText = singleMessage.messages['License_Content']
 
         self.content.setText(LicenseText)
         self.description_btn.setDisabled(False)
@@ -89,8 +90,8 @@ class AboutFixityGUI(GUILibraries.QDialog):
 
     def showContact(self):
         '''Trigger The Show Contact'''
-        self.heading.setText(GUILibraries.messages['Contact_heading'])
-        ContactText = GUILibraries.messages['Contact_Content']
+        self.heading.setText(singleMessage.messages['Contact_heading'])
+        ContactText = singleMessage.messages['Contact_Content']
 
         self.content.setText(ContactText)
         self.description_btn.setDisabled(False)
