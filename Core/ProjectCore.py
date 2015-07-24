@@ -1198,17 +1198,26 @@ class ProjectCore(object):
             reports_text = str(reports_text).replace('{{time_elapsed}}', str(information['time_elapsed']['hrs']) + ' hrs ' + str(information['time_elapsed']['min'])+ ' min ' + str(information['time_elapsed']['sec']) + ' seconds')
 
         elif '{{details}}' in reports_text and email_report is False:
+
             utf_encode = False
             try:
                 reports_text = reports_text.replace('{{details}}', detail_output_of_all_files_changes.encode('utf8'))
             except:
+                self.Fixity.logger.LogException("Details 1:{{details}} encode utf8 fail")
                 utf_encode = True
                 pass
 
             if utf_encode:
                 try:
                     reports_text = reports_text.replace('{{details}}', detail_output_of_all_files_changes.decode('utf8'))
+
+                    self.Fixity.logger.LogException("Details 2:{{details}} trying decode utf8 try")
+                    self.Fixity.logger.LogException(detail_output_of_all_files_changes)
                 except:
+                    reports_text = reports_text.replace('{{details}}', detail_output_of_all_files_changes)
+
+                    self.Fixity.logger.LogException("Details 3:{{details}} decode utf8 fail")
+                    self.Fixity.logger.LogException(detail_output_of_all_files_changes)
                     pass
 
         return reports_text
