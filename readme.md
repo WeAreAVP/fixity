@@ -16,7 +16,7 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 #Code Structure
 
-+---assets (Images and templates ) (Sub Direcoty ) +---template (templates of scheduler xml file creation)
++---assets (Images and templates ) (Sub Directory ) +---template (templates of scheduler xml file creation)
 
 +---Config (Files mentaion Fixity Setting up and Configuration )
 
