@@ -16,6 +16,7 @@ class Configuration(object):
             self.OsType = 'linux'
         elif os.name == 'nt':
             self.OsType = 'Windows'
+
         elif os.name == 'os2':
             self.OsType = 'check'
 
@@ -256,6 +257,7 @@ class Configuration(object):
             WindowsInformation['platformType'] = platformType
             WindowsInformation['servicePack'] = servicePack
             windowDetailedName = platform.platform()
+            self.windowDetailedNameObj = windowDetailedName
             WindowsInformation['platform'] = windowDetailedName
             windowDetailedName = str(windowDetailedName).split('-')
 
@@ -284,8 +286,16 @@ class Configuration(object):
             pass
         return WindowsInformation
 
+    def getWindowsDetailName(self):
+        """
+        @return: object
+        """
 
-
+        try:
+            return self.windowDetailedNameObj
+        except:
+            return ''
+            pass
     def CleanStringForBreaks(self,StringToBeCleaned):
         """
         @param StringToBeCleaned:

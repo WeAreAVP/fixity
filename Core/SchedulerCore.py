@@ -3,6 +3,7 @@
 #@author: Furqan Wasi <furqan@avpreserve.com>
 import os, subprocess, time
 from Core import SharedApp
+import platform
 
 
 class SchedulerCore(object):
@@ -155,8 +156,12 @@ class SchedulerCore(object):
 
             startupinfo = subprocess.STARTUPINFO()
             startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            pathCommand = "\"" + self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + ".vbs\""
-
+            print platform.platform()
+            if 'Windows-10' in platform.platform() or 'Windows-8' in platform.platform():
+                pathCommand = "\"" + self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + ".bat\""
+            else:
+                pathCommand = "\"" + self.Fixity.Configuration.getSchedulesPath()+"fixity-" + project_name + ".vbs\""
+            print pathCommand
         # TASK SCHEDULER OPTION and ATTRIBUTES
         registration_info = {}
         triggers = {}
@@ -243,8 +248,14 @@ class SchedulerCore(object):
             if str(SystemInformation['WindowsType']) == '7':
                 command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
             else:
-                command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
-
+                if 'Windows-8' in platform.platform():
+                  #  command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.bat\\"" /RU SYSTEM'
+                    command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
+                elif 'Windows-10' in platform.platform():
+                    command = "schtasks /Create /TN \"Fixity-" + project_name + "\"  /xml " + xml_file_path
+                else:
+                    command = "schtasks /Create /tn \"Fixity-" + project_name + "\" /SC " + mo + spec + " /ST " + timeSch + ' /tr \\""' + os.getcwd() + "\\schedules\\fixity-" + project_name + '.vbs\\"" /RU SYSTEM'
+        print command
         information = {}
         information['versionType'] = 'save'
         current_date = time.strftime("%Y-%m-%d")
