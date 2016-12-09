@@ -32,7 +32,7 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 
 #MAC CONFIGURATION
-1) Download and install latest Xcode
+1) Download and install latest Xcode compatible with your macOS version
 
 2) Download and install QT 4.8 (witout debug-libraries) http://qt-project.org/downloads
 
