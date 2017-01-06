@@ -2,10 +2,10 @@
 #Created on May 14, 2014
 #
 #@author: Furqan Wasi <furqan@avpreserve.com>
-
+import plistlib
 
 from Core import SharedApp
-import sqlite3
+import sqlite3, _winreg,os
 counter_recursion = 0
 class Database(object):
     _instance = None
@@ -183,28 +183,55 @@ class Database(object):
             return False
 
     def getConfiguration(self):
-        """
-        Get SMTP and User Email Configuration
-
-        @return Configuration
-        """
         global counter_recursion
-        try:
+        information = {}
+        if self.Fixity.Configuration.getOsType() == 'Windows':
+            try:
+                global counter_recursion
+                keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
 
-            response = self.select(self._tableConfiguration, '*')
-            counter_recursion = 0
-            return response
-        except (sqlite3.OperationalError,Exception):
-
-            SharedApp.SharedApp.App.Database = Database()
-            self = Database()
-            if counter_recursion < 2:
-                counter_recursion += 1
+                root_key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_READ)
+                [email, regtype] = (_winreg.QueryValueEx(root_key, "fixityEmail"))
+                [smtp, regtype] = (_winreg.QueryValueEx(root_key, "fixitySMTP"))
+                [passwrd, regtype] = (_winreg.QueryValueEx(root_key, "fixityPass"))
+                [port, regtype] = (_winreg.QueryValueEx(root_key, "fixityPort"))
+                [protocol, regtype] = (_winreg.QueryValueEx(root_key, "fixityProtocol"))
+                [debugg, regtype] = (_winreg.QueryValueEx(root_key, "fixityDebugger"))
+                _winreg.CloseKey(root_key)
+                information['smtp'] = smtp
+                information['email'] = email
+                information['pass'] = passwrd
+                information['port'] = int(port)
+                information['protocol'] = protocol
+                information['debugger'] = int(debugg)
+                counter_recursion = 0
+                return information
+            except WindowsError:
+                if counter_recursion < 2:
+                    counter_recursion += 1
                 return self.getConfiguration()
-
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False
+        else:
+            try:
+                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
+                information['smtp'] = pl["smtp"]
+                information['email'] = pl["email"]
+                information['pass'] = pl["passwrd"]
+                information['port'] = pl["port"]
+                information['protocol'] = pl["protocol"]
+                information['debugger'] = pl["debugger"]
+                counter_recursion = 0
+                return information
+            except IOError:
+                if counter_recursion < 2:
+                    counter_recursion += 1
+                return self.getConfiguration()
+            counter_recursion = 0
+            self.Fixity.logger.LogException(Exception.message)
+            return False
+
 
     def getVersionDetails(self, project_id, version_id, OrderBy = None):
         """
@@ -240,31 +267,50 @@ class Database(object):
         Fetch information related to email configuration
         """
         global counter_recursion
-        query_result = self.select(self._tableConfiguration)
-        try:
-            global counter_recursion
-            if len(query_result) > 0:
-                information = {}
-                for result in query_result:
-                    information['id'] = query_result[result]['id']
-                    information['smtp'] = self.DecodeInfo(query_result[result]['smtp'])
-                    information['email'] = self.DecodeInfo(query_result[result]['email'])
-                    information['pass'] = self.DecodeInfo(query_result[result]['pass'])
-                    information['port'] = query_result[result]['port']
-                    information['protocol'] = query_result[result]['protocol']
-                    information['debugger'] = query_result[result]['debugger']
-                    break
+        information = {}
+        if self.Fixity.Configuration.getOsType() == 'Windows':
+            try:
+                global counter_recursion
+                keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+                root_key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_READ)
+                [email, regtype] = (_winreg.QueryValueEx(root_key, "fixityEmail"))
+                [smtp, regtype] = (_winreg.QueryValueEx(root_key, "fixitySMTP"))
+                [passwrd, regtype] = (_winreg.QueryValueEx(root_key, "fixityPass"))
+                [port, regtype] = (_winreg.QueryValueEx(root_key, "fixityPort"))
+                [protocol, regtype] = (_winreg.QueryValueEx(root_key, "fixityProtocol"))
+                [debugg, regtype] = (_winreg.QueryValueEx(root_key, "fixityDebugger"))
+                _winreg.CloseKey(root_key)
+                information['smtp'] = smtp
+                information['email'] = email
+                information['pass'] = passwrd
+                information['port'] = int(port)
+                information['protocol'] = protocol
+                information['debugger'] = int(debugg)
                 counter_recursion = 0
                 return information
 
-        except (sqlite3.OperationalError,Exception):
-            SharedApp.SharedApp.App.Database = Database()
-
-            self = Database()
-            if counter_recursion < 2:
-                counter_recursion += 1
+            except WindowsError:
+                if counter_recursion < 2:
+                    counter_recursion += 1
                 return self.getConfigInfo(project)
-
+                counter_recursion = 0
+                self.Fixity.logger.LogException(Exception.message)
+                return False
+        else:
+            try:
+                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
+                information['smtp'] = pl["smtp"]
+                information['email'] = pl["email"]
+                information['pass'] = pl["passwrd"]
+                information['port'] = pl["port"]
+                information['protocol'] = pl["protocol"]
+                information['debugger'] = pl["debugger"]
+                counter_recursion = 0
+                return information
+            except IOError:
+                if counter_recursion < 2:
+                    counter_recursion += 1
+                return self.getConfiguration()
             counter_recursion = 0
             self.Fixity.logger.LogException(Exception.message)
             return False

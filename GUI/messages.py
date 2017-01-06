@@ -6,7 +6,7 @@ Created on May 14, 2014
 '''
 
 messages = {}
-version='0.5'
+version='0.5.1'
 
 ''' Project '''
 messages['in_valid_project_name'] = 'Invalid project name:\n*Project names must be unique\n*Project names cannot be blank\n*Project names cannot contain spaces (use hyphen or underscore instead)\n*Project names must be alphanumeric.'

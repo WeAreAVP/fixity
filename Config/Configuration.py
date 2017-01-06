@@ -4,7 +4,9 @@ Created on May 14, 2014
 
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
-import os, datetime, sys, platform, base64
+import os, datetime, sys, platform, base64, _winreg
+import plistlib
+
 from Core.SharedApp import SharedApp
 
 
@@ -22,7 +24,7 @@ class Configuration(object):
 
         self.Fixity = SharedApp.App
         self.application_name = 'Fixity'
-        self.application_version = '0.5'
+        self.application_version = '0.5.1'
         self.change_file = 'Changed File'
         self.move_or_renamed_file = 'Moved or Renamed File'
         self.confirmed_file = 'Confirmed File'
@@ -57,7 +59,7 @@ class Configuration(object):
             except:
                 pass
             self.unit_test_folder = self.base_path + 'test'+os.sep
-            self.unit_test_folder_special = self.base_path + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
+            self.unit_test_folder_special = self.base_path + '¿À�?ÂÃ ÄÅÆÇÈÉÊËÌ�?Î�?�?ÑÒÓÔÕÖØÙÚÛÜ�?Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
 
         else:
             
@@ -94,7 +96,7 @@ class Configuration(object):
 
             self.avpreserve_img = r''+(os.path.join(self.assets_path) + 'avpreserve.png')
             self.unit_test_folder = self.base_path + os.sep + 'test'+os.sep
-            self.unit_test_folder_special = self.base_path + os.sep + '¿ÀÁÂÃ ÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
+            self.unit_test_folder_special = self.base_path + os.sep + '¿À�?ÂÃ ÄÅÆÇÈÉÊËÌ�?Î�?�?ÑÒÓÔÕÖØÙÚÛÜ�?Þßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþ ÿ' + os.sep
 
 
 
@@ -207,34 +209,77 @@ class Configuration(object):
 
     def getFixityLaunchPath(self): return self.fixity_launch_path
 
-    def getEmailConfiguration(self): return self.email_configuration
+    def getEmailConfiguration(self):
+        return self.email_configuration
 
     def fetchEmailConfiguration(self):
-        emailConfiguration = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration)
-        if emailConfiguration is not None and emailConfiguration is not False:
-            if len(emailConfiguration) > 0:
-                self.setEmailConfiguration(emailConfiguration[0])
-            else:
-                return {}
+        information = {}
+        if self.getOsType() == 'Windows':
+            keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+            try:
+                root_key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_READ)
+                [email, regtype] = (_winreg.QueryValueEx(root_key, "fixityEmail"))
+                [smtp, regtype] = (_winreg.QueryValueEx(root_key, "fixitySMTP"))
+                [passwrd, regtype] = (_winreg.QueryValueEx(root_key, "fixityPass"))
+                [port, regtype] = (_winreg.QueryValueEx(root_key, "fixityPort"))
+                [protocol, regtype] = (_winreg.QueryValueEx(root_key, "fixityProtocol"))
+                [debugg, regtype] = (_winreg.QueryValueEx(root_key, "fixityDebugger"))
+                _winreg.CloseKey(root_key)
+            except WindowsError:
+                print "No Email credentials setting"
+
+        else:
+            try:
+                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
+                smtp = pl["smtp"]
+                email = pl["email"]
+                passwrd = pl["passwrd"]
+                port = pl["port"]
+                protocol = pl["protocol"]
+                debugg = pl["debugger"]
+            except IOError:
+                print "No Email credentials setting"
+        information['smtp'] = smtp
+        information['email'] = email
+        information['pass'] = passwrd
+        information['port'] = int(port)
+        information['protocol'] = protocol
+        information['debugger'] = int(debugg)
+        self.setEmailConfiguration(information)
+        return information
 
     def setEmailConfiguration(self, email_configuration): self.email_configuration = email_configuration
 
     def saveEmailConfiguration(self, information):
 
-        is_email_config_insert = False
-        config_exists = self.Fixity.Database.select(self.Fixity.Database._tableConfiguration, 'id')
-
-        if config_exists is not None and config_exists is not False:
-            if len(config_exists) <=0:
-                self.Fixity.Database.insert(self.Fixity.Database._tableConfiguration, information )
-                self.setEmailConfiguration(information)
-                is_email_config_insert = True
-            else:
-                is_email_config_insert = False
-
-            if is_email_config_insert is False:
-                self.Fixity.Database.update(self.Fixity.Database._tableConfiguration, information, 'id = "' + str(config_exists[0]['id']) + '"')
-                self.setEmailConfiguration(information)
+        if self.getOsType() == 'Windows':
+            keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
+            try:
+                if not os.path.exists(keyval):
+                    _winreg.CreateKey(_winreg.HKEY_CURRENT_USER, keyval)
+                Registrykey = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_WRITE)
+                _winreg.SetValueEx(Registrykey, "fixityEmail", 0, _winreg.REG_SZ, information["email"])
+                _winreg.SetValueEx(Registrykey, "fixityPass", 0, _winreg.REG_SZ, information["pass"])
+                _winreg.SetValueEx(Registrykey, "fixityPort", 0, _winreg.REG_NONE, str(information["port"]))
+                _winreg.SetValueEx(Registrykey, "fixitySMTP", 0, _winreg.REG_SZ, information["smtp"])
+                _winreg.SetValueEx(Registrykey, "fixityProtocol", 0, _winreg.REG_SZ, information["protocol"])
+                _winreg.SetValueEx(Registrykey, "fixityDebugger", 0, _winreg.REG_NONE, str(information["debugger"]))
+                _winreg.CloseKey(Registrykey)
+            except WindowsError:
+                print("error in saving email credentials")
+        else:
+            try:
+                pl = dict(
+                    smtp=information["smtp"],
+                    email=information["email"],
+                    passwrd=information["pass"],
+                    port=information["port"],
+                    protocol=information["protocol"],
+                    debugger=information["debugger"]
+                )
+                plistlib.writePlist(pl, "~/Library/Preferences/Fixity.plist")
+            except IOError:
+                print("error in saving email credentials")
 
     def getCurrentTime(self):
 

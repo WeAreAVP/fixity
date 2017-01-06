@@ -155,9 +155,8 @@ class ProjectGUI(GUILibraries.QMainWindow):
         ''' # Enable or disable Email address bar depending on email configuration is set or not. '''
 
         information = self.Fixity.Configuration.getEmailConfiguration()
-
         for n in xrange(0, self.Fixity.Configuration.getNumberOfPathDirectories()):
-            if information is None or len(information) <= 0:
+            if not information or information is None or len(information) <= 0:
                 self.mail_text_fields[n].setReadOnly(True)
                 self.mail_text_fields[n].setStyleSheet("QLineEdit {background: #D9D9D9;} ");
             else:

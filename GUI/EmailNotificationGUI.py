@@ -27,6 +27,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         self.email_pref_layout = GUILibraries.QVBoxLayout()
         self.notification = GUILibraries.NotificationGUI.NotificationGUI()
 
+
     def reject(self):
         try:
             self.parent_win.setWindowTitle("Fixity "+self.Fixity.Configuration.getApplicationVersion())
@@ -411,6 +412,7 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         information['debugger'] = 0
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
+        print information
         self.Fixity.Configuration.saveEmailConfiguration(information)
         self.Fixity.Configuration.setEmailConfiguration(information)
         SharedApp.SharedApp.App = self.Fixity
