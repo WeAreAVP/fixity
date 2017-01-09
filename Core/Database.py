@@ -189,7 +189,6 @@ class Database(object):
             try:
                 global counter_recursion
                 keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
-
                 root_key = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_READ)
                 [email, regtype] = (_winreg.QueryValueEx(root_key, "fixityEmail"))
                 [smtp, regtype] = (_winreg.QueryValueEx(root_key, "fixitySMTP"))
@@ -200,7 +199,7 @@ class Database(object):
                 _winreg.CloseKey(root_key)
                 information['smtp'] = smtp
                 information['email'] = email
-                information['pass'] = passwrd
+                information['pass'] = self.Fixity.Configuration.decrypt_val(passwrd)
                 information['port'] = int(port)
                 information['protocol'] = protocol
                 information['debugger'] = int(debugg)
@@ -218,7 +217,7 @@ class Database(object):
                 pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
                 information['smtp'] = pl["smtp"]
                 information['email'] = pl["email"]
-                information['pass'] = pl["passwrd"]
+                information['pass'] = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
                 information['port'] = pl["port"]
                 information['protocol'] = pl["protocol"]
                 information['debugger'] = pl["debugger"]
@@ -282,7 +281,7 @@ class Database(object):
                 _winreg.CloseKey(root_key)
                 information['smtp'] = smtp
                 information['email'] = email
-                information['pass'] = passwrd
+                information['pass'] = self.Fixity.Configuration.decrypt_val(passwrd)
                 information['port'] = int(port)
                 information['protocol'] = protocol
                 information['debugger'] = int(debugg)
@@ -301,7 +300,7 @@ class Database(object):
                 pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
                 information['smtp'] = pl["smtp"]
                 information['email'] = pl["email"]
-                information['pass'] = pl["passwrd"]
+                information['pass'] = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
                 information['port'] = pl["port"]
                 information['protocol'] = pl["protocol"]
                 information['debugger'] = pl["debugger"]

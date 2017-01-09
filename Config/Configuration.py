@@ -4,8 +4,10 @@ Created on May 14, 2014
 
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
-import os, datetime, sys, platform, base64, _winreg
-import plistlib
+import os, datetime, sys, platform, base64, _winreg, plistlib
+import crypto
+sys.modules['Crypto'] = crypto
+from Crypto.Cipher import AES
 
 from Core.SharedApp import SharedApp
 
@@ -30,6 +32,8 @@ class Configuration(object):
         self.confirmed_file = 'Confirmed File'
         self.new_file = 'New File'
         self.user_home_path = os.path.expanduser('~')
+        self.MASTER_KEY = "Avps-FixiTy-$QAL135Flp0l210-Long"
+
 
         if self.OsType == 'Windows':
             self.base_path = str(os.getcwd())+str(os.sep)
@@ -241,7 +245,8 @@ class Configuration(object):
                 print "No Email credentials setting"
         information['smtp'] = smtp
         information['email'] = email
-        information['pass'] = passwrd
+        information['pass'] = self.decrypt_val(passwrd)
+        # information['pass'] = passwrd
         information['port'] = int(port)
         information['protocol'] = protocol
         information['debugger'] = int(debugg)
@@ -259,7 +264,7 @@ class Configuration(object):
                     _winreg.CreateKey(_winreg.HKEY_CURRENT_USER, keyval)
                 Registrykey = _winreg.OpenKey(_winreg.HKEY_CURRENT_USER, keyval, 0, _winreg.KEY_WRITE)
                 _winreg.SetValueEx(Registrykey, "fixityEmail", 0, _winreg.REG_SZ, information["email"])
-                _winreg.SetValueEx(Registrykey, "fixityPass", 0, _winreg.REG_SZ, information["pass"])
+                _winreg.SetValueEx(Registrykey, "fixityPass", 0, _winreg.REG_SZ, self.encrypt_val(information["pass"]))
                 _winreg.SetValueEx(Registrykey, "fixityPort", 0, _winreg.REG_NONE, str(information["port"]))
                 _winreg.SetValueEx(Registrykey, "fixitySMTP", 0, _winreg.REG_SZ, information["smtp"])
                 _winreg.SetValueEx(Registrykey, "fixityProtocol", 0, _winreg.REG_SZ, information["protocol"])
@@ -272,7 +277,7 @@ class Configuration(object):
                 pl = dict(
                     smtp=information["smtp"],
                     email=information["email"],
-                    passwrd=information["pass"],
+                    passwrd=self.encrypt_val(information["pass"]),
                     port=information["port"],
                     protocol=information["protocol"],
                     debugger=information["debugger"]
@@ -356,3 +361,18 @@ class Configuration(object):
             pass
 
         return CleanString
+
+    def encrypt_val(self, text):
+        enc_secret = AES.new(self.MASTER_KEY[:32])
+        tag_string = (str(text) +
+                      (AES.block_size -
+                       len(str(text)) % AES.block_size) * "\0")
+        cipher_text = base64.b64encode(enc_secret.encrypt(tag_string))
+
+        return cipher_text
+
+    def decrypt_val(self, cipher_text):
+        dec_secret = AES.new(self.MASTER_KEY[:32])
+        raw_decrypted = dec_secret.decrypt(base64.b64decode(cipher_text))
+        clear_val = raw_decrypted.rstrip("\0")
+        return clear_val

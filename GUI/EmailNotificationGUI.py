@@ -412,7 +412,6 @@ class EmailNotificationGUI(GUILibraries.QDialog):
         information['debugger'] = 0
         information['createdAt'] = self.Fixity.Configuration.getCurrentTime()
         information['updatedAt'] = self.Fixity.Configuration.getCurrentTime()
-        print information
         self.Fixity.Configuration.saveEmailConfiguration(information)
         self.Fixity.Configuration.setEmailConfiguration(information)
         SharedApp.SharedApp.App = self.Fixity
