@@ -5,8 +5,11 @@
 import plistlib
 
 from Core import SharedApp
-import sqlite3, _winreg,os
+import sqlite3,os
+if os.name == "nt":
+    import _winreg
 counter_recursion = 0
+
 class Database(object):
     _instance = None
     def __init__(self):
@@ -208,28 +211,30 @@ class Database(object):
             except WindowsError:
                 if counter_recursion < 2:
                     counter_recursion += 1
-                return self.getConfiguration()
-            counter_recursion = 0
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+                    return self.getConfiguration()
+                counter_recursion = 0
+                self.Fixity.logger.LogException(Exception.message)
+                return False
         else:
             try:
-                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
-                information['smtp'] = pl["smtp"]
-                information['email'] = pl["email"]
-                information['pass'] = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
-                information['port'] = pl["port"]
-                information['protocol'] = pl["protocol"]
-                information['debugger'] = pl["debugger"]
-                counter_recursion = 0
-                return information
+                fileName = os.path.expanduser("~/Library/Preferences/Fixity.plist")
+                if os.path.exists(fileName):
+                    pl = plistlib.readPlist(fileName)
+                    smtp = pl["smtp"]
+                    email = pl["email"]
+                    passwrd = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
+                    port = pl["port"]
+                    protocol = pl["protocol"]
+                    debugg = pl["debugger"]
+                    counter_recursion = 0
+                    return information
             except IOError:
                 if counter_recursion < 2:
                     counter_recursion += 1
-                return self.getConfiguration()
-            counter_recursion = 0
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+                    return self.getConfiguration()
+                counter_recursion = 0
+                self.Fixity.logger.LogException(Exception.message)
+                return False
 
 
     def getVersionDetails(self, project_id, version_id, OrderBy = None):
@@ -291,28 +296,30 @@ class Database(object):
             except WindowsError:
                 if counter_recursion < 2:
                     counter_recursion += 1
-                return self.getConfigInfo(project)
+                    return self.getConfigInfo(project)
                 counter_recursion = 0
                 self.Fixity.logger.LogException(Exception.message)
                 return False
         else:
             try:
-                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
-                information['smtp'] = pl["smtp"]
-                information['email'] = pl["email"]
-                information['pass'] = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
-                information['port'] = pl["port"]
-                information['protocol'] = pl["protocol"]
-                information['debugger'] = pl["debugger"]
-                counter_recursion = 0
-                return information
+                fileName = os.path.expanduser("~/Library/Preferences/Fixity.plist")
+                if os.path.exists(fileName):
+                    pl = plistlib.readPlist(fileName)
+                    smtp = pl["smtp"]
+                    email = pl["email"]
+                    passwrd = self.Fixity.Configuration.decrypt_val(pl["passwrd"])
+                    port = pl["port"]
+                    protocol = pl["protocol"]
+                    debugg = pl["debugger"]
+                    counter_recursion = 0
+                    return information
             except IOError:
                 if counter_recursion < 2:
                     counter_recursion += 1
-                return self.getConfiguration()
-            counter_recursion = 0
-            self.Fixity.logger.LogException(Exception.message)
-            return False
+                    return self.getConfiguration()
+                counter_recursion = 0
+                self.Fixity.logger.LogException(Exception.message)
+                return False
         return {}
 
     def getVersionDetailsLast(self, project_id):

@@ -4,10 +4,12 @@ Created on May 14, 2014
 
 @author: Furqan Wasi <furqan@avpreserve.com>
 '''
-import os, datetime, sys, platform, base64, _winreg, plistlib
-import crypto
-sys.modules['Crypto'] = crypto
+import os, datetime, sys, platform, base64, plistlib
+# import crypto
+# sys.modules['Crypto'] = crypto
 from Crypto.Cipher import AES
+if os.name == "nt":
+    import _winreg
 
 from Core.SharedApp import SharedApp
 
@@ -218,6 +220,7 @@ class Configuration(object):
 
     def fetchEmailConfiguration(self):
         information = {}
+        smtp = ""
         if self.getOsType() == 'Windows':
             keyval = r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run"
             try:
@@ -234,22 +237,24 @@ class Configuration(object):
 
         else:
             try:
-                pl = plistlib.readPlist("~/Library/Preferences/Fixity.plist")
-                smtp = pl["smtp"]
-                email = pl["email"]
-                passwrd = pl["passwrd"]
-                port = pl["port"]
-                protocol = pl["protocol"]
-                debugg = pl["debugger"]
+                fileName=os.path.expanduser("~/Library/Preferences/Fixity.plist")
+                if os.path.exists(fileName):
+                    pl = plistlib.readPlist(fileName)
+                    smtp = pl["smtp"]
+                    email = pl["email"]
+                    passwrd = pl["passwrd"]
+                    port = pl["port"]
+                    protocol = pl["protocol"]
+                    debugg = pl["debugger"]
             except IOError:
                 print "No Email credentials setting"
-        information['smtp'] = smtp
-        information['email'] = email
-        information['pass'] = self.decrypt_val(passwrd)
-        # information['pass'] = passwrd
-        information['port'] = int(port)
-        information['protocol'] = protocol
-        information['debugger'] = int(debugg)
+        if smtp != "":
+            information['smtp'] = smtp
+            information['email'] = email
+            information['pass'] = self.decrypt_val(passwrd)
+            information['port'] = int(port)
+            information['protocol'] = protocol
+            information['debugger'] = int(debugg)
         self.setEmailConfiguration(information)
         return information
 
@@ -282,7 +287,8 @@ class Configuration(object):
                     protocol=information["protocol"],
                     debugger=information["debugger"]
                 )
-                plistlib.writePlist(pl, "~/Library/Preferences/Fixity.plist")
+                fileName = os.path.expanduser("~/Library/Preferences/Fixity.plist")
+                plistlib.writePlist(pl, fileName)
             except IOError:
                 print("error in saving email credentials")
 

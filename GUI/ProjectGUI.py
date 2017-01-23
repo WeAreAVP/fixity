@@ -285,8 +285,6 @@ class ProjectGUI(GUILibraries.QMainWindow):
         self.scheduling_layout.addItem(self.spacer)
         system_information = self.Fixity.Configuration.getWindowsInformation()
 
-        print system_information['WindowsType']
-        print system_information
 
         if self.Fixity.Configuration.getOsType() == 'Windows' and (str(system_information['WindowsType']) == '7' or str(system_information['WindowsType']) == '10' or str(system_information['WindowsType']) == '8'):
             self.scheduling_layout.addWidget(self.run_only_on_ac_power)
