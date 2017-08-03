@@ -1,3 +1,5 @@
+Find extensive user documentation at https://www.avpreserve.com/tools/fixity/
+
 Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
 
 #Directory Structure
