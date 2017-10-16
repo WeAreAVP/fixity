@@ -64,7 +64,6 @@ class EmailNotification(object):
 
         try:
             if protocol == 'SSL' or protocol == 'ssl':
-
                 server = SMTP_SSL(str(information['smtp']), port)
                 server.ehlo
                 server.login(addr, pas)
@@ -80,7 +79,8 @@ class EmailNotification(object):
                 return True
             else:
                 server = SMTP(str(information['smtp']), port)
-                server.login(addr, pas)
+                if pas != "":
+                  server.login(addr, pas)
                 server.sendmail(addr, recipients, msg.as_string())
                 print('sending Email....')
                 return True
