@@ -2,7 +2,7 @@
 
 Find extensive user documentation at https://www.avpreserve.com/tools/fixity/
 
-Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
+Created By Furqan Wasi furqan@avpreserve.com, April, 14, 2014.
 
 ## Directory Structure
 
@@ -34,7 +34,7 @@ Created By Furqan Wasi furqan@avpreserve.com Create On 14/4/2014 Monday,April
     ./Fixity.db (Database of Fixity contains all information except dubugging is on or off)
     ./debug.log (Exceptions and error Logging )
 
-## MAC CONFIGURATION
+## Mac Configuration
 1. Download and install latest Xcode compatible with your macOS version
 
 2. Download and install QT 4.8 (witout debug-libraries) http://qt-project.org/downloads
@@ -101,4 +101,4 @@ AutoFxity.py will be placed into schedules directory where from task scheduler w
 
 ## Scheduling Process
 
-For Scheduling process Fixity is using windows task scheduler , it triggers the scanning process on given time when saving the project , for each project one scheduler will be created in Task scheduler
+For scheduling process Fixity is using the Windows task scheduler. It triggers the scanning process at a given time when saving the project. For each project one scheduler will be created in the Windows task scheduler
